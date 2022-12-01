@@ -1,0 +1,20 @@
+<mat-toolbar>
+    <span>Funcionarios</span>
+    <span class="example-spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <mat-icon>add</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+        <button (click)="sgregar_funcionario()" mat-menu-item>
+            <mat-icon>group_add</mat-icon>
+            <span>Registrar funcionario</span>
+        </button>
+        <button (click)="cargar_usuarios()" mat-menu-item>
+            <mat-icon>upload</mat-icon>
+            <span>Cargar funcionarios (Excel)</span>
+        </button>
+    </mat-menu>
+</mat-toolbar>
+
+<app-tabla [displayedColumns]="displayedColumns" [dataTable]="Funcionarios" (llamarEditar)="editar_funcionario($event)"
+    (llamarCambiarSituacion)="cambiar_situacion($event)"></app-tabla>

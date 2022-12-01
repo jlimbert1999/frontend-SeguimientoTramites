@@ -1,0 +1,141 @@
+<mat-toolbar>
+    <span>Bandeja entrada</span>
+</mat-toolbar>
+
+<div class="container-fluid">
+    <div class="example-container mat-elevation-z8">
+        <!-- <div class="example-loading-shade" *ngIf="isLoadingResults">
+            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+        </div> -->
+
+        <div class="example-table-container">
+
+            <table mat-table [dataSource]="bandejaService.dataSource" class="example-table" multiTemplateDataRows>
+                <ng-container matColumnDef="grupo">
+                    <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                    <td mat-cell *matCellDef="let row">{{row.tipo}}</td>
+                </ng-container>
+                <ng-container matColumnDef="alterno">
+                    <th mat-header-cell *matHeaderCellDef>Alterno</th>
+                    <td mat-cell *matCellDef="let row">
+                        <a routerLink="">
+                            {{row.tramite.alterno}}
+                        </a>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="tipo">
+                    <th mat-header-cell *matHeaderCellDef>Tramite</th>
+                    <td mat-cell *matCellDef="let row">{{row.tramite.tipo_tramite.nombre}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef>Estado</th>
+                    <td mat-cell *matCellDef="let row">{{row.tramite.estado}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="receptor">
+                    <th mat-header-cell *matHeaderCellDef>Recibido de</th>
+                    <td mat-cell *matCellDef="let row">
+                        {{row.cuenta_emisor.dependencia.nombre}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="fecha_envio">
+                    <th mat-header-cell *matHeaderCellDef>Recibido</th>
+                    <td mat-cell *matCellDef="let row">
+                        {{row.fecha_envio | date:'short'}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="opciones">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let row">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <div [ngSwitch]="row.recibido">
+                                <div *ngSwitchCase="false">
+                                    <button (click)="aceptar_tramite(row)" mat-menu-item>
+                                        <mat-icon>done</mat-icon>
+                                        <span>Aceptar tramite</span>
+                                    </button>
+                                    <button (click)="rechazar_tramite(row)" mat-menu-item>
+                                        <mat-icon>block</mat-icon>
+                                        <span>Rechazar tramite</span>
+                                    </button>
+                                </div>
+                                <div *ngSwitchCase="true">
+                                    <button (click)="remitir_tramite(row)" mat-menu-item>
+                                        <mat-icon>send</mat-icon>
+                                        <span>Remitir tramite</span>
+                                    </button>
+                                </div>
+                            </div>
+
+
+
+                        </mat-menu>
+
+                    </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="expand">
+                    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button aria-label="expand row"
+                            (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                            <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+                            <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                        <div class="example-element-detail"
+                            [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                            <mat-card class="example-card">
+                                <mat-card-header>
+                                    <div mat-card-avatar class="example-header-image"></div>
+                                    <mat-card-title>{{element.cuenta_emisor.funcionario.nombre |titlecase}}
+                                    </mat-card-title>
+                                    <mat-card-subtitle>{{element.cuenta_emisor.funcionario.cargo|uppercase}}
+                                    </mat-card-subtitle>
+                                </mat-card-header>
+                                <mat-card-content>
+                                    <p>
+                                        Dependencia: {{element.cuenta_emisor.dependencia.nombre}} /
+                                        {{element.cuenta_emisor.dependencia.institucion.sigla|uppercase}}
+                                    </p>
+
+                                    <p>
+                                        Motivo: {{element.motivo}}
+                                    </p>
+                                </mat-card-content>
+                                <mat-card-actions>
+                                    <button mat-button>Aceptar</button>
+                                    <button mat-button>Rechazar</button>
+                                </mat-card-actions>
+                            </mat-card>
+
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
+                    [ngClass]="{'mail_recibido': row.recibido==false }"
+                    [class.example-expanded-row]="expandedElement === row"
+                    (click)="expandedElement = expandedElement === row ? null : row"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+            </table>
+        </div>
+
+        <mat-paginator [pageSize]="30" aria-label="Select page of GitHub search results">
+        </mat-paginator>
+    </div>
+
+
+</div>

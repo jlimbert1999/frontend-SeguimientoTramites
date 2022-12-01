@@ -1,0 +1,216 @@
+<h2 mat-dialog-title> REGISTRO TRAMITE </h2>
+<mat-dialog-content>
+    <mat-stepper headerPosition="bottom" #stepper>
+        <mat-step [stepControl]="TramiteFormGroup">
+            <form [formGroup]="TramiteFormGroup">
+                <ng-template matStepLabel>Detalles del tramite</ng-template>
+                <div *ngIf="!data" class="row">
+                    <div class="col-sm-4">
+                        <mat-form-field appearance="legacy">
+                            <mat-label>Seleccione el segmento de tramites</mat-label>
+                            <mat-select (selectionChange)="segmentar_tramites($event.value)">
+                                <mat-option *ngFor="let segmento of Segmentos" [value]="segmento">
+                                    TRAMITES PARA {{segmento}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-8">
+                        <mat-form-field appearance="legacy" class="selector-tramite">
+                            <mat-label>Seleccion del tipo de tramite a realizar</mat-label>
+                            <mat-select (selectionChange)="seleccionar_tipo_tramite($event.value)">
+                                <mat-option *ngFor="let tipo of Tipos_Tramites_Segmentados; let i=index" [value]="tipo">
+                                    {{i+1}} . {{tipo.nombre| titlecase}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="TramiteFormGroup.controls['tipo_tramite'].invalid">Seleccione un tramite
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <mat-form-field class="example-full-width" appearance="legacy">
+                            <mat-label>Descripcion del tramite</mat-label>
+                            <input matInput #message formControlName="detalle" class="uppercase">
+                            <mat-error *ngIf="TramiteFormGroup.controls['detalle'].invalid">
+                                Ingrese la despcripcion
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-4">
+                        <mat-form-field class="example-full-width" appearance="legacy">
+                            <mat-label>Cantidad hojas</mat-label>
+                            <input type="text" min="0" matInput formControlName="cantidad">
+                            <mat-error *ngIf="TramiteFormGroup.controls['cantidad'].invalid">Ingrese la cantidad de
+                                hojas
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <div *ngIf="Tipo_Tramite_Seleccionado">
+                        <mat-list role="list">
+                            <mat-list-item
+                                *ngFor="let requerimiento of Tipo_Tramite_Seleccionado.requerimientos; let i=index"
+                                role="listitem">
+                                {{i+1}}.- {{requerimiento.nombre}}
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
+                </div>
+            </form>
+        </mat-step>
+        <mat-step [stepControl]="SolicitanteFormGroup">
+            <ng-template matStepLabel>Detalles solicitante</ng-template>
+            <div *ngIf="!data" class="row">
+                <mat-form-field appearance="legacy">
+                    <mat-label>Seleccione el tipo de solicitante</mat-label>
+                    <mat-select (selectionChange)="seleccionar_tipo_solicitante($event.value)">
+                        <mat-option [value]="'NATURAL'">SOLICITANTE NATURAL</mat-option>
+                        <mat-option [value]="'JURIDICO'">SOLICITANTE JURIDICO</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div *ngIf="tipo_solicitante==='NATURAL'">
+                <form [formGroup]="SolicitanteFormGroup">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <mat-form-field class="example-full-width" appearance="legacy">
+                                <mat-label>Nombres Completo</mat-label>
+                                <input matInput formControlName="nombre" class="uppercase">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="legacy" #TipoDoc>
+                                <mat-label>Tipo documento</mat-label>
+                                <mat-select formControlName="documento">
+                                    <mat-option *ngFor="let documento of  tipos_documento" [value]="documento">
+                                        {{documento | uppercase}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-sm-4">
+                            <mat-form-field class="example-full-width" appearance="legacy">
+                                <mat-label>DNI</mat-label>
+                                <input matInput formControlName="dni">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="legacy">
+                                <mat-label>Expedido</mat-label>
+                                <mat-select formControlName="expedido">
+                                    <mat-option *ngFor="let lugar of  Lugares" [value]="lugar">
+                                        {{lugar | uppercase}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm">
+                            <mat-form-field class="example-full-width" appearance="legacy">
+                                <mat-label>Telefono de referencia</mat-label>
+                                <input matInput formControlName="telefono">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="tipo_solicitante==='JURIDICO'">
+                <form [formGroup]="SolicitanteFormGroup">
+                    <div class="row">
+                        <div class="col-sm">
+                            <mat-form-field class="example-full-width" appearance="legacy">
+                                <mat-label>Nombres</mat-label>
+                                <input matInput formControlName="nombre" class="uppercase">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm">
+                            <mat-form-field class="example-full-width" appearance="legacy">
+                                <mat-label>Telefono de referencia</mat-label>
+                                <input matInput formControlName="telefono">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="col-sm-6">
+                <label id="example-radio-group-label">Tipo de registro</label>
+                <mat-radio-group [(ngModel)]="registrar_representante"
+                    (change)="seleccionar_registro_representante($event.value)"
+                    aria-labelledby="example-radio-group-label" class="example-radio-group">
+                    <mat-radio-button class="example-radio-button" [value]="true">
+                        CON REPRESENTANTE LEGAL
+                    </mat-radio-button>
+                    <mat-radio-button class="example-radio-button" [value]="false">
+                        SIN REPRESENTANTE LEGAL
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+
+        </mat-step>
+        <mat-step [stepControl]="RepresentanteFormGroup!" *ngIf="registrar_representante">
+            <form [formGroup]="RepresentanteFormGroup!">
+                <ng-template matStepLabel>Representante</ng-template>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <mat-form-field class="example-full-width" appearance="legacy">
+                            <mat-label>Nombres</mat-label>
+                            <input matInput formControlName="nombre" class="uppercase">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-4">
+                        <mat-form-field appearance="legacy" #TipoDoc>
+                            <mat-label>Tipo documento</mat-label>
+                            <mat-select formControlName="documento">
+                                <mat-option *ngFor="let documento of  tipos_documento" [value]="documento">
+                                    {{documento|uppercase}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-sm-4">
+                        <mat-form-field class="example-full-width" appearance="legacy">
+                            <mat-label>DNI</mat-label>
+                            <input matInput formControlName="dni">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-4">
+                        <mat-form-field appearance="legacy">
+                            <mat-label>Expedido</mat-label>
+                            <mat-select formControlName="expedido">
+                                <mat-option *ngFor="let lugar of  Lugares" [value]="lugar">
+                                    {{lugar | uppercase}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-4">
+                        <mat-form-field class="example-full-width" appearance="legacy">
+                            <mat-label>Telefono de referencia</mat-label>
+                            <input matInput formControlName="telefono">
+                        </mat-form-field>
+                    </div>
+                </div>
+            </form>
+
+        </mat-step>
+    </mat-stepper>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-raised-button mat-dialog-close color="warn">Cancelar</button>
+    <button *ngIf="registrar_representante" mat-raised-button color="primary"
+        [disabled]="TramiteFormGroup.invalid || SolicitanteFormGroup.invalid || RepresentanteFormGroup!.invalid"
+        (click)="guardar()">Guardar</button>
+    <button *ngIf="!registrar_representante" mat-raised-button color="primary"
+        [disabled]="TramiteFormGroup.invalid || SolicitanteFormGroup.invalid" (click)="guardar()">Guardar</button>
+</mat-dialog-actions>

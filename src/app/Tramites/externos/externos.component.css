@@ -1,0 +1,52 @@
+.example-spacer {
+    flex: 1 1 auto;
+}
+
+table {
+    width: 100%;
+}
+
+.mat-cell {
+    font-size: 12px;
+}
+
+
+.badge {
+    font-size: 13px;
+}
+
+
+/* Structure table*/
+.example-container {
+    position: relative;
+}
+
+.example-table-container {
+    position: relative;
+    max-height: 70vh;
+    overflow: auto;
+}
+
+
+
+.example-loading-shade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 56px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Column Widths */
+.mat-column-ubicacion,
+.mat-column-alterno {
+    width: 200px;
+}
+.mat-column-opciones {
+    width: 10px;
+}

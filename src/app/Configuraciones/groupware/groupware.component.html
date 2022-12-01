@@ -1,0 +1,18 @@
+<div class="container-fluid">
+    <mat-list>
+        <mat-list-item *ngFor="let user of socketService.Users">
+            <img matListAvatar src="../../../assets/img/account.png" alt="...">
+            <h3 matLine>{{user.funcionario | titlecase}} </h3>
+            <p matLine>
+                <span> {{user.cargo|uppercase}} </span>
+            </p>
+            <div>
+                <span class="c-pill c-pill--success">
+                    En linea
+                </span>
+            </div>
+            <mat-divider></mat-divider>
+        </mat-list-item>
+    </mat-list>
+
+</div>

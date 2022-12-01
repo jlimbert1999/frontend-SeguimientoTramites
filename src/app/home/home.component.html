@@ -1,0 +1,46 @@
+<div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
+  <mat-toolbar color="primary" class="example-toolbar">
+    <button mat-icon-button (click)="snav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span class="campo_cuenta">
+      <div mat-line> {{authService.Detalles_Cuenta.funcionario|titlecase|titlecase}}</div>
+      <div mat-line style="font-size: 11px">{{authService.Detalles_Cuenta.cargo|titlecase}} ({{authService.Detalles_Cuenta.rol|titlecase}})</div>
+  </span>
+   
+    <span class="example-spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button (click)="authService.logout()" mat-menu-item>
+        <mat-icon>logout</mat-icon>
+        <span>Cerrar sesion</span>
+      </button>
+
+    </mat-menu>
+
+  </mat-toolbar>
+
+  <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
+    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
+      fixedTopGap="56" [opened]="true">
+      <mat-nav-list>
+        <ng-container *ngFor="let item of Menu">
+          <div mat-subheader>{{item.modulo}}</div>
+          <mat-list-item *ngFor="let submodulo of item.submodulos" [routerLink]="submodulo.ruta"
+            routerLinkActive="active">
+            <mat-icon mat-list-icon>
+              {{submodulo.icon}}</mat-icon>
+            <a matLine>{{submodulo.nombre}}</a>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+        </ng-container>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

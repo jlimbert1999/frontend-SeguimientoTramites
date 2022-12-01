@@ -1,0 +1,175 @@
+<h2 mat-dialog-title>{{titulo}} Cuenta</h2>
+<mat-dialog-content>
+    <ng-container *ngIf="!data">
+        <mat-stepper (selectionChange)="generar_credenciales()" orientation="vertical" [linear]="false" #stepper>
+            <mat-step [stepControl]="Form_Funcionario">
+                <form [formGroup]="Form_Funcionario">
+                    <ng-template matStepLabel>Datos funcionario</ng-template>
+                    <div class="row">
+                        <div class="col-8">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Nombre</mat-label>
+                                <input formControlName="nombre" matInput>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-4">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Dni</mat-label>
+                                <input formControlName="dni" matInput>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Cargo</mat-label>
+                                <input formControlName="cargo" matInput>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-4">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Telefono</mat-label>
+                                <input formControlName="telefono" matInput>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Direccion</mat-label>
+                            <input formControlName="direccion" matInput>
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <button mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step [stepControl]="Form_Cuenta">
+                <form [formGroup]="Form_Cuenta">
+                    <ng-template matStepLabel>Datos cuenta</ng-template>
+                    <div class="row">
+                        <div class="col">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Seleccione la institucion</mat-label>
+                                <mat-select (selectionChange)="seleccionar_institucion($event.value)">
+                                    <mat-option *ngFor="let inst of Instituciones" [value]="inst.id_institucion">
+                                        {{inst.nombre}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col">
+                            <mat-form-field>
+                                <mat-select (selectionChange)="Form_Cuenta.get('dependencia')?.setValue($event.value)"
+                                    [formControl]="bankCtrl" placeholder="Buscar la dependencia" #singleSelect>
+                                    <mat-option>
+                                        <ngx-mat-select-search [formControl]="bankFilterCtrl"></ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let bank of filteredBanks | async"
+                                        [value]="bank.id_dependencia">
+                                        {{bank.nombre}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Login</mat-label>
+                                <input formControlName="login" matInput>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-6">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Password</mat-label>
+                                <input formControlName="password" matInput>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Permisos</mat-label>
+                                <mat-select formControlName="rol">
+                                    <mat-option *ngFor="let rol of Roles" [value]="rol.value">
+                                        {{rol.viewValue | uppercase}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div>
+                        <button mat-button matStepperPrevious>Atras</button>
+                        <button mat-button (click)="stepper.reset()">Restablecer</button>
+                    </div>
+                </form>
+            </mat-step>
+        </mat-stepper>
+    </ng-container>
+    <ng-container *ngIf="data">
+        <div class="container">
+            <div class="main-body">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-column align-items-center text-center">
+                                    <img src="../../../../assets/img/account.png" alt="Admin" class="rounded-circle"
+                                        width="110">
+                                    <div class="mt-3">
+                                        <h4>{{data.funcionario.nombre|titlecase}} - {{data.funcionario.dni}}</h4>
+                                        <p class="text-secondary mb-1">{{data.funcionario.cargo|uppercase}}</p>
+                                        <p class="text-muted font-size-sm">
+                                            {{data.dependencia.nombre}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <form [formGroup]="Form_Cuenta">
+                            <div class="card">
+                                <div class="card-body">
+                                    <mat-form-field appearance="legacy">
+                                        <mat-label>Login</mat-label>
+                                        <input formControlName="login" matInput>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>Permisos</mat-label>
+                                        <mat-select formControlName="rol">
+                                            <mat-option *ngFor="let rol of Roles" [value]="rol.value">
+                                                {{rol.viewValue | uppercase}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    
+                                    <mat-form-field *ngIf="cambiar_password" appearance="legacy">
+                                        <mat-label>Password</mat-label>
+                                        <input formControlName="password" matInput>
+                                    </mat-form-field>
+                                    <hr>
+                                    <mat-checkbox [checked]="cambiar_password"
+                                        (change)='cambiar_formulario($event.checked)' class="example-margin">
+                                        Actualizar password
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button class="close-button" mat-button mat-dialog-close>Cancelar</button>
+    <ng-container *ngIf="data">
+        <button class="save-button" mat-button [disabled]="Form_Cuenta.invalid" (click)="guardar()">Guardar</button>
+    </ng-container>
+    <ng-container *ngIf="!data">
+        <button class="save-button" mat-button [disabled]="Form_Funcionario.invalid || Form_Cuenta.invalid"
+            (click)="guardar()">Guardar</button>
+    </ng-container>
+</mat-dialog-actions>

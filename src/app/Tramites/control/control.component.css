@@ -1,0 +1,51 @@
+table {
+    width: 100%;
+}
+
+.example-spacer {
+    flex: 1 1 auto;
+}
+
+.example-container {
+    overflow: auto;
+}
+
+td.mat-column-opciones {
+    min-width: 50px;
+    padding-left: 10px;
+}
+
+td.mat-column-cuce,
+td.mat-column-modalidad,
+td.mat-column-nro_apertura,
+td.mat-column-precio_adjudicado,
+td.mat-column-apertura,
+td.mat-column-origen,
+td.mat-column-plazo,
+td.mat-column-precio,
+td.mat-column-fecha_creacion,
+td.mat-column-tipo_contratacion,
+td.mat-column-empresa_adjudicada,
+td.mat-column-representante_legal,
+td.mat-column-observaciones,
+td.mat-column-estado,
+td.mat-column-alterno {
+    min-width: 200px;
+}
+
+td.mat-column-ubicacion{
+    min-width: 400px;
+}
+
+td.mat-column-objeto {
+  min-width: 400px;
+  padding-inline: 10px;
+}
+
+.mat-icon {
+   
+    vertical-align: middle;
+}
+mat-form-field{
+    width: 100%;
+}

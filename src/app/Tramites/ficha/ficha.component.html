@@ -1,0 +1,184 @@
+<mat-toolbar>
+    <span>Ficha de tramite</span>
+    <span class="example-spacer"></span>
+   
+</mat-toolbar>
+
+<mat-tab-group mat-align-tabs="center">
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">info</mat-icon>
+            Informacion
+        </ng-template>
+        <div class="container-fluid">
+            <div class="card" *ngIf="Tramite">
+                <h3 class="card-header">{{Tramite.tipo_tramite.nombre}} - {{Tramite.alterno}}</h3>
+                <div class="card-body">
+                    <div class="card">
+                        <div class="card-body lh-lg">
+                            <h4 class="card-title fw-bold">INFORMACION DEL TRAMITE</h4>
+                            <div class="row">
+                                <div class="col">
+                                    <p class="card-text">Descripcion: {{Tramite.detalle}}</p>
+                                </div>
+                                <div class="col">
+                                    <p class="card-text">Estado: {{Tramite.estado}}</p>
+                                </div>
+                                <div class="col">
+                                    <p class="card-text">Catidad: {{Tramite.cantidad}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <p class="card-text">Registrado: {{Tramite.fecha_registro}}</p>
+                                </div>
+                                <div class="col">
+                                    <p class="card-text">Pin: {{Tramite.pin}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <p class="card-text">
+                                        <mat-icon style="vertical-align: middle;">location_on</mat-icon>
+                                        UBICACION: {{Tramite.ubicacion.dependencia.nombre}} -
+                                        {{Tramite.ubicacion.dependencia.institucion.sigla}}
+
+                                    </p>
+
+                                </div>
+                                <div class="col">
+                                    <p class="card-text">
+                                        <mat-icon style="vertical-align: middle;">person</mat-icon>
+                                        RESPONSABLE: {{Tramite.ubicacion.funcionario.nombre}} -
+                                        {{Tramite.ubicacion.funcionario.cargo}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title fw-bold">REQUERIMIENTOS PRESENTADOS</h3>
+                            <ol class="list-group list-group-numbered">
+                                <li *ngFor="let requerimiento of Tramite.requerimientos" class="list-group-item">
+                                    {{requerimiento|uppercase}}</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h3 class="card-title fw-bold">SOLICITANTE: {{Solicitante.tipo}}</h3>
+                                    <p class="card-text">Nombre: {{Solicitante.nombre}}</p>
+                                    <p class="card-text">Documento: {{Solicitante.documento}} - {{Solicitante.expedido}}
+                                        {{Solicitante.dni}}</p>
+                                    <p class="card-text">Telefono: {{Solicitante.telefono}}</p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div *ngIf="Representante" class="col">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h3 class="card-title">REPRESENTANTE</h3>
+                                    <p class="card-text">Nombre: {{Representante.nombre}}</p>
+                                    <p class="card-text">Documento: {{Representante.documento}} -
+                                        {{Representante.expedido}}
+                                        {{Solicitante.dni}}</p>
+                                    <p class="card-text">Telefono: {{Representante.telefono}}</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </mat-tab>
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">account_tree</mat-icon>
+            Flujo de trabajo grafico
+        </ng-template>
+        <div>
+            <ngx-graph class="chart-container" [links]="links" [nodes]="nodos" [clusters]="clusters" [curve]="curve"
+                layout="dagreCluster" [showMiniMap]="true" [draggingEnabled]="false">
+                <ng-template #defsTemplate>
+                    <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4"
+                        orient="auto">
+                        <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
+                    </svg:marker>
+                </ng-template>
+
+                <ng-template #clusterTemplate let-cluster>
+                    <svg:g class="node cluster">
+                        <text x="100" y="25" fill="black" style="font-size: 20px;" text-anchor="middle"
+                            alignment-baseline="central">{{cluster.label}}</text>
+                        <svg:rect rx="5" ry="5" [attr.width]="cluster.dimension.width"
+                            [attr.height]="cluster.dimension.height" [attr.fill]="cluster.data.color"
+                            style="stroke-width:3;stroke:rgb(0,0,0);" />
+                    </svg:g>
+                </ng-template>
+
+                <ng-template #nodeTemplate let-node>
+
+                    <svg:g class="node" ngx-tooltip [matTooltip]="'Tiempo empreado: Pendiente '">
+                        <svg:foreignObject width="400" height="150">
+                            <xhtml:div class="cardContainer">
+                                <mat-card class="example-card">
+                                    <mat-card-header>
+                                        <div mat-card-avatar class="example-header-image"></div>
+                                        <mat-card-title *ngIf="node.data.Nombre"
+                                            style="font-size: 16px; color: #013A63;">
+                                            {{node.data.Nombre|titlecase}}
+                                        </mat-card-title>
+                                        <mat-card-title *ngIf="!node.data.Nombre" style="font-size: 16px; color: red;">
+                                            Sin
+                                            asignar
+                                        </mat-card-title>
+
+                                        <mat-card-subtitle>{{node.data.NombreCar|titlecase}}
+                                        </mat-card-subtitle>
+                                    </mat-card-header>
+                                    <mat-card-content>
+                                        <p><small><strong>Dependencia:
+                                                </strong>
+                                                {{node.data.NombreDep}}</small></p>
+                                        <!-- <p> <small class="text-muted"> <strong>Institucion:
+                                                </strong>{{node.data.Sigla}}</small></p> -->
+                                    </mat-card-content>
+                                </mat-card>
+                            </xhtml:div>
+                        </svg:foreignObject>
+                    </svg:g>
+                </ng-template>
+
+                <ng-template #linkTemplate let-link>
+                    <svg:g class="edge">
+                        <svg:path class="line" stroke-width="2"
+                            [attr.stroke]="link.completado=== 'rechazado' ? '#dc143c' : '#000000'"
+                            marker-end="url(#arrow)">
+                        </svg:path>
+                        <svg:text *ngIf="link.completado=== 'rechazado'" class="edge-label" text-anchor="middle">
+                            <textPath class="text-path" [attr.href]="'#' + link.id"
+                                [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
+                                {{link.label}}
+                            </textPath>
+                        </svg:text>
+                        <svg:g class="deAssignEdge" *ngIf="link.midPoint && link.completado=== ''"
+                            [attr.transform]="'translate(' + (link.midPoint.x) + ',' + (link.midPoint.y) + ')'">
+                            <circle r="15" stroke-width="1" fill="black" />
+                            <text fill="white" x="-5" y="5">{{link.label}}</text>
+                        </svg:g>
+                    </svg:g>
+
+                </ng-template>
+            </ngx-graph>
+        </div>
+    </mat-tab>
+</mat-tab-group>

@@ -1,0 +1,29 @@
+<p>
+    <mat-toolbar>
+        <ng-container *ngIf="dependenciasService.busqueda==false">
+            <span>Dependencias
+            </span>
+            <span class="example-spacer"></span>
+            <button mat-icon-button (click)="activar_busqueda()">
+                <mat-icon>search</mat-icon>
+            </button>
+            <button mat-icon-button (click)="agregar_dependencia()">
+                <mat-icon>add</mat-icon>
+            </button>
+        </ng-container>
+        <ng-container *ngIf="dependenciasService.busqueda==true">
+            <mat-form-field floatLabel="never" style="width: 100%;">
+                <mat-label>Ingrese el nombre o sigla de la dependencia</mat-label>
+                <input #txtSearch [(ngModel)]="dependenciasService.termino_busqueda" matInput type="text"
+                    (keyup)="buscar_dependencia()">
+                <button (click)="desactivar_busqueda()" matSuffix mat-icon-button>
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        </ng-container>
+    </mat-toolbar>
+</p>
+
+<app-tabla [displayedColumns]="displayedColumns" [dataTable]="Dependencias"
+    (eventoPaginacion)="cambiar_paginacion($event)" (llamarEditar)="editar_dependencia($event)"
+    (llamarCambiarSituacion)="cambiar_situacion($event)"></app-tabla>

@@ -1,0 +1,76 @@
+table {
+    width: 100%;
+}
+
+
+.example-spacer {
+    flex: 1 1 auto;
+}
+
+/* Structure */
+.example-container {
+    position: relative;
+}
+
+.example-table-container {
+    position: relative;
+    max-height: 70vh;
+    overflow: auto;
+}
+
+table {
+    width: 100%;
+}
+
+.example-loading-shade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 56px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mat-cell {
+    font-size: 12px;
+
+}
+
+tr.example-detail-row {
+    height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+    background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+    background: #efefef;
+}
+
+.example-element-row td {
+    border-bottom-width: 0;
+}
+
+.example-element-detail {
+    overflow: hidden;
+    display: flex;
+}
+
+.example-header-image {
+    background-image: url('../../../assets/img/account.png');
+    background-size: cover;
+}
+
+.mail_recibido .mat-cell {
+    background-color: #FE5F55;
+    color: white;
+}
+
+.mail_recibido a {
+    color: black;
+}

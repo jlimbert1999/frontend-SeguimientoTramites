@@ -1,0 +1,82 @@
+<h2 mat-dialog-title>Creacion de cuenta y asignacion</h2>
+<mat-dialog-content>
+    <form [formGroup]="Form_Cuenta">
+        <ng-template matStepLabel>Datos cuenta</ng-template>
+        <div class="row">
+            <mat-form-field>
+                <mat-select  (selectionChange)="asignar_funcionario($event.value)" [formControl]="userCtrl" placeholder="Buscar funcionario" #userSelect>
+                    <mat-option>
+                        <ngx-mat-select-search [formControl]="userFilterCtrl"></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+                        <img alt="" class="example-option-img" src="../../../assets/img/account.png" height="25">
+                        <strong>{{user.nombre|titlecase}}</strong> (<small>{{user.cargo|uppercase}}</small>)
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <div class="col">
+                <mat-form-field appearance="fill">
+                    <mat-label>Seleccione la institucion</mat-label>
+                    <mat-select (selectionChange)="seleccionar_institucion($event.value)">
+                        <mat-option *ngFor="let inst of Instituciones" [value]="inst.id_institucion">
+                            {{inst.nombre}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col">
+                <mat-form-field>
+                    <mat-select (selectionChange)="Form_Cuenta.get('dependencia')?.setValue($event.value)"
+                        [formControl]="bankCtrl" placeholder="Buscar la dependencia" #singleSelect>
+                        <mat-option>
+                            <ngx-mat-select-search [formControl]="bankFilterCtrl"></ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let bank of filteredBanks | async" [value]="bank.id_dependencia">
+                            {{bank.nombre}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <mat-form-field appearance="fill">
+                    <mat-label>Login</mat-label>
+                    <input formControlName="login" matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-6">
+                <mat-form-field appearance="fill">
+                    <mat-label>Password</mat-label>
+                    <input formControlName="password" matInput>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <mat-form-field appearance="fill">
+                    <mat-label>Permisos</mat-label>
+                    <mat-select formControlName="rol">
+                        <mat-option *ngFor="let rol of Roles" [value]="rol.value">
+                            {{rol.viewValue | uppercase}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+        </div>
+
+    </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button class="close-button" mat-button mat-dialog-close>Cancelar</button>
+    <ng-container>
+        <button class="save-button" mat-button [disabled]="Form_Cuenta.invalid  "
+            (click)="guardar()">Guardar</button>
+    </ng-container>
+
+</mat-dialog-actions>

@@ -1,0 +1,26 @@
+<mat-toolbar>
+    <ng-container *ngIf="!tiposTramitesService.busqueda">
+        <span>Tipos</span>
+        <span class="example-spacer"></span>
+        <button mat-icon-button (click)="activar_busqueda()">
+            <mat-icon>search</mat-icon>
+        </button>
+        <button mat-icon-button (click)="agregar_tipoTramite()">
+            <mat-icon>add</mat-icon>
+        </button>
+    </ng-container>
+    <ng-container *ngIf="tiposTramitesService.busqueda">
+        <mat-form-field floatLabel="never" style="width: 100%;">
+            <mat-label>Ingrese el nombre o sigla de la institucion</mat-label>
+            <input (keyup)="buscar_TipoTramites()" #txtSearch [(ngModel)]="tiposTramitesService.termino_busqueda"
+                matInput type="text">
+            <button (click)="desactivar_busqueda()" matSuffix mat-icon-button>
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+    </ng-container>
+</mat-toolbar>
+
+<app-tabla [displayedColumns]="displayedColumns" [dataTable]="TiposTramites"
+    (llamarCambiarSituacion)="cambiar_situacion_tipoTramite($event)" (llamarEditar)="editar_tipoTramite($event)"
+    (eventoPaginacion)="cambiar_paginacion($event)"></app-tabla>

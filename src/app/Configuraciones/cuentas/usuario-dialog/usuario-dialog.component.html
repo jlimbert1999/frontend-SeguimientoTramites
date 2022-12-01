@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>{{titulo}} Funcionarios</h2>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="Form_Funcionario">
+
+        <div class="row">
+            <div class="col-8">
+                <mat-form-field appearance="fill">
+                    <mat-label>Nombre</mat-label>
+                    <input formControlName="nombre" matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>Dni</mat-label>
+                    <input formControlName="dni" matInput>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <mat-form-field appearance="fill">
+                    <mat-label>Cargo</mat-label>
+                    <input formControlName="cargo" matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>Telefono</mat-label>
+                    <input formControlName="telefono" matInput>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <mat-form-field appearance="fill">
+                <mat-label>Direccion</mat-label>
+                <input formControlName="direccion" matInput>
+            </mat-form-field>
+        </div>
+
+
+    </form>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button class="close-button" mat-button mat-dialog-close>Cancelar</button>
+    <button class="save-button" mat-button [disabled]="Form_Funcionario.invalid" (click)="guardar()">Guardar</button>
+</mat-dialog-actions>

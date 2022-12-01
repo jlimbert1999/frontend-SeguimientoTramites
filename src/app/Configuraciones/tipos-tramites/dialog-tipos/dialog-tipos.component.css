@@ -1,0 +1,19 @@
+table {
+  width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.mat-column-opciones,
+.mat-column-situacion {
+  width: 150px;
+}
+.mat-column-nombre {
+  padding-inline: 5px;
+}

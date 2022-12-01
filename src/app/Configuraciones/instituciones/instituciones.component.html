@@ -1,0 +1,26 @@
+<p>
+    <mat-toolbar>
+        <ng-container *ngIf="institucionesService.busqueda==false">
+            <span>Instituciones</span>
+            <span class="example-spacer"></span>
+            <button mat-icon-button (click)="activar_busqueda()">
+                <mat-icon>search</mat-icon>
+            </button>
+            <button mat-icon-button (click)="agregar_instituciones()">
+                <mat-icon>add</mat-icon>
+            </button>
+        </ng-container>
+        <ng-container *ngIf="institucionesService.busqueda==true">
+            <mat-form-field floatLabel="never" style="width: 100%;">
+                <mat-label>Ingrese el nombre o sigla de la institucion</mat-label>
+                <input #txtSearch [(ngModel)]="institucionesService.termino_busqueda" matInput type="text" (keyup)="buscar_institucion()">
+                <button (click)="desactivar_busqueda()" matSuffix mat-icon-button>
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        </ng-container>
+    </mat-toolbar>
+</p>
+
+<app-tabla [displayedColumns]="displayedColumns" [dataTable]="Instituciones"
+    (eventoPaginacion)="cambiar_paginacion($event)" (llamarEditar)="editar_institucion($event)" (llamarCambiarSituacion)="cambiar_situacion($event)"></app-tabla>
