@@ -1,0 +1,17 @@
+<mat-toolbar>
+    <span>Reporte solicitante</span>
+</mat-toolbar>
+<div class="container-fluid">
+    <div class="row justify-content-md-center">
+        <div class="col col-lg-4">
+            <mat-form-field class="example-full-width">
+                <mat-label>Dni del solicitante</mat-label>
+                <input [(ngModel)]="dni" name="dni" matInput>
+            </mat-form-field>
+        </div>
+        <div class="col-md-auto">
+            <button (click)="generarReporte()" mat-raised-button color="primary">Generar</button>
+        </div>
+    </div>
+
+</div>

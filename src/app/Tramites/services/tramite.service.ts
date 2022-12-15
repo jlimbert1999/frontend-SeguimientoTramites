@@ -5,7 +5,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { TiposTramitesModel } from 'src/app/Configuraciones/models/tiposTramites.model';
 import { environment } from 'src/environments/environment';
 import { RepresentanteModel, SolicitanteModel } from '../models/solicitud.model';
-import { ExternoModel, ExternoModel_View } from '../models/tramite_externo.model'
+import { ExternoModel, ExternoData } from '../models/externo.model'
 const base_url = environment.base_url
 
 @Injectable({
@@ -15,13 +15,13 @@ export class TramiteService {
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
-  obtener_segmentos() {
-    return this.http.get<{ ok: boolean, segmentos: string[] }>(`${base_url}/tramites/externo/segmentos`).pipe(
-      map(resp => {
-        return resp.segmentos
-      })
-    )
-  }
+  // obtener_segmentos() {
+  //   return this.http.get<{ ok: boolean, segmentos: string[] }>(`${base_url}/tramites/externo/segmentos`).pipe(
+  //     map(resp => {
+  //       return resp.segmentos
+  //     })
+  //   )
+  // }
   agregar_tramite_externo(tramite: ExternoModel, solicitante: SolicitanteModel, representante: RepresentanteModel) {
     return this.http.post<{ ok: boolean, tramite: any }>(`${base_url}/tramites/externo`, { tramite, solicitante, representante }).pipe(
       map(resp => {
@@ -36,22 +36,21 @@ export class TramiteService {
       })
     )
   }
-  obtener_tramites_externos(pageIndex: number, items: number): Observable<{ ok: boolean, tramites: ExternoModel_View[] }> {
-    return this.http.get<{ ok: boolean, tramites: ExternoModel_View[] }>(`${base_url}/tramites`).pipe(
+  obtener_tramites_externos(pageIndex: number, items: number): Observable<{ ok: boolean, tramites: ExternoData[] }> {
+    return this.http.get<{ ok: boolean, tramites: ExternoData[] }>(`${base_url}/tramites`).pipe(
       map(resp => {
         return resp
       })
     )
   }
   obtener_tramite_externo(id_tramite: string) {
-    return this.http.get<{ ok: boolean, data: { tramite: any, workflow: any } }>(`${base_url}/tramites/${id_tramite}`).pipe(
+    return this.http.get<{ ok: boolean, tramite: any, workflow: any[], participantes: any[], instituciones: any[] }>(`${base_url}/tramites-externos/${id_tramite}`).pipe(
       map(resp => {
-        return resp.data
+        console.log(resp)
+        return { tramite: resp.tramite, workflow: resp.workflow, participantes: resp.participantes, instituciones: resp.instituciones }
       })
     )
   }
-
-
 
   obtener_control_tramites() {
     return this.http.get<{ ok: boolean, tramites: any }>(`${base_url}/tramites/control/registrados`).pipe(
@@ -75,5 +74,14 @@ export class TramiteService {
         return resp.tramites
       })
     )
+  }
+
+  generar_hoja_ruta(id_tramite: string) {
+    return this.http.get<{ ok: boolean, tramite: any, workflow: any[] }>(`${base_url}/tramites/hoja-ruta/${id_tramite}`).pipe(
+      map(resp => {
+        return { tramite: resp.tramite, workflow: resp.workflow }
+      })
+    )
+
   }
 }

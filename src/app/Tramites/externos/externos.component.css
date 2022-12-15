@@ -1,52 +1,50 @@
-.example-spacer {
-    flex: 1 1 auto;
-}
-
 table {
     width: 100%;
 }
-
 .mat-cell {
     font-size: 12px;
 }
-
-
 .badge {
-    font-size: 13px;
+    font-size: 12px;
 }
-
 
 /* Structure table*/
-.example-container {
-    position: relative;
-}
-
 .example-table-container {
     position: relative;
-    max-height: 70vh;
+    max-height: 73vh;
     overflow: auto;
 }
 
 
-
-.example-loading-shade {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 56px;
-    right: 0;
-    background: rgba(0, 0, 0, 0.15);
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 /* Column Widths */
-.mat-column-ubicacion,
 .mat-column-alterno {
-    width: 200px;
+    min-width: 180px;
+    padding-inline: 20px;
+}
+.mat-column-ubicacion {
+    min-width: 340px;
+    padding-right: 20px;
+}
+.mat-column-tramite {
+    min-width: 300px;
+}
+.mat-column-descripcion {
+    min-width: 300px;
+    padding-right: 20px;
+}
+.mat-column-estado {
+    min-width: 150px;
+}
+.mat-column-solicitante {
+    min-width: 250px;
+}
+.mat-column-fecha_registro {
+    min-width: 120px;
 }
 .mat-column-opciones {
     width: 10px;
 }
+
+
+
+

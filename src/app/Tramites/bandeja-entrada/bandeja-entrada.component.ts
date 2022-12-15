@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
 import { DialogRemisionComponent } from '../dialog-remision/dialog-remision.component';
-import { BandejaEntradaModel_View } from '../models/mail.model';
+import { BandejaEntradaData } from '../models/mail.model';
 import { BandejaService } from '../services/bandeja.service';
 
 @Component({
@@ -39,27 +39,31 @@ export class BandejaEntradaComponent implements OnInit {
     this.bandejaService.obtener_bandejaEntrada().subscribe()
   }
 
-  remitir_tramite(elemento: BandejaEntradaModel_View) {
-    const dialogRef = this.dialog.open(DialogRemisionComponent, {
-      width: '700px',
-      data: {
-        envio: {
-          _id: elemento.tramite._id,
+  remitir_tramite(elemento: BandejaEntradaData) {
+    if (elemento.tramite.estado === 'OBSERVADO') {
+      Swal.fire('El tramite tiene observaciones pendedientes', undefined, 'info')
+    }
+    else {
+      const dialogRef = this.dialog.open(DialogRemisionComponent, {
+        width: '700px',
+        data: {
+          id_tramite: elemento.tramite._id,
           tipo: elemento.tipo,
-          estado: elemento.tramite.estado,
           tipo_tramite: elemento.tramite.tipo_tramite.nombre,
-          alterno: elemento.tramite.alterno
-        },
-        reenvio: null
-      }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.bandejaService.obtener_bandejaEntrada().subscribe()
-      }
-    });
+          alterno: elemento.tramite.alterno,
+          cantidad: elemento.cantidad
+        }
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.bandejaService.obtener_bandejaEntrada().subscribe()
+        }
+      });
+
+    }
+
   }
-  aceptar_tramite(elemento: any) {
+  aceptar_tramite(elemento: BandejaEntradaData) {
     Swal.fire({
       title: `Aceptar tramite?`,
       text: `El tramite ${elemento.tramite.alterno} sera marcado como aceptado`,
@@ -71,20 +75,17 @@ export class BandejaEntradaComponent implements OnInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService.aceptar_tramite(elemento.tramite._id, elemento.cuenta_emisor._id).subscribe(message => {
+        this.bandejaService.aceptar_tramite(elemento._id).subscribe(message => {
           this.bandejaService.obtener_bandejaEntrada().subscribe()
-          this.toastr.info(undefined, message, {
+          this.toastr.success(undefined, message, {
             positionClass: 'toast-bottom-right',
             timeOut: 3000,
           })
         })
-
       }
     })
-
-
   }
-  rechazar_tramite(elemento: BandejaEntradaModel_View) {
+  rechazar_tramite(elemento: BandejaEntradaData) {
     Swal.fire({
       icon: 'info',
       title: 'Ingrese el motivo para el rechazo del tramite',
@@ -95,15 +96,13 @@ export class BandejaEntradaComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         if (result.value) {
-          this.bandejaService.rechazar_tramite(elemento.tramite._id, elemento.cuenta_emisor._id, result.value).subscribe(message => {
+          this.bandejaService.rechazar_tramite(elemento._id, result.value).subscribe(message => {
             this.toastr.info(undefined, message, {
               positionClass: 'toast-bottom-right',
               timeOut: 3000,
             })
           })
           this.bandejaService.obtener_bandejaEntrada().subscribe()
-
-
         } else {
           Swal.fire({
             title: "Debe ingrese el motivo para rechazar",
@@ -114,5 +113,6 @@ export class BandejaEntradaComponent implements OnInit {
       }
     })
   }
+
 
 }

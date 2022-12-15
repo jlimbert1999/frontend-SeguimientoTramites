@@ -5,13 +5,18 @@
     </button>
     <span class="campo_cuenta">
       <div mat-line> {{authService.Detalles_Cuenta.funcionario|titlecase|titlecase}}</div>
-      <div mat-line style="font-size: 11px">{{authService.Detalles_Cuenta.cargo|titlecase}} ({{authService.Detalles_Cuenta.rol|titlecase}})</div>
-  </span>
-   
+      <div mat-line style="font-size: 11px">{{authService.Detalles_Cuenta.cargo|titlecase}}
+        ({{authService.Detalles_Cuenta.rol|titlecase}})</div>
+    </span>
+
     <span class="example-spacer"></span>
+
+
     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
       <mat-icon>account_circle</mat-icon>
     </button>
+
+
     <mat-menu #menu="matMenu">
       <button (click)="authService.logout()" mat-menu-item>
         <mat-icon>logout</mat-icon>
@@ -40,6 +45,10 @@
     </mat-sidenav>
 
     <mat-sidenav-content>
+      <ng-container *ngIf="loading$ | async">
+        <div class="overlay"></div>
+        <mat-progress-spinner class="load-spiner" [mode]="'indeterminate'"></mat-progress-spinner>
+      </ng-container>
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>

@@ -31,7 +31,7 @@ import {CdkAccordionModule} from '@angular/cdk/accordion';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 
 @NgModule({
   declarations: [],
@@ -68,7 +68,8 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
     CdkAccordionModule,
     MatTooltipModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatBottomSheetModule
   ]
 })
 export class MaterialModule { }

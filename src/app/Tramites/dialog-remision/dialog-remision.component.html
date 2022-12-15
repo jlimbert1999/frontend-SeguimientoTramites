@@ -1,13 +1,22 @@
 <div class="header" matLine>
     <h2 mat-dialog-title>Remision tramite</h2>
-    <button mat-icon-button [mat-dialog-close]="false">
-        <mat-icon>close</mat-icon>
-    </button>
 </div>
 <mat-dialog-content>
+
     <div class="contianer">
+        <form class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Alterno</label>
+                <input disabled type="text" class="form-control" [value]="Data.alterno">
+            </div>
+            <div class="col-md-8">
+                <label class="form-label">Tipo</label>
+                <input disabled type="text" class="form-control" [value]="Data.tipo_tramite">
+            </div>
+        </form>
+        <br>
         <div class="row">
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
                 <mat-label>Seleccione la institucion</mat-label>
                 <mat-select (selectionChange)="obtener_dependencias($event.value)">
                     <mat-option *ngFor="let inst of instituciones" [value]="inst.id_institucion">
@@ -17,7 +26,7 @@
             </mat-form-field>
         </div>
         <div class="row">
-            <mat-form-field>
+            <mat-form-field appearance="outline">
                 <mat-select (selectionChange)="obtener_funcionarios($event.value)" [formControl]="bankCtrl"
                     placeholder="Buscar dependencia" #singleSelect>
                     <mat-option>
@@ -29,9 +38,10 @@
                 </mat-select>
             </mat-form-field>
         </div>
+
         <div class="row">
-            <mat-form-field>
-                <mat-select (ngModelChange)="seleccionar_receptor()" [formControl]="UserCtrl"
+            <mat-form-field appearance="outline">
+                <mat-select (selectionChange)="seleccionar_receptor()" [formControl]="UserCtrl"
                     placeholder="Buscar funcionario" #userSelect>
                     <mat-option>
                         <ngx-mat-select-search [formControl]="userFilterCtrl"></ngx-mat-select-search>
@@ -40,7 +50,6 @@
                         <img alt="" class="example-option-img" src="../../../assets/img/account.png" height="25">
                         <span>{{user.funcionario.cargo|titlecase}}</span> |
                         <small>{{user.funcionario.nombre|uppercase}}</small>
-
                         <span *ngIf="user.id" style="left: 20px; vertical-align: middle;"
                             class="c-pill c-pill--success">
                             (Conectado)</span>
@@ -51,24 +60,42 @@
                 </mat-select>
             </mat-form-field>
         </div>
-        <form class="row g-3">
-            <div class="col-md-4">
-                <label class="form-label">Alterno</label>
-                <input disabled type="text" class="form-control" [value]="Data.envio.alterno">
+        <form [formGroup]="FormEnvio">
+            <div class="row">
+                <div class="col-8">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Motivo</mat-label>
+                        <input formControlName="motivo" matInput required>
+                        <mat-error *ngIf="FormEnvio.controls['motivo'].invalid">
+                            Ingrese el motivo
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-4">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Cantidad</mat-label>
+                        <input formControlName="cantidad" matInput required>
+                        <mat-error *ngIf="FormEnvio.controls['cantidad'].invalid">
+                            Ingrese la cantidad
+                        </mat-error>
+                    </mat-form-field>
+                </div>
             </div>
-            <div class="col-md-8">
-                <label class="form-label">Tipo</label>
-                <input disabled type="text" class="form-control" [value]="Data.envio.tipo_tramite">
+            <div class="row">
+                <div class="col-4">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Numero de registro interno</mat-label>
+                        <input formControlName="numero_interno" matInput required>
+                        <mat-error *ngIf="FormEnvio.controls['numero_interno'].invalid">
+                            Ingrese el numero de registro interno
+                        </mat-error>
+                    </mat-form-field>
+                </div>
             </div>
         </form>
-        <br>
     </div>
 </mat-dialog-content>
-<mat-dialog-actions>
-    <div class="input-group">
-        <input [(ngModel)]="motivo" class="form-control" placeholder="Ingrese el motivo">
-        <button (click)="remitir_tramite()" align="end" mat-raised-button color="primary">
-            Enviar
-        </button>
-    </div>
+<mat-dialog-actions align="end">
+    <button mat-raised-button color="warn" mat-dialog-close>Cancel</button>
+    <button mat-raised-button color="primary" [disabled]="!FormEnvio.valid" (click)="remitir_tramite()">Remitir</button>
 </mat-dialog-actions>

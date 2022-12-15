@@ -15,6 +15,8 @@ import { ExternosComponent } from './externos/externos.component';
 import { DialogExternoComponent } from './externos/dialog-externo/dialog-externo.component';
 import { DialogInternosComponent } from './internos/dialog-internos/dialog-internos.component';
 import { DialogReenvioComponent } from './dialog-reenvio/dialog-reenvio.component';
+import { MailFichaComponent } from './mail-ficha/mail-ficha.component';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -29,6 +31,7 @@ import { DialogReenvioComponent } from './dialog-reenvio/dialog-reenvio.componen
     DialogExternoComponent,
     DialogInternosComponent,
     DialogReenvioComponent,
+    MailFichaComponent,
   ],
   imports: [
     CommonModule,
@@ -37,7 +40,8 @@ import { DialogReenvioComponent } from './dialog-reenvio/dialog-reenvio.componen
     ReactiveFormsModule,
     NgxMatSelectSearchModule,
     RouterModule,
-    NgxGraphModule
+    NgxGraphModule,
+    SharedModule
   ]
 
 })

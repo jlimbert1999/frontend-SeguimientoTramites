@@ -317,3 +317,7 @@ button.toast-close-button {
 .c-pill--info:before {
   background: #0077B6;
 }
+
+.example-spacer {
+  flex: 1 1 auto;
+}

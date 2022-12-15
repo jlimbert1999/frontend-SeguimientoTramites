@@ -3,5 +3,6 @@ export interface DependenciaModel {
     institucion: string | { _id: string, sigla: string },
     nombre: string,
     sigla: string,
+    codigo: string
     activo?: boolean
 }

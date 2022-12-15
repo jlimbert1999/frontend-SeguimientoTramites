@@ -12,6 +12,7 @@ import { InterceptorService } from './interceptors/interceptor.service';
 import { AuthModule } from './auth/auth.module';
 import { TramitesModule } from './Tramites/tramites.module';
 import { ToastrModule } from 'ngx-toastr';
+import { ReportesModule } from './Reportes/reportes.module';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { ToastrModule } from 'ngx-toastr';
     ConfiguracionesModule,
     AuthModule,
     TramitesModule,
+    ReportesModule,
     MaterialModule
   ],
   providers: [

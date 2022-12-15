@@ -21,6 +21,7 @@ export class DependenciaDialogComponent implements OnInit {
     nombre: ['', Validators.required],
     sigla: ['', [Validators.required, Validators.maxLength(10)]],
     institucion: ['', Validators.required],
+    codigo: ['', Validators.required]
   });
 
   constructor(
@@ -36,6 +37,7 @@ export class DependenciaDialogComponent implements OnInit {
       this.Form_Dependencia = this.fb.group({
         nombre: ['', Validators.required],
         sigla: ['', [Validators.required, Validators.maxLength(10)]],
+        codigo: ['', Validators.required],
       });
       this.Form_Dependencia.patchValue(this.data);
     } else {

@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { ReplaySubject, Subject, take, takeUntil } from 'rxjs';
@@ -7,7 +7,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { BandejaService } from '../services/bandeja.service';
 import { SocketService } from '../services/socket.service';
 import Swal from 'sweetalert2';
-import { BandejaEntradaModel, BandejaSalidaModel, UsersMails } from '../models/mail.model';
+import { EnvioModel, UsersMails } from '../models/mail.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -19,7 +19,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   instituciones: any[] = []
   dependencias: any[] = []
   funcionarios: UsersMails[] = []
-  receptor: UsersMails
+  receptor: any
   motivo: string
   public bankCtrl: UntypedFormControl = new UntypedFormControl();
   public bankFilterCtrl: UntypedFormControl = new UntypedFormControl();
@@ -33,24 +33,23 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   @ViewChild('userSelect', { static: true }) userSelect: MatSelect;
   protected _onDestroy2 = new Subject<void>();
 
+  FormEnvio: FormGroup = this.fb.group({
+    motivo: ['', Validators.required],
+    cantidad: [this.Data.cantidad, Validators.required],
+    numero_interno: ['', Validators.required]
+  });
 
   constructor(
     private bandejaService: BandejaService,
     private socketService: SocketService,
     private authService: AuthService,
+    private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public Data: {
-      envio: {
-        _id: string,
-        tipo: 'tramites_internos' | 'tramites_externos',
-        estado: string,
-        tipo_tramite: string
-        alterno: string
-      },
-      reenvio: {
-        cuenta_receptor: string,
-        cuenta_emisor: string
-        tramite: string
-      } | null
+      id_tramite: string,
+      tipo: 'tramites_externos' | 'tramites_internos',
+      tipo_tramite: string,
+      alterno: string,
+      cantidad: string
     },
     public dialogRef: MatDialogRef<DialogRemisionComponent>,
     private toastr: ToastrService,
@@ -63,7 +62,6 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log(this.Data)
     this.bandejaService.obtener_instituciones_envio().subscribe(inst => {
       this.instituciones = inst
     })
@@ -71,6 +69,9 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
 
   obtener_dependencias(id_institucion: string) {
     this.funcionarios = []
+    this.filteredUsers.next([])
+    this.receptor = null
+
     this.bandejaService.obtener_dependencias_envio(id_institucion).subscribe(deps => {
       this.dependencias = deps
       this.bankCtrl.setValue(this.dependencias);
@@ -84,6 +85,9 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   }
   obtener_funcionarios(id_dependencia: string) {
     this.funcionarios = []
+    this.filteredUsers.next([])
+    this.receptor = null
+
     this.bandejaService.obtener_funcionarios_envio(id_dependencia).subscribe(users => {
       users.forEach(user => {
         if (user.id_cuenta !== this.authService.Detalles_Cuenta.id_cuenta) {
@@ -108,22 +112,22 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   }
 
   remitir_tramite() {
-    let mail_entrada: BandejaEntradaModel = {
-      cuenta_receptor: this.receptor.id_cuenta,
-      tramite: this.Data.envio._id,
-      motivo: this.motivo,
-      tipo: this.Data.envio.tipo
-    }
-    let mail_salida: BandejaSalidaModel = {
-      funcionario_emisor: {
-        funcionario: this.authService.Detalles_Cuenta.id_funcionario,
+    let nuevoEnvio: EnvioModel = {
+      id_tramite: this.Data.id_tramite,
+      motivo: this.FormEnvio.get('motivo')?.value,
+      cantidad: this.FormEnvio.get('cantidad')?.value,
+      numero_interno: this.FormEnvio.get('numero_interno')?.value,
+      tipo: this.Data.tipo,
+      emisor: {
+        cuenta: this.authService.Detalles_Cuenta.id_cuenta,
+        funcionario: this.authService.Detalles_Cuenta.funcionario,
         cargo: this.authService.Detalles_Cuenta.cargo
       },
-      funcionario_receptor: {
-        funcionario: this.receptor.funcionario._id,
+      receptor: {
+        cuenta: this.receptor.id_cuenta,
+        funcionario: this.receptor.funcionario.nombre,
         cargo: this.receptor.funcionario.cargo
-      },
-      ...mail_entrada
+      }
     }
     Swal.fire({
       title: `Enviar tramite a ${this.receptor.dependencia.nombre}`,
@@ -136,18 +140,15 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        // if (this.receptor.id) {
-        //   // datos extra para que socket tenga lo mismo de la bd al enviar tramite
-        //   this.Data.detalles_tramite['recibido'] = false
-        //   this.Data.detalles_tramite['cuenta_emisor'] = this.authService.Detalles_Cuenta.id_cuenta
-        //   this.socketService.socket.emit("enviar-tramite", { id: this.receptor.id, tramite: this.Data.detalles_tramite })
-        // }
-        this.bandejaService.agregar_mail(mail_entrada, mail_salida, this.Data.envio.estado, this.Data.reenvio).subscribe(resp => {
+        this.bandejaService.agregar_mail(nuevoEnvio).subscribe(tramite => {
+          if (this.receptor.id) {
+            this.socketService.socket.emit("enviar-tramite", { id: this.receptor.id, tramite })
+          }
           this.toastr.success(undefined, 'Tramite enviado!', {
             positionClass: 'toast-bottom-right',
             timeOut: 3000,
           })
-          this.dialogRef.close(resp)
+          this.dialogRef.close({})
         })
       }
     })

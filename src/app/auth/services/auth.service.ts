@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Observable, tap, throwError, of } from 'rxjs';
+import { Observable, tap, throwError, of, BehaviorSubject, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators'
 import Swal from 'sweetalert2'
 import jwt_decode from "jwt-decode";
@@ -13,7 +13,8 @@ const base_url = environment.base_url
   providedIn: 'root'
 })
 export class AuthService {
-  Detalles_Cuenta: { id_cuenta: string, id_funcionario: string, funcionario: string, cargo: string, rol: string, institucion: string, dependencia: string }
+
+  Detalles_Cuenta: { id_cuenta: string, id_funcionario: string, funcionario: string, cargo: string, rol: string, institucion: string, dependencia: string, codigo: string }
   Menu: any[] = []
   constructor(private http: HttpClient, private router: Router, private socketService: SocketService) { }
 

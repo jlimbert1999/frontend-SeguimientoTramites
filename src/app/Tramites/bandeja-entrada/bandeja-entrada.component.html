@@ -4,10 +4,6 @@
 
 <div class="container-fluid">
     <div class="example-container mat-elevation-z8">
-        <!-- <div class="example-loading-shade" *ngIf="isLoadingResults">
-            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
-        </div> -->
-
         <div class="example-table-container">
 
             <table mat-table [dataSource]="bandejaService.dataSource" class="example-table" multiTemplateDataRows>
@@ -18,7 +14,7 @@
                 <ng-container matColumnDef="alterno">
                     <th mat-header-cell *matHeaderCellDef>Alterno</th>
                     <td mat-cell *matCellDef="let row">
-                        <a routerLink="">
+                        <a [routerLink]="['mail-ficha', row._id]">
                             {{row.tramite.alterno}}
                         </a>
                     </td>
@@ -31,13 +27,22 @@
 
                 <ng-container matColumnDef="estado">
                     <th mat-header-cell *matHeaderCellDef>Estado</th>
-                    <td mat-cell *matCellDef="let row">{{row.tramite.estado}}</td>
+                    <td mat-cell *matCellDef="let row">
+                        <span class="badge" [ngClass]="[
+                            row.tramite.estado=='INSCRITO'?'text-bg-primary':'',
+                            row.tramite.estado=='EN REVISION'?'text-bg-secondary':'',
+                            row.tramite.estado=='OBSERVADO'?'text-bg-warning':'',
+                            row.tramite.estado=='CONCLUIDO'?'text-bg-dark':'',
+                        ]">
+                            {{row.tramite.estado|uppercase}}
+                        </span>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="receptor">
                     <th mat-header-cell *matHeaderCellDef>Recibido de</th>
                     <td mat-cell *matCellDef="let row">
-                        {{row.cuenta_emisor.dependencia.nombre}}
+                        {{row.emisor.dependencia.nombre}}
                     </td>
                 </ng-container>
 
@@ -72,11 +77,7 @@
                                     </button>
                                 </div>
                             </div>
-
-
-
                         </mat-menu>
-
                     </td>
                 </ng-container>
 
@@ -96,29 +97,20 @@
                     <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
                         <div class="example-element-detail"
                             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                            <mat-card class="example-card">
-                                <mat-card-header>
-                                    <div mat-card-avatar class="example-header-image"></div>
-                                    <mat-card-title>{{element.cuenta_emisor.funcionario.nombre |titlecase}}
-                                    </mat-card-title>
-                                    <mat-card-subtitle>{{element.cuenta_emisor.funcionario.cargo|uppercase}}
-                                    </mat-card-subtitle>
-                                </mat-card-header>
-                                <mat-card-content>
-                                    <p>
-                                        Dependencia: {{element.cuenta_emisor.dependencia.nombre}} /
-                                        {{element.cuenta_emisor.dependencia.institucion.sigla|uppercase}}
-                                    </p>
-
-                                    <p>
-                                        Motivo: {{element.motivo}}
-                                    </p>
-                                </mat-card-content>
-                                <mat-card-actions>
-                                    <button mat-button>Aceptar</button>
-                                    <button mat-button>Rechazar</button>
-                                </mat-card-actions>
-                            </mat-card>
+                            <div class="card w-100">
+                                <div class="card-body">
+                                    <h3 class="card-title">RECIBIDO DE: 
+                                        {{element.emisor.funcionario.nombre}}
+                                        ({{element.emisor.funcionario.cargo|titlecase}}) -
+                                        {{element.emisor.dependencia.institucion.sigla}} /
+                                        {{element.emisor.dependencia.nombre}}</h3>
+                                    <p class="card-text">MOTIVO: {{element.motivo}}</p>
+                                    <div class="row">
+                                        <p class="card-text">ENVIADO: {{element.fecha_envio|date:'d/M/yy, h:mm a'}}</p>
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
 
                         </div>
                     </td>
@@ -127,8 +119,7 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
                     [ngClass]="{'mail_recibido': row.recibido==false }"
-                    [class.example-expanded-row]="expandedElement === row"
-                    (click)="expandedElement = expandedElement === row ? null : row"></tr>
+                    [class.example-expanded-row]="expandedElement === row"></tr>
                 <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
             </table>
         </div>

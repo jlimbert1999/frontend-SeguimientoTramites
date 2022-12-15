@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io } from 'socket.io-client'
 import { environment } from 'src/environments/environment';
+import { BandejaEntradaData } from '../models/mail.model';
 @Injectable({
   providedIn: 'root'
 })

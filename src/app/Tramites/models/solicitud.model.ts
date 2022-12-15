@@ -2,7 +2,7 @@ export interface SolicitanteModel {
     _id: string
     nombre: string
     telefono: string
-    tipo: string
+    tipo: 'NATURAL' | 'JURIDICO'
     dni: string
     expedido: string
     documento: string

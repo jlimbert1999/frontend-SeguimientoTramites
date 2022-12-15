@@ -2,7 +2,6 @@ table {
     width: 100%;
 }
 
-
 .example-spacer {
     flex: 1 1 auto;
 }
@@ -40,6 +39,7 @@ table {
 
 }
 
+/* Control de tabla expandible */
 tr.example-detail-row {
     height: 0;
 }
@@ -61,3 +61,14 @@ tr.example-element-row:not(.example-expanded-row):active {
     display: flex;
 }
 
+/* Columns widths */
+.mat-column-expand,
+.mat-column-opciones {
+    /* width: 50px;
+    border-right: 1px solid currentColor;
+    padding-right: 24px; */
+    text-align: center;
+}
+.badge{
+    font-size: 12px;
+}

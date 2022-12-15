@@ -1,25 +1,23 @@
-export interface BandejaEntradaModel {
-    tipo: 'tramites_internos' | 'tramites_externos'
-    cuenta_receptor: string
-    tramite: string
+export interface EnvioModel {
+    id_tramite: string
+    emisor: {
+        cuenta: string
+        funcionario: string
+        cargo: string
+    }
+    receptor: {
+        cuenta: string
+        funcionario: string
+        cargo: string
+    }
     motivo: string
+    cantidad: string
+    tipo: 'tramites_externos' | 'tramites_internos'
+    numero_interno: string
 }
 
-export interface BandejaSalidaModel {
-    tipo: 'tramites_internos' | 'tramites_externos'
-    funcionario_receptor: {
-        funcionario: string
-        cargo: string
-    }
-    funcionario_emisor: {
-        funcionario: string
-        cargo: string
-    }
-    cuenta_receptor: string
-    tramite: string
-    motivo: string,
-    motivo_rechazo?: string
-}
+
+
 
 export interface UsersMails {
     dependencia: {
@@ -37,24 +35,24 @@ export interface UsersMails {
 
 
 export interface BandejaSalidaModel_View {
-    cuenta_emisor: string
-    cuenta_receptor: {
-        _id: string,
-        dependencia: {
-            nombre: string,
-            institucion: {
-                sigla: string
-            }
-        }
-    },
-    funcionario_receptor: {
-        funcionario: {
-            _id: string,
-            nombre: string
-        }
+    emisor: {
+        cuenta: string,
+        funcionario: string,
         cargo: string
     }
-
+    receptor: {
+        cuenta: {
+            _id: string,
+            dependencia: {
+                nombre: string,
+                institucion: {
+                    sigla: string
+                }
+            }
+        },
+        funcionario: string,
+        cargo: string
+    },
     tramite: {
         _id: string,
         tipo_tramite: {
@@ -66,12 +64,11 @@ export interface BandejaSalidaModel_View {
     tipo: 'tramites_externos' | 'tramites_internos',
     motivo: string
     fecha_envio: Date
-    recibido?: boolean,
-    reenviado: boolean
+    recibido: boolean
 }
 
 
-export interface BandejaEntradaModel_View {
+export interface BandejaEntradaData {
     _id: string
     tramite: {
         _id: string,
@@ -81,7 +78,7 @@ export interface BandejaEntradaModel_View {
         estado: string
         alterno: string
     },
-    cuenta_emisor: {
+    emisor: {
         _id: string,
         dependencia: {
             nombre: string,
@@ -96,8 +93,9 @@ export interface BandejaEntradaModel_View {
         }
     },
     tipo: 'tramites_externos' | 'tramites_internos',
-    cuenta_receptor: string
+    receptor: string
     motivo: string
+    cantidad: string
     fecha_envio: Date
     recibido: boolean
 }

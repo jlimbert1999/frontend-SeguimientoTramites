@@ -16,8 +16,10 @@ export class DependenciasComponent implements OnInit {
   displayedColumns = [
     { key: 'sigla', titulo: 'Sigla' },
     { key: 'nombre', titulo: 'Nombre' },
+    { key: 'codigo', titulo: 'Codigo' },
     { key: 'institucion', titulo: 'Institucion' },
     { key: 'activo', titulo: 'Situacion' },
+   
   ]
   @ViewChild("txtSearch") private searchInput: ElementRef;
   constructor(public dialog: MatDialog, public dependenciasService: DependenciasService, public paginationService: PaginationService) { }
@@ -47,8 +49,7 @@ export class DependenciasComponent implements OnInit {
       if (result) {
         let newData = [...this.Dependencias]
         const indexFound = newData.findIndex(element => element.id_dependencia === data.id_dependencia)
-        newData[indexFound].nombre = result.nombre
-        newData[indexFound].sigla = result.sigla
+        newData[indexFound] = result
         this.Dependencias = newData
       }
     });
