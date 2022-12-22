@@ -5,7 +5,7 @@ import { TDocumentDefinitions } from "pdfmake/interfaces";
 import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
 
-export async function HojaRutaDetalles(tramite: any, workflow: any[], funcionario: string) {
+export async function HojaRutaInternaDetalles(tramite: any, workflow: any[], funcionario: string) {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     let fecha_generacion = moment(new Date()).format('DD-MM-YYYY HH:mm:ss')
@@ -88,8 +88,7 @@ export async function HojaRutaDetalles(tramite: any, workflow: any[], funcionari
                 columns: [
                     [
                         { text: `CITE:${tramite.cite} ` },
-                        { text: `FECHA REGISTRO: ${moment(tramite.fecha_registro).format('DD-MM-YYYY HH:mm:ss')} ` },
-                        { text: `PIN: ${tramite.pin} ` }
+                        { text: `FECHA REGISTRO: ${moment(tramite.fecha_registro).format('DD-MM-YYYY HH:mm:ss')} ` }
                     ],
                     [
                         { text: `NRO. REGISTRO INTERNO: ${tramite.cite} ` },
@@ -99,8 +98,12 @@ export async function HojaRutaDetalles(tramite: any, workflow: any[], funcionari
                 ]
             },
             { text: `RERERENCIA: ${tramite.detalle}`, fontSize: 9 },
-            { text: `REMITENTE: ${tramite.solicitante.nombre} - TEL. ${tramite.solicitante.telefono}`, fontSize: 9 },
-            { text: `DESTINATARIO: ${destinatario}\n\n`, fontSize: 9 },
+            { text: `REMITENTE: ${tramite.remitente.nombre} -  ${tramite.remitente.cargo}`, fontSize: 9 },
+            { text: `DESTINATARIO: ${tramite.destinatario.nombre} -  ${tramite.destinatario.cargo}\n\n`, fontSize: 9 },
+            
+            { text: `UBICACION ACTUAL`, bold: true, fontSize: 9 },
+            { text: `Encargado: ${tramite.ubicacion.funcionario.nombre} (${tramite.ubicacion.funcionario.cargo})`, bold: true, fontSize: 9 },
+            { text: `Dependencia: ${tramite.ubicacion.dependencia.nombre} - ${tramite.ubicacion.dependencia.institucion.sigla}\n\n`, bold: true, fontSize: 9 },
             {
                 style: 'tableExample',
                 fontSize: 8,

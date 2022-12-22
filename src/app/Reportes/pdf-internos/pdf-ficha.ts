@@ -5,13 +5,13 @@ import { TDocumentDefinitions } from "pdfmake/interfaces";
 import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
 
-export async function HojaFicha(tramite: any, workflow: any[], funcionario:string) {
+export async function HojaFichaInterna(tramite: any, workflow: any[], funcionario: string) {
     const imagePath_Alcaldia: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     let fecha_generacion = moment(new Date()).format('DD-MM-YYYY HH:mm:ss')
     let docDefinition: TDocumentDefinitions
-    let dataSolicitante: any[] = []
-    let dataRepresentante: any[] = []
+    let dataRemitente: any[] = []
+    let dataDestinatario: any[] = []
     let dataWorkflow: any
     if (workflow.length > 0) {
         dataWorkflow = {
@@ -33,67 +33,16 @@ export async function HojaFicha(tramite: any, workflow: any[], funcionario:strin
             alignment: 'center'
         }
     }
-
-    switch (tramite.solicitante.tipo) {
-        case 'NATURAL':
-            dataSolicitante = [
-                { text: '\nDATOS DEL SOLICITANTE\n', style: 'header' },
-                { text: `Nombre: ${tramite.solicitante.nombre}` },
-                { text: `Documento: ${tramite.solicitante.documento}` },
-                { text: `Dni: ${tramite.solicitante.expedido} -${tramite.solicitante.dni}` },
-                { text: `Telefono: ${tramite.solicitante.telefono}` },
-            ]
-            switch (tramite.representante) {
-                case undefined:
-                    dataRepresentante = [
-                        { text: '\nDATOS DEL REPRESENTANTE\n', style: 'header' },
-                        { text: `Nombre: ${tramite.solicitante.nombre}` },
-                        { text: `Documento: ${tramite.solicitante.documento}` },
-                        { text: `Dni: ${tramite.solicitante.expedido} -${tramite.solicitante.dni}` },
-                        { text: `Telefono: ${tramite.solicitante.telefono}` },
-                    ]
-                    break;
-                default:
-                    dataRepresentante = [
-                        { text: '\nDATOS DEL REPRESENTANTE\n', style: 'header' },
-                        { text: `Nombre: ${tramite.representante.nombre}` },
-                        { text: `Documento: ${tramite.representante.documento}` },
-                        { text: `Dni: ${tramite.representante.expedido} -${tramite.solicitante.dni}` },
-                        { text: `Telefono: ${tramite.representante.telefono}` },
-                    ]
-                    break;
-            }
-            break;
-        case 'JURIDICO':
-            dataSolicitante = [
-                { text: '\nDATOS DEL SOLICITANTE\n', style: 'header' },
-                { text: `Nombre: ${tramite.solicitante.nombre}` },
-                { text: `Telefono: ${tramite.solicitante.telefono}` },
-            ]
-            switch (tramite.representante) {
-                case undefined:
-                    dataRepresentante = [
-                        { text: '\nDATOS DEL REPRESENTANTE\n', style: 'header' },
-                        { text: `Nombre: ${tramite.solicitante.nombre}` },
-                        { text: `Documento: ${tramite.solicitante.documento}` },
-                        { text: `Dni: ${tramite.solicitante.expedido} -${tramite.solicitante.dni}` },
-                        { text: `Telefono: ${tramite.solicitante.telefono}` },
-                    ]
-                    break;
-                default:
-                    dataRepresentante = [
-                        { text: '\nDATOS DEL REPRESENTANTE\n', style: 'header' },
-                        { text: `Nombre: ${tramite.representante.nombre}` },
-                        { text: `Documento: ${tramite.representante.documento}` },
-                        { text: `Dni: ${tramite.representante.expedido} -${tramite.representante.dni}` },
-                        { text: `Telefono: ${tramite.representante.telefono}` },
-                    ]
-                    break;
-            }
-            break;
-    }
-
-
+    dataRemitente = [
+        { text: '\nDATOS DEL REMITENTE\n', style: 'header', fontSize: 9 },
+        { text: `Nombre: ${tramite.remitente.nombre}`, fontSize: 9 },
+        { text: `Cargo: ${tramite.remitente.cargo}`, fontSize: 9 },
+    ]
+    dataDestinatario = [
+        { text: '\nDATOS DEL DESTINATARIO\n', style: 'header', fontSize: 9 },
+        { text: `Nombre: ${tramite.destinatario.nombre}`, fontSize: 9 },
+        { text: `Cargo: ${tramite.destinatario.cargo}`, fontSize: 9 },
+    ]
     docDefinition = {
         content: [
             {
@@ -105,17 +54,18 @@ export async function HojaFicha(tramite: any, workflow: any[], funcionario:strin
                         alignment: 'left',
                     },
                     {
-                        text: `REPORTE FICHA DE TRAMITE\n\n`,
+                        text: `REPORTE FICHA DE TRAMITE INTERNO\n\n`,
                         style: 'title',
                         alignment: 'center',
-                        width:250
+                        width: 240
                     },
                     [
                         {
                             image: logo2,
                             width: 100,
                             height: 50,
-                            alignment: 'right',
+                            alignment: 'right'
+
                         },
                         {
                             width: 160,
@@ -127,19 +77,6 @@ export async function HojaFicha(tramite: any, workflow: any[], funcionario:strin
                     ]
                 ]
             },
-           
-            // {
-            //     image: imagePath_Alcaldia,
-            //     width: 100,
-            //     height: 50,
-            //     alignment: 'left',
-            //     absolutePosition: { x: 30, y: 30 }
-            // },
-            // {
-            //     text: ' REPORTE FICHA DE TRAMITE',
-            //     style: 'title',
-            //     alignment: 'center'
-            // },
             [
                 { text: `\n\nTipo: ${tramite.tipo_tramite.nombre}` },
                 { text: `Detalle: ${tramite.detalle}` },
@@ -155,12 +92,15 @@ export async function HojaFicha(tramite: any, workflow: any[], funcionario:strin
                             { text: `Fecha registro:${moment(tramite.fecha_registro).format('DD-MM-YYYY HH:mm:ss')}` },
                         ]
                     ]
-                }
+                },
+                { text: `\n UBICACION ACTUAL`, bold: true, fontSize: 9 },
+                { text: `Encargado: ${tramite.ubicacion.funcionario.nombre} (${tramite.ubicacion.funcionario.cargo})`, bold: true, fontSize: 9 },
+                { text: `Dependencia: ${tramite.ubicacion.dependencia.nombre} - ${tramite.ubicacion.dependencia.institucion.sigla}`, bold: true, fontSize: 9 },
             ],
             {
                 columns: [
-                    dataSolicitante,
-                    dataRepresentante
+                    dataRemitente,
+                    dataDestinatario
                 ]
             },
             {

@@ -11,42 +11,42 @@ export class ReportesExternoService {
   constructor(private http: HttpClient) { }
 
   getReporteFicha(alterno: string) {
-    return this.http.get<{ ok: boolean, tramite: any, workflow: any[] }>(`${base_url}/reportes/ficha/${alterno}`).pipe(
+    return this.http.get<{ ok: boolean, tramite: any, workflow: any[] }>(`${base_url}/reportes-externos/ficha/${alterno}`).pipe(
       map(resp => {
         return { tramite: resp.tramite, workflow: resp.workflow }
       })
     )
   }
   getReporteEstado(estado: string, institucion: string, fecha_inicial: Date, fecha_final: Date) {
-    return this.http.get<{ ok: boolean, tramites: any[] }>(`${base_url}/reportes/estado/${estado}?fecha_inicial=${fecha_inicial}&fecha_final=${fecha_final}&institucion=${institucion}`).pipe(
+    return this.http.get<{ ok: boolean, tramites: any[] }>(`${base_url}/reportes-externos/estado/${estado}?fecha_inicial=${fecha_inicial}&fecha_final=${fecha_final}&institucion=${institucion}`).pipe(
       map(resp => {
         return resp.tramites
       })
     )
   }
   getReporteRuta(alterno: string) {
-    return this.http.get<{ ok: boolean, tramite: any, workflow: any[] }>(`${base_url}/reportes/ruta/${alterno}`).pipe(
+    return this.http.get<{ ok: boolean, tramite: any, workflow: any[] }>(`${base_url}/reportes-externos/ruta/${alterno}`).pipe(
       map(resp => {
         return { tramite: resp.tramite, workflow: resp.workflow }
       })
     )
   }
   getReporteSolicitnate(termino: string) {
-    return this.http.get<{ ok: boolean, tramites: any }>(`${base_url}/reportes/solicitante/${termino}`).pipe(
+    return this.http.get<{ ok: boolean, tramites: any }>(`${base_url}/reportes-externos/solicitante/${termino}`).pipe(
       map(resp => {
         return resp.tramites
       })
     )
   }
   getReporteContribuyente(dni: string) {
-    return this.http.get<{ ok: boolean, tramites: any }>(`${base_url}/reportes/contribuyente/${dni}`).pipe(
+    return this.http.get<{ ok: boolean, tramites: any }>(`${base_url}/reportes-externos/contribuyente/${dni}`).pipe(
       map(resp => {
         return resp.tramites
       })
     )
   }
   getReporteTipoTramite(institucion: string, tipo_tramite: string, fecha_inicial: Date, fecha_final: Date) {
-    return this.http.get<{ ok: boolean, tramites: any }>(`${base_url}/reportes/tipo-tramite/${institucion}?tipo_tramite=${tipo_tramite}&fecha_inicial=${fecha_inicial}&fecha_final=${fecha_final}`).pipe(
+    return this.http.get<{ ok: boolean, tramites: any }>(`${base_url}/reportes-externos/tipo-tramite/${institucion}?tipo_tramite=${tipo_tramite}&fecha_inicial=${fecha_inicial}&fecha_final=${fecha_final}`).pipe(
       map(resp => {
         return resp.tramites
       })

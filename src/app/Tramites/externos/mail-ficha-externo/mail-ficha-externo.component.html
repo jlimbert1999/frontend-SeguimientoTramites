@@ -1,0 +1,160 @@
+<mat-toolbar>
+    <button (click)="regresar()" mat-icon-button color="primary">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span>Ficha de tramite</span>
+</mat-toolbar>
+<div class="container-fluid">
+    <mat-card *ngIf="Detalles" class="example-card">
+        <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title>{{Detalles.emisor.funcionario.nombre | titlecase}}</mat-card-title>
+            <mat-card-subtitle>{{Detalles.emisor.funcionario.cargo | uppercase}} -
+                {{Detalles.emisor.dependencia.nombre}} / {{Detalles.emisor.dependencia.institucion.sigla
+                }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <p> Motivo: {{Detalles.motivo}}</p>
+            <p>Cantidad: {{Detalles.cantidad}}</p>
+            <p>Fecha: {{Detalles.fecha_envio|date:'short'}}</p>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<div class="container-fluid" [@slideInLeftOnEnter]>
+    <mat-tab-group mat-align-tabs="center">
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <mat-icon class="example-tab-icon">info</mat-icon>
+                Informacion
+            </ng-template>
+            <div class="card" *ngIf="Tramite">
+                <h3 class="card-header">{{Tramite.tipo_tramite.nombre}} - {{Tramite.alterno}}</h3>
+                <div class="card-body">
+                    <div class="card">
+                        <div class="card-body lh-lg">
+                            <h3 class="card-title fw-bold">INFORMACION DEL TRAMITE</h3>
+                            <div class="row">
+                                <div class="col">
+                                    <p class="card-text">Descripcion: {{Tramite.detalle}}</p>
+                                </div>
+                                <div class="col">
+                                    <p class="card-text">Estado:
+                                        <span class="badge" [ngClass]="[
+                                        Tramite.estado=='INSCRITO'?'text-bg-primary':'',
+                                        Tramite.estado=='EN REVISION'?'text-bg-secondary':'',
+                                        Tramite.estado=='OBSERVADO'?'text-bg-warning':'',
+                                        Tramite.estado=='CONCLUIDO'?'text-bg-dark':''
+                                    ]">
+                                            {{Tramite.estado|uppercase}}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="col">
+                                    <p class="card-text">Cantidad: {{Tramite.cantidad}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <p class="card-text">Registrado: {{Tramite.fecha_registro|date:'short'}}</p>
+                                </div>
+                                <div class="col">
+                                    <p class="card-text">Pin: {{Tramite.pin}}</p>
+                                </div>
+                                <div class="col">
+                                    <p class="card-text">Cite: {{Tramite.cite}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <p class="card-text">
+                                        <mat-icon style="vertical-align: middle;">location_on</mat-icon>
+                                        UBICACION: {{Tramite.ubicacion.dependencia.nombre}} -
+                                        {{Tramite.ubicacion.dependencia.institucion.sigla}}
+                                    </p>
+                                </div>
+                                <div class="col">
+                                    <p class="card-text">
+                                        <mat-icon style="vertical-align: middle;">person</mat-icon>
+                                        RESPONSABLE: {{Tramite.ubicacion.funcionario.nombre}} -
+                                        {{Tramite.ubicacion.funcionario.cargo}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div [ngSwitch]="Tramite.solicitante.tipo">
+                                        <div *ngSwitchCase="'JURIDICO'">
+                                            <h3 class="card-title fw-bold">SOLICITANTE: {{Tramite.solicitante.tipo}}</h3>
+                                            <p class="card-text">Nombre: {{Tramite.solicitante.nombre}}</p>
+                                            <p class="card-text">Telefono: {{Tramite.solicitante.telefono}}</p>
+        
+                                        </div>
+                                        <div *ngSwitchCase="'NATURAL'">
+                                            <h3 class="card-title fw-bold">SOLICITANTE: {{Tramite.solicitante.tipo}}</h3>
+                                            <p class="card-text">Nombre: {{Tramite.solicitante.nombre}}</p>
+                                            <p class="card-text">Documento: {{Tramite.solicitante.documento}} -
+                                                {{Tramite.solicitante.expedido}}
+                                                {{Tramite.solicitante.dni}}</p>
+                                            <p class="card-text">Telefono: {{Tramite.solicitante.telefono}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="Tramite.representante" class="col">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h3 class="card-title">REPRESENTANTE</h3>
+                                    <p class="card-text">Nombre: {{Tramite.representante.nombre}}</p>
+                                    <p class="card-text">Documento: {{Tramite.representante.documento}} -
+                                        {{Tramite.representante.expedido}}
+                                        {{Tramite.representante.dni}}</p>
+                                    <p class="card-text">Telefono: {{Tramite.representante.telefono}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <app-observaciones 
+                        [Options]="true" 
+                        [Observaciones]="Tramite.observaciones" 
+                        [id_tramite]="Tramite._id" 
+                        [recibido]="Detalles.recibido"
+                        (NewState)="setNewState($event)"></app-observaciones>
+                        
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title fw-bold">REQUERIMIENTOS PRESENTADOS</h3>
+                            <ol class="list-group list-group-numbered">
+                                <li *ngFor="let requerimiento of Tramite.requerimientos"
+                                    class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        {{requerimiento|uppercase}}
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <mat-icon class="example-tab-icon">groups</mat-icon>
+                Flujo de trabajo
+            </ng-template>
+            <app-list-workflow  *ngIf="Workflow && Tramite"  [Workflow]="Workflow" [fecha_registro]="Tramite.fecha_registro"></app-list-workflow>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <mat-icon class="example-tab-icon">tenancy</mat-icon>
+                Flujo de trabajo grafico
+            </ng-template>
+            <app-graph-workflow *ngIf="Workflow && Tramite" [Workflow]="Workflow"></app-graph-workflow>
+        </mat-tab>
+    </mat-tab-group>
+</div>

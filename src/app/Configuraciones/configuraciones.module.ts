@@ -19,6 +19,7 @@ import { FuncionariosComponent } from './funcionarios/funcionarios.component';
 import { GroupwareComponent } from './groupware/groupware.component';
 import { CreacionAsignacionComponent } from './cuentas/creacion-asignacion/creacion-asignacion.component';
 import { DetallesMovilidadComponent } from './funcionarios/detalles-movilidad/detalles-movilidad.component';
+import { CuentaComponent } from './cuenta/cuenta.component';
 
 
 
@@ -37,7 +38,8 @@ import { DetallesMovilidadComponent } from './funcionarios/detalles-movilidad/de
     FuncionariosComponent,
     GroupwareComponent,
     CreacionAsignacionComponent,
-    DetallesMovilidadComponent
+    DetallesMovilidadComponent,
+    CuentaComponent
   ],
   imports: [
     CommonModule,

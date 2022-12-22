@@ -1,0 +1,142 @@
+<mat-toolbar>
+    <button (click)="regresar()" mat-icon-button color="primary">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span>Tramite recibido</span>
+</mat-toolbar>
+<div class="container-fluid">
+    <div class="row">
+        <mat-card *ngIf="Detalles" class="example-card">
+            <mat-card-header>
+                <div mat-card-avatar class="example-header-image"></div>
+                <mat-card-title>{{Detalles.emisor.funcionario.nombre | titlecase}}</mat-card-title>
+                <mat-card-subtitle>{{Detalles.emisor.funcionario.cargo | uppercase}} -
+                    {{Detalles.emisor.dependencia.nombre}} /
+                    {{Detalles.emisor.dependencia.institucion.sigla}}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <p> Motivo: {{Detalles.motivo}}</p>
+                <p>Cantidad: {{Detalles.cantidad}}</p>
+                <p>Fecha: {{Detalles.fecha_envio|date:'short'}}</p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
+<mat-tab-group mat-align-tabs="center" [@slideInLeftOnEnter]>
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">info</mat-icon>
+            Informacion
+        </ng-template>
+        <div class="container-fluid" *ngIf="Tramite">
+            <div class="row">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title fw-bold">INFORMACION TRAMITE</h3>
+                        <form class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label">Tipo de tramite</label>
+                                <input class="form-control" type="text" value="{{Tramite.tipo_tramite.nombre}}" disabled
+                                    readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Alterno</label>
+                                <input class="form-control" type="text" value="{{Tramite.alterno}}" disabled readonly>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Descripcion</label>
+                                <input class="form-control" type="text" value="{{Tramite.detalle}}" disabled readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Fecha registro</label>
+                                <input class="form-control" type="text" value="{{Tramite.fecha_registro|date:'short'}}"
+                                    disabled readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Cantidad</label>
+                                <input class="form-control" type="text" value="{{Tramite.cantidad}}" disabled readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Cite</label>
+                                <input class="form-control" type="text" value="{{Tramite.cite}}" disabled readonly>
+                            </div>
+                            <div class="col-2">
+                                <p class="card-text">Estado:
+                                    <span class="badge" [ngClass]="[
+                                        Tramite.estado=='INSCRITO'?'text-bg-primary':'',
+                                        Tramite.estado=='EN REVISION'?'text-bg-secondary':'',
+                                        Tramite.estado=='OBSERVADO'?'text-bg-warning':'',
+                                        Tramite.estado=='CONCLUIDO'?'text-bg-dark':''
+                                    ]">
+                                        {{Tramite.estado|uppercase}}
+                                    </span>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title fw-bold">INFORMACION REMITENTE</h3>
+                            <form class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label">Nombre</label>
+                                    <input class="form-control" type="text" value="{{Tramite.remitente.nombre}}" disabled readonly>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Cargo</label>
+                                    <input class="form-control" type="text" value="{{Tramite.remitente.cargo}}" disabled readonly>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title fw-bold">INFORMACION DESTINATARIO</h3>
+                            <form class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label">Nombre</label>
+                                    <input class="form-control" type="text" value="{{Tramite.destinatario.nombre}}"
+                                        disabled readonly>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Cargo</label>
+                                    <input class="form-control" type="text" value="{{Tramite.destinatario.cargo}}"
+                                        disabled readonly>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <app-observaciones 
+                    [Options]="true" 
+                    [Observaciones]="Tramite.observaciones" 
+                    [id_tramite]="Tramite._id" [type]="'tramites_internos'" 
+                    [recibido]="Detalles.recibido"
+                    (NewState)="setNewState($event)"></app-observaciones>
+            </div>
+        </div>
+    </mat-tab>
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">groups</mat-icon>
+            Flujo de trabajo
+        </ng-template>
+        <app-list-workflow *ngIf="Workflow" [Workflow]="Workflow"
+            [fecha_registro]="Tramite.fecha_registro"></app-list-workflow>
+    </mat-tab>
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">tenancy</mat-icon>
+            Flujo de trabajo grafico
+        </ng-template>
+        <app-graph-workflow *ngIf="Workflow" [Workflow]="Workflow"></app-graph-workflow>
+    </mat-tab>
+</mat-tab-group>

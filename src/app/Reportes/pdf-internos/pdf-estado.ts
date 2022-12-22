@@ -7,7 +7,7 @@ import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
 
 
 
-export async function HojaTipoTramite(tramites: any[], tipo_tramite: string, funcionario: string) {
+export async function HojaEstadoInterno(tramites: any[], estado: string, funcionario: string) {
     const imagePath_Alcaldia: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     let fecha_generacion = moment(new Date()).format('DD-MM-YYYY HH:mm:ss')
@@ -16,22 +16,24 @@ export async function HojaTipoTramite(tramites: any[], tipo_tramite: string, fun
         { text: 'Nro', style: 'tableHeader', alignment: 'center' },
         { text: 'Alterno', style: 'tableHeader', alignment: 'center' },
         { text: 'Descripcion', style: 'tableHeader', alignment: 'center' },
-        { text: 'Resp. Registro', style: 'tableHeader', alignment: 'center' },
+        { text: 'Remitente', style: 'tableHeader', alignment: 'center' },
+        { text: 'Destinatario', style: 'tableHeader', alignment: 'center' },
         { text: 'Fecha registro', style: 'tableHeader', alignment: 'center' },
-        { text: 'Solicitante', style: 'tableHeader', alignment: 'center' }
+        { text: 'Ubicacion', style: 'tableHeader', alignment: 'center' },
     ]]
     tramites.forEach((element, index) => {
         dataTable.push([
             `${index + 1}`,
             `${element.alterno}`,
             `${element.detalle}`,
-            `${element.cuenta.funcionario.nombre}\n${element.cuenta.funcionario.cargo}\n Usuario: ${element.cuenta.login}`,
+            `${element.remitente.nombre}\n${element.remitente.cargo}`,
+            `${element.destinatario.nombre}\n${element.destinatario.cargo}`,
             `${moment(element.fecha_registro).format('DD-MM-YYYY HH:mm:ss')}`,
-            `${element.solicitante.nombre}`,
+            `${element.ubicacion.dependencia.nombre}-${element.ubicacion.dependencia.institucion.sigla}`,
         ])
     })
     docDefinition = {
-        pageOrientation: 'portrait',
+        pageOrientation: 'landscape',
         pageSize: 'LETTER',
         content: [
 
@@ -45,10 +47,10 @@ export async function HojaTipoTramite(tramites: any[], tipo_tramite: string, fun
                         alignment: 'left',
                     },
                     {
-                        text: ` REPORTE TIPO DE TRAMITE\n"${tipo_tramite}"\n\n`,
+                        text: ` REPORTE ESTADO "${estado}"\n\n`,
                         style: 'title',
                         alignment: 'center',
-                        width:200
+                        width: 400
                     },
                     [
                         {
@@ -65,19 +67,20 @@ export async function HojaTipoTramite(tramites: any[], tipo_tramite: string, fun
                         }
 
                     ]
+
                 ]
             },
             {
                 style: 'tableExample',
                 table: {
-                    widths: [20, '*', '*', '*', '*', '*'],
+                    widths: [20, '*', '*', '*', '*', '*', '*'],
                     body: dataTable
                 }
             }
         ],
         styles: {
             title: {
-                fontSize: 10,
+                fontSize: 14,
                 bold: true
             },
             tableHeader: {

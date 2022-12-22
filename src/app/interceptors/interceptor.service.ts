@@ -42,6 +42,10 @@ export class InterceptorService {
       })
       // this.router.navigateByUrl('/home')
     }
+    else if (error.status === 404) {
+      Swal.fire("Sin resultados", error.error.message, 'info')
+
+    }
     else {
       Swal.fire('error', error.error.message, 'error')
     }

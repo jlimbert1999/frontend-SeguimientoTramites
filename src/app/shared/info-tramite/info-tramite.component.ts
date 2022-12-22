@@ -60,7 +60,7 @@ export class InfoTramiteComponent implements OnInit {
           })
         }
         else {
-          this.externoService.addObservacion(result.value, this.Tramite._id, `${this.authService.Detalles_Cuenta.funcionario} (${this.authService.Detalles_Cuenta.cargo})`, this.Tramite.estado).subscribe(data => {
+          this.externoService.addObservacion(result.value, this.Tramite._id, `${this.authService.Detalles_Cuenta.funcionario} (${this.authService.Detalles_Cuenta.cargo})`).subscribe(data => {
             this.Tramite.estado = data.estado
             this.Mis_observaciones = data.observacion
           })

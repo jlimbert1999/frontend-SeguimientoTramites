@@ -7,6 +7,7 @@ import { MailHeaderComponent } from './mail-header/mail-header.component';
 import { GraphWorkflowComponent } from './graph-workflow/graph-workflow.component';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { ListWorkflowComponent } from './list-workflow/list-workflow.component';
+import { ObservacionesComponent } from './observaciones/observaciones.component';
 
 
 
@@ -16,7 +17,8 @@ import { ListWorkflowComponent } from './list-workflow/list-workflow.component';
     InfoTramiteComponent,
     MailHeaderComponent,
     GraphWorkflowComponent,
-    ListWorkflowComponent
+    ListWorkflowComponent,
+    ObservacionesComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +29,8 @@ import { ListWorkflowComponent } from './list-workflow/list-workflow.component';
     TablaComponent,
     InfoTramiteComponent,
     GraphWorkflowComponent,
-    ListWorkflowComponent
+    ListWorkflowComponent,
+    ObservacionesComponent
   ]
 })
 export class SharedModule { }

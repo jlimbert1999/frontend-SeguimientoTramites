@@ -17,6 +17,10 @@ import { DialogInternosComponent } from './internos/dialog-internos/dialog-inter
 import { DialogReenvioComponent } from './dialog-reenvio/dialog-reenvio.component';
 import { MailFichaComponent } from './mail-ficha/mail-ficha.component';
 import { SharedModule } from '../shared/shared.module';
+import { FichaInternoComponent } from './internos/ficha-interno/ficha-interno.component';
+import { MailFichaInternoComponent } from './internos/mail-ficha-interno/mail-ficha-interno.component';
+import { FichaExternoComponent } from './externos/ficha-externo/ficha-externo.component';
+import { MailFichaExternoComponent } from './externos/mail-ficha-externo/mail-ficha-externo.component';
 
 
 @NgModule({
@@ -32,6 +36,10 @@ import { SharedModule } from '../shared/shared.module';
     DialogInternosComponent,
     DialogReenvioComponent,
     MailFichaComponent,
+    FichaInternoComponent,
+    MailFichaInternoComponent,
+    FichaExternoComponent,
+    MailFichaExternoComponent,
   ],
   imports: [
     CommonModule,

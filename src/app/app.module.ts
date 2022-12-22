@@ -14,6 +14,12 @@ import { TramitesModule } from './Tramites/tramites.module';
 import { ToastrModule } from 'ngx-toastr';
 import { ReportesModule } from './Reportes/reportes.module';
 
+// date format spanish 
+import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+registerLocaleData(localeEs, 'es');
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,7 +41,8 @@ import { ReportesModule } from './Reportes/reportes.module';
       provide: HTTP_INTERCEPTORS,
       useClass: InterceptorService,
       multi: true
-    }
+    },
+    { provide: LOCALE_ID, useValue: 'es' }
   ],
   bootstrap: [AppComponent]
 })

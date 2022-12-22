@@ -1,1 +1,82 @@
-<p>dialog-internos works!</p>
+<h2 mat-dialog-title>Registro tramite interno</h2>
+<mat-dialog-content>
+  <form [formGroup]="TramiteFormGroup" class="example-form">
+    <div class="row" *ngIf="!data">
+      <mat-form-field appearance="fill">
+        <mat-label>Seleccione el tipo de tramite</mat-label>
+        <mat-select formControlName="tipo_tramite">
+          <mat-option (onSelectionChange)="generar_alterno(tipo.segmento)" *ngFor="let tipo of tipos_tramites" [value]="tipo.id_tipoTramite">
+            {{tipo.nombre}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Referencia del tramite</mat-label>
+        <input formControlName="detalle" matInput>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Nombre del remitente</mat-label>
+          <input type="text" matInput formControlName="nombre_remitente" [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option (onSelectionChange)="seleccionar_remitente(this.option)"
+              *ngFor="let option of filteredOptions | async" [value]="option.nombre">
+              {{option.nombre | titlecase}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Cargo del remitente</mat-label>
+          <input formControlName="cargo_remitente" matInput>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Nombre del destinatario</mat-label>
+          <input type="text" matInput formControlName="nombre_destinatario" matAutocompletePosition="below"
+            [matAutocomplete]="auto1">
+          <mat-autocomplete matau #auto1="matAutocomplete">
+            <mat-option (onSelectionChange)="seleccionar_destinatario(this.option)"
+              *ngFor="let option of filteredDestiny | async" [value]="option.nombre">
+              {{option.nombre | titlecase}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Cargo del destinatario</mat-label>
+          <input formControlName="cargo_destinatario" matInput>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>CITE</mat-label>
+          <input formControlName="cite" matInput>
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Cantidad</mat-label>
+          <input formControlName="cantidad" matInput>
+        </mat-form-field>
+      </div>
+
+    </div>
+  </form>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancelar</button>
+  <button mat-button (click)="guardar()" cdkFocusInitial>Guardar</button>
+</mat-dialog-actions>

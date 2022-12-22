@@ -5,7 +5,9 @@ import { TDocumentDefinitions } from "pdfmake/interfaces";
 import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
 
-export async function HojaContribuyentes(tramites: any[], funcionario: string) {
+
+
+export async function HojaTipoTramite(tramites: any[], tipo_tramite: string, funcionario: string) {
     const imagePath_Alcaldia: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     let fecha_generacion = moment(new Date()).format('DD-MM-YYYY HH:mm:ss')
@@ -13,21 +15,23 @@ export async function HojaContribuyentes(tramites: any[], funcionario: string) {
     let dataTable: any[] = [[
         { text: 'Nro', style: 'tableHeader', alignment: 'center' },
         { text: 'Alterno', style: 'tableHeader', alignment: 'center' },
-        { text: 'Descripcion', style: 'tableHeader', alignment: 'center' },
         { text: 'Estado', style: 'tableHeader', alignment: 'center' },
-        { text: 'Solicitante', style: 'tableHeader', alignment: 'center' },
+        { text: 'Descripcion', style: 'tableHeader', alignment: 'center' },
         { text: 'Resp. Registro', style: 'tableHeader', alignment: 'center' },
         { text: 'Fecha registro', style: 'tableHeader', alignment: 'center' },
+        { text: 'Solicitante', style: 'tableHeader', alignment: 'center' },
+        { text: 'Ubicacion', style: 'tableHeader', alignment: 'center' }
     ]]
     tramites.forEach((element, index) => {
         dataTable.push([
             `${index + 1}`,
             `${element.alterno}`,
-            `${element.detalle}`,
             `${element.estado}`,
-            `${element.solicitantes.nombre}\n Dni: ${element.solicitantes.dni}-${element.solicitantes.expedido}\n Telefono: ${element.solicitantes.telefono}`,
-            `${element.cuenta.funcionario.nombre}\n Usuario: ${element.cuenta.login}`,
-            `${moment(element.fecha_registro).format('DD-MM-YYYY HH:mm:ss')}`
+            `${element.detalle}`,
+            `${element.cuenta.funcionario.nombre}\n${element.cuenta.funcionario.cargo}\n Usuario: ${element.cuenta.login}`,
+            `${moment(element.fecha_registro).format('DD-MM-YYYY HH:mm:ss')}`,
+            `${element.solicitante.nombre}`,
+            `${element.ubicacion.dependencia.nombre} - ${element.ubicacion.dependencia.institucion.sigla}`,
         ])
     })
     docDefinition = {
@@ -44,10 +48,10 @@ export async function HojaContribuyentes(tramites: any[], funcionario: string) {
                         alignment: 'left',
                     },
                     {
-                        text: ` REPORTE TRAMITE POR SOLICITANTE"\n\n`,
+                        text: ` REPORTE TIPO DE TRAMITE\n"${tipo_tramite}"\n\n`,
                         style: 'title',
                         alignment: 'center',
-                        width:400
+                        width: 400
                     },
                     [
                         {
@@ -64,20 +68,20 @@ export async function HojaContribuyentes(tramites: any[], funcionario: string) {
                         }
 
                     ]
-                   
                 ]
             },
+
             {
                 style: 'tableExample',
                 table: {
-                    widths: [20, '*', '*', '*', '*', '*', '*'],
+                    widths: [20, '*', '*', '*', '*', '*', '*', '*'],
                     body: dataTable
                 }
             }
         ],
         styles: {
             title: {
-                fontSize: 14,
+                fontSize: 10,
                 bold: true
             },
             tableHeader: {
@@ -92,5 +96,7 @@ export async function HojaContribuyentes(tramites: any[], funcionario: string) {
     }
     pdfMake.createPdf(docDefinition).print();
 
-
 }
+
+
+

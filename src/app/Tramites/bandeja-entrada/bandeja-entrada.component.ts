@@ -2,12 +2,15 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
 import { DialogRemisionComponent } from '../dialog-remision/dialog-remision.component';
 import { BandejaEntradaData } from '../models/mail.model';
 import { BandejaService } from '../services/bandeja.service';
+import { ExternosService } from '../services/externos.service';
+import { InternosService } from '../services/internos.service';
 
 @Component({
   selector: 'app-bandeja-entrada',
@@ -19,6 +22,7 @@ import { BandejaService } from '../services/bandeja.service';
       state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
+    fadeInOnEnterAnimation({ duration: 500 })
   ],
 })
 export class BandejaEntradaComponent implements OnInit {
@@ -33,6 +37,8 @@ export class BandejaEntradaComponent implements OnInit {
     public dialog: MatDialog,
     public authService: AuthService,
     private toastr: ToastrService,
+    private internoService: InternosService,
+    private externoService: ExternosService
   ) { }
 
   ngOnInit(): void {
@@ -112,6 +118,28 @@ export class BandejaEntradaComponent implements OnInit {
 
       }
     })
+  }
+  concluir_tramite(tipo: 'tramites_internos' | 'tramites_externos', id_tramite: string) {
+    if (tipo === 'tramites_externos') {
+      Swal.fire({
+        icon: 'question',
+        title: 'Marcar el tramite como concluido?',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.externoService.conclude(id_tramite).subscribe(message => {
+            Swal.fire(message, undefined, 'success')
+            this.bandejaService.obtener_bandejaEntrada().subscribe()
+          })
+
+        }
+      })
+    }
+    else if (tipo === 'tramites_internos') {
+      console.log(id_tramite)
+    }
   }
 
 

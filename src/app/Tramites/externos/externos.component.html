@@ -75,12 +75,12 @@
                         </button>
                         <mat-menu #menu="matMenu">
                             <button (click)="editar_tramite(row)"
-                                [disabled]="row.ubicacion._id!==authService.Detalles_Cuenta.id_cuenta" mat-menu-item>
+                                [disabled]="denied_options(row.estado, row.ubicacion._id)" mat-menu-item>
                                 <mat-icon>edit</mat-icon>
                                 <span>Editar tramite</span>
                             </button>
                             <button (click)="remitir_tramite(row)"
-                                [disabled]="row.ubicacion._id!==authService.Detalles_Cuenta.id_cuenta" mat-menu-item>
+                                [disabled]="denied_options(row.estado, row.ubicacion._id)" mat-menu-item>
                                 <mat-icon>send</mat-icon>
                                 <span>Remitir tramite</span>
                             </button>

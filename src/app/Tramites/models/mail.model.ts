@@ -100,3 +100,33 @@ export interface BandejaEntradaData {
     recibido: boolean
 }
 
+
+export interface MailDetails {
+    cantidad: string
+    emisor: {
+        _id: string
+        dependencia: {
+            nombre: string,
+            institucion: {
+                sigla: string
+            }
+        }
+        funcionario: {
+            nombre: string
+            cargo: string
+        }
+    }
+    fecha_envio: string
+    motivo: string
+    recibido: boolean
+    tramite: string
+    _id: string
+}
+
+export interface Observacion {
+    corregido: boolean
+    descripcion: string
+    fecha: string
+    funcionario: string
+    id_cuenta: string
+}

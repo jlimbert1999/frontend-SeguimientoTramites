@@ -109,5 +109,13 @@ export class ExternosComponent implements OnInit {
     this.mostrar_tramites()
   }
 
+  denied_options(estado: string, responsable: string) {
+    if (estado === 'CONCLUIDO' || responsable !== this.authService.Detalles_Cuenta.id_cuenta) {
+      return true
+    }
+    return false
+  }
+
+
 }
 

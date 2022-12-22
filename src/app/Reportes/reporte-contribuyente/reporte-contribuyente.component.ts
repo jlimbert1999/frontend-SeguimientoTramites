@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { HojaContribuyentes } from '../pdf/pdf-contribuyente';
+import { HojaContribuyentes } from '../pdf-externos/pdf-contribuyente';
 import { ReportesExternoService } from '../services/reportes-externo.service';
 
 @Component({

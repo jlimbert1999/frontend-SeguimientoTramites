@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.authService.login(this.loginForm.value!, this.loginForm.get('remember')?.value!).subscribe((resp: boolean) => {
-      this.router.navigateByUrl('/')
+      this.router.navigateByUrl('/home/tramites-internos')
     })
   }
 

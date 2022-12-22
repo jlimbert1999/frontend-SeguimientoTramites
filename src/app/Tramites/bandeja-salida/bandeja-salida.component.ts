@@ -10,6 +10,8 @@ import { crear_hoja_ruta } from "../pdf/tramites";
 import { TramiteService } from '../services/tramite.service';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ExternosService } from '../services/externos.service';
+import { InternosService } from '../services/internos.service';
+import { HojaRutaInterna } from '../internos/pdfs/hora-ruta';
 
 @Component({
   selector: 'app-bandeja-salida',
@@ -35,7 +37,8 @@ export class BandejaSalidaComponent implements OnInit {
     public dialog: MatDialog,
     private authService: AuthService,
     private tramiteService: TramiteService,
-    private externoService: ExternosService
+    private externoService: ExternosService,
+    private internoService: InternosService
   ) { }
 
   ngOnInit(): void {
@@ -47,9 +50,17 @@ export class BandejaSalidaComponent implements OnInit {
     })
   }
   generar_hoja_ruta(id_tramite: string, tipo_hoja: 'tramites_externos' | 'tramites_internos') {
-    this.externoService.getExterno(id_tramite).subscribe(data => {
-      crear_hoja_ruta(data.tramite, data.workflow, tipo_hoja)
-    })
+    if (tipo_hoja === 'tramites_externos') {
+      this.externoService.getExterno(id_tramite).subscribe(data => {
+        crear_hoja_ruta(data.tramite, data.workflow, tipo_hoja)
+      })
+    }
+    else {
+      this.internoService.getInterno(id_tramite).subscribe(data => {
+        HojaRutaInterna(data.tramite, data.workflow, tipo_hoja)
+      })
+    }
+
   }
 
 }

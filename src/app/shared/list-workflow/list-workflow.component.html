@@ -7,16 +7,19 @@
             <div mat-line>
                 <div class="row">
                     <div class="col">
-                        Fecha envio:{{flujo.fecha_envio|date:'short'}}
+                        Fecha envio: <span class="badge text-bg-warning">{{flujo.fecha_envio|date:'short'}}</span>
                     </div>
                     <div class="col">
-                        Fecha recibido:{{flujo.fecha_recibido|date:'short'}}
+                        
+                        Fecha recibido: <span class="badge text-bg-warning">{{flujo.fecha_recibido|date:'short'}}</span>
                     </div>
 
                 </div>
             </div>
-            <div mat-line>Tiempo revision: {{flujo.duracion}}</div>
-            <div mat-line>Tiempo aceptacion: {{flujo.respuesta}}</div>
+          
+            
+            <div mat-line>Tiempo revision:   <span class="badge text-bg-light">{{flujo.duracion}}</span></div>
+            <div mat-line>Tiempo aceptacion: <span class="badge text-bg-light">{{flujo.respuesta}}</span></div>
         </mat-list-item>
         <mat-divider></mat-divider>
 

@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { BandejaEntradaData } from '../Tramites/models/mail.model';
 import { Subject } from 'rxjs';
 import { LoaderService } from '../auth/services/loader.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -31,7 +32,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     private socketService: SocketService,
     private bandejaService: BandejaService,
     private toastr: ToastrService,
-    public loader: LoaderService
+    public loader: LoaderService,
+    private router: Router
   ) {
     this.socketService.setupSocketConnection();
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -61,6 +63,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     })
 
   }
+  editAccount(){
+    this.router.navigate(['home/perfil'])
+  }
+
 
 
 

@@ -10,7 +10,6 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'frontend_contrataciones';
   constructor(private socketService: SocketService) { }
   ngOnInit() {
-    // this.socketService.setupSocketConnection();
   }
   ngOnDestroy() {
     this.socketService.disconnect();

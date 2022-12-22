@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { elementAt, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { BandejaEntradaData, BandejaSalidaModel_View, EnvioModel, UsersMails } from '../models/mail.model';
+import { BandejaEntradaData, BandejaSalidaModel_View, EnvioModel, MailDetails, UsersMails } from '../models/mail.model';
 const base_url = environment.base_url
 
 @Injectable({
@@ -37,6 +37,7 @@ export class BandejaService {
   agregar_mail(data: EnvioModel) {
     return this.http.post<{ ok: boolean, tramite: any }>(`${base_url}/bandejas`, data).pipe(
       map(resp => {
+        console.log(resp.tramite)
         return resp.tramite
       })
     )
@@ -72,7 +73,7 @@ export class BandejaService {
   }
 
   getDetalisMail(id_bandejaEntrada: string) {
-    return this.http.get<{ ok: boolean, mail: any }>(`${base_url}/bandejas/detalle/${id_bandejaEntrada}`).pipe(
+    return this.http.get<{ ok: boolean, mail: MailDetails }>(`${base_url}/bandejas/detalle/${id_bandejaEntrada}`).pipe(
       map(resp => {
         return resp.mail
       })

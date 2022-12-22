@@ -2,19 +2,43 @@
     <span>Reporte ficha</span>
 </mat-toolbar>
 <div class="container-fluid">
-
-    <div class="row">
-        <mat-form-field class="example-full-width">
-            <mat-label>Alterno del tramite</mat-label>
-            <input [(ngModel)]="alterno" name="alterno" type="text" matInput>
-        </mat-form-field>
-    </div>
-    <div class="row justify-content-md-center">
-        <div class="col">
-            <button (click)="generar_reporte()" mat-raised-button color="primary">Generar ficha</button>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">FICHA EXTERNA</h3>
+            <div class="row">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Alterno del tramite EXTERNO</mat-label>
+                    <input [(ngModel)]="alterno_externo" name="alterno" type="text" matInput>
+                </mat-form-field>
+            </div>
+            <div class="row justify-content-md-center">
+                <div class="col">
+                    <button (click)="generar_reporte()" mat-raised-button color="primary">Generar ficha</button>
+                </div>
+                <div class="col">
+                    <button (click)="generar_reportePrueba()" mat-raised-button color="primary">Generar ruta</button>
+                </div>
+            </div>
         </div>
-        <div class="col">
-            <button (click)="generar_reportePrueba()" mat-raised-button color="primary">Generar ruta</button>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">FICHA INTERNA</h3>
+            <div class="row">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Alterno del tramite INTERNO</mat-label>
+                    <input [(ngModel)]="alterno_interno" name="alterno" type="text" matInput>
+                </mat-form-field>
+            </div>
+            <div class="row justify-content-md-center">
+                <div class="col">
+                    <button (click)="generar_reporte_interno()" mat-raised-button color="primary">Generar ficha</button>
+                </div>
+                <div class="col">
+                    <button (click)="generar_reportePrueba2()" mat-raised-button color="primary">Generar ruta</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
