@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { CuentaModel_view } from '../../models/cuenta.mode';
+import { CuentaData } from '../../models/cuenta.mode';
 import { CuentaService } from '../../services/cuenta.service';
 import Swal from 'sweetalert2';
 import { crear_hoja_usuarios } from 'src/app/generacion_pdfs/usuario';
@@ -21,7 +21,7 @@ export class AsignacionDialogComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: CuentaModel_view,
+    @Inject(MAT_DIALOG_DATA) public data: CuentaData,
     public dialogRef: MatDialogRef<AsignacionDialogComponent>,
     private cuentasService: CuentaService,
     public dialog: MatDialog
@@ -60,10 +60,10 @@ export class AsignacionDialogComponent implements OnInit {
           password: funcionario.dni
         }
         this.cuentasService
-          .asignar_cuenta(this.data.id_cuenta, this.data.funcionario._id!, funcionario._id, newAccount)
+          .asignar_cuenta(this.data._id, this.data.funcionario._id!, funcionario._id, newAccount)
           .subscribe(cuenta => {
             this.dialogRef.close(cuenta)
-            crear_hoja_usuarios(cuenta.funcionario.nombre, cuenta.funcionario.cargo, cuenta.dependencia.nombre, cuenta.funcionario.dni, cuenta.dependencia.institucion.sigla, newAccount.login, newAccount.password)
+            crear_hoja_usuarios(cuenta.funcionario.nombre, cuenta.funcionario.paterno, cuenta.funcionario.materno, cuenta.funcionario.cargo, cuenta.dependencia.nombre, cuenta.funcionario.dni, cuenta.dependencia.institucion.sigla, newAccount.login, newAccount.password)
           });
       }
     })

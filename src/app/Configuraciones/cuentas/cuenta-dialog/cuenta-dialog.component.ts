@@ -12,7 +12,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { map, Observable, ReplaySubject, startWith, Subject, take, takeUntil } from 'rxjs';
-import { CuentaModel, CuentaModel_view } from '../../models/cuenta.mode';
+import { CuentaModel, CuentaData } from '../../models/cuenta.mode';
 import { UsuarioModel } from '../../models/usuario.model';
 import { CuentaService } from '../../services/cuenta.service';
 import Swal from 'sweetalert2';
@@ -33,6 +33,9 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   cambiar_password: boolean = false;
   Form_Funcionario: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
+    paterno: ['', Validators.required],
+    materno: [''],
+    expedido: ['', Validators.required],
     dni: ['', Validators.required],
     telefono: ['', [Validators.required, Validators.maxLength(8)]],
     cargo: ['', Validators.required],
@@ -60,14 +63,25 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   protected _onDestroy = new Subject<void>();
 
   Roles = [
-    { value: 'recepcion', viewValue: 'Recepcion de tramites' },
-    { value: 'evaluacion', viewValue: 'Evaluacion de tramites' }
+    { value: 'RECEPCION', viewValue: 'Recepcion de tramites' },
+    { value: 'EVALUACION', viewValue: 'Evaluacion de tramites' }
+  ]
+  departamentos = [
+    'COCHABAMBA',
+    'SANTA CRUZ',
+    'LA PAZ',
+    'ORURO',
+    'PANDO',
+    'BENI',
+    'CHUQUISACA',
+    'TARIJA',
+    'POTOSI'
   ]
 
 
   constructor(
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: CuentaModel_view,
+    @Inject(MAT_DIALOG_DATA) public data: CuentaData,
     public dialogRef: MatDialogRef<CuentaDialogComponent>,
     private cuentasService: CuentaService
   ) { }
@@ -96,21 +110,15 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   guardar() {
     if (this.data) {
       this.cuentasService
-        .editar_cuenta(this.data.id_cuenta, this.Form_Cuenta.value)
+        .editar_cuenta(this.data._id, this.Form_Cuenta.value)
         .subscribe(cuenta => {
-          crear_hoja_usuarios(this.data.funcionario.nombre, this.data.funcionario.cargo, this.data.dependencia.nombre, this.data.funcionario.dni, this.data.dependencia.institucion.sigla, this.Form_Cuenta.get('login')?.value, this.Form_Cuenta.get('password')?.value)
+          crear_hoja_usuarios(this.data.funcionario.nombre, this.data.funcionario.paterno, this.data.funcionario.materno, this.data.funcionario.cargo, this.data.dependencia.nombre, this.data.funcionario.dni, this.data.dependencia.institucion.sigla, this.Form_Cuenta.get('login')?.value, this.Form_Cuenta.get('password')?.value)
           this.dialogRef.close(cuenta);
         });
     } else {
-      let datosCuenta: CuentaModel = {
-        login: this.Form_Cuenta.get('login')?.value,
-        password: this.Form_Cuenta.get('password')?.value,
-        rol: this.Form_Cuenta.get('rol')?.value,
-        dependencia: this.Form_Cuenta.get('dependencia')?.value
-      }
-      this.cuentasService.agregar_cuenta(datosCuenta, this.Form_Funcionario.value).subscribe(cuenta => {
+      this.cuentasService.agregar_cuenta(this.Form_Cuenta.value, this.Form_Funcionario.value).subscribe(cuenta => {
         this.dialogRef.close(cuenta);
-        crear_hoja_usuarios(cuenta.funcionario.nombre, cuenta.funcionario.cargo, cuenta.dependencia.nombre, cuenta.funcionario.dni, cuenta.dependencia.institucion.sigla, cuenta.login, this.Form_Cuenta.get('password')?.value)
+        crear_hoja_usuarios(cuenta.funcionario.nombre, cuenta.funcionario.paterno, cuenta.funcionario.materno, cuenta.funcionario.cargo, cuenta.dependencia.nombre, cuenta.funcionario.dni, cuenta.dependencia.institucion.sigla, cuenta.login, this.Form_Cuenta.get('password')?.value)
       });
     }
   }
@@ -151,13 +159,11 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
   generar_credenciales() {
-    let newLogin: string[] = `${this.Form_Funcionario.get('nombre')?.value}`.split(' ')
-    if (newLogin.length >= 2) {
-      this.Form_Cuenta.get('login')?.setValue(`${newLogin[0]}${newLogin[1][0]}`)
-      this.Form_Cuenta.get('password')?.setValue(this.Form_Funcionario.get('dni')?.value)
-    }
-
-
+    let name = this.Form_Funcionario.get('nombre')?.value.split(' ')[0]
+    let firstName = this.Form_Funcionario.get('paterno')?.value[0] ? this.Form_Funcionario.get('paterno')?.value[0] : ''
+    let lasttName = this.Form_Funcionario.get('materno')?.value[0] ? this.Form_Funcionario.get('materno')?.value[0] : ''
+    this.Form_Cuenta.get('login')?.setValue(name + firstName + lasttName)
+    this.Form_Cuenta.get('password')?.setValue(this.Form_Funcionario.get('dni')?.value)
   }
   ngAfterViewInit() {
     // this.setInitialValue();

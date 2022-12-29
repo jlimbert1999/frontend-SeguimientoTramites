@@ -1,102 +1,100 @@
-<div class="card">
-    <div class="card-body">
-        <h3 class="card-title fw-bold">OBSERVACIONES</h3>
-        <div [ngSwitch]="Options">
-            <div *ngSwitchCase="true">
-                <div class="card">
-                    <div class="card-header text-center">
-                        <div class="example-action-buttons">
-                            <button mat-button (click)="accordion.openAll()">
-                                Mostrar
-                            </button>
-                            <button mat-button (click)="accordion.closeAll()">
-                                Ocultar
-                            </button>
-                            <button  mat-button (click)="add()" [disabled]="denied_register">
-                                Agregar
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <mat-accordion multi>
-                            <mat-expansion-panel>
-                                <mat-expansion-panel-header>
-                                    <mat-panel-title>
-                                        Mis observaciones
-                                    </mat-panel-title>
-                                </mat-expansion-panel-header>
-                                <div [ngSwitch]="Me">
-                                    <div *ngSwitchCase="undefined">
-                                        <div class="alert alert-primary" role="alert">
-                                            Usted no ha registrado ninguna observacion
-                                        </div>
-                                    </div>
-                                    <div *ngSwitchDefault>
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h4 class="d-flex justify-content-between align-items-center">
-                                                    Registrado: {{Me.fecha|date:'short'}}
-                                                    <button [disabled]="Me.corregido" (click)="repair()" mat-raised-button color="primary">Corregir</button>
-                                                </h4>
-                                                <p class="card-text">Descripcion: {{Me.descripcion}}</p>
-                                                <h4 class="card-subtitle mb-2 text-muted">Situacion: <span class="badge"
-                                                        [ngClass]="Me.corregido?'text-bg-success':'text-bg-danger'">{{Me.corregido?'Corregido':'Sin corregir'}}</span></h4>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </mat-expansion-panel>
-                            <mat-expansion-panel>
-                                <mat-expansion-panel-header>
-                                    <mat-panel-title>
-                                        Otras observaciones
-                                    </mat-panel-title>
-                                </mat-expansion-panel-header>
-                                <div [ngSwitch]="Others.length">
-                                    <div *ngSwitchCase="0">
-                                        <div class="alert alert-primary" role="alert">
-                                            Este tramite no tiene observaciones
-                                        </div>
-                                    </div>
-                                    <div *ngSwitchDefault>
-                                        <mat-list>
-                                            <mat-list-item *ngFor="let obs of Others">
-                                                <img matListAvatar src="../../../assets/img/account.png">
-                                                <h3 matLine class="fw-semibold"> {{obs.funcionario }} </h3>
-                                                <p matLine class="fw-lighte">Descripcion: {{obs.descripcion}} </p>
-                                                <p matLine class="demo-2">Situacion: <span class="badge"
-                                                        [ngClass]="obs.corregido?'text-bg-success':'text-bg-danger'">{{obs.corregido?'CORREGIDO':'SIN CORREGIR'}}</span> </p>
-                                                <span> {{obs.fecha | date:'short'}}</span>
-                                            </mat-list-item>
-                                        </mat-list>
-                                    </div>
-                                </div>
-                            </mat-expansion-panel>
-                        </mat-accordion>
-                    </div>
+<div [ngSwitch]="Options">
+    <div *ngSwitchCase="true">
+        <div class="card">
+            <div class="card-header text-center">
+                <div class="example-action-buttons">
+                    <button mat-button (click)="accordion.openAll()">
+                        <mat-icon>visibility</mat-icon>
+                        Mostrar
+                    </button>
+                    <button mat-button (click)="accordion.closeAll()">
+                        <mat-icon>visibility_off</mat-icon>
+                        Ocultar
+                    </button>
+                    <button mat-button (click)="add()" [disabled]="denied_register">
+                        <mat-icon>add</mat-icon>
+                        Agregar
+                    </button>
                 </div>
-
             </div>
-            <div *ngSwitchCase="false">
-                <div [ngSwitch]="Observaciones.length">
-                    <div *ngSwitchCase="0">
-                        <div class="alert alert-primary" role="alert">
-                            El tramite no tiene observaciones
-                          </div>
-                    </div>
-                    <div *ngSwitchDefault>
-                        <mat-list>
-                            <mat-list-item *ngFor="let obs of Observaciones">
-                                <img matListAvatar src="../../../assets/img/account.png">
-                                <h3 matLine class="fw-semibold"> {{obs.funcionario }} </h3>
-                                <p matLine class="fw-lighte">Descripcion: {{obs.descripcion}} </p>
-                                <p matLine class="demo-2">Situacion: <span class="badge" [ngClass]="obs.corregido?'text-bg-success':'text-bg-danger'">{{obs.corregido?'CORREGIDO':'SIN CORREGIR'}}</span> </p>
-                                <span>  {{obs.fecha | date:'short'}}</span>
-                            </mat-list-item>
-                        </mat-list>
-                    </div>
+            <div class="card-body">
+                <mat-accordion multi>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Mis observaciones
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div [ngSwitch]="Me">
+                            <div *ngSwitchCase="undefined">
+                                <div class="alert alert-primary" role="alert">
+                                    Usted no ha registrado ninguna observacion
+                                </div>
+                            </div>
+                            <div *ngSwitchDefault>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="d-flex justify-content-between align-items-center">
+                                            Registrado: {{Me.fecha|date:'short'}}
+                                            <button [disabled]="Me.corregido" (click)="repair()" mat-raised-button
+                                                color="primary">Corregir</button>
+                                        </h4>
+                                        <p class="card-text">Descripcion: {{Me.descripcion}}</p>
+                                        <h4 class="card-subtitle mb-2 text-muted">Situacion: <span class="badge"
+                                                [ngClass]="Me.corregido?'text-bg-success':'text-bg-danger'">{{Me.corregido?'Corregido':'Sin corregir'}}</span></h4>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Otras observaciones
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div [ngSwitch]="Others.length">
+                            <div *ngSwitchCase="0">
+                                <div class="alert alert-primary" role="alert">
+                                    Este tramite no tiene observaciones
+                                </div>
+                            </div>
+                            <div *ngSwitchDefault>
+                                <mat-list>
+                                    <mat-list-item *ngFor="let obs of Others">
+                                        <img matListAvatar src="../../../assets/img/account.png">
+                                        <h3 matLine class="fw-semibold"> {{obs.funcionario }} </h3>
+                                        <p matLine class="fw-lighte">Descripcion: {{obs.descripcion}} </p>
+                                        <p matLine class="demo-2">Situacion: <span class="badge" [ngClass]="obs.corregido?'text-bg-success':'text-bg-danger'">{{obs.corregido?'CORREGIDO':'SIN CORREGIR'}}</span> </p>
+                                        <span> {{obs.fecha | date:'short'}}</span>
+                                    </mat-list-item>
+                                </mat-list>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+        </div>
+
+    </div>
+    <div *ngSwitchCase="false">
+        <div [ngSwitch]="Observaciones.length">
+            <div *ngSwitchCase="0">
+                <div class="alert alert-primary" role="alert">
+                    El tramite no tiene observaciones
                 </div>
+            </div>
+            <div *ngSwitchDefault>
+                <mat-list>
+                    <mat-list-item *ngFor="let obs of Observaciones">
+                        <img matListAvatar src="../../../assets/img/account.png">
+                        <h3 matLine class="fw-semibold"> {{obs.funcionario }} </h3>
+                        <p matLine class="fw-lighte">Descripcion: {{obs.descripcion}} </p>
+                        <p matLine class="demo-2">Situacion: <span class="badge" [ngClass]="obs.corregido?'text-bg-success':'text-bg-danger'">{{obs.corregido?'CORREGIDO':'SIN CORREGIR'}}</span> </p>
+                        <span> {{obs.fecha | date:'short'}}</span>
+                    </mat-list-item>
+                </mat-list>
             </div>
         </div>
     </div>

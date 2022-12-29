@@ -15,11 +15,11 @@
         <mat-menu #menu="matMenu">
             <button (click)="agregar_cuenta()" mat-menu-item>
                 <mat-icon>group_add</mat-icon>
-                <span>Crear cuenta y funcionario</span>
+                <span>Crear cuenta</span>
             </button>
             <button (click)="agregar_cuenta_asignar()" mat-menu-item>
                 <mat-icon>contacts</mat-icon>
-                <span>Crear cuenta y asignar</span>
+                <span>Asignar cuenta</span>
             </button>
             <button (click)="agregar_funcionario()" mat-menu-item>
                 <mat-icon>person_add</mat-icon>
@@ -56,7 +56,7 @@
                 </ng-container>
                 <ng-container matColumnDef="nombre">
                     <th mat-header-cell *matHeaderCellDef> Funcionario </th>
-                    <td mat-cell *matCellDef="let element"> {{element.funcionario.nombre |titlecase}} </td>
+                    <td mat-cell *matCellDef="let element"> {{element.funcionario.nombre |titlecase}} {{element.funcionario.paterno |titlecase}} {{element.funcionario.materno?element.funcionario.materno:'' |titlecase}} </td>
                 </ng-container>
                 <ng-container matColumnDef="dni">
                     <th mat-header-cell *matHeaderCellDef> Dni </th>
@@ -86,7 +86,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="opciones">
-                    <th mat-header-cell *matHeaderCellDef> Opciones </th>
+                    <th mat-header-cell *matHeaderCellDef> </th>
                     <td mat-cell *matCellDef="let element">
                         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                             <mat-icon>more_vert</mat-icon>

@@ -3,6 +3,7 @@ body {
   margin-top: 20px;
 }
 
+
 mat-form-field {
   width: 100%;
 }
@@ -23,8 +24,4 @@ mat-form-field {
 
 .me-2 {
   margin-right: .5rem !important;
-}
-
-.mat-form-field {
-  width: 70%;
 }

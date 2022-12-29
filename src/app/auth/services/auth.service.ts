@@ -45,6 +45,7 @@ export class AuthService {
   validar_token(): Observable<boolean> {
     return this.http.get(`${base_url}/login/verify`).pipe(
       map((resp: any) => {
+        console.log(this.Detalles_Cuenta)
         this.Detalles_Cuenta = jwt_decode(resp.token)
         this.Menu = resp.Menu
         return true

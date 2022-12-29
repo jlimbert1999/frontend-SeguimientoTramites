@@ -33,9 +33,9 @@ export class MailFichaExternoComponent implements OnInit {
       if (params['id']) {
         this.bandejaService.getDetalisMail(params['id']).subscribe(data => {
           this.Detalles = data
+
           this.externoService.getExterno(data.tramite).subscribe(data => {
             this.Tramite = data.tramite
-            console.log(this.Tramite)
             this.Workflow = data.workflow
           })
         })

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { CuentaModel_view } from '../models/cuenta.mode';
+import { CuentaData } from '../models/cuenta.mode';
 import { UsuarioModel } from '../models/usuario.model';
 import { CuentaService } from './cuenta.service';
 import { PaginationService } from './pagination.service';
@@ -42,7 +42,7 @@ export class UsuariosService {
     )
   }
   editar_funcionario(id_funcionario: string, funcionario: UsuarioModel) {
-    return this.http.put<{ ok: boolean, funcionario: CuentaModel_view }>(`${base_url}/usuarios/${id_funcionario}`, funcionario).pipe(
+    return this.http.put<{ ok: boolean, funcionario: CuentaData }>(`${base_url}/usuarios/${id_funcionario}`, funcionario).pipe(
       map(resp => resp.funcionario)
     )
   }

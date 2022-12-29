@@ -131,9 +131,11 @@ export class DialogInternosComponent implements OnInit {
   }
   seleccionar_remitente(funcionario: any) {
     this.TramiteFormGroup.get('cargo_remitente')?.setValue(funcionario.cargo)
+    this.TramiteFormGroup.get('nombre_remitente')?.setValue(`${funcionario.nombre} ${funcionario.paterno} ${funcionario.materno}`)
   }
   seleccionar_destinatario(funcionario: any) {
     this.TramiteFormGroup.get('cargo_destinatario')?.setValue(funcionario.cargo)
+    this.TramiteFormGroup.get('nombre_destinatario')?.setValue(`${funcionario.nombre} ${funcionario.paterno} ${funcionario.materno}`)
   }
 
 }

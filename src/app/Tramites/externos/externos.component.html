@@ -6,7 +6,6 @@
         <mat-icon>add</mat-icon>
     </button>
 </mat-toolbar>
-
 <div class="container-fluid" [@fadeInOnEnter]>
     <div class="example-container mat-elevation-z8">
         <div class="example-table-container">
@@ -17,7 +16,7 @@
                         <div class="card">
                             <div class="card-body">
                               <h5 class="card-title fw-bold">{{row.ubicacion.dependencia.nombre}} - {{row.ubicacion.dependencia.institucion.sigla}} </h5>
-                              <p class="card-text">{{row.ubicacion.funcionario.nombre}} ({{row.ubicacion.funcionario.cargo}})</p>
+                              <p class="card-text">{{row.ubicacion.funcionario.nombre}} {{row.ubicacion.funcionario.paterno}} {{row.ubicacion.funcionario.materno}} ({{row.ubicacion.funcionario.cargo}})</p>
                             </div>
                           </div>
                     </td>
@@ -46,10 +45,17 @@
 
                 <ng-container matColumnDef="solicitante">
                     <th mat-header-cell *matHeaderCellDef>Solicitante</th>
-                    <td mat-cell *matCellDef="let row">{{row.solicitante.nombre|titlecase}}</td>
+                    <td mat-cell *matCellDef="let row">
+                        <div [ngSwitch]="row.solicitante.tipo">
+                            <div *ngSwitchCase="'NATURAL'">
+                                {{row.solicitante.nombre}} {{row.solicitante.paterno}} {{row.solicitante.materno}}
+                            </div>
+                            <div *ngSwitchCase="'JURIDICO'">
+                                {{row.solicitante.nombre|uppercase}}
+                            </div>
+                        </div>
+                        </td>
                 </ng-container>
-
-
                 <ng-container matColumnDef="estado">
                     <th mat-header-cell *matHeaderCellDef> Estado </th>
                     <td mat-cell *matCellDef="let row">

@@ -239,21 +239,6 @@ button.toast-close-button {
   }
 }
 
-.close-button {
-  background-color: #ee6055;
-  color: white;
-}
-
-.save-button {
-  background-color: #6699cc;
-  color: white;
-}
-
-.save-button:disabled {
-  background-color: #bfdbf7;
-}
-
-
 
 .c-pill {
   align-items: center;
@@ -320,4 +305,9 @@ button.toast-close-button {
 
 .example-spacer {
   flex: 1 1 auto;
+}
+
+
+.uppercase {
+  text-transform: uppercase;
 }

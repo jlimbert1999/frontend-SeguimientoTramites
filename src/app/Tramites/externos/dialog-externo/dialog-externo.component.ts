@@ -17,10 +17,10 @@ export class DialogExternoComponent implements OnInit {
   Tipos_Tramites: TiposTramitesModel[] = []
   Tipos_Tramites_Segmentados: TiposTramitesModel[] = []
   Tipo_Tramite_Seleccionado: TiposTramitesModel | null
-  tipo_solicitante: string
   tipos_documento: string[] = [
+    'Carnet de identidad',
     'Libreta servicio militar',
-    'Carnet de identidad'
+    'Pasaporte'
   ]
   Lugares = [
     'Cochabamba',
@@ -33,7 +33,6 @@ export class DialogExternoComponent implements OnInit {
     'Tarija',
     'Chuquisaca',
   ]
-  registrar_representante: boolean = false
   TramiteFormGroup: FormGroup = this.fb.group({
     cantidad: ['', Validators.required],
     detalle: ['', Validators.required],
@@ -45,13 +44,15 @@ export class DialogExternoComponent implements OnInit {
   });
   SolicitanteFormGroup: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
+    paterno: ['', Validators.required],
+    materno: [''],
     telefono: ['', Validators.required],
     tipo: ['', Validators.required],
     dni: ['', Validators.required],
     expedido: ['', Validators.required],
     documento: ['', Validators.required],
   });
-  RepresentanteFormGroup: FormGroup | null;
+  RepresentanteFormGroup: FormGroup | null = null;
 
   constructor(
     private externoService: ExternosService,
@@ -63,49 +64,23 @@ export class DialogExternoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
     if (this.data) {
       this.TramiteFormGroup = this.fb.group({
         cantidad: ['', Validators.required],
         detalle: ['', Validators.required],
         cite: ['']
       });
-      this.tipo_solicitante = this.data.solicitante.tipo
-      switch (this.data.solicitante.tipo) {
-        case 'NATURAL':
-          this.SolicitanteFormGroup = this.fb.group({
-            nombre: ['', Validators.required],
-            telefono: ['', Validators.required],
-            tipo: ['', Validators.required],
-            dni: ['', Validators.required],
-            expedido: ['', Validators.required],
-            documento: ['', Validators.required],
-          });
-          break;
-        case 'JURIDICO':
-          this.SolicitanteFormGroup = this.fb.group({
-            nombre: ['', Validators.required],
-            telefono: ['', Validators.required],
-            tipo: [, Validators.required],
-          });
-          break;
-      }
+      this.TramiteFormGroup.patchValue(this.data)
+      this.changeFormSolicitante(this.data.solicitante.tipo)
+      this.SolicitanteFormGroup.patchValue(this.data.solicitante)
       if (this.data.representante) {
-        this.registrar_representante = true
-        this.RepresentanteFormGroup = this.fb.group({
-          nombre: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
-          documento: ['', Validators.required],
-          dni: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-          expedido: ['', Validators.required],
-          telefono: ['', [Validators.required, Validators.pattern('^[0-9]*$')]]
-        });
-        this.RepresentanteFormGroup.patchValue(this.data.representante)
+        this.changeFormRepresentante(true)
+        this.RepresentanteFormGroup?.patchValue(this.data.representante)
       }
       else {
-        this.registrar_representante = false
+        this.changeFormRepresentante(false)
       }
-      this.SolicitanteFormGroup.patchValue(this.data.solicitante)
-      this.TramiteFormGroup.patchValue(this.data)
-
     }
     else {
       this.externoService.getTiposTramite().subscribe(data => {
@@ -128,68 +103,79 @@ export class DialogExternoComponent implements OnInit {
       })
     )
   }
-  seleccionar_tipo_solicitante(tipo: 'NATURAL' | 'JURIDICO') {
-    this.tipo_solicitante = tipo
-    if (tipo === 'JURIDICO') {
-      this.SolicitanteFormGroup = this.fb.group({
-        nombre: ['', Validators.required],
-        telefono: [''],
-        tipo: [tipo, Validators.required],
-      });
-    }
-    else {
-      this.SolicitanteFormGroup = this.fb.group({
-        nombre: ['', Validators.required],
-        telefono: [''],
-        tipo: [tipo, Validators.required],
-        dni: ['', Validators.required],
-        expedido: ['', Validators.required],
-        documento: ['', Validators.required],
-      });
-    }
 
-  }
-  seleccionar_registro_representante(registrar: boolean) {
-    this.registrar_representante = registrar
-    if (registrar) {
-      this.RepresentanteFormGroup = this.fb.group({
-        nombre: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
-        documento: ['', Validators.required],
-        dni: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-        expedido: ['', Validators.required],
-        telefono: ['', [Validators.required, Validators.pattern('^[0-9]*$')]]
-      });
-    }
-    else {
-      this.RepresentanteFormGroup = null
-    }
-  }
+
   guardar() {
     if (this.data) {
-      let editSolicitiante = { _id: this.data.solicitante._id, ...this.SolicitanteFormGroup.value }
-      let editRepresentante
-      if (this.data.representante) {
-        editRepresentante = { _id: this.data.representante._id, ...this.RepresentanteFormGroup?.value }
-      }
-      else {
-        editRepresentante = this.RepresentanteFormGroup?.value
-      }
-      this.externoService.editExterno(this.data._id, this.TramiteFormGroup.value, editSolicitiante, editRepresentante).subscribe(tramite => {
+      this.externoService.editExterno(this.data._id, this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup?.value).subscribe(tramite => {
         this.dialogRef.close(tramite)
       })
     }
     else {
-      let representante: RepresentanteModel | null
-      if (this.registrar_representante) {
-        representante = this.RepresentanteFormGroup?.value
-      }
-      else {
-        representante = null
-      }
-      this.externoService.addExterno(this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, representante!).subscribe(tramite => {
+      this.externoService.addExterno(this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup?.value).subscribe(tramite => {
         this.dialogRef.close(tramite)
       })
     }
+  }
+
+  changeFormSolicitante(type: 'NATURAL' | 'JURIDICO') {
+    switch (type) {
+      case 'NATURAL':
+        this.SolicitanteFormGroup = this.fb.group({
+          nombre: ['', Validators.required],
+          paterno: ['', Validators.required],
+          materno: [''],
+          telefono: ['', Validators.required],
+          tipo: [type, Validators.required],
+          dni: ['', Validators.required],
+          expedido: ['', Validators.required],
+          documento: ['', Validators.required],
+        });
+        break;
+      case 'JURIDICO':
+        this.SolicitanteFormGroup = this.fb.group({
+          nombre: ['', Validators.required],
+          telefono: [''],
+          tipo: [type, Validators.required],
+        });
+        break;
+    }
+  }
+  changeFormRepresentante(register: boolean) {
+    switch (register) {
+      case true:
+        this.RepresentanteFormGroup = this.fb.group({
+          nombre: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
+          paterno: ['', Validators.required],
+          materno: [''],
+          documento: ['', Validators.required],
+          dni: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+          expedido: ['', Validators.required],
+          telefono: ['', [Validators.required, Validators.pattern('^[0-9]*$')]]
+        });
+        break;
+      case false:
+        this.RepresentanteFormGroup = null
+        break;
+
+    }
+  }
+
+  ValidForms() {
+    let disabled: boolean = true
+    switch (this.RepresentanteFormGroup) {
+      case null:
+        if (this.TramiteFormGroup.valid && this.SolicitanteFormGroup.valid) {
+          disabled = false
+        }
+        break;
+      default:
+        if (this.TramiteFormGroup.valid && this.SolicitanteFormGroup.valid && this.RepresentanteFormGroup.valid) {
+          disabled = false
+        }
+        break;
+    }
+    return disabled
   }
 
 

@@ -20,15 +20,13 @@ export interface EnvioModel {
 
 
 export interface UsersMails {
-    dependencia: {
-        nombre: string
-    }
+    _id: string
     funcionario: {
-        _id: string,
         nombre: string,
+        paterno: string,
+        materno: string,
         cargo: string
     }
-    id_cuenta: string
     id: string //id socket 
 }
 
@@ -113,6 +111,8 @@ export interface MailDetails {
         }
         funcionario: {
             nombre: string
+            paterno: string
+            materno:string
             cargo: string
         }
     }

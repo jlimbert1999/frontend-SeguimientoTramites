@@ -57,3 +57,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 .badge {
     font-size: 12px;
 }
+.example-header-image {
+    background-image: url('../../../assets/img/account.png');
+    background-size: cover;
+}

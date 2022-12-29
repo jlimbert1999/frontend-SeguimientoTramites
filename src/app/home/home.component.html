@@ -19,11 +19,11 @@
 
     <mat-menu #menu="matMenu">
       <button *ngIf="authService.Detalles_Cuenta.rol!=='admin'" mat-menu-item (click)="editAccount()">
-        <mat-icon>manage_accounts</mat-icon>
+        <mat-icon>settings</mat-icon>
         <span>Configurar cuenta</span>
       </button>
       <button (click)="authService.logout()" mat-menu-item>
-        <mat-icon>logout</mat-icon>
+        <mat-icon>cancel</mat-icon>
         <span>Cerrar sesion</span>
       </button>
     </mat-menu>

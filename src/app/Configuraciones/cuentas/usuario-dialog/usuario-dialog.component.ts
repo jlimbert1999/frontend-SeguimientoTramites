@@ -13,12 +13,26 @@ export class UsuarioDialogComponent implements OnInit {
   titulo: string
   Form_Funcionario: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
+    paterno: ['', Validators.required],
+    materno: [''],
     dni: ['', Validators.required],
+    expedido: ['', Validators.required],
     telefono: ['', [Validators.required, Validators.maxLength(8)]],
     cargo: ['', Validators.required],
     direccion: ['', Validators.required]
   });
-
+  
+  departamentos = [
+    'COCHABAMBA',
+    'SANTA CRUZ',
+    'LA PAZ',
+    'ORURO',
+    'PANDO',
+    'BENI',
+    'CHUQUISACA',
+    'TARIJA',
+    'POTOSI'
+  ]
   constructor(
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: UsuarioModel,

@@ -8,8 +8,8 @@ export interface CuentaModel {
     rol: string
 }
 
-export interface CuentaModel_view {
-    id_cuenta: string
+export interface CuentaData {
+    _id: string
     login: string
     rol: string
     funcionario: UsuarioModel,

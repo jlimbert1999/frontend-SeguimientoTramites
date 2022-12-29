@@ -14,7 +14,10 @@ export class PerfilService {
 
   getDetailsAccount() {
     return this.http.get<{ ok: boolean, cuenta: any }>(`${base_url}/perfil`).pipe(
-      map(resp => resp.cuenta)
+      map(resp => {
+        resp.cuenta.funcionario['nombre_completo'] = `${resp.cuenta.funcionario.nombre} ${resp.cuenta.funcionario.paterno} ${resp.cuenta.funcionario.materno}`
+        return resp.cuenta
+      })
     )
   }
   editAccount(login: string, password?: string) {

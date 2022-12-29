@@ -24,8 +24,8 @@
           <input type="text" matInput formControlName="nombre_remitente" [matAutocomplete]="auto">
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option (onSelectionChange)="seleccionar_remitente(this.option)"
-              *ngFor="let option of filteredOptions | async" [value]="option.nombre">
-              {{option.nombre | titlecase}}
+              *ngFor="let option of filteredOptions | async" [value]="option.nombre+' '+option.paterno+' '+option.materno">
+              {{option.nombre}}  {{option.paterno}}  {{option.materno}}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
@@ -45,8 +45,8 @@
             [matAutocomplete]="auto1">
           <mat-autocomplete matau #auto1="matAutocomplete">
             <mat-option (onSelectionChange)="seleccionar_destinatario(this.option)"
-              *ngFor="let option of filteredDestiny | async" [value]="option.nombre">
-              {{option.nombre | titlecase}}
+              *ngFor="let option of filteredDestiny | async"  [value]="option.nombre+' '+option.paterno+' '+option.materno">
+              {{option.nombre}}  {{option.paterno}}  {{option.materno}}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>

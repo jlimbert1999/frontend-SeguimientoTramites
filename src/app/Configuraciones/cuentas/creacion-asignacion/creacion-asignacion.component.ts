@@ -20,8 +20,8 @@ export class CreacionAsignacionComponent implements OnInit {
   Funcionarios: { _id: string, nombre: string, cargo: string, dni: string }[] = []
   Funcionario_Asignado: { _id: string, nombre: string, cargo: string, dni: string } | null
   Roles = [
-    { value: 'recepcion', viewValue: 'Recepcion de tramites' },
-    { value: 'evaluacion', viewValue: 'Evaluacion de tramites' }
+    { value: 'RECEPCION', viewValue: 'Recepcion de tramites' },
+    { value: 'EVALUACION', viewValue: 'Evaluacion de tramites' }
   ]
 
   Form_Cuenta: FormGroup = this.fb.group({
@@ -90,7 +90,7 @@ export class CreacionAsignacionComponent implements OnInit {
 
   guardar() {
     this.cuentasService.crear_cuenta_asignando(this.Form_Cuenta.value).subscribe(cuenta => {
-      crear_hoja_usuarios(cuenta.funcionario.nombre, cuenta.funcionario.cargo, cuenta.dependencia.nombre, cuenta.funcionario.dni, cuenta.dependencia.institucion.sigla, this.Form_Cuenta.get('login')?.value, this.Form_Cuenta.get('password')?.value)
+      crear_hoja_usuarios(cuenta.funcionario.nombre, cuenta.funcionario.paterno, cuenta.funcionario.materno, cuenta.funcionario.cargo, cuenta.dependencia.nombre, cuenta.funcionario.dni, cuenta.dependencia.institucion.sigla, this.Form_Cuenta.get('login')?.value, this.Form_Cuenta.get('password')?.value)
       this.dialogRef.close(cuenta)
     })
   }

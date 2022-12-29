@@ -19,7 +19,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   instituciones: any[] = []
   dependencias: any[] = []
   funcionarios: UsersMails[] = []
-  receptor: any
+  receptor: UsersMails
   motivo: string
   public bankCtrl: UntypedFormControl = new UntypedFormControl();
   public bankFilterCtrl: UntypedFormControl = new UntypedFormControl();
@@ -69,8 +69,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
 
   obtener_dependencias(id_institucion: string) {
     this.funcionarios = []
-    this.filteredUsers.next([])
-    this.receptor = null
+
 
     this.bandejaService.obtener_dependencias_envio(id_institucion).subscribe(deps => {
       this.dependencias = deps
@@ -85,13 +84,11 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   }
   obtener_funcionarios(id_dependencia: string) {
     this.funcionarios = []
-    this.filteredUsers.next([])
-    this.receptor = null
 
     this.bandejaService.obtener_funcionarios_envio(id_dependencia).subscribe(users => {
       users.forEach(user => {
-        if (user.id_cuenta !== this.authService.Detalles_Cuenta.id_cuenta) {
-          let onlineUser = this.socketService.Users.find(userSocket => userSocket.id_cuenta === user.id_cuenta)
+        if (user._id !== this.authService.Detalles_Cuenta.id_cuenta) {
+          let onlineUser = this.socketService.Users.find(userSocket => userSocket.id_cuenta === user._id)
           if (onlineUser) {
             user.id = onlineUser.id
           }
@@ -108,6 +105,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
     })
   }
   seleccionar_receptor() {
+    console.log(this.UserCtrl)
     this.receptor = this.UserCtrl.value
   }
 
@@ -124,14 +122,14 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
         cargo: this.authService.Detalles_Cuenta.cargo
       },
       receptor: {
-        cuenta: this.receptor.id_cuenta,
-        funcionario: this.receptor.funcionario.nombre,
+        cuenta: this.receptor._id,
+        funcionario: `${this.receptor.funcionario.nombre} ${this.receptor.funcionario.paterno} ${this.receptor.funcionario.materno}`,
         cargo: this.receptor.funcionario.cargo
       }
     }
     Swal.fire({
-      title: `Enviar tramite a ${this.receptor.dependencia.nombre}`,
-      text: `El funcionario ${this.receptor.funcionario.nombre} (${this.receptor.funcionario.cargo}) recibira el tramite`,
+      title: `Enviar tramite?`,
+      text: `El funcionario ${this.receptor.funcionario.nombre} ${this.receptor.funcionario.paterno} ${this.receptor.funcionario.materno} (${this.receptor.funcionario.cargo}) recibira el tramite`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',

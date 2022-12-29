@@ -107,8 +107,9 @@ export class BandejaEntradaComponent implements OnInit {
               positionClass: 'toast-bottom-right',
               timeOut: 3000,
             })
+            this.bandejaService.obtener_bandejaEntrada().subscribe()
           })
-          this.bandejaService.obtener_bandejaEntrada().subscribe()
+          
         } else {
           Swal.fire({
             title: "Debe ingrese el motivo para rechazar",

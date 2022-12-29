@@ -5,99 +5,62 @@ import { TDocumentDefinitions } from "pdfmake/interfaces";
 import * as moment from 'moment';
 
 
-export const crear_ficha_tramite = async (tipo_tramite: string, fecha_registro: string, alterno: string, pin: number, solicitante: string, dni: string, documento: string, tipo: 'NATURAL' | 'JURIDICO') => {
+export const crear_ficha_tramite = async (tipo_tramite: string, fecha_registro: string, alterno: string, pin: number, nombre: string, paterno: string, materno: string, dni: string, documento: string, tipo: 'NATURAL' | 'JURIDICO') => {
     const imagePath_Alcaldia: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia.png')
+    let dataSolicitante: any
     let docDefinition: TDocumentDefinitions
     if (tipo === 'NATURAL') {
-        docDefinition = {
-            pageSize: 'A6',
-            content: [
-                {
-                    image: imagePath_Alcaldia,
-                    width: 90,
-                    height: 90,
-                    alignment: 'center'
-                },
-                {
-                    text: 'GOBIERNO AUTONOMO MUNICIPAL DE SACABA.\n\n',
-                    alignment: 'center'
-                },
-                {
-                    text: `Tipo de tramite: ${tipo_tramite}\n\n`,
-                    alignment: 'center'
-                },
-                {
-                    text: `Fecha registro:  ${moment(new Date(fecha_registro)).format('DD-MM-YYYY HH:mm:ss')}\n\n`,
-                    alignment: 'center'
-                },
-                {
-                    text: `Alterno: ${alterno}\n\n`,
-                    alignment: 'center'
-                },
-                {
-                    text: `PIN: ${pin}\n\n`,
-                    alignment: 'center'
-                },
-                {
-                    text: `Solicitante: ${solicitante} ${documento} - ${dni}\n\n`,
-                    alignment: 'center'
-                },
-
-            ],
-            styles: {
-                header: {
-                    fontSize: 18,
-                    bold: true,
-                    alignment: 'justify'
-                }
-            }
-        };
+        dataSolicitante = {
+            text: `Solicitante: ${nombre} ${paterno} ${materno} / ${documento} - ${dni}\n\n`,
+            alignment: 'center'
+        }
     }
     else {
-        docDefinition = {
-            pageSize: 'A6',
-            content: [
-                {
-                    image: imagePath_Alcaldia,
-                    width: 90,
-                    height: 90,
-                    alignment: 'center'
-                },
-                {
-                    text: 'GOBIERNO AUTONOMO MUNICIPAL DE SACABA.\n\n',
-                    alignment: 'center'
-                },
-                {
-                    text: `Tipo de tramite: ${tipo_tramite}\n\n`,
-                    alignment: 'center'
-                },
-                {
-                    text: `Fecha registro:  ${moment(new Date(fecha_registro)).format('DD-MM-YYYY HH:mm:ss')}\n\n`,
-                    alignment: 'center'
-                },
-                {
-                    text: `Alterno: ${alterno}\n\n`,
-                    alignment: 'center'
-                },
-                {
-                    text: `PIN: ${pin}\n\n`,
-                    alignment: 'center'
-                },
-                {
-                    text: `Solicitante: ${solicitante}`,
-                    alignment: 'center'
-                },
-            ],
-            styles: {
-                header: {
-                    fontSize: 18,
-                    bold: true,
-                    alignment: 'justify'
-                }
-            }
-        };
+        dataSolicitante = {
+            text: `Solicitante: ${nombre}\n\n`,
+            alignment: 'center'
+        }
     }
+    docDefinition = {
+        pageSize: 'A6',
+        content: [
+            {
+                image: imagePath_Alcaldia,
+                width: 90,
+                height: 90,
+                alignment: 'center'
+            },
+            {
+                text: 'GOBIERNO AUTONOMO MUNICIPAL DE SACABA.\n\n',
+                alignment: 'center'
+            },
+            {
+                text: `Tipo de tramite: ${tipo_tramite}\n\n`,
+                alignment: 'center'
+            },
+            {
+                text: `Fecha registro:  ${moment(new Date(fecha_registro)).format('DD-MM-YYYY HH:mm:ss')}\n\n`,
+                alignment: 'center'
+            },
+            {
+                text: `Alterno: ${alterno}\n\n`,
+                alignment: 'center'
+            },
+            {
+                text: `PIN: ${pin}\n\n`,
+                alignment: 'center'
+            },
+            dataSolicitante
 
+        ],
+        styles: {
+            header: {
+                fontSize: 18,
+                bold: true,
+                alignment: 'justify'
+            }
+        }
+    };
     pdfMake.createPdf(docDefinition).print();
 }
 
@@ -114,6 +77,7 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
     let destinatario
     let cantidad
     let numero_interno, primer_numero_envio
+    let nombre_solicitante
     switch (tipo) {
         case 'tramites_externos':
             check_externo = "X"
@@ -122,6 +86,14 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
         case 'tramites_internos':
             check_externo = ""
             check_interno = "X"
+            break;
+    }
+    switch (tramite.solicitante.tipo) {
+        case 'NATURAL':
+            nombre_solicitante = `${tramite.solicitante.nombre} ${tramite.solicitante.paterno} ${tramite.solicitante.materno}`
+            break;
+        case 'JURIDICO':
+            nombre_solicitante = tramite.solicitante.nombre
             break;
     }
     if (workflow.length > 0) {
@@ -541,7 +513,7 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
                                             },
                                         },
                                         ],
-                                        [`REMITENTE: ${tramite.solicitante.nombre}`, `REMITENTE: P. ${tramite.solicitante.tipo}`],
+                                        [`REMITENTE: ${nombre_solicitante}`, `REMITENTE: P. ${tramite.solicitante.tipo}`],
                                         [`DESTINATARIO: ${destinatario.nombre}`, `CARGO: ${destinatario.cargo}`],
                                         [{ text: `REFERENCIA: ${tramite.detalle}`, colSpan: 2 }]
                                     ]

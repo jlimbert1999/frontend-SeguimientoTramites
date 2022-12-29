@@ -1,9 +1,9 @@
-import { CuentaModel_view } from "../Configuraciones/models/cuenta.mode";
+import { CuentaData } from "../Configuraciones/models/cuenta.mode";
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
-export const crear_hoja_usuarios = async (nombre: string, cargo: string, dependencia: string, dni: string, institucion: string, login: string, password: string) => {
+export const crear_hoja_usuarios = async (nombre: string, paterno: string, materno: string, cargo: string, dependencia: string, dni: string, institucion: string, login: string, password: string) => {
     const imagePath = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia.png')
     let docDefinition: any = {
         pageSize: 'LETTER',
@@ -28,7 +28,7 @@ export const crear_hoja_usuarios = async (nombre: string, cargo: string, depende
             },
             {
                 text: [
-                    'NOMBRE: ', { text: `${nombre}\n\n`.toUpperCase(), bold: false },
+                    'NOMBRE: ', { text: `${nombre} ${paterno} ${materno}\n\n`.toUpperCase(), bold: false },
                     'CARGO: ', { text: `${cargo}\n\n`.toUpperCase(), bold: false },
                     'UNIDAD: ', { text: `${dependencia} - ${institucion}`.toUpperCase(), bold: false },
                 ],
@@ -65,7 +65,7 @@ export const crear_hoja_usuarios = async (nombre: string, cargo: string, depende
                 fontSize: 10
             },
 
-            { qr: `${nombre} Dni: ${dni}`, alignment: 'right', fit: 100 },
+            { qr: `${nombre} ${paterno} ${materno} Dni: ${dni}`, alignment: 'right', fit: 100 },
             {
                 columns: [
                     {

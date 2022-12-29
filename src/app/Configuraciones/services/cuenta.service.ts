@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { CuentaModel, CuentaModel_view } from '../models/cuenta.mode';
+import { CuentaModel, CuentaData } from '../models/cuenta.mode';
 import { UsuarioModel } from '../models/usuario.model';
 const base_url = environment.base_url
 @Injectable({
@@ -39,7 +39,7 @@ export class CuentaService {
   }
 
   agregar_cuenta(cuenta: CuentaModel, funcionario: UsuarioModel) {
-    return this.http.post<{ ok: boolean, cuenta: CuentaModel_view }>(`${base_url}/cuentas`, { cuenta, funcionario }).pipe(
+    return this.http.post<{ ok: boolean, cuenta: CuentaData }>(`${base_url}/cuentas`, { cuenta, funcionario }).pipe(
       map(resp => {
         this.dataSize += 1
         return resp.cuenta
@@ -53,7 +53,7 @@ export class CuentaService {
   }
 
   obtener_cuentas() {
-    return this.http.get<{ ok: boolean, cuentas: CuentaModel_view[], total: number }>(`${base_url}/cuentas?page=${this.page}&rows=${this.rows}`).pipe(
+    return this.http.get<{ ok: boolean, cuentas: CuentaData[], total: number }>(`${base_url}/cuentas?page=${this.page}&rows=${this.rows}`).pipe(
       map(resp => {
         this.dataSize = resp.total
         return resp.cuentas
@@ -61,7 +61,7 @@ export class CuentaService {
     )
   }
   buscar_cuenta() {
-    return this.http.get<{ ok: boolean, cuentas: CuentaModel_view[], total: number }>(`${base_url}/cuentas/busqueda/${this.termino_busqueda}?page=${this.page}&rows=${this.rows}`).pipe(
+    return this.http.get<{ ok: boolean, cuentas: CuentaData[], total: number }>(`${base_url}/cuentas/busqueda/${this.termino_busqueda}?page=${this.page}&rows=${this.rows}`).pipe(
       map(resp => {
         this.dataSize = resp.total
         return resp.cuentas
@@ -70,12 +70,12 @@ export class CuentaService {
   }
 
   asignar_cuenta(id_cuenta: string, id_funcionarioActual: string, id_funcionarioNuevo: string, newCuenta: { login: string, password: string }) {
-    return this.http.put<{ ok: boolean, cuenta: CuentaModel_view }>(`${base_url}/cuentas/asignar/${id_cuenta}`, { id_funcionarioActual, id_funcionarioNuevo, newCuenta }).pipe(
+    return this.http.put<{ ok: boolean, cuenta: CuentaData }>(`${base_url}/cuentas/asignar/${id_cuenta}`, { id_funcionarioActual, id_funcionarioNuevo, newCuenta }).pipe(
       map(resp => resp.cuenta)
     )
   }
   crear_cuenta_asignando(cuenta: CuentaModel) {
-    return this.http.post<{ ok: boolean, cuenta: CuentaModel_view }>(`${base_url}/cuentas/asignar`, cuenta).pipe(
+    return this.http.post<{ ok: boolean, cuenta: CuentaData }>(`${base_url}/cuentas/asignar`, cuenta).pipe(
       map(resp => resp.cuenta)
     )
   }

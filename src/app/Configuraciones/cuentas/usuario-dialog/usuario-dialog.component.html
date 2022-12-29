@@ -3,7 +3,7 @@
     <form [formGroup]="Form_Funcionario">
 
         <div class="row">
-            <div class="col-8">
+            <div class="col-4">
                 <mat-form-field appearance="fill">
                     <mat-label>Nombre</mat-label>
                     <input formControlName="nombre" matInput>
@@ -11,16 +11,32 @@
             </div>
             <div class="col-4">
                 <mat-form-field appearance="fill">
-                    <mat-label>Dni</mat-label>
-                    <input formControlName="dni" matInput>
+                    <mat-label>Apellido paterno</mat-label>
+                    <input formControlName="paterno" matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>Apellido materno</mat-label>
+                    <input formControlName="materno" matInput>
                 </mat-form-field>
             </div>
         </div>
         <div class="row">
-            <div class="col-8">
+            <div class="col-4">
                 <mat-form-field appearance="fill">
-                    <mat-label>Cargo</mat-label>
-                    <input formControlName="cargo" matInput>
+                    <mat-label>Dni</mat-label>
+                    <input formControlName="dni" matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>Expedido</mat-label>
+                    <mat-select formControlName="expedido">
+                        <mat-option *ngFor="let depa of departamentos" [value]="depa">
+                            {{depa}}
+                        </mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
             <div class="col-4">
@@ -31,10 +47,19 @@
             </div>
         </div>
         <div class="row">
-            <mat-form-field appearance="fill">
-                <mat-label>Direccion</mat-label>
-                <input formControlName="direccion" matInput>
-            </mat-form-field>
+            <div class="col-6">
+                <mat-form-field appearance="fill">
+                    <mat-label>Cargo</mat-label>
+                    <input formControlName="cargo" matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-6">
+                <mat-form-field appearance="fill">
+                    <mat-label>Direccion</mat-label>
+                    <input formControlName="direccion" matInput>
+                </mat-form-field>
+            </div>
+
         </div>
 
 

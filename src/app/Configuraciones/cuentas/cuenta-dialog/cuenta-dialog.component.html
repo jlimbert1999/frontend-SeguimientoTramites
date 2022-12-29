@@ -6,11 +6,33 @@
                 <form [formGroup]="Form_Funcionario">
                     <ng-template matStepLabel>Datos funcionario</ng-template>
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-4">
                             <mat-form-field appearance="fill">
-                                <mat-label>Nombre</mat-label>
+                                <mat-label>Nombres</mat-label>
                                 <input formControlName="nombre" matInput>
                             </mat-form-field>
+                        </div>
+                        <div class="col-4">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Apellido materno</mat-label>
+                                <input formControlName="paterno" matInput>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-4">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Apellido paterno</mat-label>
+                                <input formControlName="materno" matInput>
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Telefono</mat-label>
+                                <input formControlName="telefono" matInput>
+                            </mat-form-field>
+                            
                         </div>
                         <div class="col-4">
                             <mat-form-field appearance="fill">
@@ -18,26 +40,31 @@
                                 <input formControlName="dni" matInput>
                             </mat-form-field>
                         </div>
+                        <div class="col-4">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Expedido</mat-label>
+                                <mat-select formControlName="expedido">
+                                    <mat-option *ngFor="let depa of departamentos" [value]="depa">
+                                        {{depa}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-6">
                             <mat-form-field appearance="fill">
                                 <mat-label>Cargo</mat-label>
                                 <input formControlName="cargo" matInput>
                             </mat-form-field>
                         </div>
-                        <div class="col-4">
+                        <div class="col-6">
                             <mat-form-field appearance="fill">
-                                <mat-label>Telefono</mat-label>
-                                <input formControlName="telefono" matInput>
+                                <mat-label>Direccion</mat-label>
+                                <input formControlName="direccion" matInput>
                             </mat-form-field>
                         </div>
-                    </div>
-                    <div class="row">
-                        <mat-form-field appearance="fill">
-                            <mat-label>Direccion</mat-label>
-                            <input formControlName="direccion" matInput>
-                        </mat-form-field>
+                       
                     </div>
                     <div>
                         <button mat-button matStepperNext>Siguiente</button>
@@ -143,7 +170,7 @@
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
-                                    
+
                                     <mat-form-field *ngIf="cambiar_password" appearance="legacy">
                                         <mat-label>Password</mat-label>
                                         <input formControlName="password" matInput>

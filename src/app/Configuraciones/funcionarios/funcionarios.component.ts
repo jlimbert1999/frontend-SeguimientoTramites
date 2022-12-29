@@ -15,6 +15,8 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
   Funcionarios: any[] = []
   displayedColumns = [
     { key: 'nombre', titulo: 'Nombre' },
+    { key: 'paterno', titulo: 'Paterno' },
+    { key: 'materno', titulo: 'Materno' },
     { key: 'dni', titulo: 'Dni' },
     { key: 'cargo', titulo: 'Cargo' },
     { key: 'telefono', titulo: 'Telefono' },
@@ -31,7 +33,7 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
   }
   sgregar_funcionario() {
     const dialogRef = this.dialog.open(UsuarioDialogComponent, {
-      width: '600px'
+      width: '900px'
     });
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
@@ -66,7 +68,7 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
   async cargar_usuarios() {
     const { value: file } = await Swal.fire({
       title: 'Seleccione el archivo',
-      text: 'Formato Cabeceras: Cargo / Nombres / DNI / Expedido / Telefono / Direccion',
+      text: 'Formato Cabeceras: Cargo / Nombres / Paterno / Materno / DNI / Expedido / Telefono / Direccion',
       input: 'file',
       confirmButtonText: 'Aceptar',
       inputAttributes: {
@@ -90,10 +92,13 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
         ExcelData.forEach((data: any) => {
           user = {
             nombre: data['__EMPTY_2'],
+            paterno: data['__EMPTY_3'],
+            materno: data['__EMPTY_4'],
             cargo: data['__EMPTY_1'],
-            dni: data['__EMPTY_3'],
-            telefono: data['__EMPTY_5'],
-            direccion: data['__EMPTY_6']
+            dni: data['__EMPTY_5'],
+            expedido: data['__EMPTY_6'],
+            telefono: data['__EMPTY_7'],
+            direccion: data['__EMPTY_8']
           }
           usersDB.push(user)
         });

@@ -42,7 +42,6 @@ export class CuentaComponent implements OnInit {
         login: ['', Validators.required],
         password: ['', Validators.required]
       })
-
     }
     else {
       this.Form_Cuenta = this.fb.group({

@@ -2,133 +2,213 @@
     <button (click)="regresar()" mat-icon-button color="primary">
         <mat-icon>arrow_back</mat-icon>
     </button>
-    <span>Ficha de tramite</span>
+    <span>Informacion tramite</span>
     <span class="example-spacer"></span>
 </mat-toolbar>
 <div class="container-fluid" [@slideInLeftOnEnter]>
-    <mat-tab-group mat-align-tabs="center">
+    <mat-tab-group mat-align-tabs="center" *ngIf="Tramite">
         <mat-tab>
             <ng-template mat-tab-label>
                 <mat-icon class="example-tab-icon">info</mat-icon>
                 Informacion
             </ng-template>
-            <div class="position-relative">
-                <div class="card" *ngIf="Tramite">
-                    <h3 class="card-header">{{Tramite.tipo_tramite.nombre}} - {{Tramite.alterno}}</h3>
-                    <div class="card-body">
-                        <div class="card">
-                            <div class="card-body lh-lg">
-                                <h3 class="card-title fw-bold">INFORMACION DEL TRAMITE</h3>
-                                <div class="row">
-                                    <div class="col">
-                                        <p class="card-text">Descripcion: {{Tramite.detalle}}</p>
-                                    </div>
-                                    <div class="col">
-                                        <p class="card-text">Estado:
-                                            <span class="badge" [ngClass]="[
-                                            Tramite.estado=='INSCRITO'?'text-bg-primary':'',
-                                            Tramite.estado=='EN REVISION'?'text-bg-secondary':'',
-                                            Tramite.estado=='OBSERVADO'?'text-bg-warning':'',
-                                            Tramite.estado=='CONCLUIDO'?'text-bg-dark':''
-                                        ]">
-                                                {{Tramite.estado|uppercase}}
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <div class="col">
-                                        <p class="card-text">Cantidad: {{Tramite.cantidad}}</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <p class="card-text">Registrado: {{Tramite.fecha_registro|date:'short'}}</p>
-                                    </div>
-                                    <div class="col">
-                                        <p class="card-text">Pin: {{Tramite.pin}}</p>
-                                    </div>
-                                    <div class="col">
-                                        <p class="card-text">Cite: {{Tramite.cite}}</p>
-                                    </div>
-                                </div>
-                                <div class="row" *ngIf="Tramite.estado==='CONCLUIDO'">
-                                    <div class="col">
-                                        <p class="card-text">
-                                            Fecha finalizacion: {{Tramite.fecha_finalizacion | date:'short'}}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="row">
-
+            <div class="card">
+                <h3 class="card-header fw-bold text-bg-secondary mb-3">{{Tramite.tipo_tramite.nombre|uppercase}} /
+                    {{Tramite.alterno}}</h3>
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Tipo de tramite</label>
+                            <input class="form-control" type="text" value="{{Tramite.tipo_tramite.nombre}}" disabled
+                                readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Alterno</label>
+                            <input class="form-control" type="text" value="{{Tramite.alterno}}" disabled readonly>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Descripcion</label>
+                            <input class="form-control" type="text" value="{{Tramite.detalle}}" disabled readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Fecha registro</label>
+                            <input class="form-control" type="text" value="{{Tramite.fecha_registro|date:'short'}}"
+                                disabled readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Cantidad</label>
+                            <input class="form-control" type="text" value="{{Tramite.cantidad}}" disabled readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Cite</label>
+                            <input class="form-control" type="text" value="{{Tramite.cite}}" disabled readonly>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Estado</label>
+                            <input class="form-control" type="text" value="{{Tramite.estado}}" disabled readonly>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Pin</label>
+                            <input class="form-control" type="text" value="{{Tramite.pin}}" disabled readonly>
+                        </div>
+                        <div [ngSwitch]="Tramite.estado" class="col-md-4">
+                            <div *ngSwitchCase="'CONCLUIDO'">
+                                <label class="form-label">DURACION PROCESO</label>
+                                <h2> {{count}}</h2>
+                            </div>
+                            <div *ngSwitchDefault>
+                                <label class="form-label">Tiempo transcurrido</label>
+                                <h2> <span class="badge text-bg-success">{{count}}</span></h2>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">UBICACION</label>
+                            <div class="card border-primary mb-3">
+                                <div class="card-body">
+                                    <h4 class="card-title fw-bold">{{Tramite.ubicacion.funcionario.nombre}}
+                                        {{Tramite.ubicacion.funcionario.paterno}}
+                                        {{Tramite.ubicacion.funcionario.materno}} -
+                                        {{Tramite.ubicacion.funcionario.cargo|uppercase}}</h4>
+                                    <p class="card-text">{{Tramite.ubicacion.dependencia.nombre}} -
+                                        {{Tramite.ubicacion.dependencia.institucion.sigla}}</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div [ngSwitch]="Tramite.solicitante.tipo">
-                                            <div *ngSwitchCase="'JURIDICO'">
-                                                <h3 class="card-title fw-bold">SOLICITANTE: {{Tramite.solicitante.tipo}}</h3>
-                                                <p class="card-text">Nombre: {{Tramite.solicitante.nombre}}</p>
-                                                <p class="card-text">Telefono: {{Tramite.solicitante.telefono}}</p>
-            
-                                            </div>
-                                            <div *ngSwitchCase="'NATURAL'">
-                                                <h3 class="card-title fw-bold">SOLICITANTE: {{Tramite.solicitante.tipo}}</h3>
-                                                <p class="card-text">Nombre: {{Tramite.solicitante.nombre}}</p>
-                                                <p class="card-text">Documento: {{Tramite.solicitante.documento}} -
-                                                    {{Tramite.solicitante.expedido}}
-                                                    {{Tramite.solicitante.dni}}</p>
-                                                <p class="card-text">Telefono: {{Tramite.solicitante.telefono}}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div *ngIf="Tramite.representante" class="col">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h3 class="card-title">REPRESENTANTE</h3>
-                                        <p class="card-text">Nombre: {{Tramite.representante.nombre}}</p>
-                                        <p class="card-text">Documento: {{Tramite.representante.documento}} -
-                                            {{Tramite.representante.expedido}}
-                                            {{Tramite.representante.dni}}</p>
-                                        <p class="card-text">Telefono: {{Tramite.representante.telefono}}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <app-observaciones [Options]="false" [Observaciones]="Tramite.observaciones"></app-observaciones>
+                    </form>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col">
                         <div class="card">
+                            <h3 class="card-header fw-bold text-bg-secondary mb-3">SOLICITANTE:
+                                {{Tramite.solicitante.tipo}}</h3>
                             <div class="card-body">
-                                <h3 class="card-title fw-bold">REQUERIMIENTOS PRESENTADOS</h3>
-                                <ol class="list-group list-group-numbered">
-                                    <li *ngFor="let requerimiento of Tramite.requerimientos"
-                                        class="list-group-item d-flex justify-content-between align-items-start">
-                                        <div class="ms-2 me-auto">
-                                            {{requerimiento|uppercase}}
-                                        </div>
-                                    </li>
-                                </ol>
+                                <div [ngSwitch]="Tramite.solicitante.tipo">
+                                    <div *ngSwitchCase="'NATURAL'">
+                                        <form class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Nombre</label>
+                                                <input class="form-control" type="text"
+                                                    value="{{Tramite.solicitante.nombre}} {{Tramite.solicitante.paterno}} {{Tramite.solicitante.materno}}"
+                                                    disabled readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Documento</label>
+                                                <input class="form-control" type="text"
+                                                    value="{{Tramite.solicitante.documento}}" disabled readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Dni</label>
+                                                <input class="form-control" type="text"
+                                                    value="{{Tramite.solicitante.dni}}" disabled readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Expedido</label>
+                                                <input class="form-control" type="text"
+                                                    value="{{Tramite.solicitante.expedido}}" disabled readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Telefono</label>
+                                                <input class="form-control" type="text"
+                                                    value="{{Tramite.solicitante.telefono}}" disabled readonly>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div *ngSwitchCase="'JURIDICO'">
+                                        <form class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Nombre</label>
+                                                <input class="form-control" type="text"
+                                                    value="{{Tramite.solicitante.nombre}}" disabled readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Telefono</label>
+                                                <input class="form-control" type="text"
+                                                    value="{{Tramite.solicitante.telefono}}" disabled readonly>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="col" *ngIf="Tramite.representante">
+                        <div class="card">
+                            <h3 class="card-header fw-bold text-bg-secondary mb-3">REPRESENTANTE</h3>
+                            <div class="card-body">
+                                <form class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nombre</label>
+                                        <input class="form-control" type="text"
+                                            value="{{Tramite.representante.nombre}} {{Tramite.representante.paterno}} {{Tramite.representante.materno}}"
+                                            disabled readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Documento</label>
+                                        <input class="form-control" type="text"
+                                            value="{{Tramite.representante.documento}}" disabled readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Dni</label>
+                                        <input class="form-control" type="text" value="{{Tramite.representante.dni}}"
+                                            disabled readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Expedido</label>
+                                        <input class="form-control" type="text"
+                                            value="{{Tramite.representante.expedido}}" disabled readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Telefono</label>
+                                        <input class="form-control" type="text"
+                                            value="{{Tramite.representante.telefono}}" disabled readonly>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+
+
+
+            </div>
+            <div class="card" *ngIf="Tramite">
+                <h3 class="card-header fw-bold text-bg-secondary mb-3">OBSERVACIONES</h3>
+                <div class="card-body">
+                    <app-observaciones [Options]="false" [Observaciones]="Tramite.observaciones"></app-observaciones>
+                </div>
+            </div>
+            <div class="card" *ngIf="Tramite">
+                <h3 class="card-header fw-bold text-bg-secondary mb-3">REQUERIMIENTOS PRESENTADOS</h3>
+                <div class="card-body">
+                    <ol class="list-group list-group-numbered">
+                        <li *ngFor="let requerimiento of Tramite.requerimientos"
+                            class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                {{requerimiento|uppercase}}
+                            </div>
+                        </li>
+                    </ol>
                 </div>
             </div>
         </mat-tab>
-        <mat-tab>
+        <mat-tab *ngIf="Workflow.length>0">
             <ng-template mat-tab-label>
                 <mat-icon class="example-tab-icon">groups</mat-icon>
                 Flujo de trabajo
             </ng-template>
-            <app-list-workflow  *ngIf="Workflow && Tramite"  [Workflow]="Workflow" [fecha_registro]="Tramite.fecha_registro"></app-list-workflow>
+            <app-list-workflow [Workflow]="Workflow" [fecha_registro]="Tramite.fecha_registro"></app-list-workflow>
         </mat-tab>
-        <mat-tab>
+        <mat-tab *ngIf="Workflow.length>0">
             <ng-template mat-tab-label>
                 <mat-icon class="example-tab-icon">tenancy</mat-icon>
                 Flujo de trabajo grafico
             </ng-template>
-            <app-graph-workflow *ngIf="Workflow && Tramite" [Workflow]="Workflow"></app-graph-workflow>
+            <app-graph-workflow [Workflow]="Workflow"></app-graph-workflow>
         </mat-tab>
     </mat-tab-group>
 </div>

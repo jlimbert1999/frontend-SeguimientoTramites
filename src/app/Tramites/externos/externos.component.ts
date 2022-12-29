@@ -79,7 +79,7 @@ export class ExternosComponent implements OnInit {
   }
 
   generar_ficha(tramite: ExternoData) {
-    crear_ficha_tramite(tramite.tipo_tramite.nombre, tramite.fecha_registro, tramite.alterno, tramite.pin, tramite.solicitante.nombre, tramite.solicitante.dni, tramite.solicitante.documento, tramite.solicitante.tipo)
+    crear_ficha_tramite(tramite.tipo_tramite.nombre, tramite.fecha_registro, tramite.alterno, tramite.pin, tramite.solicitante.nombre, tramite.solicitante.paterno, tramite.solicitante.materno, tramite.solicitante.dni, tramite.solicitante.documento, tramite.solicitante.tipo)
   }
   generar_hoja_ruta(id_tramite: string) {
     this.externoService.getExterno(id_tramite).subscribe(data => {

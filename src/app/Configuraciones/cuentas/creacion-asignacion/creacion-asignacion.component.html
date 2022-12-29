@@ -10,7 +10,7 @@
                     </mat-option>
                     <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
                         <img alt="" class="example-option-img" src="../../../assets/img/account.png" height="25">
-                        <strong>{{user.nombre|titlecase}}</strong> (<small>{{user.cargo|uppercase}}</small>)
+                        <strong>{{user.nombre|titlecase}} {{user.paterno|titlecase}} {{user.materno|titlecase}}</strong> (<small>{{user.cargo|uppercase}}</small>)
                     </mat-option>
                 </mat-select>
             </mat-form-field>

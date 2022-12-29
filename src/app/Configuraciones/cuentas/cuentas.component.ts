@@ -6,7 +6,7 @@ import { MatSelect } from '@angular/material/select';
 import { MatTableDataSource } from '@angular/material/table';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { map, Observable, ReplaySubject, startWith, Subject, takeUntil } from 'rxjs';
-import { CuentaModel, CuentaModel_view } from '../models/cuenta.mode';
+import { CuentaModel, CuentaData } from '../models/cuenta.mode';
 import { UsuarioModel } from '../models/usuario.model';
 import { CuentaService } from '../services/cuenta.service';
 import { AsignacionDialogComponent } from './asignacion-dialog/asignacion-dialog.component';
@@ -26,9 +26,9 @@ import { UsuarioDialogComponent } from './usuario-dialog/usuario-dialog.componen
   ]
 })
 export class CuentasComponent implements OnInit {
-  Cuentas: CuentaModel_view[] = []
+  Cuentas: CuentaData[] = []
   Total: number = 0
-  dataSource = new MatTableDataSource<CuentaModel_view>()
+  dataSource = new MatTableDataSource<CuentaData>()
   displayedColumns = ['login', 'nombre', 'cargo', 'dependencia', 'institucion', 'rol', 'opciones']
   isLoadingResults = true;
 
@@ -44,7 +44,7 @@ export class CuentasComponent implements OnInit {
   }
   agregar_cuenta() {
     const dialogRef = this.dialog.open(CuentaDialogComponent, {
-      width: '800px'
+      width: '900px'
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -67,27 +67,30 @@ export class CuentasComponent implements OnInit {
     });
 
   }
-  editar_cuenta(data: CuentaModel_view) {
+  editar_cuenta(data: CuentaData) {
     const dialogRef = this.dialog.open(CuentaDialogComponent, {
       width: '1000px',
       data: data
     });
-    dialogRef.afterClosed().subscribe((result: CuentaModel) => {
+    dialogRef.afterClosed().subscribe((result: CuentaData) => {
       if (result) {
-        this.obtener_cuentas()
+        const indexFound = this.Cuentas.findIndex(cuenta => cuenta._id === result._id)
+        this.Cuentas[indexFound] = result
+        this.dataSource = new MatTableDataSource(this.Cuentas)
       }
     });
   }
 
   agregar_funcionario() {
-    const dialogRef = this.dialog.open(UsuarioDialogComponent, {
-      width: '600px'
+    this.dialog.open(UsuarioDialogComponent, {
+      width: '900px'
     });
 
   }
-  editar_funcionario(user: CuentaModel_view) {
+  editar_funcionario(user: CuentaData) {
     const dialogRef = this.dialog.open(UsuarioDialogComponent, {
-      data: user.funcionario
+      data: user.funcionario,
+      width: '900px'
     });
     dialogRef.afterClosed().subscribe((result: UsuarioModel) => {
       if (result) {
@@ -97,12 +100,12 @@ export class CuentasComponent implements OnInit {
       }
     });
   }
-  asignar_cuenta(cuenta: CuentaModel_view) {
+  asignar_cuenta(cuenta: CuentaData) {
     const dialogRef = this.dialog.open(AsignacionDialogComponent, {
       width: '900px',
       data: cuenta
     });
-    dialogRef.afterClosed().subscribe((result: CuentaModel_view) => {
+    dialogRef.afterClosed().subscribe((result: CuentaData) => {
       if (result) {
         this.obtener_cuentas()
       }
