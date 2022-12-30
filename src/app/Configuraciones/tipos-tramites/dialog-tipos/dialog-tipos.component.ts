@@ -172,8 +172,10 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
       let listRequeriments = read(fileReader.result, { type: 'binary' })
       let schemasNames = listRequeriments.SheetNames
       let ExcelData = utils.sheet_to_json(listRequeriments.Sheets[schemasNames[0]])
+      let keysData
       ExcelData.forEach((data: any) => {
-        this.Requerimientos.push({ nombre: data['__EMPTY_2'], activo: true })
+        keysData = Object.keys(data)
+        this.Requerimientos.push({ nombre: data[keysData[0]], activo: true })
       });
       this.dataSource = new MatTableDataSource(this.Requerimientos)
       this.dataSource.paginator = this.paginator;

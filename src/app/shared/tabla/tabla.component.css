@@ -61,6 +61,10 @@ th.mat-header-cell {
     font-size: 12px;
 }
 
+.mat-column-cargo {
+    width: 400px;
+   
+  }
 
 /* <!-- <span class="c-pill c-pill--danger">Red indicator</span>
 

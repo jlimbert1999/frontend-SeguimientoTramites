@@ -68,7 +68,7 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
   async cargar_usuarios() {
     const { value: file } = await Swal.fire({
       title: 'Seleccione el archivo',
-      text: 'Formato Cabeceras: Cargo / Nombres / Paterno / Materno / DNI / Expedido / Telefono / Direccion',
+      text: 'Formato: Cargo / Nombres / Paterno / Materno / DNI / Expedido / Telefono / Direccion',
       input: 'file',
       confirmButtonText: 'Aceptar',
       inputAttributes: {
@@ -88,22 +88,22 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
       let listUsuarios = read(fileReader.result, { type: 'binary' })
       let schemasNames = listUsuarios.SheetNames
       let ExcelData = utils.sheet_to_json(listUsuarios.Sheets[schemasNames[0]])
+      let keysData
       try {
         ExcelData.forEach((data: any) => {
+          keysData = Object.keys(data)
           user = {
-            nombre: data['__EMPTY_2'],
-            paterno: data['__EMPTY_3'],
-            materno: data['__EMPTY_4'],
-            cargo: data['__EMPTY_1'],
-            dni: data['__EMPTY_5'],
-            expedido: data['__EMPTY_6'],
-            telefono: data['__EMPTY_7'],
-            direccion: data['__EMPTY_8']
+            nombre: data[keysData[1]],
+            paterno: data[keysData[2]],
+            materno: data[keysData[3]],
+            cargo: data[keysData[0]],
+            dni: data[keysData[4]],
+            expedido: data[keysData[5]],
+            telefono: data[keysData[6]],
+            direccion: data[keysData[7]]
           }
           usersDB.push(user)
         });
-        // eliminar cabeceras
-        usersDB.shift()
       } catch (error) {
         Swal.fire({
           title: 'Error al cargar el archivo, verifique el formato para la carga',
@@ -114,11 +114,5 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
         this.mostrar_funcionarios()
       })
     }
-
   }
-
-
-
-
-
 }

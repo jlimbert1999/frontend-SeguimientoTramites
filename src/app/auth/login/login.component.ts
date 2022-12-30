@@ -29,9 +29,13 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return
     }
-
-    this.authService.login(this.loginForm.value!, this.loginForm.get('remember')?.value!).subscribe((resp: boolean) => {
-      this.router.navigateByUrl('/home/tramites-internos')
+    this.authService.login(this.loginForm.value!, this.loginForm.get('remember')?.value!).subscribe(role => {
+      if (role === 'admin') {
+        this.router.navigateByUrl('/home')
+      }
+      else {
+        this.router.navigateByUrl('/home/tramites-internos')
+      }
     })
   }
 

@@ -47,7 +47,6 @@ export class CuentaComponent implements OnInit {
       this.Form_Cuenta = this.fb.group({
         login: ['', Validators.required]
       })
-
     }
     this.Form_Cuenta.patchValue(this.Account)
   }
