@@ -8,6 +8,7 @@ import { GraphWorkflowComponent } from './graph-workflow/graph-workflow.componen
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { ListWorkflowComponent } from './list-workflow/list-workflow.component';
 import { ObservacionesComponent } from './observaciones/observaciones.component';
+import { LocationComponent } from './location/location.component';
 
 
 
@@ -18,7 +19,8 @@ import { ObservacionesComponent } from './observaciones/observaciones.component'
     MailHeaderComponent,
     GraphWorkflowComponent,
     ListWorkflowComponent,
-    ObservacionesComponent
+    ObservacionesComponent,
+    LocationComponent
   ],
   imports: [
     CommonModule,

@@ -36,7 +36,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   FormEnvio: FormGroup = this.fb.group({
     motivo: ['', Validators.required],
     cantidad: [this.Data.cantidad, Validators.required],
-    numero_interno: ['', Validators.required]
+    numero_interno: ['']
   });
 
   constructor(

@@ -5,22 +5,22 @@
             <form [formGroup]="TramiteFormGroup">
                 <ng-template matStepLabel>Detalles del tramite</ng-template>
                 <div *ngIf="!data" class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <mat-form-field appearance="legacy">
-                            <mat-label>Seleccione el segmento de tramites</mat-label>
-                            <mat-select (selectionChange)="segmentar_tramites($event.value)">
+                            <mat-label>Segmento</mat-label>
+                            <mat-select (selectionChange)="getTypes($event.value)">
                                 <mat-option *ngFor="let segmento of Segmentos" [value]="segmento">
-                                    TRAMITES {{segmento}}
+                                    {{segmento|uppercase}}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-10">
                         <mat-form-field appearance="legacy" class="selector-tramite">
-                            <mat-label>Seleccion del tipo de tramite a realizar</mat-label>
-                            <mat-select (selectionChange)="seleccionar_tipo_tramite($event.value)">
-                                <mat-option *ngFor="let tipo of Tipos_Tramites_Segmentados; let i=index" [value]="tipo">
-                                    {{i+1}} . {{tipo.nombre| titlecase}}
+                            <mat-label>Seleccione el tipo de tramite</mat-label>
+                            <mat-select (selectionChange)="selectType($event.value)">
+                                <mat-option *ngFor="let tipo of Types; let i=index" [value]="tipo">
+                                    {{i+1}} . {{tipo.nombre| uppercase}}
                                 </mat-option>
                             </mat-select>
                             <mat-error *ngIf="TramiteFormGroup.controls['tipo_tramite'].invalid">Seleccione un tramite
@@ -54,16 +54,23 @@
                         </mat-form-field>
                     </div>
                 </div>
-                <hr>
                 <div>
-                    <div *ngIf="Tipo_Tramite_Seleccionado">
-                        <mat-list role="list">
-                            <mat-list-item
-                                *ngFor="let requerimiento of Tipo_Tramite_Seleccionado.requerimientos; let i=index"
-                                role="listitem">
-                                {{i+1}}.- {{requerimiento.nombre}}
-                            </mat-list-item>
-                        </mat-list>
+                    <div *ngIf="SelectedType">
+                        <h3>Requerimientos</h3>
+                        <div [ngSwitch]="SelectedType.requerimientos.length">
+                            <div *ngSwitchCase="0">
+                                <div class="alert alert-primary" role="alert">
+                                    El tramite no tiene requerimientos
+                                </div>
+                            </div>
+                            <div *ngSwitchDefault>
+                                <ol class="list-group list-group-numbered">
+                                    <li class="list-group-item"
+                                        *ngFor="let requerimiento of SelectedType.requerimientos; let i=index">
+                                        {{requerimiento.nombre}}</li>
+                                </ol>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -91,13 +98,13 @@
                             </div>
                             <div class="col-sm-4">
                                 <mat-form-field class="example-full-width" appearance="legacy">
-                                    <mat-label>Paterno</mat-label>
+                                    <mat-label>Apellido paterno</mat-label>
                                     <input matInput formControlName="paterno" class="uppercase">
                                 </mat-form-field>
                             </div>
                             <div class="col-sm-4">
                                 <mat-form-field class="example-full-width" appearance="legacy">
-                                    <mat-label>Materno</mat-label>
+                                    <mat-label>Apellido materno</mat-label>
                                     <input matInput formControlName="materno" class="uppercase">
                                 </mat-form-field>
                             </div>
@@ -163,11 +170,11 @@
                 <label id="example-radio-group-label">Tipo de registro</label>
                 <mat-radio-group [value]="false" (change)="changeFormRepresentante($event.value)"
                     aria-labelledby="example-radio-group-label" class="example-radio-group">
-                    <mat-radio-button class="example-radio-button" [value]="true">
-                        CON REPRESENTANTE LEGAL
-                    </mat-radio-button>
                     <mat-radio-button class="example-radio-button" [value]="false">
                         SIN REPRESENTANTE LEGAL
+                    </mat-radio-button>
+                    <mat-radio-button class="example-radio-button" [value]="true">
+                        CON REPRESENTANTE LEGAL
                     </mat-radio-button>
                 </mat-radio-group>
             </div>

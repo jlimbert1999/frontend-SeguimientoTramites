@@ -52,4 +52,11 @@ export class ReportesExternoService {
       })
     )
   }
+  getNamesOfTypes(){
+    return this.http.get<{ ok: boolean, tipos: any }>(`${base_url}/reportes-externos/tipos-tramites/reporte`).pipe(
+      map(resp => {
+        return resp.tipos
+      })
+    )
+  }
 }

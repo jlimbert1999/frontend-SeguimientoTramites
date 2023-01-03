@@ -7,6 +7,9 @@ import { TramiteService } from '../../services/tramite.service';
 import { ExternoModel } from '../../models/externo.model'
 import { RepresentanteModel } from '../../models/solicitud.model'
 import { ExternosService } from '../../services/externos.service';
+import { TipoTramite_Registro } from '../models/tipos';
+import { Externo, ExternoData, Representante, Solicitante } from '../models/externo';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-dialog-externo',
   templateUrl: './dialog-externo.component.html',
@@ -14,9 +17,8 @@ import { ExternosService } from '../../services/externos.service';
 })
 export class DialogExternoComponent implements OnInit {
   Segmentos: string[] = []
-  Tipos_Tramites: TiposTramitesModel[] = []
-  Tipos_Tramites_Segmentados: TiposTramitesModel[] = []
-  Tipo_Tramite_Seleccionado: TiposTramitesModel | null
+  Types: TipoTramite_Registro[] = []
+  SelectedType: TipoTramite_Registro | null
   tipos_documento: string[] = [
     'Carnet de identidad',
     'Libreta servicio militar',
@@ -39,14 +41,13 @@ export class DialogExternoComponent implements OnInit {
     tipo_tramite: ['', Validators.required],
     alterno: [''],
     requerimientos: [''],
-    ubicacion: [this.authService.Detalles_Cuenta.id_cuenta],
     cite: [this.authService.Detalles_Cuenta.codigo]
   });
   SolicitanteFormGroup: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
     paterno: ['', Validators.required],
     materno: [''],
-    telefono: ['', Validators.required],
+    telefono: [''],
     tipo: ['', Validators.required],
     dni: ['', Validators.required],
     expedido: ['', Validators.required],
@@ -59,12 +60,11 @@ export class DialogExternoComponent implements OnInit {
     private authService: AuthService,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<DialogExternoComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: ExternoData,
 
   ) { }
 
   ngOnInit(): void {
-
     if (this.data) {
       this.TramiteFormGroup = this.fb.group({
         cantidad: ['', Validators.required],
@@ -83,38 +83,66 @@ export class DialogExternoComponent implements OnInit {
       }
     }
     else {
-      this.externoService.getTiposTramite().subscribe(data => {
-        this.Segmentos = data.segmentos
-        this.Tipos_Tramites = data.tiposTramites
+      this.externoService.getGroups().subscribe(segmentos => {
+        this.Segmentos = segmentos
       })
     }
   }
-  segmentar_tramites(segmento: string) {
-    this.Tipo_Tramite_Seleccionado = null
-    this.Tipos_Tramites_Segmentados = this.Tipos_Tramites.filter(tipo => tipo.segmento === segmento)
+  getTypes(segmento: string) {
+    this.SelectedType = null
+    this.externoService.getTypes(segmento).subscribe(types => {
+      this.Types = types
+      this.TramiteFormGroup.get('alterno')?.setValue(`${segmento}-${this.authService.Detalles_Cuenta.institucion}`)
+    })
   }
-  seleccionar_tipo_tramite(tipo: TiposTramitesModel) {
-    this.Tipo_Tramite_Seleccionado = tipo
-    this.TramiteFormGroup.get('tipo_tramite')?.setValue(tipo.id_tipoTramite)
-    this.TramiteFormGroup.get('alterno')?.setValue(`${tipo.segmento}-${this.authService.Detalles_Cuenta.institucion}`)
-    this.TramiteFormGroup.get('requerimientos')?.setValue(
-      tipo.requerimientos.map(element => {
-        return element.nombre
-      })
-    )
+  selectType(type: TipoTramite_Registro) {
+    this.SelectedType = type
+    this.TramiteFormGroup.get('tipo_tramite')?.setValue(type.id_tipoTramite)
   }
 
 
   guardar() {
     if (this.data) {
-      this.externoService.editExterno(this.data._id, this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup?.value).subscribe(tramite => {
-        this.dialogRef.close(tramite)
-      })
+      let Tramite: { tramite: any, solicitante: Solicitante, representante: Representante | null }
+      switch (this.RepresentanteFormGroup) {
+        case null:
+          Tramite = {
+            tramite: this.TramiteFormGroup.value,
+            solicitante: this.SolicitanteFormGroup.value,
+            representante: null
+          }
+          break;
+        default:
+          Tramite = {
+            tramite: this.TramiteFormGroup.value,
+            solicitante: this.SolicitanteFormGroup.value,
+            representante: this.RepresentanteFormGroup.value
+          }
+          break;
+      }
+      this.dialogRef.close(Tramite)
     }
     else {
-      this.externoService.addExterno(this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup?.value).subscribe(tramite => {
-        this.dialogRef.close(tramite)
-      })
+      this.TramiteFormGroup.get('requerimientos')?.setValue(this.SelectedType?.requerimientos.map(requerimiento => requerimiento.nombre))
+      let Tramite: { tramite: Externo, solicitante: Solicitante, representante: Representante | null }
+      switch (this.RepresentanteFormGroup) {
+        case null:
+          Tramite = {
+            tramite: this.TramiteFormGroup.value,
+            solicitante: this.SolicitanteFormGroup.value,
+            representante: null
+          }
+          break;
+        default:
+          Tramite = {
+            tramite: this.TramiteFormGroup.value,
+            solicitante: this.SolicitanteFormGroup.value,
+            representante: this.RepresentanteFormGroup.value
+          }
+          break;
+      }
+
+      this.dialogRef.close(Tramite)
     }
   }
 
@@ -125,7 +153,7 @@ export class DialogExternoComponent implements OnInit {
           nombre: ['', Validators.required],
           paterno: ['', Validators.required],
           materno: [''],
-          telefono: ['', Validators.required],
+          telefono: [''],
           tipo: [type, Validators.required],
           dni: ['', Validators.required],
           expedido: ['', Validators.required],

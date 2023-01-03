@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'material-icons/iconfont/material-icons.css';
+
 html,
 body {
   height: 100%;
@@ -308,7 +309,15 @@ button.toast-close-button {
 }
 
 
+
 .uppercase {
   text-transform: uppercase;
 }
 
+table {
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}

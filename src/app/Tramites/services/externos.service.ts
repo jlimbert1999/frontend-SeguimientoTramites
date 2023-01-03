@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { TiposTramitesModel } from 'src/app/Configuraciones/models/tiposTramites.model';
 import { environment } from 'src/environments/environment';
-import { ExternoData, ExternoModel } from '../models/externo.model';
+import { Externo, Representante, Solicitante } from '../externos/models/externo';
+import { TipoTramite_Registro } from '../externos/models/tipos';
+import { ExternoData } from '../externos/models/externo';
 import { RepresentanteModel, SolicitanteModel } from '../models/solicitud.model';
 const base_url = environment.base_url
 @Injectable({
@@ -12,16 +14,24 @@ const base_url = environment.base_url
 export class ExternosService {
   offset: number = 0
   limit: number = 10
+
   constructor(private http: HttpClient) { }
-  getTiposTramite() {
-    return this.http.get<{ ok: boolean, tiposTramites: TiposTramitesModel[], segmentos: string[] }>(`${base_url}/tramites-externos/tipos?tipo=EXTERNO`).pipe(
+  getTypes(segmento: string) {
+    return this.http.get<{ ok: boolean, data: TipoTramite_Registro[] }>(`${base_url}/tramites-externos/tipos/${segmento}`).pipe(
       map(resp => {
-        return { tiposTramites: resp.tiposTramites, segmentos: resp.segmentos }
+        return resp.data
+      })
+    )
+  }
+  getGroups() {
+    return this.http.get<{ ok: boolean, data: string[] }>(`${base_url}/tramites-externos/segmentos`).pipe(
+      map(resp => {
+        return resp.data
       })
     )
   }
 
-  addExterno(tramite: ExternoModel, solicitante: SolicitanteModel, representante: RepresentanteModel) {
+  addExterno(tramite: Externo, solicitante: Solicitante, representante: Representante | null) {
     return this.http.post<{ ok: boolean, tramite: ExternoData }>(`${base_url}/tramites-externos`, { tramite, solicitante, representante }).pipe(
       map(resp => {
         return resp.tramite
@@ -35,10 +45,10 @@ export class ExternosService {
       })
     )
   }
-  editExterno(id_tramite: string, tramite: any, solicitante: SolicitanteModel, representante: RepresentanteModel | null) {
-    return this.http.put<{ ok: boolean, tramite: ExternoData }>(`${base_url}/tramites-externos/${id_tramite}`, { tramite, solicitante, representante }).pipe(
+  editExterno(id_tramite: string, tramite: any, solicitante: Solicitante, representante: Representante | null) {
+    return this.http.put<{ ok: boolean, data: ExternoData }>(`${base_url}/tramites-externos/${id_tramite}`, { tramite, solicitante, representante }).pipe(
       map(resp => {
-        return resp.tramite
+        return resp.data
       })
     )
   }
@@ -83,6 +93,11 @@ export class ExternosService {
     )
   }
 
-
-
+  filter(text: string, option: string) {
+    return this.http.get<{ ok: boolean, data: ExternoData[] }>(`${base_url}/tramites-externos/filtrar/${text}?option=${option}`).pipe(
+      map(resp => {
+        return resp.data
+      })
+    )
+  }
 }

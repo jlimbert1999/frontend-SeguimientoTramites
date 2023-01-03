@@ -7,11 +7,13 @@ import { DialogExternoComponent } from './dialog-externo/dialog-externo.componen
 import { crear_ficha_tramite, crear_hoja_ruta } from 'src/app/Tramites/pdf/tramites';
 import { DialogRemisionComponent } from '../dialog-remision/dialog-remision.component';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { ExternoData, ExternoModel } from '../models/externo.model';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ExternosService } from '../services/externos.service';
 import { catchError, map, of, startWith, switchMap } from 'rxjs';
+import { Externo, ExternoData, Representante, Solicitante } from './models/externo';
+import Swal from 'sweetalert2';
+import { LocationComponent } from 'src/app/shared/location/location.component';
 
 @Component({
   selector: 'app-externos',
@@ -28,19 +30,31 @@ export class ExternosComponent implements OnInit {
   dataSource: ExternoData[] = [];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   resultsLength = 0;
-  isRateLimitReached = false;
-  encargado_actual = this.authService.Detalles_Cuenta
+
+  showFilter: boolean = false
+  filterOpions = [
+    'ALTERNO',
+    'SOLICITANTE',
+    'TIPO DE TRAMITE'
+  ]
+  selectedTypeFilter: string
 
 
   constructor(
     public dialog: MatDialog,
     private toastr: ToastrService,
     public authService: AuthService,
-    public externoService: ExternosService
+    public externoService: ExternosService,
+    private _bottomSheet: MatBottomSheet
   ) { }
 
   ngOnInit(): void {
     this.mostrar_tramites()
+  }
+  openBottomSheet(location: any): void {
+    this._bottomSheet.open(LocationComponent, {
+      data: location
+    });
   }
   mostrar_tramites() {
     this.externoService.getExternos().subscribe(data => {
@@ -53,14 +67,18 @@ export class ExternosComponent implements OnInit {
     const dialogRef = this.dialog.open(DialogExternoComponent, {
       width: '1000px'
     });
-    dialogRef.afterClosed().subscribe((result: ExternoData) => {
+    dialogRef.afterClosed().subscribe((result: { tramite: Externo, solicitante: Solicitante, representante: Representante | null }) => {
       if (result) {
-        this.resultsLength += 1
-        if (this.data.length === this.externoService.limit) {
-          this.data.pop()
-        }
-        this.data = [result, ...this.data]
-        this.remitir_tramite(result)
+        this.showLoadingRequest()
+        this.externoService.addExterno(result.tramite, result.solicitante, result.representante).subscribe(tramite => {
+          this.resultsLength += 1
+          this.data = [tramite, ...this.data]
+          if (this.data.length === this.externoService.limit) {
+            this.data.pop()
+          }
+          Swal.close();
+          this.remitir_tramite(tramite)
+        })
       }
     });
   }
@@ -69,11 +87,15 @@ export class ExternosComponent implements OnInit {
       width: '1000px',
       data: tramite
     });
-    dialogRef.afterClosed().subscribe((result: ExternoData) => {
+    dialogRef.afterClosed().subscribe((result: { tramite: any, solicitante: Solicitante, representante: Representante }) => {
       if (result) {
-        const indexFound = this.data.findIndex(tramite => tramite._id === result._id)
-        this.data[indexFound] = result
-        this.data = [...this.data]
+        this.showLoadingRequest()
+        this.externoService.editExterno(tramite._id, result.tramite, result.solicitante, result.representante).subscribe(tramite => {
+          const indexFound = this.data.findIndex(tramite => tramite._id === tramite._id)
+          this.data[indexFound] = tramite
+          this.data = [...this.data]
+          Swal.close();
+        })
       }
     });
   }
@@ -115,6 +137,26 @@ export class ExternosComponent implements OnInit {
     }
     return false
   }
+
+  showLoadingRequest() {
+    Swal.fire({
+      title: 'Guardando....',
+      text: 'Por favor espere',
+      allowOutsideClick: false,
+    });
+    Swal.showLoading()
+  }
+
+  filter(event: Event, option: string) {
+    // const filterValue = (event.target as HTMLInputElement).value;
+    // if (filterValue !== '') {
+    //   this.externoService.filter(filterValue, option).subscribe(tramites => {
+    //     this.data = [...tramites]
+    //   })
+    // }
+
+  }
+
 
 
 }

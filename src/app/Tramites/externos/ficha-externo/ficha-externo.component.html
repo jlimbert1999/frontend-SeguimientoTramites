@@ -13,7 +13,7 @@
                 Informacion
             </ng-template>
             <div class="card">
-                <h3 class="card-header fw-bold text-bg-secondary mb-3">{{Tramite.tipo_tramite.nombre|uppercase}} /
+                <h3 class="card-header fw-bold bg-light mb-3">{{Tramite.tipo_tramite.nombre|uppercase}} /
                     {{Tramite.alterno}}</h3>
                 <div class="card-body">
                     <form class="row g-3">
@@ -81,7 +81,7 @@
                 <div class="row">
                     <div class="col">
                         <div class="card">
-                            <h3 class="card-header fw-bold text-bg-secondary mb-3">SOLICITANTE:
+                            <h3 class="card-header fw-bold bg-light mb-3">SOLICITANTE:
                                 {{Tramite.solicitante.tipo}}</h3>
                             <div class="card-body">
                                 <div [ngSwitch]="Tramite.solicitante.tipo">
@@ -135,7 +135,7 @@
                     </div>
                     <div class="col" *ngIf="Tramite.representante">
                         <div class="card">
-                            <h3 class="card-header fw-bold text-bg-secondary mb-3">REPRESENTANTE</h3>
+                            <h3 class="card-header fw-bold bg-light mb-3">REPRESENTANTE</h3>
                             <div class="card-body">
                                 <form class="row g-3">
                                     <div class="col-md-6">
@@ -177,13 +177,13 @@
 
             </div>
             <div class="card" *ngIf="Tramite">
-                <h3 class="card-header fw-bold text-bg-secondary mb-3">OBSERVACIONES</h3>
+                <h3 class="card-header fw-bold bg-light mb-3">OBSERVACIONES</h3>
                 <div class="card-body">
                     <app-observaciones [Options]="false" [Observaciones]="Tramite.observaciones"></app-observaciones>
                 </div>
             </div>
             <div class="card" *ngIf="Tramite">
-                <h3 class="card-header fw-bold text-bg-secondary mb-3">REQUERIMIENTOS PRESENTADOS</h3>
+                <h3 class="card-header fw-bold bg-light mb-3">REQUERIMIENTOS PRESENTADOS</h3>
                 <div class="card-body">
                     <ol class="list-group list-group-numbered">
                         <li *ngFor="let requerimiento of Tramite.requerimientos"

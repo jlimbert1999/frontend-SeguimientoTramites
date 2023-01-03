@@ -2,11 +2,10 @@
     color: rgba(0, 0, 0, 0.54);
 }
 
-mat-list {
-    max-height: 260px;
+.list-group {
+    max-height: 220px;
     overflow-y: scroll;
 }
-
 
 mat-form-field {
     width: 100%;

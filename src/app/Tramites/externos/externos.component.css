@@ -1,50 +1,44 @@
-table {
-    width: 100%;
-}
 .mat-cell {
-    font-size: 12px;
+    font-size: 11px;
 }
+
 .badge {
     font-size: 12px;
 }
 
-/* Structure table*/
-.example-table-container {
-    position: relative;
-    max-height: 73vh;
-    overflow: auto;
+td.mat-column-ubicacion {
+    width: 150px;
 }
 
-
-/* Column Widths */
-.mat-column-alterno {
-    min-width: 180px;
-    padding-inline: 20px;
+td.mat-column-estado {
+    max-width: 70px;
 }
-.mat-column-ubicacion {
-    min-width: 340px;
+
+td.mat-column-alterno {
+    max-width: 100px;
+}
+
+td.mat-column-tramite {
+    max-width: 200px;
+    padding-inline: 5px;
+}
+td.mat-column-descripcion {
+    max-width: 200px;
+    padding-inline: 5px;
+}
+
+td.mat-column-opciones {
+    text-align: center;
+    width: 2px;
+    border-left: 1px solid;
+}
+.filter-menu{
+    font-size: 13px;
+}
+.filter-input{
     padding-right: 20px;
+    width: 150px;
 }
-.mat-column-tramite {
-    min-width: 300px;
+.search-input{
+    width: 60%;
 }
-.mat-column-descripcion {
-    min-width: 300px;
-    padding-right: 20px;
-}
-.mat-column-estado {
-    min-width: 150px;
-}
-.mat-column-solicitante {
-    min-width: 250px;
-}
-.mat-column-fecha_registro {
-    min-width: 120px;
-}
-.mat-column-opciones {
-    width: 10px;
-}
-
-
-
-

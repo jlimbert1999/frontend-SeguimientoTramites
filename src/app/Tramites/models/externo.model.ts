@@ -9,33 +9,7 @@ export interface ExternoModel {
     ubicacion: string
     cite: string
 }
-export interface ExternoData {
-    _id: string
-    alterno: string
-    cantidad: string
-    cuenta: string
-    detalle: string
-    estado: string
-    fecha_registro: string
-    pin: number
-    requerimientos: string[]
-    solicitante: SolicitanteModel
-    ubicacion: {
-        dependencia: {
-            nombre: string,
-            institucion: {
-                sigla: string
-            }
-        }
-        funcionario: {
-            nombre: string,
-            cargo: string
-        }
-    }
-    tipo_tramite: {
-        nombre: string
-    }
-}
+
 
 export interface InfoExterno {
     _id: string

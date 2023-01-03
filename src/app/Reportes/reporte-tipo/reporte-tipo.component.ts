@@ -7,7 +7,7 @@ import { ExternosService } from 'src/app/Tramites/services/externos.service';
 import { InternosService } from 'src/app/Tramites/services/internos.service';
 import Swal from 'sweetalert2';
 import { HojaTipoTramite } from '../pdf-externos/pdf-TipoTramite';
-import { HojaTipoTramiteInterno } from '../pdf-internos/pdf-tipoTramite';
+import { HojaTipoTramiteInterno } from '../pdf-internos/pdf-TipoTramite';
 import { ReportesExternoService } from '../services/reportes-externo.service';
 import { ReportesInternoService } from '../services/reportes-interno.service';
 
@@ -45,8 +45,8 @@ export class ReporteTipoComponent implements OnInit {
     private authService: AuthService,
     private fb: FormBuilder) { }
   ngOnInit(): void {
-    this.externoService.getTiposTramite().subscribe(tipos => {
-      this.tipos_tramites = tipos.tiposTramites
+    this.reporteService.getNamesOfTypes().subscribe(tipos => {
+      this.tipos_tramites = tipos
     })
     this.internoService.getTiposTramite().subscribe(tipos => {
       this.tipos_tramites_interno = tipos

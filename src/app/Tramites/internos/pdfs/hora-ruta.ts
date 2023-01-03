@@ -5,12 +5,13 @@ import { TDocumentDefinitions } from "pdfmake/interfaces";
 import * as moment from 'moment';
 
 export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tramites_externos' | 'tramites_internos' | 'copia') => {
-    workflow = workflow.filter(flujo => flujo.recibido === true)
+    workflow = workflow.filter(flujo => flujo.recibido === true || flujo.recibido === undefined)
     const imagePath_Alcaldia: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia.png')
     let docDefinition: TDocumentDefinitions
     let check_interno, check_externo
     let primer_recuadro
     let interaciones = []
+    let fecha_ingreso = []
     let fecha_salida = []
     let hojas = 0
     let cantidad
@@ -47,6 +48,16 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
     }
 
     for (let index = 0; index < workflow.length; index++) {
+        switch (workflow[index].recibido) {
+            case true:
+                fecha_ingreso[0] = moment(new Date(workflow[index].fecha_recibido)).format('DD-MM-YYYY')
+                fecha_ingreso[1] = moment(new Date(workflow[index].fecha_recibido)).format('HH:mm:ss')
+                break;
+            default:
+                fecha_ingreso[0] = ''
+                fecha_ingreso[1] = ''
+                break;
+        }
         if (workflow[index + 1]) {
             fecha_salida[0] = moment(new Date(workflow[index + 1].fecha_envio)).format('DD-MM-YYYY')
             fecha_salida[1] = moment(new Date(workflow[index + 1].fecha_envio)).format('HH:mm:ss')
@@ -106,10 +117,10 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
                                             { text: `${numero_interno}` }
                                         ],
                                         [
-                                            { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'center' }
+                                            { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
                                         ],
                                         [
-                                            { text: 'Firm y sello', colSpan: 2, border: [false, false, false, false], alignment: 'center' }
+                                            { text: 'FIRMA Y SELLO', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
                                         ]
                                     ]
                                 }
@@ -130,8 +141,8 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
                                         ],
                                         [
                                             { text: 'INGRESO', border: [false, false, false, false] },
-                                            { text: `${moment(new Date(workflow[index].fecha_recibido)).format('DD-MM-YYYY')}`, border: [true, true, true, true] },
-                                            { text: `${moment(new Date(workflow[index].fecha_recibido)).format('HH:mm:ss')}`, border: [true, true, true, true] },
+                                            { text: `${fecha_ingreso[0]}`, border: [true, true, true, true] },
+                                            { text: `${fecha_ingreso[1]}`, border: [true, true, true, true] },
                                             { text: `${workflow[index].cantidad}`, border: [true, true, true, true] },
                                         ]
                                     ]
@@ -219,10 +230,10 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
                                             { text: '' }
                                         ],
                                         [
-                                            { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'center' }
+                                            { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
                                         ],
                                         [
-                                            { text: 'Firm y sello', colSpan: 2, border: [false, false, false, false], alignment: 'center' }
+                                            { text: 'FIRMA Y SELLO', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
 
                                         ]
                                     ]
@@ -428,17 +439,17 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
                                     widths: ['*', '*'],
                                     body: [
                                         [`CITE: ${tramite.cite}`,
-                                            {
-                                                table: {
-                                                    widths: [160, 80],
-                                                    body: [
-                                                        [
-                                                            { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                                            { text: primer_numero_envio },
-                                                        ]
+                                        {
+                                            table: {
+                                                widths: [160, 80],
+                                                body: [
+                                                    [
+                                                        { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
+                                                        { text: primer_numero_envio },
                                                     ]
-                                                },
+                                                ]
                                             },
+                                        },
                                         ],
                                         [`REMITENTE: ${tramite.remitente.nombre}`, `REMITENTE: ${tramite.remitente.cargo}`],
                                         [`DESTINATARIO: ${tramite.destinatario.nombre}`, `CARGO: ${tramite.destinatario.cargo}`],

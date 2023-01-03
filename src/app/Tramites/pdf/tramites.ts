@@ -66,12 +66,13 @@ export const crear_ficha_tramite = async (tipo_tramite: string, fecha_registro: 
 
 
 export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tramites_externos' | 'tramites_internos' | 'copia') => {
-    workflow = workflow.filter(flujo => flujo.recibido === true)
+    workflow = workflow.filter(flujo => flujo.recibido === true || flujo.recibido === undefined)
     const imagePath_Alcaldia: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia.png')
     let docDefinition: TDocumentDefinitions
     let check_interno, check_externo
     let primer_recuadro
     let interaciones = []
+    let fecha_ingreso = []
     let fecha_salida = []
     let hojas = 0
     let destinatario
@@ -115,11 +116,21 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
             { text: ``, border: [true, true, true, true] }
         ]
         hojas = 7
-        destinatario = { nombre: '.............................', cargo: '.............................' }
+        destinatario = { nombre: '.......................................', cargo: '.......................................' }
         primer_numero_envio = ""
     }
 
     for (let index = 0; index < workflow.length; index++) {
+        switch (workflow[index].recibido) {
+            case true:
+                fecha_ingreso[0] = moment(new Date(workflow[index].fecha_recibido)).format('DD-MM-YYYY')
+                fecha_ingreso[1] = moment(new Date(workflow[index].fecha_recibido)).format('HH:mm:ss')
+                break;
+            default:
+                fecha_ingreso[0] = ''
+                fecha_ingreso[1] = ''
+                break;
+        }
         if (workflow[index + 1]) {
             fecha_salida[0] = moment(new Date(workflow[index + 1].fecha_envio)).format('DD-MM-YYYY')
             fecha_salida[1] = moment(new Date(workflow[index + 1].fecha_envio)).format('HH:mm:ss')
@@ -132,6 +143,7 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
             cantidad = ""
             numero_interno = ""
         }
+
         interaciones.push(
             {
                 dontBreakRows: true,
@@ -179,10 +191,10 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
                                             { text: `${numero_interno}` }
                                         ],
                                         [
-                                            { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'center' }
+                                            { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
                                         ],
                                         [
-                                            { text: 'Firm y sello', colSpan: 2, border: [false, false, false, false], alignment: 'center' }
+                                            { text: 'FIRMA Y SELLO', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
                                         ]
                                     ]
                                 }
@@ -203,8 +215,8 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
                                         ],
                                         [
                                             { text: 'INGRESO', border: [false, false, false, false] },
-                                            { text: `${moment(new Date(workflow[index].fecha_recibido)).format('DD-MM-YYYY')}`, border: [true, true, true, true] },
-                                            { text: `${moment(new Date(workflow[index].fecha_recibido)).format('HH:mm:ss')}`, border: [true, true, true, true] },
+                                            { text: `${fecha_ingreso[0]}`, border: [true, true, true, true] },
+                                            { text: `${fecha_ingreso[1]}`, border: [true, true, true, true] },
                                             { text: `${workflow[index].cantidad}`, border: [true, true, true, true] },
                                         ]
                                     ]
@@ -266,7 +278,7 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
                                                     heights: 80,
                                                     widths: [80],
                                                     body: [
-                                                        ['']
+                                                        [{ text: 'Sello', fontSize: 8, alignment: 'center' }]
                                                     ]
                                                 },
                                             },
@@ -292,10 +304,10 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
                                             { text: '' }
                                         ],
                                         [
-                                            { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'center' }
+                                            { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
                                         ],
                                         [
-                                            { text: 'Firm y sello', colSpan: 2, border: [false, false, false, false], alignment: 'center' }
+                                            { text: 'FIRMA Y SELLO', colSpan: 2, border: [false, false, false, false], alignment: 'right' },
 
                                         ]
                                     ]
@@ -500,7 +512,7 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
                                 table: {
                                     widths: ['*', '*'],
                                     body: [
-                                        [`CITE: ${tramite.cite ? tramite.cite : ''}  /   TEL.: ${tramite.solicitante.telefono}`,
+                                        [`CITE: ${tramite.cite ? tramite.cite : ''}    |    TEL.: ${tramite.solicitante.telefono}`,
                                         {
                                             table: {
                                                 widths: [160, 80],

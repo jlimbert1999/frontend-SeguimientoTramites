@@ -5,7 +5,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { TiposTramitesModel } from 'src/app/Configuraciones/models/tiposTramites.model';
 import { environment } from 'src/environments/environment';
 import { RepresentanteModel, SolicitanteModel } from '../models/solicitud.model';
-import { ExternoModel, ExternoData } from '../models/externo.model'
+
 const base_url = environment.base_url
 
 @Injectable({
@@ -22,13 +22,13 @@ export class TramiteService {
   //     })
   //   )
   // }
-  agregar_tramite_externo(tramite: ExternoModel, solicitante: SolicitanteModel, representante: RepresentanteModel) {
-    return this.http.post<{ ok: boolean, tramite: any }>(`${base_url}/tramites/externo`, { tramite, solicitante, representante }).pipe(
-      map(resp => {
-        return resp.tramite
-      })
-    )
-  }
+  // agregar_tramite_externo(tramite: ExternoModel, solicitante: SolicitanteModel, representante: RepresentanteModel) {
+  //   return this.http.post<{ ok: boolean, tramite: any }>(`${base_url}/tramites/externo`, { tramite, solicitante, representante }).pipe(
+  //     map(resp => {
+  //       return resp.tramite
+  //     })
+  //   )
+  // }
   editar_tramite_externo(id_tramite: string, tramite: any, solicitante: SolicitanteModel, representante: RepresentanteModel | null) {
     return this.http.put<{ ok: boolean, tramite: any }>(`${base_url}/tramites/externo/${id_tramite}`, { tramite, solicitante, representante }).pipe(
       map(resp => {
@@ -36,13 +36,13 @@ export class TramiteService {
       })
     )
   }
-  obtener_tramites_externos(pageIndex: number, items: number): Observable<{ ok: boolean, tramites: ExternoData[] }> {
-    return this.http.get<{ ok: boolean, tramites: ExternoData[] }>(`${base_url}/tramites`).pipe(
-      map(resp => {
-        return resp
-      })
-    )
-  }
+  // obtener_tramites_externos(pageIndex: number, items: number): Observable<{ ok: boolean, tramites: ExternoData[] }> {
+  //   return this.http.get<{ ok: boolean, tramites: ExternoData[] }>(`${base_url}/tramites`).pipe(
+  //     map(resp => {
+  //       return resp
+  //     })
+  //   )
+  // }
   obtener_tramite_externo(id_tramite: string) {
     return this.http.get<{ ok: boolean, tramite: any, workflow: any[], participantes: any[], instituciones: any[] }>(`${base_url}/tramites-externos/${id_tramite}`).pipe(
       map(resp => {
