@@ -6,7 +6,7 @@ import * as moment from 'moment';
 
 export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tramites_externos' | 'tramites_internos' | 'copia') => {
     workflow = workflow.filter(flujo => flujo.recibido === true || flujo.recibido === undefined)
-    const imagePath_Alcaldia: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia.png')
+    const imagePath_Alcaldia: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     let docDefinition: TDocumentDefinitions
     let check_interno, check_externo
     let primer_recuadro
@@ -43,7 +43,7 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
             { text: '', border: [true, true, true, true] },
             { text: ``, border: [true, true, true, true] }
         ]
-        hojas = 7
+        hojas = 4
         primer_numero_envio = ""
     }
 
@@ -310,8 +310,8 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
             },
             {
                 image: imagePath_Alcaldia,
-                width: 80,
-                height: 75,
+                width: 140,
+                height: 60,
                 alignment: 'left',
                 absolutePosition: { x: 10, y: 10 }
             },
@@ -381,7 +381,7 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
                             body: [
                                 [
                                     { text: 'NRO. UNICO DE CORRESPONDENCIA', border: [false, false, false, false] },
-                                    { text: `${tramite.alterno}`, style: 'header' }
+                                    { text: `${tramite.alterno}`, fontSize:12, bold:true }
                                 ]
                             ]
                         }

@@ -65,7 +65,8 @@ export class ExternosComponent implements OnInit {
 
   agregar_tramite() {
     const dialogRef = this.dialog.open(DialogExternoComponent, {
-      width: '1000px'
+      width: '1000px',
+      disableClose: true
     });
     dialogRef.afterClosed().subscribe((result: { tramite: Externo, solicitante: Solicitante, representante: Representante | null }) => {
       if (result) {

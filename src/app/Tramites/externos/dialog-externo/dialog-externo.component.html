@@ -127,22 +127,11 @@
                                 </mat-form-field>
                             </div>
                             <div class="col-sm-4">
-                                <mat-form-field appearance="legacy">
-                                    <mat-label>Expedido</mat-label>
-                                    <mat-select formControlName="expedido">
-                                        <mat-option *ngFor="let lugar of  Lugares" [value]="lugar">
-                                            {{lugar | uppercase}}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4">
                                 <mat-form-field class="example-full-width" appearance="legacy">
                                     <mat-label>Telefono de referencia</mat-label>
                                     <input matInput formControlName="telefono">
                                 </mat-form-field>
+                               
                             </div>
                         </div>
                     </form>
@@ -219,18 +208,6 @@
                             <input matInput formControlName="dni">
                         </mat-form-field>
                     </div>
-                    <div class="col-sm-4">
-                        <mat-form-field appearance="legacy">
-                            <mat-label>Expedido</mat-label>
-                            <mat-select formControlName="expedido">
-                                <mat-option *ngFor="let lugar of  Lugares" [value]="lugar">
-                                    {{lugar | uppercase}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                </div>
-                <div class="row">
                     <div class="col-sm-4">
                         <mat-form-field class="example-full-width" appearance="legacy">
                             <mat-label>Telefono de referencia</mat-label>

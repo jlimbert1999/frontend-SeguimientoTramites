@@ -24,17 +24,6 @@ export class DialogExternoComponent implements OnInit {
     'Libreta servicio militar',
     'Pasaporte'
   ]
-  Lugares = [
-    'Cochabamba',
-    'Santa Cruz',
-    'La paz',
-    'Beni',
-    'Pando',
-    'Oruro',
-    'Potosi',
-    'Tarija',
-    'Chuquisaca',
-  ]
   TramiteFormGroup: FormGroup = this.fb.group({
     cantidad: ['', Validators.required],
     detalle: ['', Validators.required],
@@ -50,7 +39,6 @@ export class DialogExternoComponent implements OnInit {
     telefono: [''],
     tipo: ['', Validators.required],
     dni: ['', Validators.required],
-    expedido: ['', Validators.required],
     documento: ['', Validators.required],
   });
   RepresentanteFormGroup: FormGroup | null = null;
@@ -141,7 +129,6 @@ export class DialogExternoComponent implements OnInit {
           }
           break;
       }
-
       this.dialogRef.close(Tramite)
     }
   }
@@ -156,7 +143,6 @@ export class DialogExternoComponent implements OnInit {
           telefono: [''],
           tipo: [type, Validators.required],
           dni: ['', Validators.required],
-          expedido: ['', Validators.required],
           documento: ['', Validators.required],
         });
         break;
@@ -178,7 +164,6 @@ export class DialogExternoComponent implements OnInit {
           materno: [''],
           documento: ['', Validators.required],
           dni: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-          expedido: ['', Validators.required],
           telefono: ['', [Validators.required, Validators.pattern('^[0-9]*$')]]
         });
         break;

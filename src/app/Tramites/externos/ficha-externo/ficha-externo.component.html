@@ -104,11 +104,6 @@
                                                     value="{{Tramite.solicitante.dni}}" disabled readonly>
                                             </div>
                                             <div class="col-md-4">
-                                                <label class="form-label">Expedido</label>
-                                                <input class="form-control" type="text"
-                                                    value="{{Tramite.solicitante.expedido}}" disabled readonly>
-                                            </div>
-                                            <div class="col-md-4">
                                                 <label class="form-label">Telefono</label>
                                                 <input class="form-control" type="text"
                                                     value="{{Tramite.solicitante.telefono}}" disabled readonly>
@@ -154,11 +149,7 @@
                                         <input class="form-control" type="text" value="{{Tramite.representante.dni}}"
                                             disabled readonly>
                                     </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label">Expedido</label>
-                                        <input class="form-control" type="text"
-                                            value="{{Tramite.representante.expedido}}" disabled readonly>
-                                    </div>
+
                                     <div class="col-md-4">
                                         <label class="form-label">Telefono</label>
                                         <input class="form-control" type="text"
@@ -171,28 +162,33 @@
 
                 </div>
             </div>
-            <div class="row">
 
-
-
-            </div>
-            <div class="card" *ngIf="Tramite">
+            <div class="card">
                 <h3 class="card-header fw-bold bg-light mb-3">OBSERVACIONES</h3>
                 <div class="card-body">
                     <app-observaciones [Options]="false" [Observaciones]="Tramite.observaciones"></app-observaciones>
                 </div>
             </div>
-            <div class="card" *ngIf="Tramite">
+            <div class="card">
                 <h3 class="card-header fw-bold bg-light mb-3">REQUERIMIENTOS PRESENTADOS</h3>
-                <div class="card-body">
-                    <ol class="list-group list-group-numbered">
-                        <li *ngFor="let requerimiento of Tramite.requerimientos"
-                            class="list-group-item d-flex justify-content-between align-items-start">
-                            <div class="ms-2 me-auto">
-                                {{requerimiento|uppercase}}
-                            </div>
-                        </li>
-                    </ol>
+                <div [ngSwitch]="Tramite.requerimientos.length">
+                    <div *ngSwitchCase="0">
+                        <div class="alert alert-primary" role="alert">
+                            No se presentaron requerimientos
+                        </div>
+                    </div>
+                    <div *ngSwitchDefault>
+                        <div class="card-body">
+                            <ol class="list-group list-group-numbered">
+                                <li *ngFor="let requerimiento of Tramite.requerimientos"
+                                    class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        {{requerimiento|uppercase}}
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
                 </div>
             </div>
         </mat-tab>
