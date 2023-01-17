@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { TiposTramitesModel } from 'src/app/Configuraciones/models/tiposTramites.model';
 import { environment } from 'src/environments/environment';
 import { Externo, Representante, Solicitante } from '../externos/models/externo';
-import { TipoTramite_Registro } from '../externos/models/tipos';
+import { TypeTramiteData } from '../externos/models/tipos';
 import { ExternoData } from '../externos/models/externo';
 import { RepresentanteModel, SolicitanteModel } from '../models/solicitud.model';
 const base_url = environment.base_url
@@ -12,12 +12,13 @@ const base_url = environment.base_url
   providedIn: 'root'
 })
 export class ExternosService {
+  resultsLength: number = 0
   offset: number = 0
   limit: number = 10
 
   constructor(private http: HttpClient) { }
   getTypes(segmento: string) {
-    return this.http.get<{ ok: boolean, data: TipoTramite_Registro[] }>(`${base_url}/tramites-externos/tipos/${segmento}`).pipe(
+    return this.http.get<{ ok: boolean, data: TypeTramiteData[] }>(`${base_url}/tramites-externos/tipos/${segmento}`).pipe(
       map(resp => {
         return resp.data
       })
@@ -31,21 +32,23 @@ export class ExternosService {
     )
   }
 
-  addExterno(tramite: Externo, solicitante: Solicitante, representante: Representante | null) {
+  Add(tramite: Externo, solicitante: Solicitante, representante: Representante | null) {
     return this.http.post<{ ok: boolean, tramite: ExternoData }>(`${base_url}/tramites-externos`, { tramite, solicitante, representante }).pipe(
       map(resp => {
+        this.resultsLength += 1
         return resp.tramite
       })
     )
   }
-  getExternos() {
-    return this.http.get<{ ok: boolean, tramites: ExternoData[], total: number }>(`${base_url}/tramites-externos?offset=${this.offset}&limit=${this.limit}`).pipe(
+  Get() {
+    return this.http.get<{ ok: boolean, data: { tramites: ExternoData[], total: number } }>(`${base_url}/tramites-externos`, { params: { limit: this.limit, offset: this.offset } }).pipe(
       map(resp => {
-        return { tramites: resp.tramites, total: resp.total }
+        this.resultsLength = resp.data.total
+        return resp.data.tramites
       })
     )
   }
-  editExterno(id_tramite: string, tramite: any, solicitante: Solicitante, representante: Representante | null) {
+  Edit(id_tramite: string, tramite: any, solicitante: any, representante: any | null) {
     return this.http.put<{ ok: boolean, data: ExternoData }>(`${base_url}/tramites-externos/${id_tramite}`, { tramite, solicitante, representante }).pipe(
       map(resp => {
         return resp.data
@@ -94,10 +97,19 @@ export class ExternosService {
   }
 
   filter(text: string, option: string) {
-    return this.http.get<{ ok: boolean, data: ExternoData[] }>(`${base_url}/tramites-externos/filtrar/${text}?option=${option}`).pipe(
+    return this.http.get<{ ok: boolean, data: { tramites: ExternoData[], total: number } }>(`${base_url}/tramites-externos/filter/${text}?option=${option}&limit=${this.limit}&offset=${this.offset}`).pipe(
       map(resp => {
-        return resp.data
+        return { tramites: resp.data.tramites, total: resp.data.total }
       })
     )
+  }
+
+  resetPagination() {
+    this.offset = 0
+    this.limit = 10
+  }
+  setPagination(limit: number, offset: number) {
+    this.limit = limit
+    this.offset = offset
   }
 }

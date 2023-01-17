@@ -34,8 +34,8 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   protected _onDestroy2 = new Subject<void>();
 
   FormEnvio: FormGroup = this.fb.group({
-    motivo: ['', Validators.required],
-    cantidad: [this.Data.cantidad, Validators.required],
+    motivo: ['Para su atencion', Validators.required],
+    cantidad: [this.Data.tramite.cantidad, Validators.required],
     numero_interno: ['']
   });
 
@@ -45,15 +45,18 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public Data: {
-      id_tramite: string,
+      _id: string,
       tipo: 'tramites_externos' | 'tramites_internos',
-      tipo_tramite: string,
-      alterno: string,
-      cantidad: string
+      tramite: {
+        nombre: string,
+        alterno: string,
+        cantidad: string
+      }
     },
     public dialogRef: MatDialogRef<DialogRemisionComponent>,
     private toastr: ToastrService,
   ) { }
+
   ngOnDestroy(): void {
     this._onDestroy.next();
     this._onDestroy.complete();
@@ -69,8 +72,6 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
 
   obtener_dependencias(id_institucion: string) {
     this.funcionarios = []
-
-
     this.bandejaService.obtener_dependencias_envio(id_institucion).subscribe(deps => {
       this.dependencias = deps
       this.bankCtrl.setValue(this.dependencias);
@@ -82,15 +83,14 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
         });
     })
   }
-  obtener_funcionarios(id_dependencia: string) {
+  getUsers(id_dependencia: string) {
     this.funcionarios = []
-
-    this.bandejaService.obtener_funcionarios_envio(id_dependencia).subscribe(users => {
+    this.bandejaService.getUsersForSend(id_dependencia).subscribe(users => {
       users.forEach(user => {
-        if (user._id !== this.authService.Detalles_Cuenta.id_cuenta) {
-          let onlineUser = this.socketService.Users.find(userSocket => userSocket.id_cuenta === user._id)
+        if (user.id_cuenta !== this.authService.Account.id_cuenta) {
+          let onlineUser = this.socketService.OnlineUsers.find(userSocket => userSocket.id_cuenta === user.id_cuenta)
           if (onlineUser) {
-            user.id = onlineUser.id
+            user.online = true
           }
           this.funcionarios.push(user)
         }
@@ -105,31 +105,30 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
     })
   }
   seleccionar_receptor() {
-    console.log(this.UserCtrl)
     this.receptor = this.UserCtrl.value
   }
 
-  remitir_tramite() {
+  send() {
     let nuevoEnvio: EnvioModel = {
-      id_tramite: this.Data.id_tramite,
+      id_tramite: this.Data._id,
       motivo: this.FormEnvio.get('motivo')?.value,
       cantidad: this.FormEnvio.get('cantidad')?.value,
       numero_interno: this.FormEnvio.get('numero_interno')?.value,
       tipo: this.Data.tipo,
       emisor: {
-        cuenta: this.authService.Detalles_Cuenta.id_cuenta,
-        funcionario: this.authService.Detalles_Cuenta.funcionario,
-        cargo: this.authService.Detalles_Cuenta.cargo
+        cuenta: this.authService.Account.id_cuenta,
+        funcionario: this.authService.Account.funcionario.nombre_completo,
+        cargo: this.authService.Account.funcionario.cargo
       },
       receptor: {
-        cuenta: this.receptor._id,
-        funcionario: `${this.receptor.funcionario.nombre} ${this.receptor.funcionario.paterno} ${this.receptor.funcionario.materno}`,
-        cargo: this.receptor.funcionario.cargo
+        cuenta: this.receptor.id_cuenta,
+        funcionario: this.receptor.fullname,
+        cargo: this.receptor.jobtitle
       }
     }
     Swal.fire({
       title: `Enviar tramite?`,
-      text: `El funcionario ${this.receptor.funcionario.nombre} ${this.receptor.funcionario.paterno} ${this.receptor.funcionario.materno} (${this.receptor.funcionario.cargo}) recibira el tramite`,
+      text: `El funcionario ${this.receptor.fullname} (${this.receptor.jobtitle}) recibira el tramite`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -139,8 +138,8 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
     }).then((result) => {
       if (result.isConfirmed) {
         this.bandejaService.agregar_mail(nuevoEnvio).subscribe(tramite => {
-          if (this.receptor.id) {
-            this.socketService.socket.emit("enviar-tramite", { id: this.receptor.id, tramite })
+          if (this.receptor.online) {
+            this.socketService.socket.emit("mail", { id_cuenta: this.receptor.id_cuenta, tramite })
           }
           this.toastr.success(undefined, 'Tramite enviado!', {
             positionClass: 'toast-bottom-right',
@@ -180,7 +179,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
       search = search.toLowerCase();
     }
     this.filteredUsers.next(
-      this.funcionarios.filter(user => user.funcionario.nombre.toLowerCase().indexOf(search) == 0 || user.funcionario.cargo.toLowerCase().indexOf(search) == 0)
+      this.funcionarios.filter(user => user.fullname.toLowerCase().indexOf(search) > -1 || user.jobtitle.toLowerCase().indexOf(search) > -1)
     );
   }
 }

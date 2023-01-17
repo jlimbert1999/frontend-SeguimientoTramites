@@ -3,27 +3,18 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Content, TDocumentDefinitions } from "pdfmake/interfaces";
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
+import { ExternoData } from "../models/externo";
 const ordinales = require("ordinales-js");
 
-export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tramites_externos' | 'tramites_internos' | 'copia') => {
-    const imagePath_Alcaldia: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
+export const HojaRuta = async (tramite: ExternoData, workflow: any[]) => {
+    const img1: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     workflow = workflow.filter(flujo => flujo.recibido === true || flujo.recibido === undefined)
     let docDefinition: TDocumentDefinitions
-    let checkType = ['', '', '']
-    switch (tipo) {
-        case 'tramites_externos':
-            checkType = ['', 'X', '']
-            break;
-        case 'tramites_internos':
-            checkType = ['X', '', '']
-            break;
-        default:
-            checkType = ['', '', 'x']
-            break;
-    }
-
+    let checkType = ['', 'X', '']
+    let NameSolicitante: string = tramite.solicitante.tipo === 'NATURAL' ? `${tramite.solicitante.nombre} ${tramite.solicitante.paterno} ${tramite.solicitante.materno}` : `${tramite.solicitante.nombre}`
     let cuadrados: Content[] = []
     let destinatario: any
+    let initNumberPage, endNumberPage
 
     if (workflow.length === 0) {
         cuadrados.push(
@@ -127,103 +118,8 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
                 }
             }
         )
-        for (let index = 1; index < 8; index++) {
-            cuadrados.push({
-                unbreakable: true,
-                fontSize: 7,
-                table: {
-                    headerRows: 1,
-                    dontBreakRows: true,
-                    widths: [360, '*'],
-                    body: [
-                        [{ text: `DESTINATARIO: ${ordinales.toOrdinal(index + 1)}:                                                                               `.toUpperCase(), colSpan: 2, decoration: 'underline', alignment: 'left', border: [true, true, true, false] }, ''],
-                        [
-                            {
-                                border: [true, false, false, false],
-                                table: {
-                                    body: [
-                                        [
-                                            {
-                                                table: {
-                                                    heights: 70,
-                                                    widths: [70],
-                                                    body: [
-                                                        [{ text: 'SELLO DE RECEPCION', fontSize: 4, alignment: 'center' }]
-                                                    ]
-                                                },
-                                            },
-                                            [
-                                                { text: 'INSTRUCCION / PROVEIDO' },
-                                                { text: ``, bold: true },
-                                            ]
-                                        ]
-                                    ]
-                                },
-                                layout: {
-                                    defaultBorder: false,
-                                }
-                            },
-                            {
-                                rowSpan: 1,
-                                border: [false, false, true, false],
-                                table: {
-                                    widths: [100, 40],
-                                    body: [
-                                        [
-                                            { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                            { text: `` }
-                                        ],
-                                        [
-                                            { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
-                                        ],
-                                        [
-                                            { text: 'FIRMA Y SELLO', colSpan: 2, border: [false, false, false, false], alignment: 'right' },
-
-                                        ]
-                                    ]
-                                }
-                            }
-                        ],
-                        [
-                            {
-                                colSpan: 2,
-                                border: [true, false, true, true],
-                                alignment: 'center',
-                                fontSize: 5,
-                                table: {
-                                    widths: [30, 45, 35, '*', 30, 45, 35, '*'],
-                                    body: [
-                                        [
-                                            '',
-                                            'FECHA',
-                                            'HORA',
-                                            'CANTIDAD DE HOJAS / ANEXOS',
-                                            '',
-                                            'FECHA',
-                                            'HORA',
-                                            'CANTIDAD DE HOJAS / ANEXOS'
-                                        ],
-                                        [
-                                            { text: 'INGRESO', border: [false, false, false, false], fontSize: 7 },
-                                            { text: ``, fontSize: 8, border: [true, true, true, true] },
-                                            { text: ``, fontSize: 8, border: [true, true, true, true] },
-                                            { text: ``, fontSize: 6, border: [true, true, true, true] },
-                                            { text: 'SALIDA', border: [false, false, false, false], fontSize: 7 },
-                                            { text: '', border: [true, true, true, true], fontSize: 8 },
-                                            { text: '', border: [true, true, true, true], fontSize: 8 },
-                                            { text: '', border: [true, true, true, true], fontSize: 6 }
-                                        ]
-                                    ]
-                                },
-                                layout: {
-                                    defaultBorder: false,
-                                }
-                            }
-                        ],
-                    ]
-                }
-            })
-        }
+        initNumberPage = 1
+        endNumberPage = 8
         destinatario = {
             nombre: '....................................................',
             cargo: '.....................................................',
@@ -233,7 +129,6 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
 
     }
     else {
-
         destinatario = {
             nombre: `${workflow[0].receptor.funcionario}`,
             cargo: workflow[0].receptor.cargo,
@@ -309,7 +204,7 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
                                     body: [
                                         [
                                             { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                            { text: `${salida[3]}` }
+                                            { text: `${salida[3]}`, fontSize: 9 }
                                         ],
                                         [
                                             { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
@@ -432,7 +327,7 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
                                     body: [
                                         [
                                             { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                            { text: `${salida[3]}` }
+                                            { text: `${salida[3]}`, fontSize: 9 }
                                         ],
                                         [
                                             { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
@@ -484,104 +379,104 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
                 }
             })
         }
-
-        for (let index = workflow.length; index < 8; index++) {
-            cuadrados.push({
-                fontSize: 7,
-                unbreakable: true,
-                table: {
-                    dontBreakRows: true,
-                    widths: [360, '*'],
-                    body: [
-                        [{ text: `DESTINATARIO: ${ordinales.toOrdinal(index + 1)}                                                                               `.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, true, true, false] }, ''],
-                        [
-                            {
-                                border: [true, false, false, false],
-                                table: {
-                                    body: [
-                                        [
-                                            {
-                                                table: {
-                                                    heights: 70,
-                                                    widths: [70],
-                                                    body: [
-                                                        [{ text: 'SELLO DE RECEPCION', fontSize: 4, alignment: 'center' }]
-                                                    ]
-                                                },
+        initNumberPage = workflow.length
+        endNumberPage = 8
+    }
+    for (let index = initNumberPage; index < endNumberPage; index++) {
+        cuadrados.push({
+            fontSize: 7,
+            unbreakable: true,
+            table: {
+                dontBreakRows: true,
+                widths: [360, '*'],
+                body: [
+                    [{ text: `DESTINATARIO: ${ordinales.toOrdinal(index + 1)}                                                                               `.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, true, true, false] }, ''],
+                    [
+                        {
+                            border: [true, false, false, false],
+                            table: {
+                                body: [
+                                    [
+                                        {
+                                            table: {
+                                                heights: 70,
+                                                widths: [70],
+                                                body: [
+                                                    [{ text: 'SELLO DE RECEPCION', fontSize: 4, alignment: 'center' }]
+                                                ]
                                             },
-                                            [
-                                                { text: 'INSTRUCCION / PROVEIDO' },
-                                                { text: ``, bold: true },
-                                            ]
+                                        },
+                                        [
+                                            { text: 'INSTRUCCION / PROVEIDO' },
+                                            { text: ``, bold: true },
                                         ]
                                     ]
-                                },
-                                layout: {
-                                    defaultBorder: false,
-                                }
+                                ]
                             },
-                            {
-                                rowSpan: 1,
-                                border: [false, false, true, false],
-                                table: {
-                                    widths: [100, 40],
-                                    body: [
-                                        [
-                                            { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                            { text: '' }
-                                        ],
-                                        [
-                                            { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
-                                        ],
-                                        [
-                                            { text: 'FIRMA Y SELLO', colSpan: 2, border: [false, false, false, false], alignment: 'right' },
-
-                                        ]
-                                    ]
-                                }
+                            layout: {
+                                defaultBorder: false,
                             }
-                        ],
-                        [
-                            {
-                                colSpan: 2,
-                                border: [true, false, true, true],
-                                alignment: 'center',
-                                fontSize: 5,
-                                table: {
-                                    widths: [30, 45, 35, '*', 30, 45, 35, '*'],
-                                    body: [
-                                        [
-                                            '',
-                                            'FECHA',
-                                            'HORA',
-                                            'CANTIDAD DE HOJAS / ANEXOS',
-                                            '',
-                                            'FECHA',
-                                            'HORA',
-                                            'CANTIDAD DE HOJAS / ANEXOS'
-                                        ],
-                                        [
-                                            { text: 'INGRESO', border: [false, false, false, false], fontSize: 7 },
-                                            { text: ``, fontSize: 8, border: [true, true, true, true] },
-                                            { text: ``, fontSize: 8, border: [true, true, true, true] },
-                                            { text: ``, fontSize: 6, border: [true, true, true, true] },
-                                            { text: 'SALIDA', border: [false, false, false, false], fontSize: 7 },
-                                            { text: '', border: [true, true, true, true], fontSize: 8 },
-                                            { text: '', border: [true, true, true, true], fontSize: 8 },
-                                            { text: '', border: [true, true, true, true], fontSize: 6 }
-                                        ]
-                                    ]
-                                },
-                                layout: {
-                                    defaultBorder: false,
-                                }
-                            }
-                        ],
-                    ]
-                }
-            })
+                        },
+                        {
+                            rowSpan: 1,
+                            border: [false, false, true, false],
+                            table: {
+                                widths: [100, 40],
+                                body: [
+                                    [
+                                        { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
+                                        { text: '' }
+                                    ],
+                                    [
+                                        { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
+                                    ],
+                                    [
+                                        { text: 'FIRMA Y SELLO', colSpan: 2, border: [false, false, false, false], alignment: 'right' },
 
-        }
+                                    ]
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            colSpan: 2,
+                            border: [true, false, true, true],
+                            alignment: 'center',
+                            fontSize: 5,
+                            table: {
+                                widths: [30, 45, 35, '*', 30, 45, 35, '*'],
+                                body: [
+                                    [
+                                        '',
+                                        'FECHA',
+                                        'HORA',
+                                        'CANTIDAD DE HOJAS / ANEXOS',
+                                        '',
+                                        'FECHA',
+                                        'HORA',
+                                        'CANTIDAD DE HOJAS / ANEXOS'
+                                    ],
+                                    [
+                                        { text: 'INGRESO', border: [false, false, false, false], fontSize: 7 },
+                                        { text: ``, fontSize: 8, border: [true, true, true, true] },
+                                        { text: ``, fontSize: 8, border: [true, true, true, true] },
+                                        { text: ``, fontSize: 6, border: [true, true, true, true] },
+                                        { text: 'SALIDA', border: [false, false, false, false], fontSize: 7 },
+                                        { text: '', border: [true, true, true, true], fontSize: 8 },
+                                        { text: '', border: [true, true, true, true], fontSize: 8 },
+                                        { text: '', border: [true, true, true, true], fontSize: 6 }
+                                    ]
+                                ]
+                            },
+                            layout: {
+                                defaultBorder: false,
+                            }
+                        }
+                    ],
+                ]
+            }
+        })
 
     }
 
@@ -593,7 +488,7 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
                 style: 'cabecera',
                 columns: [
                     {
-                        image: imagePath_Alcaldia,
+                        image: img1,
                         width: 150,
                         height: 60,
                     },
@@ -615,7 +510,6 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
                     widths: ['*'],
                     body: [
                         [{ text: 'PRIMERA PARTE', bold: true }],
-                        // TICKEO TIPO DE TRAMITE
                         [
                             {
                                 border: [true, false, true, false],
@@ -723,21 +617,22 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
                                     widths: ['*', '*'],
                                     body: [
                                         [{ text: 'DATOS DE ORIGEN', bold: true }, ''],
-                                        [`${tramite.cite !== '' ? 'CITE: ' + tramite.cite : ''}`,
+                                        [`${tramite.cite !== '' ? 'CITE: ' + tramite.cite : ''}    |    TEL.: ${tramite.solicitante.telefono}`,
                                         {
                                             table: {
-                                                widths: [160, 80],
+                                                widths: [85, 100, 40],
                                                 body: [
                                                     [
+                                                        { text: '', border: [false, false, false, false] },
                                                         { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                                        { text: `${destinatario.numero_interno}` },
+                                                        { text: `${destinatario.numero_interno}`, fontSize: 9, alignment: 'center' },
                                                     ]
                                                 ]
                                             },
                                         },
                                         ],
-                                        [`REMITENTE: ${tramite.remitente.nombre}`, `CARGO: ${tramite.remitente.cargo}`],
-                                        [`DESTINATARIO: ${tramite.destinatario.nombre}`, `CARGO:${tramite.destinatario.cargo}`],
+                                        [`REMITENTE: ${NameSolicitante}`, `CARGO: P. ${tramite.solicitante.tipo}`],
+                                        [`DESTINATARIO: ${destinatario.nombre}`, `CARGO:${destinatario.cargo}`],
                                         [{ text: `REFERENCIA: ${tramite.detalle}`, colSpan: 2 }]
                                     ]
                                 },
@@ -789,19 +684,12 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
 
                 }
             },
-
-            cuadrados,
-
-
-            // secodPages
-
+            cuadrados
         ],
         footer: [
-
-            { text: '\nNOTA: Esta hoja de ruta de correspondencia, no debera ser separada ni extraviada del documento del cual se encuentra adherida, por constituirse parte indivisible del mismo\n\n', margin: [30, -10], fontSize: 6, bold: true },
+            { text: 'NOTA: Esta hoja de ruta de correspondencia, no debera ser separada ni extraviada del documento del cual se encuentra adherida, por constituirse parte indivisible del mismo', margin: [30, -2], fontSize: 7, bold: true },
             { text: 'Direccion: Plaza 6 de agosto E-0415 - Telefono: No. Piloto 4701677 - 4702301 - 4703059 - Fax interno: 143', fontSize: 7, color: '#BC6C25', margin: [30, 1] },
             { text: 'E-mail: info@sacaba.gob.bo - Pagina web: www.sacaba.gob.bo', fontSize: 7, pageBreak: 'after', color: '#BC6C25', margin: [30, 1] },
-
         ],
         styles: {
             cabecera: {
@@ -826,6 +714,7 @@ export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tram
     pdfMake.createPdf(docDefinition).print();
 
 }
+
 const getBase64ImageFromUrl = async (imageUrl: string) => {
     var res = await fetch(imageUrl);
     var blob = await res.blob();
@@ -837,3 +726,4 @@ const getBase64ImageFromUrl = async (imageUrl: string) => {
         reader.readAsDataURL(blob);
     })
 }
+

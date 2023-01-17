@@ -4,9 +4,9 @@
       <mat-icon>menu</mat-icon>
     </button>
     <span class="campo_cuenta">
-      <div mat-line> {{authService.Detalles_Cuenta.funcionario|titlecase|titlecase}}</div>
-      <div mat-line style="font-size: 11px">{{authService.Detalles_Cuenta.cargo|titlecase}}
-        ({{authService.Detalles_Cuenta.rol|titlecase}})</div>
+      <div mat-line> {{authService.Account.funcionario.nombre_completo|titlecase}}</div>
+      <div mat-line style="font-size: 11px">{{authService.Account.funcionario.cargo|titlecase}}
+        ({{authService.Account.rol|titlecase}})</div>
     </span>
 
     <span class="example-spacer"></span>
@@ -18,11 +18,11 @@
 
 
     <mat-menu #menu="matMenu">
-      <button *ngIf="authService.Detalles_Cuenta.rol!=='admin'" mat-menu-item (click)="editAccount()">
+      <button *ngIf="authService.Account.rol!=='admin'" mat-menu-item (click)="editAccount()">
         <mat-icon>settings</mat-icon>
         <span>Configurar cuenta</span>
       </button>
-      <button (click)="authService.logout()" mat-menu-item>
+      <button (click)="logout()" mat-menu-item>
         <mat-icon>logout</mat-icon>
         <span>Cerrar sesion</span>
       </button>

@@ -11,25 +11,30 @@ const base_url = environment.base_url
   providedIn: 'root'
 })
 export class InternosService {
+  resultsLength: number = 0
+  offset: number = 0
+  limit: number = 10
 
   constructor(private http: HttpClient) { }
 
   addInterno(tramite: TramiteInternoModel) {
-    return this.http.post<{ ok: boolean, tramite: any }>(`${base_url}/tramites-internos`, tramite).pipe(
+    return this.http.post<{ ok: boolean, data: any }>(`${base_url}/tramites-internos`, tramite).pipe(
       map(resp => {
-        return resp.tramite
+        this.resultsLength += 1
+        return resp.data
       })
     )
   }
   getInternos() {
-    return this.http.get<{ ok: boolean, tramites: any[] }>(`${base_url}/tramites-internos`).pipe(
+    return this.http.get<{ ok: boolean, data: { tramites: any[], total: number } }>(`${base_url}/tramites-internos`).pipe(
       map(resp => {
-        return resp.tramites
+        this.resultsLength = resp.data.total
+        return resp.data.tramites
       })
     )
   }
   editInterno(id_tramite: string, tramite: any) {
-    return this.http.put<{ ok: boolean, tramite: [] }>(`${base_url}/tramites-internos/${id_tramite}`, tramite).pipe(
+    return this.http.put<{ ok: boolean, tramite: any }>(`${base_url}/tramites-internos/${id_tramite}`, tramite).pipe(
       map(resp => {
         return resp.tramite
       })
@@ -43,9 +48,16 @@ export class InternosService {
     )
   }
 
+  conclude(id_tramite: string) {
+    return this.http.delete<{ ok: boolean, message: string }>(`${base_url}/tramites-internos/${id_tramite}`).pipe(
+      map(resp => {
+        return resp.message
+      })
+    )
+  }
 
   addObservacion(descripcion: string, id_tramite: string, funcionario: string) {
-    return this.http.put<{ ok: boolean, observacion: any}>(`${base_url}/tramites-internos/observacion/${id_tramite}`, { descripcion, funcionario }).pipe(
+    return this.http.put<{ ok: boolean, observacion: any }>(`${base_url}/tramites-internos/observacion/${id_tramite}`, { descripcion, funcionario }).pipe(
       map(resp => {
         return resp.observacion
       })

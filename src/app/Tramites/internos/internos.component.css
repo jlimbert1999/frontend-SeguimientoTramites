@@ -1,13 +1,142 @@
-.example-spacer {
-    flex: 1 1 auto;
+.mat-cell {
+    font-size: 9px;
+    padding-right: 20px
 }
 
-table {
-    width: 100%;
+.badge {
+    font-size: 9px;
 }
-.mat-cell {
-    font-size: 12px;
+
+
+td.mat-column-alterno {
+    width: 150px;
 }
-.badge{
-    font-size: 12px;
+
+td.mat-column-tramite {
+    width: 240px;
+    font-weight: bold;
+}
+
+td.mat-column-descripcion {
+    width: 300px;
+    font-size: 8px;
+    padding-right: 20px;
+}
+
+td.mat-column-estado {
+    width: 100px;
+}
+td.mat-column-cite {
+    width: 80px;
+}
+
+td.mat-column-solicitante {
+    width: 200px;
+}
+
+td.mat-column-fecha {
+    width: 100px;
+}
+td.mat-column-enviado {
+    width: 50px;
+}
+
+td.mat-column-opciones {
+    width: 32px;
+    border-left: 1px solid;
+}
+
+@media screen and (max-width: 800px) {
+    .mat-elevation-z8 {
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .mat-header-row {
+        display: none;
+    }
+
+    tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .mat-table {
+        background: transparent;
+    }
+
+    .mat-table * {
+        box-sizing: border-box;
+    }
+
+    .mat-table .mat-row {
+        display: block;
+        overflow: hidden;
+        height: auto;
+        position: relative;
+        clear: both;
+        box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+        background-color: #fff;
+        border-radius: 3px;
+    }
+
+    .mat-table .mat-row+.mat-row {
+        margin-top: 24px;
+    }
+
+
+    .mat-table .mat-cell {
+        display: block;
+        width: 100%;
+        padding: 0 16px;
+        margin: 16px 0;
+        border: 0 none;
+
+    }
+
+    .mat-table .mat-cell:first-child {
+        padding: 0 48px 0 16px;
+    }
+
+    .mat-table .mat-cell:first-child a {
+        font-size: 16px;
+    }
+
+    .mat-table .mat-cell:first-child:before {
+        display: none;
+    }
+
+    .mat-table .mat-cell.m-card-sub-title {
+        margin-top: 8px;
+        padding: 0 48px 0 16px;
+        color: rgba(0, 0, 0, 0.54);
+        font-size: 18px;
+
+    }
+
+    .mat-table .has_label_on_mobile:before {
+        content: attr(data-label);
+        display: inline;
+        font-weight: bold;
+    }
+
+    .mat-table .mat-column-opciones {
+        width: auto;
+        padding: 8px 0 0 !important;
+        margin: 0;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .mat-table .mat-column-opciones:before {
+        display: none;
+    }
+
+    .mat-paginator {
+        position: absolute;
+        bottom: 0;
+    }
+
+
 }

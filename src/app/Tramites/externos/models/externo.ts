@@ -39,6 +39,7 @@ export interface ExternoData {
     requerimientos: string[]
     solicitante: Solicitante
     representante?: Representante
+    cite: string
     ubicacion: {
         _id: string,
         dependencia: {

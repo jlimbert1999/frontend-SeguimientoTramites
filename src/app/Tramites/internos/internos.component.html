@@ -1,5 +1,5 @@
 <mat-toolbar>
-    <span>Tramite internos</span>
+    <span>Internos</span>
     <span class="example-spacer"></span>
     <button (click)="agregar_tramite()" mat-icon-button class="example-icon"
         aria-label="Example icon-button with share icon">
@@ -9,14 +9,12 @@
 
 <div class="container-fluid" [@fadeInOnEnter]>
     <div class="mat-elevation-z8">
-        <table mat-table [dataSource]="dataSource">
+        <table mat-table [dataSource]="Data">
             <ng-container matColumnDef="alterno">
                 <th mat-header-cell *matHeaderCellDef> Alterno </th>
                 <td mat-cell *matCellDef="let element">
-                    <a href="">
-                        <a [routerLink]="['ficha', element._id]">
-                            {{element.alterno}}
-                        </a>
+                    <a [routerLink]="['ficha', element._id]">
+                        {{element.alterno}}
                     </a>
                 </td>
             </ng-container>
@@ -51,7 +49,7 @@
             <ng-container matColumnDef="cite">
                 <th mat-header-cell *matHeaderCellDef> Cite </th>
                 <td mat-cell *matCellDef="let element">
-                    {{element.cite}}
+                    {{element.cite!=""?element.cite:'---------'}}
                 </td>
             </ng-container>
             <ng-container matColumnDef="fecha">
@@ -67,17 +65,17 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu">
-                        <button mat-menu-item [disabled]="habilitar_opciones(element)"
+                        <button mat-menu-item [disabled]="element.estado!=='INSCRITO'"
                             (click)="editar_tramite(element)">
                             <mat-icon>edit</mat-icon>
                             <span>Editar tramite</span>
                         </button>
-                        <button mat-menu-item [disabled]="habilitar_opciones(element)"
+                        <button mat-menu-item [disabled]="denied_options(element.estado, element.ubicacion._id)"
                             (click)="remitir_tramite(element)">
                             <mat-icon>send</mat-icon>
                             <span>Remitir tramite</span>
                         </button>
-                        <button (click)="generar_hoja_ruta(element._id)"  mat-menu-item>
+                        <button (click)="generar_hoja_ruta(element._id)" mat-menu-item>
                             <mat-icon>feed</mat-icon>
                             <span>Hoja de ruta</span>
                         </button>
@@ -90,7 +88,7 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
 
-        <mat-paginator [pageSizeOptions]="[10, 20, 30, 50]" showFirstLastButtons
+        <mat-paginator [length]="internoService.resultsLength" [pageSizeOptions]="[10, 20, 30, 50]" showFirstLastButtons
             aria-label="Select page of periodic elements">
         </mat-paginator>
     </div>

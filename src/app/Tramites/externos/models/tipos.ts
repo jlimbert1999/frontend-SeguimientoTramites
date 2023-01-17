@@ -1,4 +1,4 @@
-export interface TipoTramite_Registro {
+export interface TypeTramiteData {
     id_tipoTramite: string
     nombre: string
     segmento: string

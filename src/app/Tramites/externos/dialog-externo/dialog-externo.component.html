@@ -1,4 +1,4 @@
-<h2 mat-dialog-title> REGISTRO TRAMITE </h2>
+<h2 mat-dialog-title>{{title}}</h2>
 <mat-dialog-content>
     <mat-stepper headerPosition="bottom" #stepper>
         <mat-step [stepControl]="TramiteFormGroup">
@@ -6,7 +6,7 @@
                 <ng-template matStepLabel>Detalles del tramite</ng-template>
                 <div *ngIf="!data" class="row">
                     <div class="col-sm-2">
-                        <mat-form-field appearance="legacy">
+                        <mat-form-field appearance="legacy" class="example-full-width">
                             <mat-label>Segmento</mat-label>
                             <mat-select (selectionChange)="getTypes($event.value)">
                                 <mat-option *ngFor="let segmento of Segmentos" [value]="segmento">
@@ -16,11 +16,11 @@
                         </mat-form-field>
                     </div>
                     <div class="col-sm-10">
-                        <mat-form-field appearance="legacy" class="selector-tramite">
+                        <mat-form-field appearance="legacy" class="example-full-width">
                             <mat-label>Seleccione el tipo de tramite</mat-label>
                             <mat-select (selectionChange)="selectType($event.value)">
-                                <mat-option *ngFor="let tipo of Types; let i=index" [value]="tipo">
-                                    {{i+1}} . {{tipo.nombre| uppercase}}
+                                <mat-option *ngFor="let tipo of Types" [value]="tipo">
+                                    {{tipo.nombre| uppercase}}
                                 </mat-option>
                             </mat-select>
                             <mat-error *ngIf="TramiteFormGroup.controls['tipo_tramite'].invalid">Seleccione un tramite
@@ -30,13 +30,14 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
-                        <mat-form-field class="example-full-width" appearance="legacy">
+                        <mat-form-field class="example-full-width">
                             <mat-label>Descripcion del tramite</mat-label>
-                            <input matInput #message formControlName="detalle" class="uppercase">
+                            <textarea matInput formControlName="detalle"></textarea>
                             <mat-error *ngIf="TramiteFormGroup.controls['detalle'].invalid">
                                 Ingrese la despcripcion
                             </mat-error>
                         </mat-form-field>
+
                     </div>
                     <div class="col-sm-3">
                         <mat-form-field class="example-full-width" appearance="legacy">
@@ -66,7 +67,7 @@
                             <div *ngSwitchDefault>
                                 <ol class="list-group list-group-numbered">
                                     <li class="list-group-item"
-                                        *ngFor="let requerimiento of SelectedType.requerimientos; let i=index">
+                                        *ngFor="let requerimiento of SelectedType.requerimientos">
                                         {{requerimiento.nombre}}</li>
                                 </ol>
                             </div>
@@ -78,7 +79,7 @@
         <mat-step [stepControl]="SolicitanteFormGroup">
             <ng-template matStepLabel>Detalles solicitante</ng-template>
             <div *ngIf="!data" class="row">
-                <mat-form-field appearance="legacy">
+                <mat-form-field appearance="legacy" class="example-full-width">
                     <mat-label>Seleccione el tipo de solicitante</mat-label>
                     <mat-select (selectionChange)="changeFormSolicitante($event.value)">
                         <mat-option [value]="'NATURAL'">SOLICITANTE NATURAL</mat-option>
@@ -111,7 +112,7 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-4">
-                                <mat-form-field appearance="legacy" #TipoDoc>
+                                <mat-form-field appearance="legacy" class="example-full-width" #TipoDoc>
                                     <mat-label>Tipo documento</mat-label>
                                     <mat-select formControlName="documento">
                                         <mat-option *ngFor="let documento of  tipos_documento" [value]="documento">
@@ -131,7 +132,7 @@
                                     <mat-label>Telefono de referencia</mat-label>
                                     <input matInput formControlName="telefono">
                                 </mat-form-field>
-                               
+
                             </div>
                         </div>
                     </form>
@@ -193,7 +194,7 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-4">
-                        <mat-form-field appearance="legacy" #TipoDoc>
+                        <mat-form-field appearance="legacy" class="example-full-width" #TipoDoc>
                             <mat-label>Tipo documento</mat-label>
                             <mat-select formControlName="documento">
                                 <mat-option *ngFor="let documento of  tipos_documento" [value]="documento">

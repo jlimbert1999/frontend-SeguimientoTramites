@@ -32,7 +32,7 @@ export interface InternoData {
     tipo_tramite: { nombre: string }
     alterno: string
     cuenta: string
-    ubicacion: { _id: string, funcionario: { nombre: string, cargo: string } },
+    ubicacion: { _id: string },
     detalle: string
     cite: string
     cantidad: string

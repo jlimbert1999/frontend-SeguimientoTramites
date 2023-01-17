@@ -46,6 +46,10 @@ export class InterceptorService {
       Swal.fire("Sin resultados", error.error.message, 'info')
 
     }
+    else if (error.status > 404 && error.status < 500) {
+      Swal.fire("Solicitud incorrecta", error.error.message, 'info')
+
+    }
     else {
       Swal.fire('error', error.error.message, 'error')
     }

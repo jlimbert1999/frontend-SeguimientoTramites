@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     public loader: LoaderService,
     private router: Router
   ) {
-    this.socketService.setupSocketConnection();
+    this.startConectGroupware()
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -45,27 +45,52 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // escuchar ingreso de usuarios
-    this.socketService.SocketOn_JoinUser().subscribe((users: any) => {
-      this.socketService.Users = users
+    this.socketService.listenUserConected().subscribe((users: any) => {
+      this.socketService.OnlineUsers = users
     })
-    this.socketService.SocketOn_Mails().subscribe((data: any) => {
-      this.toastr.info(`${data.emisor.funcionario.nombre} envio un tramite`, 'NUEVO TRAMITE RECIBIDO', {
+    // this.socketService.expelUser().subscribe(message => {
+    //   console.log(message)
+    //   this.authService.logout()
+    // })
+    this.socketService.listenNotifications().subscribe(data => {
+      alert(data)
+    })
+    this.socketService.listenMails().subscribe((mail: any) => {
+      this.toastr.info("Nuevo tramite recibido", undefined, {
         positionClass: 'toast-bottom-right',
         timeOut: 5000,
       })
-      this.bandejaService.dataSource = [data, ...this.bandejaService.dataSource]
+      this.bandejaService.DataMailsIn = [mail, ... this.bandejaService.DataMailsIn]
     })
 
-    // emitir solicitiud de ingreso recibiendo los users activos como respuesta
-    this.socketService.socket.emit('unirse', this.authService.Detalles_Cuenta, (users: any) => {
-      this.socketService.Users = users
-    })
+    // this.socketService.SocketOn_Mails().subscribe((data: any) => {
+    //   this.toastr.info(`${data.emisor.funcionario.nombre} envio un tramite`, 'NUEVO TRAMITE RECIBIDO', {
+    //     positionClass: 'toast-bottom-right',
+    //     timeOut: 5000,
+    //   })
+    //   this.bandejaService.dataSource = [data, ...this.bandejaService.dataSource]
+    // })
+
 
   }
-  editAccount(){
+  editAccount() {
     this.router.navigate(['home/perfil'])
   }
+
+  startConectGroupware() {
+    let user = {
+      id_cuenta: this.authService.Account.id_cuenta,
+      fullname: this.authService.Account.funcionario.nombre_completo,
+      jobtitle: this.authService.Account.funcionario.cargo
+    }
+    this.socketService.setupSocketConnection(user);
+  }
+
+  logout() {
+    this.authService.logout()
+    this.socketService.disconnect()
+  }
+
 
 
 

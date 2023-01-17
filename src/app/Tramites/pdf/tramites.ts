@@ -67,6 +67,7 @@ export const crear_ficha_tramite = async (tipo_tramite: string, fecha_registro: 
 
 export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tramites_externos' | 'tramites_internos' | 'copia') => {
     const imagePath_Alcaldia: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
+    workflow = workflow.filter(flujo => flujo.recibido === true || flujo.recibido === undefined)
     let docDefinition: TDocumentDefinitions
     let checkType = ['', '', '']
     switch (tipo) {
@@ -287,7 +288,8 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
         destinatario = {
             nombre: '....................................................',
             cargo: '.....................................................',
-            salida: ['', '', '']
+            salida: ['', '', ''],
+            numero_interno: ''
         }
 
     }
@@ -295,9 +297,10 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
         destinatario = {
             nombre: `${workflow[0].receptor.funcionario}`,
             cargo: workflow[0].receptor.cargo,
-            salida: [moment(workflow[0].fecha_envio).format('DD-MM-YYYY'), moment(workflow[0].fecha_envio).format('HH:mm A'), workflow[0].cantidad]
+            salida: [moment(workflow[0].fecha_envio).format('DD-MM-YYYY'), moment(workflow[0].fecha_envio).format('HH:mm A'), workflow[0].cantidad],
+            numero_interno: workflow[0].numero_interno
         }
-        let salida = ['', '', '']
+        let salida = ['', '', '', '']
         let ingreso = ['', '', '']
         switch (workflow[0].recibido) {
             case true:
@@ -315,11 +318,13 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
             salida[0] = moment(new Date(workflow[1].fecha_envio)).format('DD-MM-YYYY')
             salida[1] = moment(new Date(workflow[1].fecha_envio)).format('HH:mm A')
             salida[2] = workflow[1].cantidad
+            salida[3] = workflow[1].numero_interno
         }
         else {
             salida[0] = ""
             salida[1] = ""
             salida[2] = ""
+            salida[3] = ""
         }
         cuadrados.push(
             {
@@ -364,7 +369,7 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
                                     body: [
                                         [
                                             { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                            { text: `${workflow[0].numero_interno}` }
+                                            { text: `${salida[3]}`, fontSize: 9 }
                                         ],
                                         [
                                             { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
@@ -434,12 +439,14 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
             if (workflow[index + 1]) {
                 salida[0] = moment(new Date(workflow[index + 1].fecha_envio)).format('DD-MM-YYYY')
                 salida[1] = moment(new Date(workflow[index + 1].fecha_envio)).format('HH:mm A')
-                salida[2] = workflow[1].cantidad
+                salida[2] = workflow[index + 1].cantidad
+                salida[3] = workflow[index + 1].numero_interno
             }
             else {
                 salida[0] = ""
                 salida[1] = ""
                 salida[2] = ""
+                salida[3] = ""
             }
 
             cuadrados.push({
@@ -485,7 +492,7 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
                                     body: [
                                         [
                                             { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                            { text: `${workflow[index].numero_interno}` }
+                                            { text: `${salida[3]}`, fontSize: 9 }
                                         ],
                                         [
                                             { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
@@ -546,7 +553,7 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ text: `DESTINATARIO: ${ordinales.toOrdinal(index+1)}                                                                               `.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, true, true, false] }, ''],
+                        [{ text: `DESTINATARIO: ${ordinales.toOrdinal(index + 1)}                                                                               `.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, true, true, false] }, ''],
                         [
                             {
                                 border: [true, false, false, false],
@@ -783,7 +790,7 @@ export const crear_hoja_ruta = async (tramite: any, workflow: any[], tipo: 'tram
                                                 body: [
                                                     [
                                                         { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                                        { text: '' },
+                                                        { text: `${destinatario.numero_interno}`, fontSize: 9, alignment:'center' },
                                                     ]
                                                 ]
                                             },

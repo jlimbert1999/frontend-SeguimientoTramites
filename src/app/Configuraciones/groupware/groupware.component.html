@@ -1,15 +1,32 @@
 <div class="container-fluid">
     <mat-list>
-        <mat-list-item *ngFor="let user of socketService.Users">
+        <mat-list-item *ngFor="let user of socketService.OnlineUsers">
             <img matListAvatar src="../../../assets/img/account.png" alt="...">
-            <h3 matLine>{{user.funcionario | titlecase}} </h3>
+            <p class="fw-bold" matLine>{{user.fullname | titlecase}} </p>
             <p matLine>
-                <span> {{user.cargo|uppercase}} </span>
+                <small>{{user.jobtitle|uppercase}}</small>
+            </p>
+            <p matLine>
+                <small>Sesiones abiertas: {{user.socketIds.length}}</small>
             </p>
             <div>
-                <span class="c-pill c-pill--success">
-                    En linea
-                </span>
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button (click)="sendNotificacion(user)" mat-menu-item>
+                        <mat-icon>dialpad</mat-icon>
+                        <span>Redial</span>
+                    </button>
+                    <button (click)="kickUser(user)" mat-menu-item>
+                        <mat-icon>voicemail</mat-icon>
+                        <span>Check voice mail</span>
+                    </button>
+                    <button mat-menu-item>
+                        <mat-icon>notifications_off</mat-icon>
+                        <span>Disable alerts</span>
+                    </button>
+                </mat-menu> 
             </div>
             <mat-divider></mat-divider>
         </mat-list-item>

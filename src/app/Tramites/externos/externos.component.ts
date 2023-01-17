@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ToastrService } from 'ngx-toastr';
@@ -14,6 +14,12 @@ import { catchError, map, of, startWith, switchMap } from 'rxjs';
 import { Externo, ExternoData, Representante, Solicitante } from './models/externo';
 import Swal from 'sweetalert2';
 import { LocationComponent } from 'src/app/shared/location/location.component';
+import { provideRouter, Router } from '@angular/router';
+import { FichaExternoComponent } from './ficha-externo/ficha-externo.component';
+import { Ficha } from './pdf/ficha';
+import { HojaRuta } from './pdf/hoja-ruta';
+import { EnvioModel } from '../models/mail.model';
+import { BandejaService } from '../services/bandeja.service';
 
 @Component({
   selector: 'app-externos',
@@ -24,46 +30,44 @@ import { LocationComponent } from 'src/app/shared/location/location.component';
   ]
 
 })
-export class ExternosComponent implements OnInit {
-  data: ExternoData[] = []
-  displayedColumns: string[] = ['ubicacion', 'alterno', 'tramite', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
-  dataSource: ExternoData[] = [];
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  resultsLength = 0;
+export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  showFilter: boolean = false
+  data: ExternoData[] = []
+  displayedColumns: string[] = ['alterno', 'tramite', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'enviado','opciones'];
+  dataSource: ExternoData[] = [];
+  resultsLength = 0;
   filterOpions = [
     'ALTERNO',
     'SOLICITANTE',
     'TIPO DE TRAMITE'
   ]
   selectedTypeFilter: string
-
-
+  showFilter: boolean = false
   constructor(
     public dialog: MatDialog,
-    private toastr: ToastrService,
     public authService: AuthService,
     public externoService: ExternosService,
-    private _bottomSheet: MatBottomSheet
+    private _bottomSheet: MatBottomSheet,
+    private bandejaService: BandejaService
   ) { }
+  ngAfterViewInit(): void {
+
+  }
+  ngOnDestroy(): void {
+  }
 
   ngOnInit(): void {
-    this.mostrar_tramites()
+    this.GetData()
   }
-  openBottomSheet(location: any): void {
-    this._bottomSheet.open(LocationComponent, {
-      data: location
-    });
-  }
-  mostrar_tramites() {
-    this.externoService.getExternos().subscribe(data => {
-      this.data = data.tramites
-      this.resultsLength = data.total
+
+  GetData() {
+    this.externoService.Get().subscribe(tramites => {
+      this.data = tramites
     })
   }
 
-  agregar_tramite() {
+
+  Add() {
     const dialogRef = this.dialog.open(DialogExternoComponent, {
       width: '1000px',
       disableClose: true
@@ -71,28 +75,28 @@ export class ExternosComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: { tramite: Externo, solicitante: Solicitante, representante: Representante | null }) => {
       if (result) {
         this.showLoadingRequest()
-        this.externoService.addExterno(result.tramite, result.solicitante, result.representante).subscribe(tramite => {
-          this.resultsLength += 1
-          this.data = [tramite, ...this.data]
+        this.externoService.Add(result.tramite, result.solicitante, result.representante).subscribe(tramite => {
           if (this.data.length === this.externoService.limit) {
             this.data.pop()
           }
+          this.data = [tramite, ...this.data]
           Swal.close();
-          this.remitir_tramite(tramite)
+          this.Send(tramite)
         })
       }
     });
   }
-  editar_tramite(tramite: ExternoData) {
+  Edit(tramite: ExternoData) {
     const dialogRef = this.dialog.open(DialogExternoComponent, {
       width: '1000px',
-      data: tramite
+      data: tramite,
+      disableClose: true
     });
     dialogRef.afterClosed().subscribe((result: { tramite: any, solicitante: Solicitante, representante: Representante }) => {
       if (result) {
         this.showLoadingRequest()
-        this.externoService.editExterno(tramite._id, result.tramite, result.solicitante, result.representante).subscribe(tramite => {
-          const indexFound = this.data.findIndex(tramite => tramite._id === tramite._id)
+        this.externoService.Edit(tramite._id, result.tramite, result.solicitante, result.representante).subscribe(tramite => {
+          const indexFound = this.data.findIndex(element => element._id === tramite._id)
           this.data[indexFound] = tramite
           this.data = [...this.data]
           Swal.close();
@@ -101,39 +105,37 @@ export class ExternosComponent implements OnInit {
     });
   }
 
-  generar_ficha(tramite: ExternoData) {
-    crear_ficha_tramite(tramite.tipo_tramite.nombre, tramite.fecha_registro, tramite.alterno, tramite.pin, tramite.solicitante.nombre, tramite.solicitante.paterno, tramite.solicitante.materno, tramite.solicitante.dni, tramite.solicitante.documento, tramite.solicitante.tipo)
-  }
-  generar_hoja_ruta(id_tramite: string) {
-    this.externoService.getExterno(id_tramite).subscribe(data => {
-      crear_hoja_ruta(data.tramite, data.workflow, 'tramites_externos')
-    })
-  }
-  remitir_tramite(tramite: ExternoData) {
+
+  Send(tramite: ExternoData) {
     const dialogRef = this.dialog.open(DialogRemisionComponent, {
-      width: '700px',
+      width: '1200px',
       data: {
-        id_tramite: tramite._id,
+        _id: tramite._id,
         tipo: 'tramites_externos',
-        tipo_tramite: tramite.tipo_tramite.nombre,
-        alterno: tramite.alterno,
-        cantidad: tramite.cantidad
+        tramite: {
+          nombre: tramite.tipo_tramite.nombre,
+          alterno: tramite.alterno,
+          cantidad: tramite.cantidad
+        }
       }
     });
-    dialogRef.afterClosed().subscribe((result: any) => {
+    dialogRef.afterClosed().subscribe((result: EnvioModel) => {
       if (result) {
-        this.mostrar_tramites()
+
+        this.GetData()
       }
     });
   }
   paginacion(page: PageEvent) {
     this.externoService.offset = page.pageIndex
     this.externoService.limit = page.pageSize
-    this.mostrar_tramites()
+    this.GetData()
+
+
   }
 
   denied_options(estado: string, responsable: string) {
-    if (estado === 'CONCLUIDO' || responsable !== this.authService.Detalles_Cuenta.id_cuenta) {
+    if (estado !== 'INSCRITO' || responsable !== this.authService.Account.id_cuenta) {
       return true
     }
     return false
@@ -148,17 +150,39 @@ export class ExternosComponent implements OnInit {
     Swal.showLoading()
   }
 
-  filter(event: Event, option: string) {
-    // const filterValue = (event.target as HTMLInputElement).value;
-    // if (filterValue !== '') {
-    //   this.externoService.filter(filterValue, option).subscribe(tramites => {
-    //     this.data = [...tramites]
-    //   })
-    // }
 
+  filter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    if (filterValue !== '') {
+      this.externoService.filter(filterValue, this.selectedTypeFilter).subscribe(data => {
+        this.data = data.tramites
+        this.resultsLength = data.total
+      })
+    }
   }
 
 
+
+  filterMode(option: boolean) {
+    this.showFilter = option
+    this.externoService.resetPagination()
+    if (option) {
+
+    }
+    else {
+      this.GetData()
+    }
+  }
+
+
+  GenerateHojaRuta(id_tramite: string) {
+    this.externoService.getExterno(id_tramite).subscribe(data => {
+      HojaRuta(data.tramite, data.workflow)
+    })
+  }
+  GenerateFicha(tramite: ExternoData) {
+    Ficha(tramite)
+  }
 
 }
 

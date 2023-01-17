@@ -13,10 +13,21 @@ const base_url = environment.base_url
   providedIn: 'root'
 })
 export class AuthService {
-
-  Detalles_Cuenta: { id_cuenta: string, id_funcionario: string, funcionario: string, cargo: string, rol: string, institucion: string, dependencia: string, codigo: string }
+  Account: {
+    id_cuenta: string,
+    funcionario: {
+      id_funcionario: string,
+      nombre_completo: string
+      cargo: string
+    }
+    rol: string,
+    codigo: string
+  }
   Menu: any[] = []
-  constructor(private http: HttpClient, private router: Router, private socketService: SocketService) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) { }
 
   get token() {
     return localStorage.getItem('token') || ''
@@ -38,14 +49,13 @@ export class AuthService {
     ))
   }
   logout() {
-    this.socketService.disconnect()
     localStorage.removeItem('token')
     this.router.navigate(['/login'])
   }
   validar_token(): Observable<boolean> {
     return this.http.get(`${base_url}/login/verify`).pipe(
       map((resp: any) => {
-        this.Detalles_Cuenta = jwt_decode(resp.token)
+        this.Account = jwt_decode(resp.token)
         this.Menu = resp.Menu
         return true
       }), catchError(err => {

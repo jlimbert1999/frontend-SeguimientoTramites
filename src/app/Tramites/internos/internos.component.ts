@@ -3,8 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import Swal from 'sweetalert2';
 import { DialogRemisionComponent } from '../dialog-remision/dialog-remision.component';
-import { InternoData } from '../models/interno.model';
+import { InternoData, TramiteInternoModel } from '../models/interno.model';
 import { InternosService } from '../services/internos.service';
 import { DialogInternosComponent } from './dialog-internos/dialog-internos.component';
 import { HojaRutaInterna } from './pdfs/hora-ruta';
@@ -19,11 +20,10 @@ import { HojaRutaInterna } from './pdfs/hora-ruta';
 })
 export class InternosComponent implements OnInit {
   displayedColumns: string[] = ['alterno', 'tipo_tramite', 'detalle', 'solicitante', 'estado', 'cite', 'fecha', 'opciones']
-  dataSource = new MatTableDataSource<InternoData>([]);
-
+  Data: InternoData[]
   constructor(
     public dialog: MatDialog,
-    private internoService: InternosService,
+    public internoService: InternosService,
     private authService: AuthService
   ) { }
 
@@ -32,18 +32,24 @@ export class InternosComponent implements OnInit {
   }
   mostrar_tramites() {
     this.internoService.getInternos().subscribe(tramites => {
-      this.dataSource = new MatTableDataSource(tramites)
+      this.Data = tramites
     })
   }
   agregar_tramite() {
     const dialogRef = this.dialog.open(DialogInternosComponent, {
       width: '1000px'
     });
-    dialogRef.afterClosed().subscribe((result: any) => {
+    dialogRef.afterClosed().subscribe((result: TramiteInternoModel) => {
       if (result) {
-        let data = this.dataSource.data
-        data.unshift(result)
-        this.dataSource = new MatTableDataSource(data)
+        this.showLoadingRequest()
+        this.internoService.addInterno(result).subscribe(tramite => {
+          console.log(tramite)
+          if (this.Data.length === this.internoService.limit) {
+            this.Data.pop()
+          }
+          this.Data = [tramite, ...this.Data]
+          Swal.close();
+        })
       }
     });
   }
@@ -54,22 +60,27 @@ export class InternosComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result: InternoData) => {
       if (result) {
-        let data = this.dataSource.data
-        const indexFound = data.findIndex(tramite => tramite._id === result._id)
-        data[indexFound] = result
-        this.dataSource = new MatTableDataSource(data)
+        this.showLoadingRequest()
+        this.internoService.editInterno(tramite._id, result).subscribe(tramite => {
+          const indexFound = this.Data.findIndex(element => element._id === tramite._id)
+          this.Data[indexFound] = tramite
+          this.Data = [...this.Data]
+          Swal.close();
+        })
       }
     });
   }
   remitir_tramite(tramite: InternoData) {
     const dialogRef = this.dialog.open(DialogRemisionComponent, {
-      width: '700px',
+      width: '1200px',
       data: {
-        id_tramite: tramite._id,
+        _id: tramite._id,
         tipo: 'tramites_internos',
-        tipo_tramite: tramite.tipo_tramite.nombre,
-        alterno: tramite.alterno,
-        cantidad: tramite.cantidad
+        tramite: {
+          nombre: tramite.tipo_tramite.nombre,
+          alterno: tramite.alterno,
+          cantidad: tramite.cantidad
+        }
       }
     });
     dialogRef.afterClosed().subscribe((result: any) => {
@@ -84,10 +95,20 @@ export class InternosComponent implements OnInit {
     })
   }
 
-  habilitar_opciones(tramite: InternoData): boolean {
-    if (tramite.ubicacion._id !== this.authService.Detalles_Cuenta.id_cuenta) {
+
+  denied_options(estado: string, responsable: string) {
+    if (estado !== 'INSCRITO' || responsable !== this.authService.Account.id_cuenta) {
       return true
     }
     return false
+  }
+
+  showLoadingRequest() {
+    Swal.fire({
+      title: 'Guardando....',
+      text: 'Por favor espere',
+      allowOutsideClick: false,
+    });
+    Swal.showLoading()
   }
 }

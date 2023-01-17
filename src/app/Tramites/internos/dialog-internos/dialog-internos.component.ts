@@ -19,9 +19,9 @@ export class DialogInternosComponent implements OnInit {
   TramiteFormGroup: FormGroup = this.fb.group({
     tipo_tramite: ['', Validators.required],
     detalle: ['', Validators.required],
-    cite: [this.authService.Detalles_Cuenta.codigo],
-    nombre_remitente: [this.authService.Detalles_Cuenta.funcionario, Validators.required],
-    cargo_remitente: [this.authService.Detalles_Cuenta.cargo, Validators.required],
+    cite: [''],
+    nombre_remitente: [this.authService.Account.funcionario.nombre_completo, Validators.required],
+    cargo_remitente: [this.authService.Account.funcionario.cargo, Validators.required],
     nombre_destinatario: ['', Validators.required],
     cargo_destinatario: ['', Validators.required],
     cantidad: ['', Validators.required],
@@ -78,7 +78,7 @@ export class DialogInternosComponent implements OnInit {
   }
 
   generar_alterno(segmento: string) {
-    this.TramiteFormGroup.get('alterno')?.setValue(`${segmento}-${this.authService.Detalles_Cuenta.institucion}`)
+    this.TramiteFormGroup.get('alterno')?.setValue(`${segmento}-${this.authService.Account.codigo}`)
   }
   guardar() {
     const {
@@ -98,17 +98,18 @@ export class DialogInternosComponent implements OnInit {
       },
       ...Object
     }
-    if (this.data) {
-      this.internoService.editInterno(this.data._id, tramite).subscribe(tramite => {
-        this.dialogRef.close(tramite)
-      })
-    }
-    else {
-      this.internoService.addInterno(tramite).subscribe(tramite => {
-        this.dialogRef.close(tramite)
-      })
+    this.dialogRef.close(tramite)
+    // if (this.data) {
+    //   this.internoService.editInterno(this.data._id, tramite).subscribe(tramite => {
+    //     this.dialogRef.close(tramite)
+    //   })
+    // }
+    // else {
+    //   this.internoService.addInterno(tramite).subscribe(tramite => {
+    //     this.dialogRef.close(tramite)
+    //   })
 
-    }
+    // }
 
   }
 

@@ -1,6 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ToastrService } from 'ngx-toastr';
@@ -26,10 +27,10 @@ import { InternosService } from '../services/internos.service';
   ],
 })
 export class BandejaEntradaComponent implements OnInit {
-  displayedColumns = ['grupo', 'alterno', 'tipo', 'estado', 'receptor', 'fecha_envio', 'opciones', 'expand']
+  displayedColumns = ['alterno', 'tramite', 'descripcion', 'estado', 'receptor', 'fecha_envio', 'opciones', 'expand']
   expandedElement: any | null;
 
-  isLoadingResults = true;
+  // isLoadingResults = true;
 
 
   constructor(
@@ -42,27 +43,30 @@ export class BandejaEntradaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.bandejaService.obtener_bandejaEntrada().subscribe()
+    this.bandejaService.getmMailsIn().subscribe()
   }
 
-  remitir_tramite(elemento: BandejaEntradaData) {
+  send(elemento: BandejaEntradaData) {
     if (elemento.tramite.estado === 'OBSERVADO') {
       Swal.fire('El tramite tiene observaciones pendedientes', undefined, 'info')
     }
     else {
       const dialogRef = this.dialog.open(DialogRemisionComponent, {
-        width: '700px',
+        width: '1200px',
         data: {
-          id_tramite: elemento.tramite._id,
+          _id: elemento.tramite._id,
           tipo: elemento.tipo,
-          tipo_tramite: elemento.tramite.tipo_tramite.nombre,
-          alterno: elemento.tramite.alterno,
-          cantidad: elemento.cantidad
+          tramite: {
+            nombre: elemento.tramite.tipo_tramite.nombre,
+            alterno: elemento.tramite.alterno,
+            cantidad: elemento.cantidad
+          }
+
         }
       });
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          this.bandejaService.obtener_bandejaEntrada().subscribe()
+          this.bandejaService.getmMailsIn().subscribe()
         }
       });
 
@@ -82,7 +86,10 @@ export class BandejaEntradaComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.bandejaService.aceptar_tramite(elemento._id).subscribe(message => {
-          this.bandejaService.obtener_bandejaEntrada().subscribe()
+          const indexFound = this.bandejaService.DataMailsIn.findIndex(mail => mail._id === elemento._id)
+          this.bandejaService.DataMailsIn[indexFound].recibido = true
+          this.bandejaService.DataMailsIn[indexFound].tramite.estado = 'EN REVISION'
+          this.bandejaService.DataMailsIn = [...this.bandejaService.DataMailsIn]
           this.toastr.success(undefined, message, {
             positionClass: 'toast-bottom-right',
             timeOut: 3000,
@@ -107,9 +114,9 @@ export class BandejaEntradaComponent implements OnInit {
               positionClass: 'toast-bottom-right',
               timeOut: 3000,
             })
-            this.bandejaService.obtener_bandejaEntrada().subscribe()
+            this.bandejaService.getmMailsIn().subscribe()
           })
-          
+
         } else {
           Swal.fire({
             title: "Debe ingrese el motivo para rechazar",
@@ -121,27 +128,36 @@ export class BandejaEntradaComponent implements OnInit {
     })
   }
   concluir_tramite(tipo: 'tramites_internos' | 'tramites_externos', id_tramite: string) {
-    if (tipo === 'tramites_externos') {
-      Swal.fire({
-        icon: 'question',
-        title: 'Marcar el tramite como concluido?',
-        showCancelButton: true,
-        confirmButtonText: 'Aceptar',
-        cancelButtonText: 'Cancelar'
-      }).then((result) => {
-        if (result.isConfirmed) {
+    Swal.fire({
+      icon: 'question',
+      title: 'Marcar el tramite como concluido?',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (tipo === 'tramites_externos') {
           this.externoService.conclude(id_tramite).subscribe(message => {
             Swal.fire(message, undefined, 'success')
-            this.bandejaService.obtener_bandejaEntrada().subscribe()
+            this.bandejaService.getmMailsIn().subscribe()
           })
-
         }
-      })
-    }
-    else if (tipo === 'tramites_internos') {
-      console.log(id_tramite)
-    }
+        else if (tipo === 'tramites_internos') {
+          this.internoService.conclude(id_tramite).subscribe(message => {
+            Swal.fire(message, undefined, 'success')
+            this.bandejaService.getmMailsIn().subscribe()
+          })
+        }
+      }
+    })
+
   }
+  paginacion(page: PageEvent) {
+    this.bandejaService.PaginationMailsIn.limit = page.pageSize
+    this.bandejaService.PaginationMailsIn.offset = page.pageIndex
+    this.bandejaService.getmMailsIn().subscribe()
+  }
+
 
 
 }

@@ -6,3 +6,8 @@ mat-form-field {
     vertical-align: middle;
     margin-right: 8px;
 }
+
+.multiline-mat-option.mat-option {
+    white-space: normal;
+    line-height: normal;
+}

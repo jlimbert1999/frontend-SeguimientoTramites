@@ -20,14 +20,10 @@ export interface EnvioModel {
 
 
 export interface UsersMails {
-    _id: string
-    funcionario: {
-        nombre: string,
-        paterno: string,
-        materno: string,
-        cargo: string
-    }
-    id: string //id socket 
+    id_cuenta: string
+    fullname: string
+    jobtitle: string
+    online: boolean
 }
 
 
@@ -75,18 +71,21 @@ export interface BandejaEntradaData {
         },
         estado: string
         alterno: string
+        detalle: string
     },
     emisor: {
         _id: string,
         dependencia: {
-            nombre: string,
+            nombre: string
             institucion: {
                 sigla: string
             }
         },
         funcionario: {
             _id: string,
-            nombre: string,
+            nombre: string
+            paterno: string
+            materno: string
             cargo: string
         }
     },
@@ -112,8 +111,9 @@ export interface MailDetails {
         funcionario: {
             nombre: string
             paterno: string
-            materno:string
+            materno: string
             cargo: string
+            fullname?: string
         }
     }
     fecha_envio: string

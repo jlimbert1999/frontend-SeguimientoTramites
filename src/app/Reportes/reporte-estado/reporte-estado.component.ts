@@ -53,7 +53,7 @@ export class ReporteEstadoComponent implements OnInit {
       moment(this.FormReporte.get('fecha_inicial')?.value).toDate(),
       moment(this.FormReporte.get('fecha_final')?.value).add(1, 'days').toDate()
     ).subscribe(tramites => {
-      HojaEstado(tramites, this.FormReporte.get('estado')?.value, this.authService.Detalles_Cuenta.funcionario)
+      HojaEstado(tramites, this.FormReporte.get('estado')?.value, this.authService.Account.funcionario.nombre_completo)
     })
 
 
@@ -65,7 +65,7 @@ export class ReporteEstadoComponent implements OnInit {
       moment(this.FormReporteInterno.get('fecha_inicial')?.value).toDate(),
       moment(this.FormReporteInterno.get('fecha_final')?.value).add(1, 'days').toDate()
     ).subscribe(tramites => {
-      HojaEstadoInterno(tramites, this.FormReporteInterno.get('estado')?.value, this.authService.Detalles_Cuenta.funcionario)
+      HojaEstadoInterno(tramites, this.FormReporteInterno.get('estado')?.value, this.authService.Account.funcionario.nombre_completo)
     })
   }
 

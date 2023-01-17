@@ -63,7 +63,7 @@ export class ReporteTipoComponent implements OnInit {
       moment(this.FormReporte.get('fecha_inicial')?.value).toDate(),
       moment(this.FormReporte.get('fecha_final')?.value).add(1, 'days').toDate()
     ).subscribe(tramites => {
-      HojaTipoTramite(tramites, this.nombre_tramite, this.authService.Detalles_Cuenta.funcionario)
+      HojaTipoTramite(tramites, this.nombre_tramite, this.authService.Account.funcionario.nombre_completo)
     })
 
   }
@@ -75,7 +75,7 @@ export class ReporteTipoComponent implements OnInit {
       moment(this.FormReporteInterno.get('fecha_inicial')?.value).toDate(),
       moment(this.FormReporteInterno.get('fecha_final')?.value).add(1, 'days').toDate()
     ).subscribe(tramites => {
-      HojaTipoTramiteInterno(tramites, this.nombre_tramite_interno, this.authService.Detalles_Cuenta.funcionario)
+      HojaTipoTramiteInterno(tramites, this.nombre_tramite_interno, this.authService.Account.funcionario.nombre_completo)
     })
   }
 }

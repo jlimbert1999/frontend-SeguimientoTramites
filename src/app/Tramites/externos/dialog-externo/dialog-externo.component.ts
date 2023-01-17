@@ -2,14 +2,10 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { TiposTramitesModel } from 'src/app/Configuraciones/models/tiposTramites.model';
-import { TramiteService } from '../../services/tramite.service';
-import { ExternoModel } from '../../models/externo.model'
-import { RepresentanteModel } from '../../models/solicitud.model'
 import { ExternosService } from '../../services/externos.service';
-import { TipoTramite_Registro } from '../models/tipos';
+import { TypeTramiteData } from '../models/tipos';
 import { Externo, ExternoData, Representante, Solicitante } from '../models/externo';
-import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-dialog-externo',
   templateUrl: './dialog-externo.component.html',
@@ -17,8 +13,8 @@ import Swal from 'sweetalert2';
 })
 export class DialogExternoComponent implements OnInit {
   Segmentos: string[] = []
-  Types: TipoTramite_Registro[] = []
-  SelectedType: TipoTramite_Registro | null
+  Types: TypeTramiteData[] = []
+  SelectedType: TypeTramiteData | null
   tipos_documento: string[] = [
     'Carnet de identidad',
     'Libreta servicio militar',
@@ -30,7 +26,7 @@ export class DialogExternoComponent implements OnInit {
     tipo_tramite: ['', Validators.required],
     alterno: [''],
     requerimientos: [''],
-    cite: [this.authService.Detalles_Cuenta.codigo]
+    cite: ['']
   });
   SolicitanteFormGroup: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
@@ -42,6 +38,7 @@ export class DialogExternoComponent implements OnInit {
     documento: ['', Validators.required],
   });
   RepresentanteFormGroup: FormGroup | null = null;
+  title: string
 
   constructor(
     private externoService: ExternosService,
@@ -54,6 +51,7 @@ export class DialogExternoComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.data) {
+      this.title = 'EDICION TRAMITE'
       this.TramiteFormGroup = this.fb.group({
         cantidad: ['', Validators.required],
         detalle: ['', Validators.required],
@@ -71,6 +69,7 @@ export class DialogExternoComponent implements OnInit {
       }
     }
     else {
+      this.title = 'REGISTRO TRAMITE'
       this.externoService.getGroups().subscribe(segmentos => {
         this.Segmentos = segmentos
       })
@@ -80,18 +79,19 @@ export class DialogExternoComponent implements OnInit {
     this.SelectedType = null
     this.externoService.getTypes(segmento).subscribe(types => {
       this.Types = types
-      this.TramiteFormGroup.get('alterno')?.setValue(`${segmento}-${this.authService.Detalles_Cuenta.institucion}`)
+      this.TramiteFormGroup.get('alterno')?.setValue(`${segmento}-${this.authService.Account.codigo}`)
     })
   }
-  selectType(type: TipoTramite_Registro) {
+  selectType(type: TypeTramiteData) {
     this.SelectedType = type
     this.TramiteFormGroup.get('tipo_tramite')?.setValue(type.id_tipoTramite)
+    this.TramiteFormGroup.get('requerimientos')?.setValue(this.SelectedType?.requerimientos.map(requerimiento => requerimiento.nombre))
   }
 
 
   guardar() {
     if (this.data) {
-      let Tramite: { tramite: any, solicitante: Solicitante, representante: Representante | null }
+      let Tramite: { tramite: any, solicitante: any, representante: any | null }
       switch (this.RepresentanteFormGroup) {
         case null:
           Tramite = {
@@ -111,7 +111,6 @@ export class DialogExternoComponent implements OnInit {
       this.dialogRef.close(Tramite)
     }
     else {
-      this.TramiteFormGroup.get('requerimientos')?.setValue(this.SelectedType?.requerimientos.map(requerimiento => requerimiento.nombre))
       let Tramite: { tramite: Externo, solicitante: Solicitante, representante: Representante | null }
       switch (this.RepresentanteFormGroup) {
         case null:
@@ -190,6 +189,4 @@ export class DialogExternoComponent implements OnInit {
     }
     return disabled
   }
-
-
 }

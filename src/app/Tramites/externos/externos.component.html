@@ -1,53 +1,26 @@
-<mat-toolbar>
-    <mat-toolbar-row>
-        <span>Tramites externos</span>
-        <span class="example-spacer"></span>
-        <button (click)="showFilter=true" mat-icon-button>
-            <mat-icon>filter_alt</mat-icon>
-        </button>
-        <button (click)="agregar_tramite()" mat-icon-button class="example-icon favorite-icon"
-            aria-label="Example icon-button with heart icon">
-            <mat-icon>add</mat-icon>
-        </button>
+<p>
+    <mat-toolbar>
+        <mat-toolbar-row>
+            <span>Externos</span>
+            <span class="example-spacer"></span>
+            <button matTooltip="Buscar tramite" (click)="filterMode(true)" mat-icon-button
+                class="example-icon favorite-icon">
+                <mat-icon>search</mat-icon>
+            </button>
+            <button matTooltip="Agregar tramite" (click)="Add()" mat-icon-button class="example-icon favorite-icon">
+                <mat-icon>add</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+</p>
 
-
-    </mat-toolbar-row>
-    <!-- <mat-toolbar-row *ngIf="showFilter" class="filter-menu">
-        <mat-form-field appearance="fill" class="filter-input">
-            <mat-label>Filtrar por</mat-label>
-            <mat-select>
-                <mat-option (onSelectionChange)="selectedTypeFilter=option" *ngFor="let option of filterOpions"
-                    [value]="option">
-                    {{option}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field class="search-input">
-            <mat-label>Termino a buscar</mat-label>
-            <input [disabled]="!selectedTypeFilter" (keyup)="filter($event, selectedTypeFilter)" matInput>
-        </mat-form-field>
-
-        <span class="example-spacer"></span>
-        <button (click)="showFilter=false; mostrar_tramites()" mat-icon-button>
-            <mat-icon>close</mat-icon>
-        </button>
-    </mat-toolbar-row> -->
-
-</mat-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
+    
+
+
     <div class="example-container mat-elevation-z8">
         <div class="example-table-container">
-            <table mat-table [dataSource]="data" class="example-table">
-                <ng-container matColumnDef="ubicacion">
-                    <th mat-header-cell *matHeaderCellDef>Ubicacion</th>
-                    <td mat-cell *matCellDef="let row">
-                        {{row.ubicacion.dependencia.sigla|uppercase}}
-                        <button style="vertical-align: middle;" (click)="openBottomSheet(row.ubicacion)"
-                            mat-icon-button>
-                            <mat-icon>help</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
+            <table mat-table [dataSource]="data" [class.isMobile]="'isMobile'">
                 <ng-container matColumnDef="alterno">
                     <th mat-header-cell *matHeaderCellDef>Alterno</th>
                     <td mat-cell *matCellDef="let row">
@@ -65,21 +38,14 @@
                 <ng-container matColumnDef="descripcion">
                     <th mat-header-cell *matHeaderCellDef>Descripcion</th>
                     <td mat-cell *matCellDef="let row">
-                        {{row.detalle}}
+                        {{row.detalle|uppercase}}
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="solicitante">
                     <th mat-header-cell *matHeaderCellDef>Solicitante</th>
                     <td mat-cell *matCellDef="let row">
-                        <div [ngSwitch]="row.solicitante.tipo">
-                            <div *ngSwitchCase="'NATURAL'">
-                                {{row.solicitante.nombre}} {{row.solicitante.paterno}} {{row.solicitante.materno}}
-                            </div>
-                            <div *ngSwitchCase="'JURIDICO'">
-                                {{row.solicitante.nombre|uppercase}}
-                            </div>
-                        </div>
+                        {{row.solicitante|solicitante}}
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="estado">
@@ -96,31 +62,45 @@
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="fecha_registro">
-                    <th mat-header-cell *matHeaderCellDef>Fecha registro</th>
+                    <th mat-header-cell *matHeaderCellDef>Fecha</th>
                     <td mat-cell *matCellDef="let row">{{row.fecha_registro|date:'short'}}</td>
                 </ng-container>
-                <ng-container matColumnDef="opciones">
+                <ng-container matColumnDef="enviado">
+                    <th mat-header-cell *matHeaderCellDef>Enviado</th>
+                    <td mat-cell *matCellDef="let row">
+                        <div [ngSwitch]="denied_options(row.estado, row.ubicacion._id)">
+                            <div *ngSwitchCase="true">
+                                <mat-icon style="color: green;">check_circle</mat-icon>
+                            </div>
+                            <div *ngSwitchCase="false">
+                                <mat-icon style="color: red;">warning</mat-icon>
+                            </div>
+                        </div>
+                        
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="opciones" justify="end">
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let row">
                         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu">
-                            <button (click)="editar_tramite(row)"
-                                [disabled]="denied_options(row.estado, row.ubicacion._id)" mat-menu-item>
+                            <button (click)="Edit(row)" [disabled]="row.estado!=='INSCRITO'"
+                                mat-menu-item>
                                 <mat-icon>edit</mat-icon>
                                 <span>Editar tramite</span>
                             </button>
-                            <button (click)="remitir_tramite(row)"
-                                [disabled]="denied_options(row.estado, row.ubicacion._id)" mat-menu-item>
+                            <button (click)="Send(row)" [disabled]="denied_options(row.estado, row.ubicacion._id)"
+                                mat-menu-item>
                                 <mat-icon>send</mat-icon>
                                 <span>Remitir tramite</span>
                             </button>
-                            <button (click)="generar_ficha(row)" mat-menu-item>
+                            <button (click)="GenerateFicha(row)" mat-menu-item>
                                 <mat-icon>receipt_long</mat-icon>
                                 <span>Ficha de tramite</span>
                             </button>
-                            <button (click)="generar_hoja_ruta(row._id)" mat-menu-item>
+                            <button (click)="GenerateHojaRuta(row._id)" mat-menu-item>
                                 <mat-icon>feed</mat-icon>
                                 <span>Hoja de ruta</span>
                             </button>
@@ -131,7 +111,8 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </div>
-        <mat-paginator (page)="paginacion($event)" [pageIndex]="externoService.offset" [length]="resultsLength"
-            [pageSizeOptions]="[10, 20, 30, 50]" showFirstLastButtons></mat-paginator>
+        <mat-paginator (page)="paginacion($event)" [pageIndex]="externoService.offset"
+            [length]="externoService.resultsLength" [pageSizeOptions]="[10, 20, 30, 50]"
+            showFirstLastButtons></mat-paginator>
     </div>
 </div>

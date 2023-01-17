@@ -30,12 +30,18 @@ export class LoginComponent implements OnInit {
       return
     }
     this.authService.login(this.loginForm.value!, this.loginForm.get('remember')?.value!).subscribe(role => {
-      if (role === 'admin') {
-        this.router.navigateByUrl('/home')
+      switch (role) {
+        case 'admin':
+          this.router.navigateByUrl('/home')
+          break;
+        case 'RECEPCION':
+          this.router.navigateByUrl('/home/tramites-externos')
+          break;
+        case 'EVALUACION':
+          this.router.navigateByUrl('/home/tramites-internos')
+          break;
       }
-      else {
-        this.router.navigateByUrl('/home/tramites-internos')
-      }
+
     })
   }
 
