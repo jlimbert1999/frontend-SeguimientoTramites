@@ -14,7 +14,7 @@ export class GroupwareComponent implements OnInit {
     // this.socketService.getSocketUsers()
   }
   sendNotificacion(user: any) {
-    this.socketService.socket.emit('notification', { id_cuenta: user.id_cuenta, message: 'hola' })
+    this.socketService.socket.emit('notification', { id_cuenta: user.id_cuenta, fullname:'Administrador', message:'Prueba de notifiacion' })
   }
 
   

@@ -11,6 +11,10 @@
 
     <span class="example-spacer"></span>
 
+    <button mat-icon-button (click)="openBottomSheet()">
+      <mat-icon>notifications</mat-icon>
+    </button>
+
     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
       <mat-icon>account_circle</mat-icon>
     </button>
@@ -54,10 +58,17 @@
 
 
       <ng-template #parentMenu let-menu="menu">
-        <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="is-active">
+        <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="active">
           <div [ngSwitch]="menu.routerLink">
-            <mat-icon>{{menu.icon}}</mat-icon> {{menu.text}}
+            <div *ngSwitchCase="'bandeja-entrada'">
+              <mat-icon [matBadge]="number_mails|async" [matBadgeHidden]="(number_mails|async)===0"
+                matBadgeColor="warn">{{menu.icon}}</mat-icon>{{menu.text}}
+            </div>
+            <div *ngSwitchDefault>
+              <mat-icon>{{menu.icon}}</mat-icon> {{menu.text}}
+            </div>
           </div>
+
         </mat-list-item>
         <mat-divider></mat-divider>
       </ng-template>

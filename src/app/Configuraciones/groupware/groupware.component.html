@@ -15,16 +15,12 @@
                 </button>
                 <mat-menu #menu="matMenu">
                     <button (click)="sendNotificacion(user)" mat-menu-item>
-                        <mat-icon>dialpad</mat-icon>
-                        <span>Redial</span>
+                        <mat-icon>campaign</mat-icon>
+                        <span>Enviar notificacion</span>
                     </button>
                     <button (click)="kickUser(user)" mat-menu-item>
                         <mat-icon>voicemail</mat-icon>
-                        <span>Check voice mail</span>
-                    </button>
-                    <button mat-menu-item>
-                        <mat-icon>notifications_off</mat-icon>
-                        <span>Disable alerts</span>
+                        <span>Expulsar usuario</span>
                     </button>
                 </mat-menu> 
             </div>

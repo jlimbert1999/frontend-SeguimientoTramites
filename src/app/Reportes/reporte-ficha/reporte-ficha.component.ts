@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { fadeInOnEnterAnimation } from 'angular-animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
 import { HojaFicha } from '../pdf-externos/pdf-ficha';
@@ -11,7 +12,10 @@ import { ReportesInternoService } from '../services/reportes-interno.service';
 @Component({
   selector: 'app-reporte-ficha',
   templateUrl: './reporte-ficha.component.html',
-  styleUrls: ['./reporte-ficha.component.css']
+  styleUrls: ['./reporte-ficha.component.css'],
+  animations:[
+    fadeInOnEnterAnimation(),
+  ]
 })
 export class ReporteFichaComponent implements OnInit {
   alterno_externo: string

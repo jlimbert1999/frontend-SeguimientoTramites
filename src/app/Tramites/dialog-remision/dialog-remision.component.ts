@@ -116,6 +116,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
         cargo: receptor.jobtitle
       }
     }
+    
     Swal.fire({
       title: `Remitir el tramite ${this.Data.tramite.alterno}?`,
       text: `El tramite sera remitito al funcionario ${receptor.fullname} (${receptor.jobtitle})`,
@@ -144,7 +145,6 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
           this.dialogRef.close(tramite)
           Swal.close()
         })
-
       }
     })
 

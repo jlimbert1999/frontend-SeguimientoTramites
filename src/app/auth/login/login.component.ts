@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NotificationsService } from 'src/app/Tramites/services/notifications.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -16,7 +17,11 @@ export class LoginComponent implements OnInit {
     remember: [false]
   })
   recordar_user: string
-  constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private fb: FormBuilder,
+    private notificationService: NotificationsService) { }
 
   ngOnInit(): void {
     this.recordar_user = localStorage.getItem('login') || ''
@@ -29,8 +34,12 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return
     }
-    this.authService.login(this.loginForm.value!, this.loginForm.get('remember')?.value!).subscribe(role => {
-      switch (role) {
+    this.authService.login(this.loginForm.value!, this.loginForm.get('remember')?.value!).subscribe(data => {
+      this.notificationService.number_mails.next(data.number_mails)
+      if (data.number_mails > 0) {
+        this.notificationService.addNotificationEvent('Debe revisar su bandeja de entrada', `USTED TIENE ${data.number_mails} TRAMITES PENDIENTES`)
+      }
+      switch (data.rol) {
         case 'admin':
           this.router.navigateByUrl('/home')
           break;

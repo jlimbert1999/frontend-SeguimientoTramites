@@ -3,10 +3,8 @@ import { HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpHeaders, Htt
 import { environment } from 'src/environments/environment';
 import { Observable, tap, throwError, of, BehaviorSubject, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators'
-import Swal from 'sweetalert2'
 import jwt_decode from "jwt-decode";
 import { Router } from '@angular/router';
-import { SocketService } from 'src/app/Tramites/services/socket.service';
 const base_url = environment.base_url
 
 @Injectable({
@@ -27,6 +25,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router
+
   ) { }
 
   get token() {
@@ -40,12 +39,13 @@ export class AuthService {
     else {
       localStorage.removeItem('login')
     }
-    return this.http.post(`${base_url}/login`, formData).pipe(map(
+    return this.http.post<{ ok: boolean, token: string, number_mails: number }>(`${base_url}/login`, formData).pipe(map(
       (res: any) => {
         localStorage.setItem('token', res.token)
         let account: any = jwt_decode(res.token)
-        return account.rol
+        return { rol: account.rol, number_mails: res.number_mails }
       }
+
     ))
   }
   logout() {

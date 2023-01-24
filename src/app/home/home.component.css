@@ -40,8 +40,10 @@ h1.example-app-name {
 }
 
 .mat-list-item.active {
-    background-color: cornflowerblue;
+    background-color: #64B5F6;
     color: white;
+    border-left: 8px solid #1E88E5;
+    width: calc(100% - 8px) !important;
 }
 
 .campo_cuenta {
@@ -91,12 +93,12 @@ h1.example-app-name {
 }
 
 ::ng-deep .mat-nav-list .is-active {
-    background-color: rgb(204, 204, 204)!important;
-    border-left     : 8px solid rgb(139, 137, 133);
-    width           : calc(100% - 8px)!important;;
+    background-color: cornflowerblue;
+    border-left: 8px solid rgb(139, 137, 133);
+    width: calc(100% - 8px) !important;
 }
 
- 
+
 
 ::ng-deep .mat-list-base {
     padding-top: 0 !important;
@@ -104,9 +106,8 @@ h1.example-app-name {
 
 ::ng-deep .mat-nav-list .mat-list-item.is-active .mat-list-item-content {
     padding: 0 8px;
-} 
-
-mat-sidenav{
-    width: 250px;
 }
 
+mat-sidenav {
+    width: 250px;
+}

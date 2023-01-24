@@ -8,6 +8,9 @@ import { BandejaEntradaData } from '../Tramites/models/mail.model';
 import { Subject } from 'rxjs';
 import { LoaderService } from '../auth/services/loader.service';
 import { Router } from '@angular/router';
+import { NotificationsService } from '../Tramites/services/notifications.service';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { PanelNotificationComponent } from '../shared/panel-notification/panel-notification.component';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +22,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   Menu: any = this.authService.Menu
 
   loading$ = this.loader.loading$;
-  numbernotifies$ = this.bandejaService.notificacion$
+
+  number_mails = this.notificationService.number_mails$
+
 
   private _mobileQueryListener: () => void;
 
@@ -33,7 +38,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     public bandejaService: BandejaService,
     private toastr: ToastrService,
     public loader: LoaderService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationsService,
+    private bottomSheet: MatBottomSheet
   ) {
     this.startConectGroupware()
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -45,35 +52,20 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // Update user list widh conect new user
     this.socketService.listenUserConected().subscribe((users: any) => {
       this.socketService.OnlineUsers = users
     })
-    // this.socketService.expelUser().subscribe(message => {
-    //   console.log(message)
-    //   this.authService.logout()
-    // })
-    this.socketService.listenNotifications().subscribe(data => {
-      alert(data)
+    this.socketService.expelUser().subscribe(message => {
+      this.logout()
     })
-
     this.socketService.listenMails().subscribe(mail => {
-      console.log(mail)
-      this.toastr.info(`Nuevo tramite recibido`, undefined, {
-        positionClass: 'toast-bottom-right',
-        timeOut: 5000,
-      })
-      this.bandejaService.DataMailsIn = [mail, ... this.bandejaService.DataMailsIn]
-      this.bandejaService.addNotification()
+      this.bandejaService.addMail(mail)
+      this.notificationService.addNotificationNewMail(mail.emisor.funcionario, this.bandejaService.PaginationMailsIn.total)
+    })
+    this.socketService.listenNotifications().subscribe((data: any) => {
+      this.notificationService.addNotificationEvent(data.message, data.fullname)
     })
 
-    // this.socketService.SocketOn_Mails().subscribe((data: any) => {
-    //   this.toastr.info(`${data.emisor.funcionario.nombre} envio un tramite`, 'NUEVO TRAMITE RECIBIDO', {
-    //     positionClass: 'toast-bottom-right',
-    //     timeOut: 5000,
-    //   })
-    //   this.bandejaService.dataSource = [data, ...this.bandejaService.dataSource]
-    // })
 
 
   }
@@ -93,6 +85,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   logout() {
     this.authService.logout()
     this.socketService.disconnect()
+  }
+
+  openBottomSheet(): void {
+    this.bottomSheet.open(PanelNotificationComponent);
   }
 
 

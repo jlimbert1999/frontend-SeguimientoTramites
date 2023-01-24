@@ -10,6 +10,7 @@ import { ListWorkflowComponent } from './list-workflow/list-workflow.component';
 import { ObservacionesComponent } from './observaciones/observaciones.component';
 import { LocationComponent } from './location/location.component';
 import { FullnamePipe } from './pipes/fullname.pipe';
+import { PanelNotificationComponent } from './panel-notification/panel-notification.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { FullnamePipe } from './pipes/fullname.pipe';
     ListWorkflowComponent,
     ObservacionesComponent,
     LocationComponent,
-    FullnamePipe
+    FullnamePipe,
+    PanelNotificationComponent
   ],
   imports: [
     CommonModule,

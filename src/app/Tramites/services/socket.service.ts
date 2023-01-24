@@ -26,13 +26,7 @@ export class SocketService {
       })
     })
   }
-  SocketOn_Mails() {
-    return new Observable((observable) => {
-      this.socket.on('recibir_tramite', (data: any) => {
-        observable.next(data)
-      })
-    })
-  }
+ 
   listenNotifications() {
     return new Observable((observable) => {
       this.socket.on('notify', (data: any) => {

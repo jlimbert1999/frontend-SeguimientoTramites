@@ -154,7 +154,7 @@ export async function HojaFicha(tramite: any, workflow: any[], funcionario: stri
                         ]
                     ]
                 },
-                { text: `\n UBICACION ACTUAL`, bold: true, fontSize:9 },
+                { text: `\n UBICACION`, bold: true, fontSize:9 },
                 { text: `Encargado: ${tramite.ubicacion.funcionario.nombre} (${tramite.ubicacion.funcionario.cargo})`, bold: true, fontSize:9  },
                 { text: `Dependencia: ${tramite.ubicacion.dependencia.nombre} - ${tramite.ubicacion.dependencia.institucion.sigla}`, bold: true, fontSize:9  },
             ],

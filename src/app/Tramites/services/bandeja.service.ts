@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { BehaviorSubject, elementAt, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { BandejaEntradaData, BandejaSalidaModel_View, EnvioModel, MailDetails, UsersMails } from '../models/mail.model';
+import { NotificationsService } from './notifications.service';
 import { SocketService } from './socket.service';
 const base_url = environment.base_url
 
@@ -12,7 +13,7 @@ const base_url = environment.base_url
 })
 export class BandejaService {
 
-  constructor(private http: HttpClient, private socketService: SocketService) { }
+  constructor(private http: HttpClient, private notificatonService: NotificationsService) { }
   DataMailsIn: BandejaEntradaData[] = [];
   PaginationMailsIn = {
     limit: 10,
@@ -24,11 +25,6 @@ export class BandejaService {
     type: "",
     text: ""
   }
-  lista: string[] = []
-
-
-  notificacion = new BehaviorSubject<any[]>([])
-  notificacion$ = this.notificacion.asObservable()
 
 
   getInstituciones() {
@@ -72,6 +68,7 @@ export class BandejaService {
   getmMailsIn() {
     return this.http.get<{ ok: boolean, data: { tramites: any, total: number } }>(`${base_url}/bandejas/entrada?limit=${this.PaginationMailsIn.limit}&offset=${this.PaginationMailsIn.offset}`).pipe(
       map(resp => {
+        this.notificatonService.number_mails.next(resp.data.total)
         this.PaginationMailsIn.total = resp.data.total
         this.DataMailsIn = resp.data.tramites
       })
@@ -120,14 +117,14 @@ export class BandejaService {
         this.DataMailsIn = resp.mails
       })
     )
-
-
   }
 
-  addNotification() {
-    this.lista.push('nuevo')
-    this.notificacion.next(this.lista)
+  addMail(mail: BandejaEntradaData) {
+    this.PaginationMailsIn.total += 1
+    this.DataMailsIn = [mail, ...this.DataMailsIn]
   }
+  
+  
 
 
 }

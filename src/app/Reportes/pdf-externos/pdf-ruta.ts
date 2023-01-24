@@ -20,7 +20,7 @@ export async function HojaRutaDetalles(tramite: any, workflow: any[], funcionari
             dataWorkflow.push(
                 [
                     [
-                        { text: `${element.emisor.funcionario} \n hola` },
+                        { text: `${element.emisor.funcionario} \n` },
                         { text: `${element.emisor.cargo}` },
                         { text: `Resp. ${element.emisor.cuenta.login}` }
                     ],

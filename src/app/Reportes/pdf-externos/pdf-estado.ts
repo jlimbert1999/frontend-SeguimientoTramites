@@ -26,7 +26,7 @@ export async function HojaEstado(tramites: any[], estado: string, funcionario: s
             `${index + 1}`,
             `${element.alterno}`,
             `${element.detalle}`,
-            `${element.cuenta.funcionario.nombre}\n${element.cuenta.funcionario.cargo}\n Usuario: ${element.cuenta.login}`,
+            `${element.cuenta.funcionario.nombre} ${element.cuenta.funcionario.paterno} ${element.cuenta.funcionario.materno}\n${element.cuenta.funcionario.cargo}\n Usuario: ${element.cuenta.login}`,
             `${moment(element.fecha_registro).format('DD-MM-YYYY HH:mm:ss')}`,
             `${element.solicitante.nombre}`,
             `${element.ubicacion.dependencia.nombre}-${element.ubicacion.dependencia.institucion.sigla}`,
