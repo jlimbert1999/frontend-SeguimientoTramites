@@ -1,10 +1,55 @@
 <mat-toolbar>
     <span>Bandeja entrada</span>
+    <span class="example-spacer"></span>
+    <button matTooltip="Buscar tramite" (click)="changeSearchMode(true)" mat-icon-button
+        class="example-icon favorite-icon">
+        <mat-icon>search</mat-icon>
+    </button>
+
 </mat-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
+    <div [@expandOnEnter] [@collapseOnLeave] *ngIf="bandejaService.searchOptionsIn.active">
+        <mat-card class="example-card">
+            <mat-card-content>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <mat-form-field appearance="fill" class="example-full-width">
+                            <mat-label>Tipo de busqueda</mat-label>
+                            <mat-select [(ngModel)]="bandejaService.searchOptionsIn.type">
+                                <mat-option *ngFor="let option of filterOptions" [value]="option.value">
+                                    {{option.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-10">
+                        <mat-form-field appearance="fill" class="example-full-width">
+                            <mat-label>Ingrese el alterno del tramite</mat-label>
+                            <input [(ngModel)]="bandejaService.searchOptionsIn.text" (keyup)="search($event)" matInput>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <mat-divider></mat-divider>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-stroked-button color="warn" (click)="changeSearchMode(false)">Cancelar</button>
+            </mat-card-actions>
+        </mat-card>
+        <br>
+    </div>
+
     <div class="example-container mat-elevation-z8">
         <div class="example-table-container">
             <table mat-table [dataSource]="bandejaService.DataMailsIn" class="example-table" multiTemplateDataRows>
+                <ng-container matColumnDef="tipo_correspondencia">
+                    <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                    <td mat-cell *matCellDef="let row">
+                        <div [ngSwitch]="row.tipo">
+                            <div *ngSwitchCase="'tramites_internos'">INTERNO</div>
+                            <div *ngSwitchCase="'tramites_externos'">EXTERNO</div>
+                        </div>
+                    </td>
+                </ng-container>
                 <ng-container matColumnDef="alterno">
                     <th mat-header-cell *matHeaderCellDef>Alterno</th>
                     <td mat-cell *matCellDef="let row">
@@ -28,7 +73,7 @@
                     <td mat-cell *matCellDef="let row">{{row.tramite.tipo_tramite.nombre}}</td>
                 </ng-container>
                 <ng-container matColumnDef="descripcion">
-                    <th mat-header-cell *matHeaderCellDef>Descripcin</th>
+                    <th mat-header-cell *matHeaderCellDef>Referencia</th>
                     <td mat-cell *matCellDef="let row">{{row.tramite.detalle}}</td>
                 </ng-container>
 
@@ -82,7 +127,7 @@
                                         <mat-icon>send</mat-icon>
                                         <span>Remitir tramite</span>
                                     </button>
-                                    <button (click)="concluir_tramite(row.tipo, row.tramite._id)" mat-menu-item>
+                                    <button (click)="concluir_tramite(row.tipo, row.tramite._id, row.tramite.alterno)" mat-menu-item>
                                         <mat-icon>domain_verification</mat-icon>
                                         <span>Concluir tramite</span>
                                     </button>
@@ -112,15 +157,13 @@
                                 <mat-card-header>
                                     <div mat-card-avatar class="example-header-image"></div>
                                     <mat-card-title> <span class="fw-light">Recibido de:
-                                        </span>{{element.emisor.funcionario.nombre | titlecase}}
-                                        {{element.emisor.funcionario.paterno | titlecase}}
-                                        {{element.emisor.funcionario.materno | titlecase}}</mat-card-title>
+                                        </span>{{element.emisor.funcionario|fullname}}</mat-card-title>
                                     <mat-card-subtitle>{{element.emisor.funcionario.cargo| uppercase}} -
                                         {{element.emisor.dependencia.nombre}} /
                                         {{element.emisor.dependencia.institucion.sigla}}</mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-content>
-                                    <p class="fst-italic">MOTIVO: {{element.motivo}}</p>
+                                    <p class="fst-italic">Instruccion / Proveido: {{element.motivo}}</p>
                                     <p>CANTIDAD: {{element.cantidad}}</p>
                                     <p>FECHA: {{element.fecha_envio|date:'d/M/yy, h:mm a'}}</p>
                                 </mat-card-content>
@@ -136,7 +179,8 @@
             </table>
         </div>
 
-        <mat-paginator (page)="paginacion($event)" [length]="bandejaService.PaginationMailsIn.total" [pageSizeOptions]="[10, 20, 30, 50]" [pageIndex]="bandejaService.PaginationMailsIn.offset"
+        <mat-paginator (page)="paginacion($event)" [length]="bandejaService.PaginationMailsIn.total"
+            [pageSizeOptions]="[50, 60, 70, 80]" [pageIndex]="bandejaService.PaginationMailsIn.offset"
             showFirstLastButtons>
         </mat-paginator>
     </div>

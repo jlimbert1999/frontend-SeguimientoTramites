@@ -130,3 +130,14 @@ export interface Observacion {
     funcionario: string
     id_cuenta: string
 }
+
+
+export interface Mail {
+    _id: string,
+    tipo: 'tramites_externos' | 'tramites_internos',
+    tramite: {
+        nombre: string,
+        alterno: string,
+        cantidad: string
+    }
+}

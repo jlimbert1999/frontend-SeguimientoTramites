@@ -30,7 +30,7 @@ export class MailFichaComponent implements OnInit {
       if (params['id']) {
         this.bandejaService.getDetalisMail(params['id']).subscribe(data => {
           this.Detalles = data
-          this.externoService.getExterno(data.tramite).subscribe(data => {
+          this.externoService.getOne(data.tramite).subscribe(data => {
             this.Tramite = data.tramite
             this.Workflow = data.workflow
           })

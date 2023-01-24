@@ -1,5 +1,5 @@
 .mat-cell {
-    font-size: 9px;
+    font-size: 11px;
     padding-right: 20px
 }
 
@@ -45,6 +45,9 @@ td.mat-column-expand {
 td.mat-column-alterno {
     width: 150px;
 }
+td.mat-column-tipo_correspondencia {
+    width: 100px;
+}
 
 td.mat-column-tramite {
     width: 240px;
@@ -52,12 +55,13 @@ td.mat-column-tramite {
 }
 
 td.mat-column-descripcion {
-    width: 300px;
-    font-size: 8px;
-    padding-right: 20px;
+    width: 450px;
 }
 
 td.mat-column-estado {
+    width: 100px;
+}
+td.mat-column-fecha_envio {
     width: 100px;
 }
 

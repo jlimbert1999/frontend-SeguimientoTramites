@@ -9,7 +9,7 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { ListWorkflowComponent } from './list-workflow/list-workflow.component';
 import { ObservacionesComponent } from './observaciones/observaciones.component';
 import { LocationComponent } from './location/location.component';
-
+import { FullnamePipe } from './pipes/fullname.pipe';
 
 
 @NgModule({
@@ -20,7 +20,8 @@ import { LocationComponent } from './location/location.component';
     GraphWorkflowComponent,
     ListWorkflowComponent,
     ObservacionesComponent,
-    LocationComponent
+    LocationComponent,
+    FullnamePipe
   ],
   imports: [
     CommonModule,
@@ -32,7 +33,8 @@ import { LocationComponent } from './location/location.component';
     InfoTramiteComponent,
     GraphWorkflowComponent,
     ListWorkflowComponent,
-    ObservacionesComponent
+    ObservacionesComponent,
+    FullnamePipe
   ]
 })
 export class SharedModule { }

@@ -48,12 +48,7 @@
                             <div class="col-md-2">
                                 <label class="form-label">Estado</label>
                                 <h2>
-                                    <span class="badge" [ngClass]="[
-                                    Tramite.estado=='INSCRITO'?'text-bg-primary':'',
-                                    Tramite.estado=='EN REVISION'?'text-bg-secondary':'',
-                                    Tramite.estado=='OBSERVADO'?'text-bg-warning':'',
-                                    Tramite.estado=='CONCLUIDO'?'text-bg-dark':'',
-                                ]">
+                                    <span class="badge" [ngClass]="[Tramite.estado|state]">
                                         {{Tramite.estado|uppercase}}
                                     </span>
                                 </h2>
@@ -76,9 +71,7 @@
                                 <label class="form-label">Ubicacion</label>
                                 <div class="card border-primary mb-3">
                                     <div class="card-body">
-                                        <h4 class="card-title fw-bold">{{Tramite.ubicacion.funcionario.nombre}}
-                                            {{Tramite.ubicacion.funcionario.paterno}}
-                                            {{Tramite.ubicacion.funcionario.materno}} -
+                                        <h4 class="card-title fw-bold">{{Tramite.ubicacion.funcionario|fullname}} -
                                             {{Tramite.ubicacion.funcionario.cargo|uppercase}}</h4>
                                         <p class="card-text">{{Tramite.ubicacion.dependencia.nombre}} -
                                             {{Tramite.ubicacion.dependencia.institucion.sigla}}</p>
@@ -183,6 +176,26 @@
                             [Observaciones]="Tramite.observaciones"></app-observaciones>
                     </div>
                 </div>
+                <br>
+                <div class="card">
+                    <h4 class="card-header fw-bold text-bg-secondary mb-3">REQUERIMIENTOS PRESENTADOS</h4>
+                    <div class="card-body">
+                        <div [ngSwitch]="Tramite.requerimientos.length">
+                            <div *ngSwitchCase="0">
+                                <div class="alert alert-primary" role="alert">
+                                    No se presentaron requerimientos
+                                </div>
+                            </div>
+                            <div *ngSwitchDefault>
+                                <ol class="list-group list-group-numbered">
+                                    <li class="list-group-item" *ngFor="let requerimiento of Tramite.requerimientos">
+                                        {{requerimiento}}
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </ng-container>
         </mat-tab>
         <mat-tab *ngIf="Workflow.length!==0">
@@ -190,7 +203,7 @@
                 <mat-icon class="example-tab-icon">groups</mat-icon>
                 Flujo de trabajo
             </ng-template>
-            <app-list-workflow *ngIf="Workflow && Tramite" [Workflow]="Workflow"
+            <app-list-workflow [Workflow]="Workflow"
                 [fecha_registro]="Tramite.fecha_registro"></app-list-workflow>
         </mat-tab>
         <mat-tab *ngIf="Workflow.length!==0">
@@ -198,7 +211,7 @@
                 <mat-icon class="example-tab-icon">account_tree</mat-icon>
                 Flujo de trabajo grafico
             </ng-template>
-            <app-graph-workflow *ngIf="Workflow && Tramite" [Workflow]="Workflow"></app-graph-workflow>
+            <app-graph-workflow [Workflow]="Workflow"></app-graph-workflow>
         </mat-tab>
     </mat-tab-group>
 </div>

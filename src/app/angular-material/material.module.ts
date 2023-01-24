@@ -32,6 +32,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import {MatBadgeModule} from '@angular/material/badge';
 
 @NgModule({
   declarations: [],
@@ -69,7 +70,8 @@ import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
     MatTooltipModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    MatBadgeModule
   ]
 })
 export class MaterialModule { }

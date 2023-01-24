@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
-import { fadeInOnEnterAnimation } from 'angular-animations';
+import { PageEvent } from '@angular/material/paginator';
+import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
 import { DialogRemisionComponent } from '../dialog-remision/dialog-remision.component';
-import { InternoData, TramiteInternoModel } from '../models/interno.model';
 import { InternosService } from '../services/internos.service';
 import { DialogInternosComponent } from './dialog-internos/dialog-internos.component';
+import { InternoData } from './models/interno.model';
 import { HojaRutaInterna } from './pdfs/hora-ruta';
 
 @Component({
@@ -15,12 +15,23 @@ import { HojaRutaInterna } from './pdfs/hora-ruta';
   templateUrl: './internos.component.html',
   styleUrls: ['./internos.component.css'],
   animations: [
-    fadeInOnEnterAnimation({ duration: 500 })
+    fadeInOnEnterAnimation(),
+    expandOnEnterAnimation(),
+    collapseOnLeaveAnimation(),
   ]
 })
 export class InternosComponent implements OnInit {
-  displayedColumns: string[] = ['alterno', 'tipo_tramite', 'detalle', 'solicitante', 'estado', 'cite', 'fecha', 'opciones']
+  displayedColumns: string[] = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'enviado', 'opciones']
   Data: InternoData[]
+
+  filterOpions = [
+    { value: 'remitente', viewValue: 'REMITENTE / CARGO' },
+    { value: 'destinatario', viewValue: 'DESTINATARIO / CARGO' },
+    { value: 'alterno', viewValue: 'ALTERNO' },
+    { value: 'cite', viewValue: 'CITE' },
+  ]
+
+
   constructor(
     public dialog: MatDialog,
     public internoService: InternosService,
@@ -28,32 +39,46 @@ export class InternosComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.mostrar_tramites()
+    if (this.internoService.searchOptions.active) {
+      this.GetSearch()
+    }
+    else {
+      this.Get()
+    }
   }
-  mostrar_tramites() {
-    this.internoService.getInternos().subscribe(tramites => {
+  Get() {
+    this.internoService.Get().subscribe(tramites => {
       this.Data = tramites
     })
   }
-  agregar_tramite() {
+
+  GetSearch() {
+    if (this.internoService.searchOptions.text !== '' && this.internoService.searchOptions.type !== '') {
+      this.internoService.GetSearch().subscribe(tramites => {
+        this.Data = tramites
+      })
+    }
+  }
+  Add() {
     const dialogRef = this.dialog.open(DialogInternosComponent, {
-      width: '1000px'
+      width: '1000px',
+      disableClose: true
     });
-    dialogRef.afterClosed().subscribe((result: TramiteInternoModel) => {
+    dialogRef.afterClosed().subscribe((result: InternoData) => {
       if (result) {
         this.showLoadingRequest()
-        this.internoService.addInterno(result).subscribe(tramite => {
-          console.log(tramite)
+        this.internoService.Add(result).subscribe(tramite => {
           if (this.Data.length === this.internoService.limit) {
             this.Data.pop()
           }
           this.Data = [tramite, ...this.Data]
           Swal.close();
+          this.Send(tramite)
         })
       }
     });
   }
-  editar_tramite(tramite: InternoData) {
+  Edit(tramite: InternoData) {
     const dialogRef = this.dialog.open(DialogInternosComponent, {
       width: '1000px',
       data: tramite
@@ -70,7 +95,7 @@ export class InternosComponent implements OnInit {
       }
     });
   }
-  remitir_tramite(tramite: InternoData) {
+  Send(tramite: InternoData) {
     const dialogRef = this.dialog.open(DialogRemisionComponent, {
       width: '1200px',
       data: {
@@ -81,16 +106,19 @@ export class InternosComponent implements OnInit {
           alterno: tramite.alterno,
           cantidad: tramite.cantidad
         }
-      }
+      },
+      disableClose: true
     });
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        this.mostrar_tramites()
+        const indexFound = this.Data.findIndex(element => element._id === tramite._id)
+        this.Data[indexFound].ubicacion = result.receptor
+        this.Data = [...this.Data]
       }
     });
   }
   generar_hoja_ruta(id_tramite: string) {
-    this.internoService.getInterno(id_tramite).subscribe(data => {
+    this.internoService.GetOne(id_tramite).subscribe(data => {
       HojaRutaInterna(data.tramite, data.workflow, 'tramites_internos')
     })
   }
@@ -102,6 +130,35 @@ export class InternosComponent implements OnInit {
     }
     return false
   }
+
+
+  search(event: Event) {
+    this.internoService.offset = 0
+    this.internoService.searchOptions.text = (event.target as HTMLInputElement).value;
+    this.GetSearch()
+  }
+
+  changeSearchMode(option: boolean) {
+    this.internoService.offset = 0
+    this.internoService.searchOptions.active = option
+    if (!option) {
+      this.internoService.searchOptions.text = ""
+      this.internoService.searchOptions.type = ""
+      this.Get()
+    }
+  }
+
+  pagination(page: PageEvent) {
+    this.internoService.offset = page.pageIndex
+    this.internoService.limit = page.pageSize
+    if (this.internoService.searchOptions.active) {
+      this.GetSearch()
+    }
+    else {
+      this.Get()
+    }
+  }
+
 
   showLoadingRequest() {
     Swal.fire({

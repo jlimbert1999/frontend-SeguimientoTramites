@@ -1,5 +1,5 @@
 .mat-cell {
-    font-size: 9px;
+    font-size: 12px;
     padding-right: 20px
 }
 
@@ -18,7 +18,7 @@ td.mat-column-tramite {
 
 td.mat-column-descripcion {
     width: 300px;
-    font-size: 8px;
+    /* font-size: 8px; */
     padding-right: 20px;
 }
 
@@ -33,13 +33,16 @@ td.mat-column-solicitante {
 td.mat-column-fecha_registro {
     width: 100px;
 }
+
 td.mat-column-enviado {
     width: 50px;
+    text-align: center;
 }
 
 td.mat-column-opciones {
     width: 32px;
     border-left: 1px solid;
+    text-align: center;
 }
 
 .mat-row:hover {
@@ -50,6 +53,11 @@ td.mat-column-opciones {
     position: relative;
     overflow: auto;
     max-height: 70vh;
+}
+.search {
+    position: relative;
+    overflow: auto;
+    max-height: 50vh;
 }
 
 .mobile-label {
@@ -121,7 +129,7 @@ td.mat-column-opciones {
         padding: 0 48px 0 16px;
         color: rgba(0, 0, 0, 0.54);
         font-size: 18px;
-        
+
     }
 
     .mat-table .has_label_on_mobile:before {
@@ -144,9 +152,9 @@ td.mat-column-opciones {
     }
 
     .mat-paginator {
-        position:absolute;
-        bottom:0;
+        position: absolute;
+        bottom: 0;
     }
 
-   
+
 }

@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   Menu: any = this.authService.Menu
 
   loading$ = this.loader.loading$;
-
+  numbernotifies$ = this.bandejaService.notificacion$
 
   private _mobileQueryListener: () => void;
 
@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     changeDetectorRef: ChangeDetectorRef, media: MediaMatcher,
     public authService: AuthService,
     private socketService: SocketService,
-    private bandejaService: BandejaService,
+    public bandejaService: BandejaService,
     private toastr: ToastrService,
     public loader: LoaderService,
     private router: Router
@@ -45,6 +45,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+    // Update user list widh conect new user
     this.socketService.listenUserConected().subscribe((users: any) => {
       this.socketService.OnlineUsers = users
     })
@@ -55,12 +56,15 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.socketService.listenNotifications().subscribe(data => {
       alert(data)
     })
-    this.socketService.listenMails().subscribe((mail: any) => {
-      this.toastr.info("Nuevo tramite recibido", undefined, {
+
+    this.socketService.listenMails().subscribe(mail => {
+      console.log(mail)
+      this.toastr.info(`Nuevo tramite recibido`, undefined, {
         positionClass: 'toast-bottom-right',
         timeOut: 5000,
       })
       this.bandejaService.DataMailsIn = [mail, ... this.bandejaService.DataMailsIn]
+      this.bandejaService.addNotification()
     })
 
     // this.socketService.SocketOn_Mails().subscribe((data: any) => {

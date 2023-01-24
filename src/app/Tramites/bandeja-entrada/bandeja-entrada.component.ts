@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { fadeInOnEnterAnimation } from 'angular-animations';
+import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
@@ -23,14 +23,19 @@ import { InternosService } from '../services/internos.service';
       state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
-    fadeInOnEnterAnimation({ duration: 500 })
+    fadeInOnEnterAnimation(),
+    expandOnEnterAnimation(),
+    collapseOnLeaveAnimation(),
   ],
 })
 export class BandejaEntradaComponent implements OnInit {
-  displayedColumns = ['alterno', 'tramite', 'descripcion', 'estado', 'receptor', 'fecha_envio', 'opciones', 'expand']
+  displayedColumns = ['tipo_correspondencia', 'alterno', 'descripcion', 'estado', 'fecha_envio', 'opciones', 'expand']
   expandedElement: any | null;
 
-  // isLoadingResults = true;
+  filterOptions = [
+    { value: 'interno', viewValue: 'INTERNO' },
+    { value: 'externo', viewValue: 'EXTERNO' },
+  ]
 
 
   constructor(
@@ -43,7 +48,13 @@ export class BandejaEntradaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.bandejaService.getmMailsIn().subscribe()
+    if (this.bandejaService.searchOptionsIn.active) {
+      this.GetSearch()
+    }
+    else {
+      this.bandejaService.getmMailsIn().subscribe()
+    }
+
   }
 
   send(elemento: BandejaEntradaData) {
@@ -75,8 +86,8 @@ export class BandejaEntradaComponent implements OnInit {
   }
   aceptar_tramite(elemento: BandejaEntradaData) {
     Swal.fire({
-      title: `Aceptar tramite?`,
-      text: `El tramite ${elemento.tramite.alterno} sera marcado como aceptado`,
+      title: `Aceptar tramite ${elemento.tramite.alterno}?`,
+      text: `El tramite sera marcado como aceptado`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -127,10 +138,11 @@ export class BandejaEntradaComponent implements OnInit {
       }
     })
   }
-  concluir_tramite(tipo: 'tramites_internos' | 'tramites_externos', id_tramite: string) {
+  concluir_tramite(tipo: 'tramites_internos' | 'tramites_externos', id_tramite: string, alterno: string) {
     Swal.fire({
       icon: 'question',
-      title: 'Marcar el tramite como concluido?',
+      title: `Concluir el tramite ${alterno}?`,
+      text: `El tramite sera marcado como concluido `,
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar'
@@ -155,7 +167,33 @@ export class BandejaEntradaComponent implements OnInit {
   paginacion(page: PageEvent) {
     this.bandejaService.PaginationMailsIn.limit = page.pageSize
     this.bandejaService.PaginationMailsIn.offset = page.pageIndex
-    this.bandejaService.getmMailsIn().subscribe()
+    if (this.bandejaService.searchOptionsIn.active) {
+      this.GetSearch()
+    }
+    else {
+      this.bandejaService.getmMailsIn().subscribe()
+    }
+  }
+
+  GetSearch() {
+    if (this.bandejaService.searchOptionsIn.text !== '' && this.bandejaService.searchOptionsIn.type !== '') {
+      this.bandejaService.searchMailsIn().subscribe()
+    }
+  }
+  search(event: Event) {
+    this.bandejaService.PaginationMailsIn.offset = 0
+    this.bandejaService.searchOptionsIn.text = (event.target as HTMLInputElement).value;
+    this.GetSearch()
+  }
+
+  changeSearchMode(option: boolean) {
+    this.bandejaService.PaginationMailsIn.offset = 0
+    this.bandejaService.searchOptionsIn.active = option
+    if (!option) {
+      this.bandejaService.searchOptionsIn.text = ""
+      this.bandejaService.searchOptionsIn.type = ""
+      this.bandejaService.getmMailsIn().subscribe()
+    }
   }
 
 

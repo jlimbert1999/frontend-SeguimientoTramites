@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { ReplaySubject, Subject, take, takeUntil } from 'rxjs';
@@ -7,7 +7,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { BandejaService } from '../services/bandeja.service';
 import { SocketService } from '../services/socket.service';
 import Swal from 'sweetalert2';
-import { EnvioModel, UsersMails } from '../models/mail.model';
+import { EnvioModel, Mail, UsersMails } from '../models/mail.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -19,16 +19,17 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   instituciones: any[] = []
   dependencias: any[] = []
   funcionarios: UsersMails[] = []
-  receptor: UsersMails
-  motivo: string
   public bankCtrl: UntypedFormControl = new UntypedFormControl();
   public bankFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredBanks: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
   @ViewChild('singleSelect', { static: true }) singleSelect: MatSelect;
-  protected _onDestroy = new Subject<void>();
 
-  public UserCtrl: UntypedFormControl = new UntypedFormControl();
-  public userFilterCtrl: UntypedFormControl = new UntypedFormControl();
+  protected _onDestroy = new Subject<void>();
+  /** control for the selected bank */
+  public UserCtrl: FormControl = new FormControl('', Validators.required);
+  /** control for the MatSelect filter keyword */
+  public userFilterCtrl: FormControl = new FormControl('');
+  /** list of banks filtered by search keyword */
   public filteredUsers: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
   @ViewChild('userSelect', { static: true }) userSelect: MatSelect;
   protected _onDestroy2 = new Subject<void>();
@@ -44,15 +45,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
     private socketService: SocketService,
     private authService: AuthService,
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public Data: {
-      _id: string,
-      tipo: 'tramites_externos' | 'tramites_internos',
-      tramite: {
-        nombre: string,
-        alterno: string,
-        cantidad: string
-      }
-    },
+    @Inject(MAT_DIALOG_DATA) public Data: Mail,
     public dialogRef: MatDialogRef<DialogRemisionComponent>,
     private toastr: ToastrService,
   ) { }
@@ -65,14 +58,15 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.bandejaService.obtener_instituciones_envio().subscribe(inst => {
+    this.bandejaService.getInstituciones().subscribe(inst => {
       this.instituciones = inst
     })
   }
 
-  obtener_dependencias(id_institucion: string) {
+  getDependencias(id_institucion: string) {
+    this.UserCtrl.setValue('');
     this.funcionarios = []
-    this.bandejaService.obtener_dependencias_envio(id_institucion).subscribe(deps => {
+    this.bandejaService.getDependencias(id_institucion).subscribe(deps => {
       this.dependencias = deps
       this.bankCtrl.setValue(this.dependencias);
       this.filteredBanks.next(this.dependencias.slice());
@@ -85,6 +79,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   }
   getUsers(id_dependencia: string) {
     this.funcionarios = []
+    this.UserCtrl.setValue('');
     this.bandejaService.getUsersForSend(id_dependencia).subscribe(users => {
       users.forEach(user => {
         if (user.id_cuenta !== this.authService.Account.id_cuenta) {
@@ -95,8 +90,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
           this.funcionarios.push(user)
         }
       })
-      this.UserCtrl.setValue(this.funcionarios);
-      this.filteredUsers.next(this.funcionarios.slice());
+      this.filteredUsers.next(this.funcionarios);
       this.userFilterCtrl.valueChanges
         .pipe(takeUntil(this._onDestroy2))
         .subscribe(() => {
@@ -104,31 +98,27 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
         });
     })
   }
-  seleccionar_receptor() {
-    this.receptor = this.UserCtrl.value
-  }
 
   send() {
-    let nuevoEnvio: EnvioModel = {
+    let receptor = this.UserCtrl.value
+    let mail: EnvioModel = {
       id_tramite: this.Data._id,
-      motivo: this.FormEnvio.get('motivo')?.value,
-      cantidad: this.FormEnvio.get('cantidad')?.value,
-      numero_interno: this.FormEnvio.get('numero_interno')?.value,
       tipo: this.Data.tipo,
+      ...this.FormEnvio.value,
       emisor: {
         cuenta: this.authService.Account.id_cuenta,
         funcionario: this.authService.Account.funcionario.nombre_completo,
         cargo: this.authService.Account.funcionario.cargo
       },
       receptor: {
-        cuenta: this.receptor.id_cuenta,
-        funcionario: this.receptor.fullname,
-        cargo: this.receptor.jobtitle
+        cuenta: receptor.id_cuenta,
+        funcionario: receptor.fullname,
+        cargo: receptor.jobtitle
       }
     }
     Swal.fire({
-      title: `Enviar tramite?`,
-      text: `El funcionario ${this.receptor.fullname} (${this.receptor.jobtitle}) recibira el tramite`,
+      title: `Remitir el tramite ${this.Data.tramite.alterno}?`,
+      text: `El tramite sera remitito al funcionario ${receptor.fullname} (${receptor.jobtitle})`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -137,18 +127,28 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService.agregar_mail(nuevoEnvio).subscribe(tramite => {
-          if (this.receptor.online) {
-            this.socketService.socket.emit("mail", { id_cuenta: this.receptor.id_cuenta, tramite })
+        Swal.fire({
+          title: 'Enviando el tramite....',
+          text: 'Por favor espere',
+          allowOutsideClick: false,
+        });
+        Swal.showLoading()
+        this.bandejaService.AddMail(mail).subscribe(tramite => {
+          if (receptor.online) {
+            this.socketService.socket.emit("mail", { id_cuenta: receptor.id_cuenta, tramite })
           }
           this.toastr.success(undefined, 'Tramite enviado!', {
             positionClass: 'toast-bottom-right',
             timeOut: 3000,
           })
-          this.dialogRef.close({})
+          this.dialogRef.close(tramite)
+          Swal.close()
         })
+
       }
     })
+
+
   }
 
 
@@ -173,7 +173,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
     }
     let search = this.userFilterCtrl.value;
     if (!search) {
-      this.filteredUsers.next(this.funcionarios.slice());
+      this.filteredUsers.next(this.funcionarios);
       return;
     } else {
       search = search.toLowerCase();
@@ -181,5 +181,12 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
     this.filteredUsers.next(
       this.funcionarios.filter(user => user.fullname.toLowerCase().indexOf(search) > -1 || user.jobtitle.toLowerCase().indexOf(search) > -1)
     );
+  }
+
+  allowSend() {
+    if (this.FormEnvio.valid && this.UserCtrl.valid) {
+      return false
+    }
+    return true
   }
 }

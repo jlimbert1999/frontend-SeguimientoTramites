@@ -1,11 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map, Observable, startWith, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { InternoData, TipoTramiteInternoModel, TramiteInternoModel } from '../../models/interno.model';
-import { BandejaService } from '../../services/bandeja.service';
 import { InternosService } from '../../services/internos.service';
+import { Interno, InternoData } from '../models/interno.model';
 
 @Component({
   selector: 'app-dialog-internos',
@@ -28,12 +27,11 @@ export class DialogInternosComponent implements OnInit {
     alterno: ['']
   });
 
-  tipos_tramites: TipoTramiteInternoModel[] = []
-
+  tipos_tramites: any[] = []
+  title: string
 
   constructor(
     private authService: AuthService,
-    private bandejaService: BandejaService,
     private internoService: InternosService,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: InternoData,
@@ -41,6 +39,24 @@ export class DialogInternosComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.data) {
+      this.title = 'EDICION TRAMITE'
+      this.TramiteFormGroup = this.fb.group({
+        detalle: [this.data.detalle, Validators.required],
+        cite: [this.data.cite],
+        nombre_remitente: [this.data.remitente.nombre, Validators.required],
+        cargo_remitente: [this.data.remitente.cargo, Validators.required],
+        nombre_destinatario: [this.data.destinatario.nombre, Validators.required],
+        cargo_destinatario: [this.data.destinatario.cargo, Validators.required],
+        cantidad: [this.data.cantidad, Validators.required]
+      });
+    }
+    else {
+      this.title = 'REGISTRO TRAMITE'
+      this.internoService.getTypes().subscribe(tipos => {
+        this.tipos_tramites = tipos
+      })
+    }
     this.filteredOptions = this.TramiteFormGroup.controls['nombre_remitente'].valueChanges.pipe(
       startWith(''),
       switchMap(value => {
@@ -59,27 +75,13 @@ export class DialogInternosComponent implements OnInit {
         return []
       })
     )
-    if (this.data) {
-      this.TramiteFormGroup = this.fb.group({
-        detalle: [this.data.detalle, Validators.required],
-        cite: [this.data.cite, Validators.required],
-        nombre_remitente: [this.data.remitente.nombre, Validators.required],
-        cargo_remitente: [this.data.remitente.cargo, Validators.required],
-        nombre_destinatario: [this.data.destinatario.nombre, Validators.required],
-        cargo_destinatario: [this.data.destinatario.cargo, Validators.required],
-        cantidad: [this.data.cantidad, Validators.required]
-      });
-    }
-    else {
-      this.internoService.getTiposTramite().subscribe(tipos => {
-        this.tipos_tramites = tipos
-      })
-    }
   }
 
-  generar_alterno(segmento: string) {
-    this.TramiteFormGroup.get('alterno')?.setValue(`${segmento}-${this.authService.Account.codigo}`)
+  selectType(id_type: string) {
+    let type = this.tipos_tramites.find(tipo => tipo.id_tipoTramite === id_type)
+    this.TramiteFormGroup.get('alterno')?.setValue(`${type!.segmento}-${this.authService.Account.codigo}`)
   }
+
   guardar() {
     const {
       nombre_remitente,
@@ -87,7 +89,7 @@ export class DialogInternosComponent implements OnInit {
       nombre_destinatario,
       cargo_destinatario,
       ...Object } = this.TramiteFormGroup.value
-    let tramite: TramiteInternoModel = {
+    let tramite: Interno = {
       remitente: {
         nombre: nombre_remitente,
         cargo: cargo_remitente
@@ -99,44 +101,28 @@ export class DialogInternosComponent implements OnInit {
       ...Object
     }
     this.dialogRef.close(tramite)
-    // if (this.data) {
-    //   this.internoService.editInterno(this.data._id, tramite).subscribe(tramite => {
-    //     this.dialogRef.close(tramite)
-    //   })
-    // }
-    // else {
-    //   this.internoService.addInterno(tramite).subscribe(tramite => {
-    //     this.dialogRef.close(tramite)
-    //   })
-
-    // }
-
   }
 
 
   FiltrarUsuarios(termino: string) {
-    return this.internoService.getUsuarios(termino)
+    return this.internoService.getUsers(termino)
       .pipe(
-        map(response => response.usuarios.filter(options => {
-          return options
-        }))
+        map(response => response.usuarios)
       )
   }
   FiltrarDestinatarios(termino: string) {
-    return this.internoService.getUsuarios(termino)
+    return this.internoService.getUsers(termino)
       .pipe(
-        map(response => response.usuarios.filter(options => {
-          return options
-        }))
+        map(response => response.usuarios)
       )
   }
   seleccionar_remitente(funcionario: any) {
-    this.TramiteFormGroup.get('cargo_remitente')?.setValue(funcionario.cargo)
-    this.TramiteFormGroup.get('nombre_remitente')?.setValue(`${funcionario.nombre} ${funcionario.paterno} ${funcionario.materno}`)
+    this.TramiteFormGroup.get('cargo_remitente')?.setValue(funcionario.cargo.toUpperCase())
+    this.TramiteFormGroup.get('nombre_remitente')?.setValue(`${funcionario.nombre} ${funcionario.paterno} ${funcionario.materno}`.toUpperCase())
   }
   seleccionar_destinatario(funcionario: any) {
-    this.TramiteFormGroup.get('cargo_destinatario')?.setValue(funcionario.cargo)
-    this.TramiteFormGroup.get('nombre_destinatario')?.setValue(`${funcionario.nombre} ${funcionario.paterno} ${funcionario.materno}`)
+    this.TramiteFormGroup.get('cargo_destinatario')?.setValue(funcionario.cargo.toUpperCase())
+    this.TramiteFormGroup.get('nombre_destinatario')?.setValue(`${funcionario.nombre} ${funcionario.paterno} ${funcionario.materno}`.toUpperCase())
   }
 
 }

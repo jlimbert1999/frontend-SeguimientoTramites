@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ExternoData } from 'src/app/Tramites/externos/models/externo';
+import { ExternoData } from 'src/app/Tramites/externos/models/externo.model';
 import { ReportesExternoService } from '../services/reportes-externo.service';
 
 @Component({

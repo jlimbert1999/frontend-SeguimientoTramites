@@ -48,10 +48,10 @@ export class ReporteTipoComponent implements OnInit {
     this.reporteService.getNamesOfTypes().subscribe(tipos => {
       this.tipos_tramites = tipos
     })
-    this.internoService.getTiposTramite().subscribe(tipos => {
+    this.internoService.getTypes().subscribe(tipos => {
       this.tipos_tramites_interno = tipos
     })
-    this.bandejaService.obtener_instituciones_envio().subscribe(inst => {
+    this.bandejaService.getInstituciones().subscribe(inst => {
       this.instituciones = inst
     })
   }

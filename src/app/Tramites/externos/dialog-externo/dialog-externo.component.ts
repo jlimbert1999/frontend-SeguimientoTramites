@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { ExternosService } from '../../services/externos.service';
 import { TypeTramiteData } from '../models/tipos';
-import { Externo, ExternoData, Representante, Solicitante } from '../models/externo';
+import { Externo, ExternoData, Representante, Solicitante } from '../models/externo.model';
 
 @Component({
   selector: 'app-dialog-externo',

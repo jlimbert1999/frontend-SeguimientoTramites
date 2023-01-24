@@ -1,69 +1,73 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { ToastrService } from 'ngx-toastr';
-import { TramiteService } from '../services/tramite.service';
 import { DialogExternoComponent } from './dialog-externo/dialog-externo.component';
-import { crear_ficha_tramite, crear_hoja_ruta } from 'src/app/Tramites/pdf/tramites';
 import { DialogRemisionComponent } from '../dialog-remision/dialog-remision.component';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { fadeInOnEnterAnimation } from 'angular-animations';
+import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { ExternosService } from '../services/externos.service';
-import { catchError, map, of, startWith, switchMap } from 'rxjs';
-import { Externo, ExternoData, Representante, Solicitante } from './models/externo';
+import { Externo, ExternoData, Representante, Solicitante } from './models/externo.model';
 import Swal from 'sweetalert2';
-import { LocationComponent } from 'src/app/shared/location/location.component';
-import { provideRouter, Router } from '@angular/router';
-import { FichaExternoComponent } from './ficha-externo/ficha-externo.component';
 import { Ficha } from './pdf/ficha';
 import { HojaRuta } from './pdf/hoja-ruta';
 import { EnvioModel } from '../models/mail.model';
-import { BandejaService } from '../services/bandeja.service';
 
 @Component({
   selector: 'app-externos',
   templateUrl: './externos.component.html',
   styleUrls: ['./externos.component.css'],
   animations: [
-    fadeInOnEnterAnimation({ duration: 500 })
+    fadeInOnEnterAnimation(),
+    expandOnEnterAnimation(),
+    collapseOnLeaveAnimation(),
   ]
 
 })
 export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  data: ExternoData[] = []
-  displayedColumns: string[] = ['alterno', 'tramite', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'enviado','opciones'];
-  dataSource: ExternoData[] = [];
-  resultsLength = 0;
+  Data: ExternoData[] = []
+  displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'enviado', 'opciones'];
   filterOpions = [
-    'ALTERNO',
-    'SOLICITANTE',
-    'TIPO DE TRAMITE'
+    { value: 'solicitante', viewValue: 'SOLICITANTE / DNI' },
+    { value: 'alterno', viewValue: 'ALTERNO' },
   ]
-  selectedTypeFilter: string
-  showFilter: boolean = false
+
+
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   constructor(
     public dialog: MatDialog,
     public authService: AuthService,
-    public externoService: ExternosService,
-    private _bottomSheet: MatBottomSheet,
-    private bandejaService: BandejaService
+    public externoService: ExternosService
   ) { }
   ngAfterViewInit(): void {
-
+    this.paginator.pageSize = this.externoService.limit
   }
   ngOnDestroy(): void {
   }
 
   ngOnInit(): void {
-    this.GetData()
+    if (this.externoService.searchOptions.active) {
+      this.GetSearch()
+    }
+    else {
+      this.Get()
+    }
   }
 
-  GetData() {
+  Get() {
     this.externoService.Get().subscribe(tramites => {
-      this.data = tramites
+      this.Data = tramites
     })
+  }
+
+  GetSearch() {
+    if (this.externoService.searchOptions.text !== '' && this.externoService.searchOptions.type !== '') {
+      this.externoService.GetSearch().subscribe(tramites => {
+        this.Data = tramites
+      })
+    }
   }
 
 
@@ -76,10 +80,10 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
       if (result) {
         this.showLoadingRequest()
         this.externoService.Add(result.tramite, result.solicitante, result.representante).subscribe(tramite => {
-          if (this.data.length === this.externoService.limit) {
-            this.data.pop()
+          if (this.Data.length === this.externoService.limit) {
+            this.Data.pop()
           }
-          this.data = [tramite, ...this.data]
+          this.Data = [tramite, ...this.Data]
           Swal.close();
           this.Send(tramite)
         })
@@ -96,9 +100,9 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
       if (result) {
         this.showLoadingRequest()
         this.externoService.Edit(tramite._id, result.tramite, result.solicitante, result.representante).subscribe(tramite => {
-          const indexFound = this.data.findIndex(element => element._id === tramite._id)
-          this.data[indexFound] = tramite
-          this.data = [...this.data]
+          const indexFound = this.Data.findIndex(element => element._id === tramite._id)
+          this.Data[indexFound] = tramite
+          this.Data = [...this.Data]
           Swal.close();
         })
       }
@@ -117,21 +121,26 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
           alterno: tramite.alterno,
           cantidad: tramite.cantidad
         }
-      }
+      },
+      disableClose:true
     });
-    dialogRef.afterClosed().subscribe((result: EnvioModel) => {
+    dialogRef.afterClosed().subscribe(result => {
       if (result) {
-
-        this.GetData()
+        const indexFound = this.Data.findIndex(element => element._id === tramite._id)
+        this.Data[indexFound].ubicacion = result.receptor
+        this.Data = [...this.Data]
       }
     });
   }
-  paginacion(page: PageEvent) {
+  pagination(page: PageEvent) {
     this.externoService.offset = page.pageIndex
     this.externoService.limit = page.pageSize
-    this.GetData()
-
-
+    if (this.externoService.searchOptions.active) {
+      this.GetSearch()
+    }
+    else {
+      this.Get()
+    }
   }
 
   denied_options(estado: string, responsable: string) {
@@ -141,6 +150,32 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     return false
   }
 
+
+  search(event: Event) {
+    this.externoService.offset = 0
+    this.externoService.searchOptions.text = (event.target as HTMLInputElement).value;
+    this.GetSearch()
+  }
+
+  changeSearchMode(option: boolean) {
+    this.externoService.offset = 0
+    this.externoService.searchOptions.active = option
+    if (!option) {
+      this.externoService.searchOptions.text = ""
+      this.externoService.searchOptions.type = ""
+      this.Get()
+    }
+  }
+
+
+  GenerateHojaRuta(id_tramite: string) {
+    this.externoService.getOne(id_tramite).subscribe(data => {
+      HojaRuta(data.tramite, data.workflow)
+    })
+  }
+  GenerateFicha(tramite: ExternoData) {
+    Ficha(tramite)
+  }
   showLoadingRequest() {
     Swal.fire({
       title: 'Guardando....',
@@ -150,39 +185,6 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     Swal.showLoading()
   }
 
-
-  filter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    if (filterValue !== '') {
-      this.externoService.filter(filterValue, this.selectedTypeFilter).subscribe(data => {
-        this.data = data.tramites
-        this.resultsLength = data.total
-      })
-    }
-  }
-
-
-
-  filterMode(option: boolean) {
-    this.showFilter = option
-    this.externoService.resetPagination()
-    if (option) {
-
-    }
-    else {
-      this.GetData()
-    }
-  }
-
-
-  GenerateHojaRuta(id_tramite: string) {
-    this.externoService.getExterno(id_tramite).subscribe(data => {
-      HojaRuta(data.tramite, data.workflow)
-    })
-  }
-  GenerateFicha(tramite: ExternoData) {
-    Ficha(tramite)
-  }
 
 }
 

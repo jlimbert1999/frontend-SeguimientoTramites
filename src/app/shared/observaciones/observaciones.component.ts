@@ -45,7 +45,7 @@ export class ObservacionesComponent implements OnInit {
   add() {
     Swal.fire({
       title: `Registro observacion`,
-      text: 'Ingrese la observacion',
+      text: 'Ingrese una descripcion',
       input: 'textarea',
       inputAttributes: {
         autocapitalize: 'off'

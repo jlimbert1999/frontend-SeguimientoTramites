@@ -17,8 +17,8 @@ table {
     overflow: auto;
 }
 
-table {
-    width: 100%;
+.badge {
+    font-size: 9px;
 }
 
 .example-loading-shade {
@@ -35,7 +35,7 @@ table {
 }
 
 .mat-cell {
-    font-size: 12px;
+    font-size: 11px;
 
 }
 
@@ -68,7 +68,4 @@ tr.example-element-row:not(.example-expanded-row):active {
     border-right: 1px solid currentColor;
     padding-right: 24px; */
     text-align: center;
-}
-.badge{
-    font-size: 12px;
 }

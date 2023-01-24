@@ -1,5 +1,5 @@
 .mat-cell {
-    font-size: 9px;
+    font-size: 11px;
     padding-right: 20px
 }
 
@@ -7,6 +7,11 @@
     font-size: 9px;
 }
 
+.example-table-container {
+    position: relative;
+    overflow: auto;
+    max-height: 70vh;
+}
 
 td.mat-column-alterno {
     width: 150px;
@@ -30,9 +35,10 @@ td.mat-column-cite {
     width: 80px;
 }
 
-td.mat-column-solicitante {
+td.mat-column-solicitante, td.mat-column-destinatario {
     width: 200px;
 }
+
 
 td.mat-column-fecha {
     width: 100px;
@@ -138,5 +144,10 @@ td.mat-column-opciones {
         bottom: 0;
     }
 
+}
 
+.search {
+    position: relative;
+    overflow: auto;
+    max-height: 50vh;
 }

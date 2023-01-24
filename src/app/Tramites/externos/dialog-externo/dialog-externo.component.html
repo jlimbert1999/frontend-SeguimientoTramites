@@ -31,17 +31,17 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <mat-form-field class="example-full-width">
-                            <mat-label>Descripcion del tramite</mat-label>
+                            <mat-label>Referencia del tramite</mat-label>
                             <textarea matInput formControlName="detalle"></textarea>
                             <mat-error *ngIf="TramiteFormGroup.controls['detalle'].invalid">
-                                Ingrese la despcripcion
+                                Ingrese la referencia
                             </mat-error>
                         </mat-form-field>
 
                     </div>
                     <div class="col-sm-3">
                         <mat-form-field class="example-full-width" appearance="legacy">
-                            <mat-label>Cantidad hojas</mat-label>
+                            <mat-label>Cant. Hojas / Anexos</mat-label>
                             <input type="text" matInput formControlName="cantidad">
                             <mat-error *ngIf="TramiteFormGroup.controls['cantidad'].invalid">Ingrese la cantidad de
                                 hojas
@@ -50,7 +50,7 @@
                     </div>
                     <div class="col-sm-3">
                         <mat-form-field class="example-full-width" appearance="legacy">
-                            <mat-label>Cite</mat-label>
+                            <mat-label>CITE</mat-label>
                             <input type="text" matInput formControlName="cite">
                         </mat-form-field>
                     </div>

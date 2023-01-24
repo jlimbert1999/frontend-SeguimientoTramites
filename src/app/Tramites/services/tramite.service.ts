@@ -4,7 +4,6 @@ import { map, Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { TiposTramitesModel } from 'src/app/Configuraciones/models/tiposTramites.model';
 import { environment } from 'src/environments/environment';
-import { RepresentanteModel, SolicitanteModel } from '../models/solicitud.model';
 
 const base_url = environment.base_url
 
@@ -29,7 +28,7 @@ export class TramiteService {
   //     })
   //   )
   // }
-  editar_tramite_externo(id_tramite: string, tramite: any, solicitante: SolicitanteModel, representante: RepresentanteModel | null) {
+  editar_tramite_externo(id_tramite: string, tramite: any, solicitante: any, representante: any | null) {
     return this.http.put<{ ok: boolean, tramite: any }>(`${base_url}/tramites/externo/${id_tramite}`, { tramite, solicitante, representante }).pipe(
       map(resp => {
         return resp.tramite

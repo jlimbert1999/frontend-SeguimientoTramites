@@ -57,7 +57,7 @@
                         <div [ngSwitch]="Others.length">
                             <div *ngSwitchCase="0">
                                 <div class="alert alert-primary" role="alert">
-                                    Este tramite no tiene observaciones
+                                    El tramite no tiene observaciones
                                 </div>
                             </div>
                             <div *ngSwitchDefault>
@@ -89,7 +89,7 @@
                 <mat-list>
                     <mat-list-item *ngFor="let obs of Observaciones">
                         <img matListAvatar src="../../../assets/img/account.png">
-                        <h3 matLine class="fw-semibold"> {{obs.funcionario }} </h3>
+                        <h3 matLine class="fw-semibold"> {{obs.funcionario | titlecase }} </h3>
                         <p matLine class="fw-lighte">Descripcion: {{obs.descripcion}} </p>
                         <p matLine class="demo-2">Situacion: <span class="badge" [ngClass]="obs.corregido?'text-bg-success':'text-bg-danger'">{{obs.corregido?'CORREGIDO':'SIN CORREGIR'}}</span> </p>
                         <span> {{obs.fecha | date:'short'}}</span>

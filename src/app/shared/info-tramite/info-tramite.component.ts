@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { InfoExterno } from 'src/app/Tramites/models/externo.model';
 import { ExternosService } from 'src/app/Tramites/services/externos.service';
 import Swal from 'sweetalert2';
 
@@ -11,7 +10,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./info-tramite.component.css']
 })
 export class InfoTramiteComponent implements OnInit {
-  @Input() Tramite: InfoExterno
+  @Input() Tramite: any
 
   // SABER SI SE ABRE PARA VER INFORMACION O PARA ADMINISTRAR
   @Input() permitir_opciones: boolean

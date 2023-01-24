@@ -2,6 +2,8 @@
     margin-right: 8px;
 }
 
-.container-sm{
-    width: 80vw;
+.list-group {
+    max-height: 400px;
+    overflow-y: scroll;
+    font-size: 13px;
 }

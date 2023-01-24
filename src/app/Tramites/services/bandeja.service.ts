@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { BehaviorSubject, elementAt, map } from 'rxjs';
@@ -12,22 +12,33 @@ const base_url = environment.base_url
 })
 export class BandejaService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private socketService: SocketService) { }
   DataMailsIn: BandejaEntradaData[] = [];
   PaginationMailsIn = {
     limit: 10,
     offset: 0,
     total: 0
   }
+  searchOptionsIn = {
+    active: false,
+    type: "",
+    text: ""
+  }
+  lista: string[] = []
 
-  obtener_instituciones_envio() {
+
+  notificacion = new BehaviorSubject<any[]>([])
+  notificacion$ = this.notificacion.asObservable()
+
+
+  getInstituciones() {
     return this.http.get<{ ok: boolean, instituciones: any }>(`${base_url}/bandejas/instituciones`).pipe(
       map(resp => {
         return resp.instituciones
       })
     )
   }
-  obtener_dependencias_envio(id_institucion: string) {
+  getDependencias(id_institucion: string) {
     return this.http.get<{ ok: boolean, dependencias: any }>(`${base_url}/bandejas/dependencias/${id_institucion}`).pipe(
       map(resp => {
         return resp.dependencias
@@ -51,10 +62,10 @@ export class BandejaService {
       })
     )
   }
-  agregar_mail(data: EnvioModel) {
-    return this.http.post<{ ok: boolean, tramite: any }>(`${base_url}/bandejas`, data).pipe(
+  AddMail(data: EnvioModel) {
+    return this.http.post<{ ok: boolean, mail: any }>(`${base_url}/bandejas`, data).pipe(
       map(resp => {
-        return resp.tramite
+        return resp.mail
       })
     )
   }
@@ -97,5 +108,26 @@ export class BandejaService {
       })
     )
   }
+
+  searchMailsIn() {
+    let params = new HttpParams()
+      .set('type', this.searchOptionsIn.type)
+      .set('limit', this.PaginationMailsIn.limit)
+      .set('offset', this.PaginationMailsIn.offset)
+    return this.http.get<{ ok: boolean, mails: any, total: number }>(`${base_url}/bandejas/search-interno/${this.searchOptionsIn.text}`, { params }).pipe(
+      map(resp => {
+        this.PaginationMailsIn.total = resp.total
+        this.DataMailsIn = resp.mails
+      })
+    )
+
+
+  }
+
+  addNotification() {
+    this.lista.push('nuevo')
+    this.notificacion.next(this.lista)
+  }
+
 
 }

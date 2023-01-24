@@ -22,6 +22,7 @@ import { MailFichaInternoComponent } from './internos/mail-ficha-interno/mail-fi
 import { FichaExternoComponent } from './externos/ficha-externo/ficha-externo.component';
 import { MailFichaExternoComponent } from './externos/mail-ficha-externo/mail-ficha-externo.component';
 import { SolicitantePipe } from './externos/pipes/solicitante.pipe';
+import { StatePipe } from './pipes/state.pipe';
 
 
 @NgModule({
@@ -42,6 +43,7 @@ import { SolicitantePipe } from './externos/pipes/solicitante.pipe';
     FichaExternoComponent,
     MailFichaExternoComponent,
     SolicitantePipe,
+    StatePipe
   ],
   imports: [
     CommonModule,
@@ -51,7 +53,8 @@ import { SolicitantePipe } from './externos/pipes/solicitante.pipe';
     NgxMatSelectSearchModule,
     RouterModule,
     NgxGraphModule,
-    SharedModule
+    SharedModule,
+    
   ]
 
 })

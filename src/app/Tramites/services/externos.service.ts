@@ -1,12 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Query, QueryList } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { TiposTramitesModel } from 'src/app/Configuraciones/models/tiposTramites.model';
 import { environment } from 'src/environments/environment';
-import { Externo, Representante, Solicitante } from '../externos/models/externo';
+import { AllInfoOneExterno, Externo, Representante, Solicitante } from '../externos/models/externo.model';
 import { TypeTramiteData } from '../externos/models/tipos';
-import { ExternoData } from '../externos/models/externo';
-import { RepresentanteModel, SolicitanteModel } from '../models/solicitud.model';
+import { ExternoData } from '../externos/models/externo.model';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -16,24 +15,32 @@ export class ExternosService {
   offset: number = 0
   limit: number = 10
 
+  searchOptions = {
+    active: false,
+    type: "",
+    text: ""
+  }
+
+
+
   constructor(private http: HttpClient) { }
   getTypes(segmento: string) {
-    return this.http.get<{ ok: boolean, data: TypeTramiteData[] }>(`${base_url}/tramites-externos/tipos/${segmento}`).pipe(
+    return this.http.get<{ ok: boolean, tipos: TypeTramiteData[] }>(`${base_url}/externos/tipos/${segmento}`).pipe(
       map(resp => {
-        return resp.data
+        return resp.tipos
       })
     )
   }
   getGroups() {
-    return this.http.get<{ ok: boolean, data: string[] }>(`${base_url}/tramites-externos/segmentos`).pipe(
+    return this.http.get<{ ok: boolean, groups: string[] }>(`${base_url}/externos/segmentos`).pipe(
       map(resp => {
-        return resp.data
+        return resp.groups
       })
     )
   }
 
   Add(tramite: Externo, solicitante: Solicitante, representante: Representante | null) {
-    return this.http.post<{ ok: boolean, tramite: ExternoData }>(`${base_url}/tramites-externos`, { tramite, solicitante, representante }).pipe(
+    return this.http.post<{ ok: boolean, tramite: ExternoData }>(`${base_url}/externos`, { tramite, solicitante, representante }).pipe(
       map(resp => {
         this.resultsLength += 1
         return resp.tramite
@@ -41,32 +48,38 @@ export class ExternosService {
     )
   }
   Get() {
-    return this.http.get<{ ok: boolean, data: { tramites: ExternoData[], total: number } }>(`${base_url}/tramites-externos`, { params: { limit: this.limit, offset: this.offset } }).pipe(
+    let params = new HttpParams()
+      .set('limit', this.limit)
+      .set('offset', this.offset)
+    return this.http.get<{ ok: boolean, tramites: ExternoData[], total: number }>(`${base_url}/externos`, { params }).pipe(
       map(resp => {
-        this.resultsLength = resp.data.total
-        return resp.data.tramites
+        this.resultsLength = resp.total
+        return resp.tramites
       })
     )
   }
   Edit(id_tramite: string, tramite: any, solicitante: any, representante: any | null) {
-    return this.http.put<{ ok: boolean, data: ExternoData }>(`${base_url}/tramites-externos/${id_tramite}`, { tramite, solicitante, representante }).pipe(
+    return this.http.put<{ ok: boolean, tramite: ExternoData }>(`${base_url}/externos/${id_tramite}`, { tramite, solicitante, representante }).pipe(
       map(resp => {
-        return resp.data
+        return resp.tramite
       })
     )
   }
+  GetSearch() {
+    let params = new HttpParams()
+      .set('type', this.searchOptions.type)
+      .set('limit', this.limit)
+      .set('offset', this.offset)
 
-  getExterno(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: any, workflow: any[] }>(`${base_url}/tramites-externos/${id_tramite}`).pipe(
+    return this.http.get<{ ok: boolean, tramites: ExternoData[], total: number }>(`${base_url}/externos/search/${this.searchOptions.text}`, { params }).pipe(
       map(resp => {
-        return { tramite: resp.tramite, workflow: resp.workflow }
+        this.resultsLength = resp.total
+        return resp.tramites
       })
     )
   }
-
-
-  generate_HojaRuta(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: any, workflow: any[] }>(`${base_url}/tramites-externos/ruta/${id_tramite}`).pipe(
+  getOne(id_tramite: string) {
+    return this.http.get<{ ok: boolean, tramite: AllInfoOneExterno, workflow: any[] }>(`${base_url}/externos/${id_tramite}`).pipe(
       map(resp => {
         return { tramite: resp.tramite, workflow: resp.workflow }
       })
@@ -74,14 +87,14 @@ export class ExternosService {
   }
 
   addObservacion(descripcion: string, id_tramite: string, funcionario: string) {
-    return this.http.put<{ ok: boolean, observacion: any }>(`${base_url}/tramites-externos/observacion/${id_tramite}`, { descripcion, funcionario }).pipe(
+    return this.http.put<{ ok: boolean, observacion: any }>(`${base_url}/externos/observacion/${id_tramite}`, { descripcion, funcionario }).pipe(
       map(resp => {
         return resp.observacion
       })
     )
   }
   putObservacion(id_tramite: string) {
-    return this.http.put<{ ok: boolean, estado: string }>(`${base_url}/tramites-externos/observacion/corregir/${id_tramite}`, {}).pipe(
+    return this.http.put<{ ok: boolean, estado: string }>(`${base_url}/externos/observacion/corregir/${id_tramite}`, {}).pipe(
       map(resp => {
         return resp.estado
       })
@@ -89,27 +102,11 @@ export class ExternosService {
   }
 
   conclude(id_tramite: string) {
-    return this.http.delete<{ ok: boolean, message: string }>(`${base_url}/tramites-externos/${id_tramite}`).pipe(
+    return this.http.delete<{ ok: boolean, message: string }>(`${base_url}/externos/${id_tramite}`).pipe(
       map(resp => {
         return resp.message
       })
     )
   }
 
-  filter(text: string, option: string) {
-    return this.http.get<{ ok: boolean, data: { tramites: ExternoData[], total: number } }>(`${base_url}/tramites-externos/filter/${text}?option=${option}&limit=${this.limit}&offset=${this.offset}`).pipe(
-      map(resp => {
-        return { tramites: resp.data.tramites, total: resp.data.total }
-      })
-    )
-  }
-
-  resetPagination() {
-    this.offset = 0
-    this.limit = 10
-  }
-  setPagination(limit: number, offset: number) {
-    this.limit = limit
-    this.offset = offset
-  }
 }

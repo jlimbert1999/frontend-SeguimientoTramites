@@ -9,7 +9,7 @@ import { BandejaEntradaData } from '../models/mail.model';
 })
 export class SocketService {
   socket: Socket;
-  OnlineUsers: any[] = []
+  OnlineUsers: { id_cuenta: string, fullname: string, jobtitle: string, socketIds: string[] }[] = []
   constructor() { }
   setupSocketConnection(account: any) {
     this.socket = io(environment.base_url, { auth: { token: account } });
@@ -41,8 +41,8 @@ export class SocketService {
     })
   }
   listenMails() {
-    return new Observable((observable) => {
-      this.socket.on('newmail', (data: any) => {
+    return new Observable<BandejaEntradaData>((observable) => {
+      this.socket.on('newmail', (data: BandejaEntradaData) => {
         observable.next(data)
       })
     })

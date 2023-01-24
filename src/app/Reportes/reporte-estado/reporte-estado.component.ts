@@ -42,7 +42,7 @@ export class ReporteEstadoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.bandejaService.obtener_instituciones_envio().subscribe(inst => {
+    this.bandejaService.getInstituciones().subscribe(inst => {
       this.instituciones = inst
     })
   }

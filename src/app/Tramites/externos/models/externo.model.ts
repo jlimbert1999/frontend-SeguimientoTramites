@@ -20,6 +20,8 @@ export interface Solicitante {
 export interface Representante {
     _id?: string
     nombre: string
+    paterno: string
+    materno: string
     telefono: string
     tipo: string
     dni: string
@@ -40,24 +42,39 @@ export interface ExternoData {
     solicitante: Solicitante
     representante?: Representante
     cite: string
+    ubicacion: string
+    tipo_tramite: {
+        nombre: string
+    }
+}
+export interface AllInfoOneExterno {
+    _id: string
+    alterno: string
+    cantidad: string
+    cuenta: string
+    detalle: string
+    estado: string
+    fecha_registro: string
+    fecha_finalizacion?: string
+    pin: number
+    requerimientos: string[]
+    solicitante: Solicitante
+    representante?: Representante
+    cite: string
     ubicacion: {
-        _id: string,
-        dependencia: {
-            nombre: string
-            sigla: string
-            institucion: {
-                sigla: string
-            }
-        },
+        _id: string
+        dependencia: { nombre: string, institucion: { sigla: string } },
         funcionario: {
-            nombre: string
-            paterno: string
-            materno: string
+            nombre: string,
+            paterno: string,
+            materno: string,
             cargo: string
         }
     }
     tipo_tramite: {
         nombre: string
     }
+    observaciones: any[]
 }
+
 

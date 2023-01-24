@@ -4,6 +4,7 @@ import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import { ActivatedRoute } from '@angular/router';
 import { InternosService } from '../../services/internos.service';
 import * as moment from 'moment';
+import { AllInfoOneInterno } from '../models/interno.model';
 
 @Component({
   selector: 'app-ficha-interno',
@@ -14,7 +15,7 @@ import * as moment from 'moment';
   ]
 })
 export class FichaInternoComponent implements OnInit, OnDestroy {
-  Tramite: any
+  Tramite: AllInfoOneInterno
   Workflow: any
   timer: any;
   count: any
@@ -26,7 +27,7 @@ export class FichaInternoComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.activateRoute.params.subscribe(params => {
       if (params['id']) {
-        this.internoService.getInterno(params['id']).subscribe(data => {
+        this.internoService.GetOne(params['id']).subscribe(data => {
           this.Tramite = data.tramite
           this.Workflow = data.workflow
           this.createTimer(this.Tramite.fecha_registro, this.Tramite.fecha_finalizacion, this.Tramite.estado)

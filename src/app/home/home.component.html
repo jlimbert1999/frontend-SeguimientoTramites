@@ -11,7 +11,6 @@
 
     <span class="example-spacer"></span>
 
-
     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
       <mat-icon>account_circle</mat-icon>
     </button>
@@ -33,7 +32,7 @@
   <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
       fixedTopGap="56" [opened]="true">
-      <mat-nav-list>
+      <!-- <mat-nav-list>
         <ng-container *ngFor="let item of Menu">
           <div mat-subheader>{{item.modulo}}</div>
           <mat-list-item *ngFor="let submodulo of item.submodulos" [routerLink]="submodulo.ruta"
@@ -44,7 +43,40 @@
           </mat-list-item>
           <mat-divider></mat-divider>
         </ng-container>
+      </mat-nav-list> -->
+      <mat-nav-list class="side-navnar">
+        <ng-container *ngFor="let menu of Menu; index as i;">
+          <ng-container [ngTemplateOutlet]="menu.children ?  childMenu : parentMenu"
+            [ngTemplateOutletContext]="{menu:menu}">
+          </ng-container>
+        </ng-container>
       </mat-nav-list>
+
+
+      <ng-template #parentMenu let-menu="menu">
+        <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="is-active">
+          <div [ngSwitch]="menu.routerLink">
+            <mat-icon>{{menu.icon}}</mat-icon> {{menu.text}}
+          </div>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+      </ng-template>
+
+      <ng-template #childMenu let-menu="menu">
+        <mat-expansion-panel [class.mat-elevation-z0]="true">
+          <mat-expansion-panel-header>
+            <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>{{menu.text}}
+          </mat-expansion-panel-header>
+          <mat-nav-list>
+            <mat-list-item [routerLink]="submenu.routerLink" *ngFor="let submenu of menu.children"
+              routerLinkActive="active">
+              <mat-icon>{{submenu.icon}}</mat-icon> {{submenu.text}}
+            </mat-list-item>
+          </mat-nav-list>
+        </mat-expansion-panel>
+        <mat-divider></mat-divider>
+      </ng-template>
+
     </mat-sidenav>
 
     <mat-sidenav-content>

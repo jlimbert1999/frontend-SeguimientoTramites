@@ -28,7 +28,7 @@ import { HojaRutaInterna } from '../internos/pdfs/hora-ruta';
 })
 export class BandejaSalidaComponent implements OnInit {
   dataSource: BandejaSalidaModel_View[] = []
-  displayedColumns = ['grupo', 'alterno', 'tipo', 'estado', 'receptor', 'fecha_envio', 'situacion', 'opciones', 'expand']
+  displayedColumns = ['grupo', 'alterno', 'tipo', 'estado',  'fecha_envio', 'situacion', 'opciones', 'expand']
   isLoadingResults = true;
   expandedElement: BandejaSalidaModel_View | null;
 
@@ -51,12 +51,12 @@ export class BandejaSalidaComponent implements OnInit {
   }
   generar_hoja_ruta(id_tramite: string, tipo_hoja: 'tramites_externos' | 'tramites_internos') {
     if (tipo_hoja === 'tramites_externos') {
-      this.externoService.getExterno(id_tramite).subscribe(data => {
+      this.externoService.getOne(id_tramite).subscribe(data => {
         crear_hoja_ruta(data.tramite, data.workflow, tipo_hoja)
       })
     }
     else {
-      this.internoService.getInterno(id_tramite).subscribe(data => {
+      this.internoService.GetOne(id_tramite).subscribe(data => {
         HojaRutaInterna(data.tramite, data.workflow, tipo_hoja)
       })
     }

@@ -44,7 +44,7 @@ export class FichaComponent implements OnInit {
   ngOnInit(): void {
     this.activateRoute.params.subscribe(params => {
       if (params['id']) {
-        this.externoService.getExterno(params['id']).subscribe(data => {
+        this.externoService.getOne(params['id']).subscribe(data => {
           this.Tramite = data.tramite
           this.Workflow = data.workflow
         })

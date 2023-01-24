@@ -5,6 +5,7 @@ import { ExternosService } from '../../services/externos.service';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import * as moment from 'moment';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import { AllInfoOneExterno } from '../models/externo.model';
 
 @Component({
   selector: 'app-ficha-externo',
@@ -15,7 +16,7 @@ import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
   ]
 })
 export class FichaExternoComponent implements OnInit, OnDestroy {
-  Tramite: any
+  Tramite: AllInfoOneExterno
   Workflow: any[] = []
   timer: any;
   count: any
@@ -28,7 +29,7 @@ export class FichaExternoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.activateRoute.params.subscribe(params => {
-      this.externoService.getExterno(params['id']).subscribe(data => {
+      this.externoService.getOne(params['id']).subscribe(data => {
         this.Tramite = data.tramite
         this.Workflow = data.workflow
         this.createTimer(this.Tramite.fecha_registro, this.Tramite.fecha_finalizacion, this.Tramite.estado)
@@ -53,7 +54,6 @@ export class FichaExternoComponent implements OnInit, OnDestroy {
         this.count = this.duration(fecha_inicio, fecha_fin)
       }, 1000)
     }
-
 
   }
 
