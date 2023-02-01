@@ -11,15 +11,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { map, Observable, ReplaySubject, startWith, Subject, take, takeUntil } from 'rxjs';
-import { CuentaModel, CuentaData } from '../../models/cuenta.mode';
-import { UsuarioModel } from '../../models/usuario.model';
+import { ReplaySubject, Subject, take, takeUntil } from 'rxjs';
+import { CuentaData } from '../../models/cuenta.model';
 import { CuentaService } from '../../services/cuenta.service';
 import Swal from 'sweetalert2';
-import { crear_hoja_usuarios } from 'src/app/generacion_pdfs/usuario';
 import { MatSelect } from '@angular/material/select';
-import { InstitucionModel } from '../../models/institucion.model';
-import { DependenciaModel } from '../../models/dependencia.model';
+
+import { HojaUsuarios } from '../../pdfs/usuarios';
 
 @Component({
   selector: 'app-cuenta-dialog',
@@ -27,7 +25,6 @@ import { DependenciaModel } from '../../models/dependencia.model';
   styleUrls: ['./cuenta-dialog.component.css'],
 })
 export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
-  titulo: string = '';
   dependencias: { id_dependencia: string, nombre: string }[] = [];
   Instituciones: { id_institucion: string, nombre: string }[] = [];
   cambiar_password: boolean = false;
@@ -63,8 +60,8 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   protected _onDestroy = new Subject<void>();
 
   Roles = [
-    { value: 'RECEPCION', viewValue: 'Recepcion de tramites' },
-    { value: 'EVALUACION', viewValue: 'Evaluacion de tramites' }
+    { value: 'RECEPCION', viewValue: 'Recepcion' },
+    { value: 'EVALUACION', viewValue: 'Evaluacion' }
   ]
   departamentos = [
     'COCHABAMBA',
@@ -87,19 +84,10 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    if (this.data) {
-      this.titulo = 'Edicion';
-      this.Form_Cuenta = this.fb.group({
-        login: [this.data.login, Validators.required],
-        rol: [this.data.rol, Validators.required]
-      });
-    } else {
-      this.titulo = 'Registro';
-      this.cuentasService.obtener_instituciones_hablitadas().subscribe(inst => {
-        this.Instituciones = inst
-      })
-
-    }
+ 
+    this.cuentasService.getInstituciones().subscribe(inst => {
+      this.Instituciones = inst
+    })
   }
   ngOnDestroy() {
     this._onDestroy.next();
@@ -108,19 +96,20 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   guardar() {
-    if (this.data) {
-      this.cuentasService
-        .editar_cuenta(this.data._id, this.Form_Cuenta.value)
-        .subscribe(cuenta => {
-          crear_hoja_usuarios(this.data.funcionario.nombre, this.data.funcionario.paterno, this.data.funcionario.materno, this.data.funcionario.cargo, this.data.dependencia.nombre, this.data.funcionario.dni, this.data.dependencia.institucion.sigla, this.Form_Cuenta.get('login')?.value, this.Form_Cuenta.get('password')?.value)
-          this.dialogRef.close(cuenta);
-        });
-    } else {
-      this.cuentasService.agregar_cuenta(this.Form_Cuenta.value, this.Form_Funcionario.value).subscribe(cuenta => {
-        this.dialogRef.close(cuenta);
-        crear_hoja_usuarios(cuenta.funcionario.nombre, cuenta.funcionario.paterno, cuenta.funcionario.materno, cuenta.funcionario.cargo, cuenta.dependencia.nombre, cuenta.funcionario.dni, cuenta.dependencia.institucion.sigla, cuenta.login, this.Form_Cuenta.get('password')?.value)
-      });
-    }
+    this.cuentasService.agregar_cuenta(this.Form_Cuenta.value, this.Form_Funcionario.value).subscribe(cuenta => {
+      this.dialogRef.close(cuenta);
+      HojaUsuarios(
+        cuenta.funcionario!.nombre,
+        cuenta.funcionario!.paterno,
+        cuenta.funcionario!.materno,
+        cuenta.funcionario!.cargo,
+        cuenta.dependencia.nombre,
+        cuenta.funcionario!.dni,
+        cuenta.dependencia.institucion.sigla,
+        cuenta.login,
+        this.Form_Cuenta.get('password')?.value
+      )
+    });
   }
 
   cambiar_formulario(value: boolean) {
@@ -128,7 +117,7 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
     if (value) {
       this.Form_Cuenta = this.fb.group({
         login: [this.data.login, Validators.required],
-        password: [this.data.funcionario.dni, Validators.required],
+        password: [this.data.funcionario!.dni, Validators.required],
         rol: [this.data.rol, Validators.required],
       });
     } else {
@@ -147,7 +136,7 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   seleccionar_institucion(id_institucion: string) {
-    this.cuentasService.obtener_dependencias_hablitadas(id_institucion).subscribe(dep => {
+    this.cuentasService.getDependencias(id_institucion).subscribe(dep => {
       this.dependencias = dep
       this.bankCtrl.setValue(this.dependencias);
       this.filteredBanks.next(this.dependencias.slice());

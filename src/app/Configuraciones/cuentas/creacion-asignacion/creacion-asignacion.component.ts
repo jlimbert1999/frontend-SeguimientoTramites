@@ -8,6 +8,8 @@ import { forkJoin, ReplaySubject, Subject, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { CuentaService } from '../../services/cuenta.service';
 import { crear_hoja_usuarios } from 'src/app/generacion_pdfs/usuario';
+import { UsuarioModel } from '../../models/usuario.model';
+import { HojaUsuarios } from '../../pdfs/usuarios';
 
 @Component({
   selector: 'app-creacion-asignacion',
@@ -48,25 +50,26 @@ export class CreacionAsignacionComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<CreacionAsignacionComponent>,
-    private cuentasService: CuentaService
+    private cuentaService: CuentaService
   ) { }
 
   ngOnInit(): void {
-    forkJoin([this.cuentasService.obtener_instituciones_hablitadas(), this.cuentasService.obtener_funcionarios_asignacion()]).subscribe(data => {
-      this.Instituciones = data[0]
-      this.Funcionarios = data[1]
-
-      this.userCtrl.setValue(this.Funcionarios);
-      this.filteredUsers.next(this.Funcionarios.slice());
-      this.userFilterCtrl.valueChanges
-        .pipe(takeUntil(this._onDestroy_users))
-        .subscribe(() => {
-          this.filterUsers();
-        });
+    this.cuentaService.getInstituciones().subscribe(inst => {
+      this.Instituciones = inst
     })
+    this.userFilterCtrl.valueChanges
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe((value) => {
+        if (value !== '') {
+          this.cuentaService.getUsersForAssign(value).subscribe(users => {
+            this.filteredUsers.next(users)
+          })
+        }
+      });
   }
+  
   seleccionar_institucion(id_institucion: string) {
-    this.cuentasService.obtener_dependencias_hablitadas(id_institucion).subscribe(dep => {
+    this.cuentaService.getDependencias(id_institucion).subscribe(dep => {
       this.dependencias = dep
       this.bankCtrl.setValue(this.dependencias);
       this.filteredBanks.next(this.dependencias.slice());
@@ -89,11 +92,42 @@ export class CreacionAsignacionComponent implements OnInit {
 
 
   guardar() {
-    this.cuentasService.crear_cuenta_asignando(this.Form_Cuenta.value).subscribe(cuenta => {
-      crear_hoja_usuarios(cuenta.funcionario.nombre, cuenta.funcionario.paterno, cuenta.funcionario.materno, cuenta.funcionario.cargo, cuenta.dependencia.nombre, cuenta.funcionario.dni, cuenta.dependencia.institucion.sigla, this.Form_Cuenta.get('login')?.value, this.Form_Cuenta.get('password')?.value)
+    this.cuentaService.AddAccountLink(this.Form_Cuenta.value).subscribe(cuenta => {
+      HojaUsuarios(
+        cuenta.funcionario!.nombre,
+        cuenta.funcionario!.paterno,
+        cuenta.funcionario!.materno,
+        cuenta.funcionario!.cargo,
+        cuenta.dependencia.nombre,
+        cuenta.funcionario!.dni,
+        cuenta.dependencia.institucion.sigla,
+        this.Form_Cuenta.get('login')?.value,
+        this.Form_Cuenta.get('password')?.value
+      )
       this.dialogRef.close(cuenta)
     })
   }
+
+  selectUserAssign(value: UsuarioModel) {
+    Swal.fire({
+      title: `Crear cuenta con funcionario existente?`,
+      text: `${value.nombre} ${value.paterno} ${value.materno} (${value.cargo}) sera asignado a la cuenta creaada`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.Form_Cuenta.get('funcionario')?.setValue(value._id)
+        this.Form_Cuenta.get('login')?.setValue(`${value.nombre}${value.paterno[0]}${value.materno[0]}`.replace(/\s/g, ''))
+        this.Form_Cuenta.get('password')?.setValue(value.dni)
+      }
+    })
+  }
+
+
   protected filterBanks() {
     if (!this.dependencias) {
       return;
@@ -109,20 +143,6 @@ export class CreacionAsignacionComponent implements OnInit {
       this.dependencias.filter(bank => bank.nombre.toLowerCase().indexOf(search) > -1)
     );
   }
-  protected filterUsers() {
-    if (!this.Funcionarios) {
-      return;
-    }
-    let search = this.userFilterCtrl.value;
-    if (!search) {
-      this.filteredUsers.next(this.Funcionarios.slice());
-      return;
-    } else {
-      search = search.toLowerCase();
-    }
-    this.filteredUsers.next(
-      this.Funcionarios.filter(user => user.nombre.toLowerCase().indexOf(search) == 0 || user.cargo.toLowerCase().indexOf(search) == 0)
-    );
-  }
+
 
 }

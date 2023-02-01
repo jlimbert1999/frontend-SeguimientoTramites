@@ -24,6 +24,10 @@ export class LoginComponent implements OnInit {
     private notificationService: NotificationsService) { }
 
   ngOnInit(): void {
+    if (localStorage.getItem('token')) {
+      this.router.navigate(['/home'])
+    }
+
     this.recordar_user = localStorage.getItem('login') || ''
     if (this.recordar_user.length > 0) {
       this.loginForm.controls['remember'].setValue(true)

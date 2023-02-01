@@ -75,6 +75,7 @@ export interface AllInfoOneExterno {
         nombre: string
     }
     observaciones: any[]
+    detalle_conclusion: string
 }
 
 

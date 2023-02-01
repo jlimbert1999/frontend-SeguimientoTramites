@@ -1,0 +1,18 @@
+.account-settings .user-profile {
+    text-align: center;
+}
+
+.account-settings .user-profile .user-avatar {
+    margin: 0 0 1rem 0;
+}
+
+.account-settings .user-profile .user-avatar img {
+    width: 90px;
+    height: 90px;
+    border-radius: 100px;
+}
+
+button {
+    margin-right: 8px;
+}
+

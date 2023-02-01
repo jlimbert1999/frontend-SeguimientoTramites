@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-mail-header',
@@ -6,10 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./mail-header.component.css']
 })
 export class MailHeaderComponent implements OnInit {
-
+  @Input() Data: any
   constructor() { }
 
   ngOnInit(): void {
+  
   }
 
 }

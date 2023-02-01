@@ -1,10 +1,9 @@
-import { CuentaData } from "../Configuraciones/models/cuenta.model";
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { TDocumentDefinitions } from "pdfmake/interfaces";
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
-export const crear_hoja_usuarios = async (nombre: string, paterno: string, materno: string, cargo: string, dependencia: string, dni: string, institucion: string, login: string, password: string) => {
+export const HojaUsuarios = async (nombre: string, paterno: string, materno: string, cargo: string, dependencia: string, dni: string, institucion: string, login: string, password: string) => {
     const imagePath = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia.png')
     let docDefinition: TDocumentDefinitions = {
         pageSize: 'LETTER',

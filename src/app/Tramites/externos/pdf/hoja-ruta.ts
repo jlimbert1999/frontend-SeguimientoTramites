@@ -25,7 +25,7 @@ export const HojaRuta = async (tramite: AllInfoOneExterno, workflow: any[]) => {
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ text: `DESTINATARIO: ${ordinales.toOrdinal(1)}:                                                                              `.toUpperCase(), colSpan: 2, decoration: 'underline', alignment: 'left', border: [true, false, true, false] }, ''],
+                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO: ${ordinales.toOrdinal(1)}:                                                                              `.toUpperCase(), colSpan: 2, decoration: 'underline', alignment: 'left', border: [true, false, true, false] }, ''],
 
                         [
                             {
@@ -169,7 +169,7 @@ export const HojaRuta = async (tramite: AllInfoOneExterno, workflow: any[]) => {
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ text: `DESTINATARIO: ${ordinales.toOrdinal(1)} ${workflow[0].receptor.funcionario} (${workflow[0].receptor.cargo})`.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
+                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO: ${ordinales.toOrdinal(1)} ${workflow[0].receptor.funcionario} (${workflow[0].receptor.cargo})`.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
                         [
                             {
                                 border: [true, false, false, false],
@@ -292,7 +292,7 @@ export const HojaRuta = async (tramite: AllInfoOneExterno, workflow: any[]) => {
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ text: `DESTINATARIO: ${ordinales.toOrdinal(index + 1)} ${workflow[index].receptor.funcionario} (${workflow[index].receptor.cargo})`.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
+                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO: ${ordinales.toOrdinal(index + 1)} ${workflow[index].receptor.funcionario} (${workflow[index].receptor.cargo})`.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
                         [
                             {
                                 border: [true, false, false, false],
@@ -390,7 +390,7 @@ export const HojaRuta = async (tramite: AllInfoOneExterno, workflow: any[]) => {
                 dontBreakRows: true,
                 widths: [360, '*'],
                 body: [
-                    [{ text: `DESTINATARIO: ${ordinales.toOrdinal(index + 1)}                                                                               `.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, true, true, false] }, ''],
+                    [{ margin: [0, 10, 0, 0], text: `DESTINATARIO: ${ordinales.toOrdinal(index + 1)}                                                                               `.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, true, true, false] }, ''],
                     [
                         {
                             border: [true, false, false, false],
@@ -629,6 +629,7 @@ export const HojaRuta = async (tramite: AllInfoOneExterno, workflow: any[]) => {
                                                     ]
                                                 ]
                                             },
+                                            
                                         },
                                         ],
                                         [`REMITENTE: ${NameSolicitante}`, `CARGO: P. ${tramite.solicitante.tipo}`],

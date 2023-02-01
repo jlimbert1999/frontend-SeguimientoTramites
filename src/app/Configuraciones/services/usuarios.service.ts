@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { CuentaData } from '../models/cuenta.mode';
+import { CuentaData } from '../models/cuenta.model';
 import { UsuarioModel } from '../models/usuario.model';
 import { CuentaService } from './cuenta.service';
 import { PaginationService } from './pagination.service';
@@ -20,7 +20,6 @@ export class UsuariosService {
   agregar_funcionario(funcionario: UsuarioModel) {
     return this.http.post<{ ok: boolean, funcionario: UsuarioModel }>(`${base_url}/usuarios`, funcionario).pipe(
       map(resp => {
-        this.cuentaService.dataSize += 1
         return resp.funcionario
       })
     )

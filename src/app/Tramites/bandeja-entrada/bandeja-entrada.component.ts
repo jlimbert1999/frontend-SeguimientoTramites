@@ -142,20 +142,30 @@ export class BandejaEntradaComponent implements OnInit {
     Swal.fire({
       icon: 'question',
       title: `Concluir el tramite ${alterno}?`,
-      text: `El tramite sera marcado como concluido `,
+      text: `Ingrese una referencia para concluir `,
+      input: 'textarea',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar'
+      customClass: {
+        validationMessage: 'my-validation-message'
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
+          )
+        }
+      }
     }).then((result) => {
       if (result.isConfirmed) {
         if (tipo === 'tramites_externos') {
-          this.externoService.conclude(id_tramite).subscribe(message => {
+          this.externoService.conclude(id_tramite, result.value!).subscribe(message => {
             Swal.fire(message, undefined, 'success')
             this.bandejaService.getmMailsIn().subscribe()
           })
         }
         else if (tipo === 'tramites_internos') {
-          this.internoService.conclude(id_tramite).subscribe(message => {
+          this.internoService.conclude(id_tramite, result.value!).subscribe(message => {
             Swal.fire(message, undefined, 'success')
             this.bandejaService.getmMailsIn().subscribe()
           })

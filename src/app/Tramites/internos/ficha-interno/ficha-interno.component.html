@@ -27,7 +27,7 @@
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Referencia</label>
-                                <input class="form-control" type="text" value="{{Tramite.detalle}}" disabled readonly>
+                                <textarea class="form-control" value="{{Tramite.detalle}}" readonly></textarea>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Fecha registro</label>
@@ -70,6 +70,10 @@
                                             {{Tramite.ubicacion.dependencia.institucion.sigla}}</p>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-md-12" *ngIf="Tramite.detalle_conclusion">
+                                <label class="form-label">Referencia concluido</label>
+                                <textarea class="form-control" value="{{Tramite.detalle_conclusion}}" readonly></textarea>
                             </div>
                         </form>
                     </div>

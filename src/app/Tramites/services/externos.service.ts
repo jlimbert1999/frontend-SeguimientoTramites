@@ -101,8 +101,8 @@ export class ExternosService {
     )
   }
 
-  conclude(id_tramite: string) {
-    return this.http.delete<{ ok: boolean, message: string }>(`${base_url}/externos/${id_tramite}`).pipe(
+  conclude(id_tramite: string, referencia: string) {
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/externos/concluir/${id_tramite}`, { referencia }).pipe(
       map(resp => {
         return resp.message
       })

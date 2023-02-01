@@ -12,8 +12,9 @@ export interface CuentaData {
     _id: string
     login: string
     rol: string
-    funcionario: UsuarioModel,
+    funcionario?: UsuarioModel,
     dependencia: {
         nombre: string, institucion: { sigla: string }
     }
+    activo: boolean
 }

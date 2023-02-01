@@ -1,50 +1,96 @@
-<mat-toolbar>
-    <ng-container *ngIf="!cuentaService.busqueda">
-        <span>Cuentas
-        </span>
-        <span class="example-spacer"></span>
-        
-        <button (click)="activar_busqueda()" mat-icon-button>
-            <mat-icon>search</mat-icon>
-        </button>
-        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-            <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-            <button (click)="agregar_cuenta()" mat-menu-item>
-                <mat-icon>group_add</mat-icon>
-                <span>Crear cuenta</span>
+<p *ngIf="!search_mode">
+    <mat-toolbar>
+        <ng-container>
+            <span>Cuentas
+            </span>
+            <span class="example-spacer"></span>
+            <button (click)="changeSearchMode(true)" mat-icon-button>
+                <mat-icon>search</mat-icon>
             </button>
-            <button (click)="agregar_cuenta_asignar()" mat-menu-item>
-                <mat-icon>contacts</mat-icon>
-                <span>Asignar cuenta</span>
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                <mat-icon>more_vert</mat-icon>
             </button>
-            <button (click)="agregar_funcionario()" mat-menu-item>
-                <mat-icon>person_add</mat-icon>
-                <span>Crear funcionario</span>
-            </button>
-        </mat-menu>
-    </ng-container>
-    <ng-container *ngIf="cuentaService.busqueda">
-        <mat-form-field floatLabel="never" style="width: 100%;">
-            <mat-label>Ingrese el nombre/dni/cargo del funcionario</mat-label>
-            <input [(ngModel)]="cuentaService.termino_busqueda" (keyup)="buscar()" #txtSearch matInput type="text">
-            <button (click)="desactivar_busqueda()" matSuffix mat-icon-button>
-                <mat-icon>close</mat-icon>
-            </button>
-        </mat-form-field>
-    </ng-container>
-</mat-toolbar>
-<mat-toolbar-row *ngIf="modo_filtro">
+            <mat-menu #menu="matMenu">
+                <button (click)="Add()" mat-menu-item>
+                    <mat-icon>account_circle</mat-icon>
+                    <span>Crear cuenta</span>
+                </button>
+                <button (click)="AddUser()" mat-menu-item>
+                    <mat-icon>person_add</mat-icon>
+                    <span>Crear funcionario</span>
+                </button>
+                <button (click)="AddAccountLink()" mat-menu-item>
+                    <mat-icon>contacts</mat-icon>
+                    <span>Asignar cuenta</span>
+                </button>
+            </mat-menu>
+        </ng-container>
+    </mat-toolbar>
+</p>
 
-</mat-toolbar-row>
 <div class="container-fluid">
-    <div [@fadeInOnEnter]  class="example-container mat-elevation-z8">
-        <div class="example-loading-shade" *ngIf="isLoadingResults">
-            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
-        </div>
-        <div class="example-table-container">
-            <table mat-table [dataSource]="dataSource">
+    <div [@expandOnEnter] [@collapseOnLeave] *ngIf="search_mode">
+        <mat-card class="example-card">
+            <mat-card-content>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <mat-form-field appearance="fill" class="example-full-width">
+                            <mat-label>Tipo de busqueda</mat-label>
+                            <mat-select (selectionChange)="selectTypeSearch($event.value)">
+                                <mat-option *ngFor="let option of searchOpions" [value]="option.value">
+                                    {{option.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <ng-container [ngSwitch]="typeSearch">
+                        <ng-container *ngSwitchCase="'dependencia'">
+                            <div class="col-sm-3">
+                                <mat-form-field appearance="fill" class="example-full-width">
+                                    <mat-label>Seleccione la institucion</mat-label>
+                                    <mat-select (selectionChange)="getDependencias($event.value)">
+                                        <mat-option *ngFor="let inst of instituciones" [value]="inst.id_institucion">
+                                            {{inst.nombre}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm-7">
+                                <mat-form-field appearance="fill" class="example-full-width">
+                                    <mat-select (selectionChange)="applyFilterbySelect()" [formControl]="bankCtrl"
+                                        placeholder="Buscar dependencia" #singleSelect>
+                                        <mat-option>
+                                            <ngx-mat-select-search
+                                                [formControl]="bankFilterCtrl"></ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option *ngFor="let bank of filteredBanks | async"
+                                            [value]="bank.id_dependencia">
+                                            {{bank.nombre}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </ng-container>
+
+                        <div class="col-sm-10" *ngSwitchDefault>
+                            <mat-form-field appearance="fill" class="example-full-width">
+                                <mat-label>Termino a buscar</mat-label>
+                                <input (keyup)="applyFilterbyText($event)" matInput>
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+                </div>
+                <mat-divider></mat-divider>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-stroked-button color="warn" (click)="changeSearchMode(false)">Cancelar</button>
+            </mat-card-actions>
+        </mat-card>
+        <br>
+    </div>
+    <div [@fadeInOnEnter] class="example-container mat-elevation-z8">
+        <div class="example-table-container" [ngClass]="search_mode?'search':''">
+            <table mat-table [dataSource]="Cuentas">
                 <ng-container matColumnDef="login">
                     <th mat-header-cell *matHeaderCellDef> Login </th>
                     <td mat-cell *matCellDef="let element">
@@ -52,17 +98,24 @@
                         {{element.login}}
                     </td>
                 </ng-container>
+                <ng-container matColumnDef="rol">
+                    <th mat-header-cell *matHeaderCellDef> Rol </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.rol}}
+                    </td>
+                </ng-container>
                 <ng-container matColumnDef="nombre">
                     <th mat-header-cell *matHeaderCellDef> Funcionario </th>
-                    <td mat-cell *matCellDef="let element"> {{element.funcionario.nombre |titlecase}} {{element.funcionario.paterno |titlecase}} {{element.funcionario.materno?element.funcionario.materno:'' |titlecase}} </td>
-                </ng-container>
-                <ng-container matColumnDef="dni">
-                    <th mat-header-cell *matHeaderCellDef> Dni </th>
-                    <td mat-cell *matCellDef="let element"> {{element.funcionario.dni}} </td>
-                </ng-container>
-                <ng-container matColumnDef="cargo">
-                    <th mat-header-cell *matHeaderCellDef> Cargo </th>
-                    <td mat-cell *matCellDef="let element"> {{element.funcionario.cargo|slice:0:30}} </td>
+                    <td mat-cell *matCellDef="let element">
+                        <div [ngSwitch]="element.funcionario">
+                            <div style="color: red;" *ngSwitchCase="undefined">
+                                SIN ASIGNAR
+                            </div>
+                            <div *ngSwitchDefault>
+                                {{element.funcionario|fullname|titlecase}}
+                            </div>
+                        </div>
+                    </td>
                 </ng-container>
                 <ng-container matColumnDef="dependencia">
                     <th mat-header-cell *matHeaderCellDef> Dependencia </th>
@@ -76,13 +129,15 @@
                         {{element.dependencia.institucion.sigla|uppercase}}
                     </td>
                 </ng-container>
-                <ng-container matColumnDef="rol">
-                    <th mat-header-cell *matHeaderCellDef> Rol </th>
+                <ng-container matColumnDef="activo">
+                    <th mat-header-cell *matHeaderCellDef> Situacion </th>
                     <td mat-cell *matCellDef="let element">
-                        {{element.rol|titlecase}}
+                        <ng-container [ngSwitch]="element.activo">
+                            <span *ngSwitchCase="true" class="c-pill c-pill--success">Habilitado</span>
+                            <span *ngSwitchCase="false" class="c-pill c-pill--danger">Deshabilitado</span>
+                        </ng-container>
                     </td>
                 </ng-container>
-
                 <ng-container matColumnDef="opciones">
                     <th mat-header-cell *matHeaderCellDef> </th>
                     <td mat-cell *matCellDef="let element">
@@ -90,20 +145,19 @@
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu">
-                            <button (click)="editar_funcionario(element)" mat-menu-item>
+                            <button (click)="EditUser(element)" [disabled]="!element.funcionario" mat-menu-item>
                                 <mat-icon>edit</mat-icon>
                                 <span>Editar funcionario</span>
                             </button>
-                            <div>
-                                <button (click)="editar_cuenta(element)" mat-menu-item>
-                                    <mat-icon>manage_accounts</mat-icon>
-                                    <span>Editar cuenta</span>
-                                </button>
-                                <button (click)="asignar_cuenta(element)" mat-menu-item>
-                                    <mat-icon>voice_over_off</mat-icon>
-                                    <span>Reasignar cuenta</span>
-                                </button>
-                            </div>
+                            <button (click)="Edit(element)" mat-menu-item>
+                                <mat-icon>manage_accounts</mat-icon>
+                                <span>Editar cuenta</span>
+                            </button>
+                            <button (click)="disable(element._id)" mat-menu-item>
+                                <mat-icon>delete</mat-icon>
+                                <span>{{element.activo?'Deshabilitar cuenta':'Habilitar cuenta'}}</span>
+                            </button>
+
                         </mat-menu>
                     </td>
                 </ng-container>
@@ -111,8 +165,7 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </div>
-        <mat-paginator (page)="cambiar_paginacion($event)" [length]="cuentaService.dataSize"
-            [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons aria-label="Select page of periodic elements">
-        </mat-paginator>
+        <mat-paginator [showFirstLastButtons]="true" [length]="Total" (page)="onPaginationChange()" [pageSize]="10"
+            [pageSizeOptions]="[10, 20, 40, 50]" aria-label="Select page of GitHub search results"></mat-paginator>
     </div>
 </div>

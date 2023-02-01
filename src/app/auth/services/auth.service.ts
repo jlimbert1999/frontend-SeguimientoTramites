@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Observable, tap, throwError, of, BehaviorSubject, Subject } from 'rxjs';
+import { Observable, tap, throwError, of, BehaviorSubject, Subject, concat } from 'rxjs';
 import { catchError, map } from 'rxjs/operators'
 import jwt_decode from "jwt-decode";
 import { Router } from '@angular/router';
@@ -14,12 +14,12 @@ export class AuthService {
   Account: {
     id_cuenta: string,
     funcionario: {
-      id_funcionario: string,
       nombre_completo: string
       cargo: string
     }
     rol: string,
-    codigo: string
+    codigo: string,
+    cite: string
   }
   Menu: any[] = []
   constructor(
@@ -45,7 +45,6 @@ export class AuthService {
         let account: any = jwt_decode(res.token)
         return { rol: account.rol, number_mails: res.number_mails }
       }
-
     ))
   }
   logout() {

@@ -8,11 +8,16 @@
 </p>
 
 <div class="container-fluid" [@slideInLeftOnEnter]>
-    <mat-card *ngIf="Detalles">
-        <mat-card-header>
+    <!-- <mat-card *ngIf="Detalles">
+        <mat-card-header *ngIf="Detalles.emisor.funcionario">
             <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>{{Detalles.emisor.funcionario.fullname|titlecase}}</mat-card-title>
+            <mat-card-title>{{Detalles.emisor.funcionario|fullname}}</mat-card-title>
             <mat-card-subtitle>{{Detalles.emisor.funcionario.cargo | uppercase}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-header style="color: red;" *ngIf="!Detalles.emisor.funcionario">
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title>SIN ASIGNAR</mat-card-title>
+            <mat-card-subtitle>-</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
             <p>Dependencia: {{Detalles.emisor.dependencia.nombre}} / {{Detalles.emisor.dependencia.institucion.sigla}}
@@ -21,9 +26,10 @@
             <p>Cantidad: {{Detalles.cantidad}}</p>
             <p>Fecha: {{Detalles.fecha_envio|date:'short'}}</p>
         </mat-card-content>
-    </mat-card>
+    </mat-card> --> 
+    <app-mail-header *ngIf="Detalles" [Data]="Detalles"></app-mail-header>
 
-    <mat-tab-group mat-align-tabs="center">
+    <mat-tab-group  mat-align-tabs="center">
         <mat-tab>
             <ng-template mat-tab-label>
                 <mat-icon class="example-tab-icon">info</mat-icon>
@@ -31,7 +37,8 @@
             </ng-template>
             <ng-container *ngIf="Tramite">
                 <div class="card">
-                    <h4 class="card-header fw-bold text-bg-secondary mb-3">{{Tramite.tipo_tramite.nombre|uppercase}}</h4>
+                    <h4 class="card-header fw-bold text-bg-secondary mb-3">{{Tramite.tipo_tramite.nombre|uppercase}}
+                    </h4>
                     <div class="card-body">
                         <form class="row g-3">
                             <div class="col-md-8">

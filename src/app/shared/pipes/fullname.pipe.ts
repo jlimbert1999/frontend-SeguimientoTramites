@@ -13,6 +13,7 @@ export class FullnamePipe implements PipeTransform {
     else {
       fullname = `${funcionario.nombre} ${funcionario.paterno}`
     }
+
     return fullname
   }
 

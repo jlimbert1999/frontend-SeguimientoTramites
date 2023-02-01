@@ -65,4 +65,5 @@ export interface AllInfoOneInterno {
     fecha_finalizacion?: string
     estado: string
     observaciones: any[]
+    detalle_conclusion?: string
 }

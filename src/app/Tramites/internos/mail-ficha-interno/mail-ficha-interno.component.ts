@@ -34,7 +34,7 @@ export class MailFichaInternoComponent implements OnInit, OnDestroy {
       if (params['id']) {
         this.bandejaService.getDetalisMail(params['id']).subscribe(data => {
           this.Detalles = data
-          this.internoService.GetOne(data.tramite).subscribe(data => {
+          this.bandejaService.getMailInterno(data.tramite).subscribe(data => {
             this.Tramite = data.tramite
             this.Workflow = data.workflow
             this.createTimer(this.Tramite.fecha_registro, this.Tramite.fecha_finalizacion, this.Tramite.estado)

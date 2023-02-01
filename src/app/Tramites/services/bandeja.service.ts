@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { BehaviorSubject, elementAt, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { AllInfoOneExterno } from '../externos/models/externo.model';
+import { AllInfoOneInterno } from '../internos/models/interno.model';
 import { BandejaEntradaData, BandejaSalidaModel_View, EnvioModel, MailDetails, UsersMails } from '../models/mail.model';
 import { NotificationsService } from './notifications.service';
 import { SocketService } from './socket.service';
@@ -100,7 +102,6 @@ export class BandejaService {
   getDetalisMail(id_bandejaEntrada: string) {
     return this.http.get<{ ok: boolean, mail: MailDetails }>(`${base_url}/bandejas/detalle/${id_bandejaEntrada}`).pipe(
       map(resp => {
-        resp.mail.emisor.funcionario.fullname = `${resp.mail.emisor.funcionario.nombre} ${resp.mail.emisor.funcionario.paterno} ${resp.mail.emisor.funcionario.materno}`
         return resp.mail
       })
     )
@@ -119,12 +120,27 @@ export class BandejaService {
     )
   }
 
+  getMailExterno(id_tramite: string) {
+    return this.http.get<{ ok: boolean, tramite: AllInfoOneExterno, workflow: any[] }>(`${base_url}/bandejas/externo/${id_tramite}`).pipe(
+      map(resp => {
+        return { tramite: resp.tramite, workflow: resp.workflow }
+      })
+    )
+  }
+  getMailInterno(id_tramite: string) {
+    return this.http.get<{ ok: boolean, tramite: AllInfoOneInterno, workflow: any[] }>(`${base_url}/bandejas/interno/${id_tramite}`).pipe(
+      map(resp => {
+        return { tramite: resp.tramite, workflow: resp.workflow }
+      })
+    )
+  }
+
   addMail(mail: BandejaEntradaData) {
     this.PaginationMailsIn.total += 1
     this.DataMailsIn = [mail, ...this.DataMailsIn]
   }
-  
-  
+
+
 
 
 }

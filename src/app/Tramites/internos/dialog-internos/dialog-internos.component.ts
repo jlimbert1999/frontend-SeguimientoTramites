@@ -18,7 +18,7 @@ export class DialogInternosComponent implements OnInit {
   TramiteFormGroup: FormGroup = this.fb.group({
     tipo_tramite: ['', Validators.required],
     detalle: ['', Validators.required],
-    cite: [''],
+    cite: [this.authService.Account.cite],
     nombre_remitente: [this.authService.Account.funcionario.nombre_completo, Validators.required],
     cargo_remitente: [this.authService.Account.funcionario.cargo, Validators.required],
     nombre_destinatario: ['', Validators.required],

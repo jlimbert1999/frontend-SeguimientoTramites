@@ -26,7 +26,6 @@ export class MailFichaExternoComponent implements OnInit {
   constructor(
     private activateRoute: ActivatedRoute,
     private bandejaService: BandejaService,
-    private externoService: ExternosService,
     private _location: Location,
   ) {
 
@@ -38,7 +37,7 @@ export class MailFichaExternoComponent implements OnInit {
       if (params['id']) {
         this.bandejaService.getDetalisMail(params['id']).subscribe(data => {
           this.Detalles = data
-          this.externoService.getOne(data.tramite).subscribe(data => {
+          this.bandejaService.getMailExterno(data.tramite).subscribe(data => {
             this.Tramite = data.tramite
             this.Workflow = data.workflow
             if (this.Tramite.estado === "CONCLUIDO") {

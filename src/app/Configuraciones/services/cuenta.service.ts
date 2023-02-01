@@ -1,29 +1,26 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { CuentaModel, CuentaData } from '../models/cuenta.mode';
+import { CuentaModel, CuentaData } from '../models/cuenta.model';
 import { UsuarioModel } from '../models/usuario.model';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
 })
 export class CuentaService {
-  public page: number = 0
-  public rows: number = 10
-  public dataSize: number = 0
-  public busqueda: boolean = false
-  public termino_busqueda: string
+
+  resultsLength: number = 0
 
   constructor(private http: HttpClient) { }
-  obtener_instituciones_hablitadas() {
+  getInstituciones() {
     return this.http.get<{ ok: boolean, instituciones: { id_institucion: string, nombre: string }[] }>(`${base_url}/cuentas/instituciones`).pipe(
       map(resp => {
         return resp.instituciones
       })
     )
   }
-  obtener_dependencias_hablitadas(id_institucion: string) {
+  getDependencias(id_institucion: string) {
     return this.http.get<{ ok: boolean, dependencias: { id_dependencia: string, nombre: string }[] }>(`${base_url}/cuentas/dependencias/${id_institucion}`).pipe(
       map(resp => {
         return resp.dependencias
@@ -41,49 +38,64 @@ export class CuentaService {
   agregar_cuenta(cuenta: CuentaModel, funcionario: UsuarioModel) {
     return this.http.post<{ ok: boolean, cuenta: CuentaData }>(`${base_url}/cuentas`, { cuenta, funcionario }).pipe(
       map(resp => {
-        this.dataSize += 1
         return resp.cuenta
       })
     )
   }
-  editar_cuenta(id_cuenta: string, cuenta: CuentaModel) {
+  Edit(id_cuenta: string, cuenta: CuentaModel) {
     return this.http.put<{ ok: boolean, cuenta: CuentaModel }>(`${base_url}/cuentas/${id_cuenta}`, cuenta).pipe(
       map(resp => resp.cuenta)
     )
   }
 
-  obtener_cuentas() {
-    return this.http.get<{ ok: boolean, cuentas: CuentaData[], total: number }>(`${base_url}/cuentas?page=${this.page}&rows=${this.rows}`).pipe(
+  Get(limit: number, offset: number) {
+    let params = new HttpParams()
+      .append('limit', limit)
+      .append('offset', offset)
+    return this.http.get<{ ok: boolean, cuentas: CuentaData[], total: number }>(`${base_url}/cuentas`, { params }).pipe(
       map(resp => {
-        this.dataSize = resp.total
-        return resp.cuentas
-      })
-    )
-  }
-  buscar_cuenta() {
-    return this.http.get<{ ok: boolean, cuentas: CuentaData[], total: number }>(`${base_url}/cuentas/busqueda/${this.termino_busqueda}?page=${this.page}&rows=${this.rows}`).pipe(
-      map(resp => {
-        this.dataSize = resp.total
-        return resp.cuentas
+        return { cuentas: resp.cuentas, total: resp.total }
       })
     )
   }
 
-  asignar_cuenta(id_cuenta: string, id_funcionarioActual: string, id_funcionarioNuevo: string, newCuenta: { login: string, password: string }) {
-    return this.http.put<{ ok: boolean, cuenta: CuentaData }>(`${base_url}/cuentas/asignar/${id_cuenta}`, { id_funcionarioActual, id_funcionarioNuevo, newCuenta }).pipe(
-      map(resp => resp.cuenta)
-    )
-  }
-  crear_cuenta_asignando(cuenta: CuentaModel) {
-    return this.http.post<{ ok: boolean, cuenta: CuentaData }>(`${base_url}/cuentas/asignar`, cuenta).pipe(
+  AddAccountLink(cuenta: CuentaModel) {
+    return this.http.post<{ ok: boolean, cuenta: CuentaData }>(`${base_url}/cuentas/assign`, cuenta).pipe(
       map(resp => resp.cuenta)
     )
   }
 
-  modo_busqueda(activar: boolean) {
-    this.busqueda = activar
-    this.page = 0
-    this.termino_busqueda = ''
+  getUsersForAssign(text: string) {
+    return this.http.get<{ ok: boolean, users: any[] }>(`${base_url}/cuentas/assign/${text}`).pipe(
+      map(resp => resp.users)
+    )
   }
 
+  unlinkUser(id_cuenta: string) {
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/cuentas/unlink/${id_cuenta}`, {}).pipe(
+      map(resp => resp.message)
+    )
+  }
+  assignUser(id_cuenta: string, id_newUser: string, id_oldUser?: string) {
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/cuentas/assign/${id_cuenta}`, { id_newUser, id_oldUser }).pipe(
+      map(resp => resp.message)
+    )
+  }
+  delete(id_cuenta: string) {
+    return this.http.delete<{ ok: boolean, activo: boolean }>(`${base_url}/cuentas/${id_cuenta}`).pipe(
+      map(resp => resp.activo)
+    )
+  }
+  search(type: string, text: string, limit: number, offset: number) {
+    let params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset)
+      .set('type', type)
+      .set('text', text)
+    return this.http.get<{ ok: boolean, cuentas: CuentaData[], total: number }>(`${base_url}/cuentas/search/${text}`, { params }).pipe(
+      map(resp => {
+        return { cuentas: resp.cuentas, total: resp.total }
+      })
+    )
+  }
 }

@@ -1,117 +1,49 @@
-.example-spacer {
-    flex: 1 1 auto;
-}
-
-mat-form-field {
-    font-size: 14px;
-}
-
-table {
-    width: 100%;
-}
 .mat-cell {
     font-size: 12px;
-}
-
-th.mat-header-cell {
-    color: white;
-    background-color: #463f3a;
-}
-
-.mat-column-opciones {
-    width: 32px;
-    text-align: center;
-}
-
-.mat-row:hover {
-    background-color: #e2eafc;
-}
-
-/* Structure */
-.example-container {
-    position: relative;
+    padding-right: 20px
 }
 
 .example-table-container {
     position: relative;
-    max-height: 75vh;
     overflow: auto;
+    max-height: 70vh;
 }
 
-table {
-    width: 100%;
+td.mat-column-login {
+    width: 200px;
 }
 
-.example-loading-shade {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 56px;
-    right: 0;
-    background: rgba(0, 0, 0, 0.15);
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+td.mat-column-nombre {
+    width: 240px;
 }
 
-mat-form-field {
-    padding-inline: 20px;
-    width: 400px;
+td.mat-column-rol {
+    width: 100px;
 }
 
-
-.c-pill {
-    align-items: center;
-    font-family: "Open Sans", Arial, Verdana, sans-serif;
-    font-weight: bold;
-    font-size: 11px;
-    display: inline-block;
-    height: 100%;
-    white-space: nowrap;
-    width: auto;
-    position: relative;
-    border-radius: 100px;
-    line-height: 1;
-    overflow: hidden;
-    padding: 0px 12px 0px 20px;
-    text-overflow: ellipsis;
-    line-height: 1.25rem;
-    color: #595959;
-    word-break: break-word;
+td.mat-column-dependencia {
+    width: 500px;
 }
 
-.c-pill:before {
-    border-radius: 50%;
-    content: '';
-    height: 10px;
-    left: 6px;
-    margin-top: -5px;
-    position: absolute;
-    top: 50%;
+td.mat-column-institucion {
+    width: 100px;
+}
+
+td.mat-column-activo {
+    width: 100px;
+}
+
+td.mat-column-situacion {
+    width: 100px;
+}
+
+td.mat-column-opciones {
     width: 10px;
 }
 
-.c-pill--success {
-    background: #b4eda0;
-}
 
-.c-pill--success:before {
-    background: #6bc167;
-}
-
-.c-pill--warning {
-    background: #ffebb6;
-}
-
-.c-pill--warning:before {
-    background: #ffc400;
-}
-
-.c-pill--danger {
-    background: #ffd5d1;
-}
-
-.c-pill--danger:before {
-    background: #ff4436;
+.search {
+    position: relative;
+    overflow: auto;
+    max-height: 50vh;
 }

@@ -11,6 +11,7 @@ import { ObservacionesComponent } from './observaciones/observaciones.component'
 import { LocationComponent } from './location/location.component';
 import { FullnamePipe } from './pipes/fullname.pipe';
 import { PanelNotificationComponent } from './panel-notification/panel-notification.component';
+import { PaginatorComponent } from './paginator/paginator.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { PanelNotificationComponent } from './panel-notification/panel-notificat
     ObservacionesComponent,
     LocationComponent,
     FullnamePipe,
-    PanelNotificationComponent
+    PanelNotificationComponent,
+    PaginatorComponent
   ],
   imports: [
     CommonModule,
@@ -36,7 +38,9 @@ import { PanelNotificationComponent } from './panel-notification/panel-notificat
     GraphWorkflowComponent,
     ListWorkflowComponent,
     ObservacionesComponent,
-    FullnamePipe
+    FullnamePipe,
+    PaginatorComponent,
+    MailHeaderComponent
   ]
 })
 export class SharedModule { }

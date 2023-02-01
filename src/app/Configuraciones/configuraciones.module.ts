@@ -13,13 +13,13 @@ import { CuentasComponent } from './cuentas/cuentas.component';
 import { CuentaDialogComponent } from './cuentas/cuenta-dialog/cuenta-dialog.component';
 import { TiposTramitesComponent } from './tipos-tramites/tipos-tramites.component';
 import { DialogTiposComponent } from './tipos-tramites/dialog-tipos/dialog-tipos.component';
-import { AsignacionDialogComponent } from './cuentas/asignacion-dialog/asignacion-dialog.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { FuncionariosComponent } from './funcionarios/funcionarios.component';
 import { GroupwareComponent } from './groupware/groupware.component';
 import { CreacionAsignacionComponent } from './cuentas/creacion-asignacion/creacion-asignacion.component';
 import { DetallesMovilidadComponent } from './funcionarios/detalles-movilidad/detalles-movilidad.component';
 import { CuentaComponent } from './cuenta/cuenta.component';
+import { EdicionCuentaComponent } from './cuentas/edicion-cuenta/edicion-cuenta.component';
 
 
 
@@ -34,12 +34,12 @@ import { CuentaComponent } from './cuenta/cuenta.component';
     CuentaDialogComponent,
     TiposTramitesComponent,
     DialogTiposComponent,
-    AsignacionDialogComponent,
     FuncionariosComponent,
     GroupwareComponent,
     CreacionAsignacionComponent,
     DetallesMovilidadComponent,
-    CuentaComponent
+    CuentaComponent,
+    EdicionCuentaComponent
   ],
   imports: [
     CommonModule,

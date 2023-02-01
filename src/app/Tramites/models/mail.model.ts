@@ -108,7 +108,7 @@ export interface MailDetails {
                 sigla: string
             }
         }
-        funcionario: {
+        funcionario?: {
             nombre: string
             paterno: string
             materno: string

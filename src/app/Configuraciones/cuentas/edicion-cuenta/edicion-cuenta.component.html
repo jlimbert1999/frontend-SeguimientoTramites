@@ -1,0 +1,123 @@
+<h2 mat-dialog-title>Edicion cuenta</h2>
+<mat-dialog-content>
+    <div class="container-fluid px-4 mt-4">
+        <div class="row">
+            <div class="col-xl-5">
+                <div class="card">
+                    <div class="card-header">Detalles funcionario</div>
+                    <div class="card-body">
+                        <div class="account-settings">
+                            <div class="user-profile">
+                                <div class="user-avatar">
+                                    <img src="../../../../assets/img/account.png">
+                                </div>
+                                <div *ngIf="data.funcionario">
+                                    <h3 class="fw-bold">{{data.funcionario|fullname|titlecase}} -
+                                        {{data.funcionario.dni}} </h3>
+                                    <h4>{{data.funcionario.cargo|uppercase}}</h4>
+                                </div>
+                                <div *ngIf="!data.funcionario">
+                                    <h2 style="color: red;">SIN ASIGNAR</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer example-button-row" align="center">
+                        <button mat-stroked-button color="warn" (click)="kickUser()"
+                            [disabled]="!data.funcionario">Quitar</button>
+                        <button mat-stroked-button color="primary" (click)="changeUser()">Cambiar</button>
+                    </div>
+                </div>
+                <div class="row g-0 text-center" *ngIf="show_selectUser">
+                    <mat-form-field appearance="fill" class="example-full-width">
+                        <mat-select [formControl]="userCtrl" placeholder="Nombre / Cargo / Dni" #singleSelect
+                            (selectionChange)="selectUserAssign($event.value)">
+                            <mat-option>
+                                <ngx-mat-select-search [formControl]="userFilterCtrl"></ngx-mat-select-search>
+                            </mat-option>
+
+                            <mat-option class="multiline-mat-option" *ngFor="let user of filteredUsers | async"
+                                [value]="user">
+                                {{user|fullname|titlecase}}
+                            </mat-option>
+
+                        </mat-select>
+                        <button (click)="cancelChangeUser()" matSuffix mat-icon-button aria-label="Clear">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="col-xl-7">
+                <div class="card mb-4">
+                    <div class="card-header">Detalles cuenta</div>
+                    <div class="card-body" *ngIf="work">
+
+                        <div class="row gx-3 mb-3">
+                            <div class="mb-3">
+                                <label class="form-label">Dependencia</label>
+                                <input type="text" [value]="data.dependencia.nombre" disabled class="form-control">
+                            </div>
+                            <div class="col-md-3" *ngIf="data.rol==='RECEPCION'">
+                                <label class="small mb-1" for="inputFirstName">Tramites externos</label>
+                                <input class="form-control" id="inputFirstName" type="text" disabled
+                                    [value]="work.total_externos">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="small mb-1" for="inputFirstName">Tramites intenos</label>
+                                <input class="form-control" id="inputFirstName" type="text" disabled
+                                    [value]="work.total_internos">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="small mb-1" for="inputFirstName">Bandeja entrada</label>
+                                <input class="form-control" id="inputFirstName" type="text" disabled
+                                    [value]="work.total_entrada">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="small mb-1" for="inputFirstName">Bandeja salida</label>
+                                <input class="form-control" id="inputFirstName" type="text" disabled
+                                    [value]="work.total_salida">
+                            </div>
+                        </div>
+                        <form [formGroup]="Form_Cuenta">
+                            <div class="row gx-3 mb-3">
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Login</mat-label>
+                                        <input formControlName="login" matInput>
+                                    </mat-form-field>
+
+                                </div>
+                                <div class="col-md-6" *ngIf="cambiar_password">
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Password</mat-label>
+                                        <input formControlName="password" matInput>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Permisos</mat-label>
+                                        <mat-select formControlName="rol">
+                                            <mat-option *ngFor="let rol of Roles" [value]="rol.value">
+                                                {{rol.viewValue | uppercase}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </form>
+                        <hr>
+                        <mat-checkbox [checked]="cambiar_password" (change)='cambiar_formulario($event.checked)'
+                            class="example-margin">
+                            Actualizar password
+                        </mat-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-raised-button color="warn" mat-dialog-close [disabled]="lock_cancel">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="save()">Guardar</button>
+</mat-dialog-actions>
