@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BandejaService } from '../../services/bandeja.service';
-import { ExternosService } from '../../services/externos.service';
 import { Location } from '@angular/common';
 import { MailDetails } from '../../models/mail.model';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';

@@ -35,7 +35,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   protected _onDestroy2 = new Subject<void>();
 
   FormEnvio: FormGroup = this.fb.group({
-    motivo: ['Para su atencion', Validators.required],
+    motivo: ['PARA SU ATENCION', Validators.required],
     cantidad: [this.Data.tramite.cantidad, Validators.required],
     numero_interno: ['']
   });
