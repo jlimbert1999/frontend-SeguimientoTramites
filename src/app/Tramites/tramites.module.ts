@@ -23,6 +23,7 @@ import { FichaExternoComponent } from './externos/ficha-externo/ficha-externo.co
 import { MailFichaExternoComponent } from './externos/mail-ficha-externo/mail-ficha-externo.component';
 import { SolicitantePipe } from './externos/pipes/solicitante.pipe';
 import { StatePipe } from './pipes/state.pipe';
+import { ConcluidosComponent } from './externos/concluidos/concluidos.component';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { StatePipe } from './pipes/state.pipe';
     FichaExternoComponent,
     MailFichaExternoComponent,
     SolicitantePipe,
-    StatePipe
+    StatePipe,
+    ConcluidosComponent
   ],
   imports: [
     CommonModule,

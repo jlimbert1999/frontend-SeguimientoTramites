@@ -184,6 +184,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     Swal.showLoading()
   }
+  
   conclude(tramite: ExternoData) {
     Swal.fire({
       icon: 'question',
@@ -210,7 +211,6 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
           this.Data[index].estado = 'CONCLUIDO'
           this.Data = [...this.Data]
         })
-
       }
     })
 
