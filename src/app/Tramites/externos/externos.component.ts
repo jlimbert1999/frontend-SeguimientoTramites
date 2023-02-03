@@ -122,7 +122,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
           cantidad: tramite.cantidad
         }
       },
-      disableClose:true
+      disableClose: true
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -183,6 +183,37 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
       allowOutsideClick: false,
     });
     Swal.showLoading()
+  }
+  conclude(tramite: ExternoData) {
+    Swal.fire({
+      icon: 'question',
+      title: `Concluir el tramite ${tramite.alterno}?`,
+      text: `Ingrese una referencia para concluir `,
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      customClass: {
+        validationMessage: 'my-validation-message'
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
+          )
+        }
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.externoService.conclude(tramite._id, result.value!).subscribe(message => {
+          Swal.fire(message, undefined, 'success')
+          const index = this.Data.findIndex(element => element._id === tramite._id)
+          this.Data[index].estado = 'CONCLUIDO'
+          this.Data = [...this.Data]
+        })
+
+      }
+    })
+
   }
 
 

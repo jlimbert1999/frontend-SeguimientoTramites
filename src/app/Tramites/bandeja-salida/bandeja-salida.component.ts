@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { AuthService } from 'src/app/auth/services/auth.service';
@@ -12,6 +12,9 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ExternosService } from '../services/externos.service';
 import { InternosService } from '../services/internos.service';
 import { HojaRutaInterna } from '../internos/pdfs/hora-ruta';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { BandejaSalidaService } from '../services/bandeja-salida.service';
+import { async, BehaviorSubject, map, Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-bandeja-salida',
@@ -26,29 +29,36 @@ import { HojaRutaInterna } from '../internos/pdfs/hora-ruta';
     fadeInOnEnterAnimation({ duration: 500 })
   ],
 })
-export class BandejaSalidaComponent implements OnInit {
+export class BandejaSalidaComponent implements OnInit, AfterViewInit {
   dataSource: BandejaSalidaModel_View[] = []
-  displayedColumns = ['grupo', 'alterno', 'tipo', 'estado',  'fecha_envio', 'situacion', 'opciones', 'expand']
+  displayedColumns = ['grupo', 'alterno', 'tipo', 'estado', 'fecha_envio', 'situacion', 'opciones', 'expand']
   isLoadingResults = true;
   expandedElement: BandejaSalidaModel_View | null;
+  resulstLenght: number = 0
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
-    private bandejaService: BandejaService,
     public dialog: MatDialog,
     private authService: AuthService,
     private tramiteService: TramiteService,
     private externoService: ExternosService,
-    private internoService: InternosService
+    private internoService: InternosService,
+    private bandejaService: BandejaSalidaService
   ) { }
+  ngAfterViewInit(): void {
+    this.paginator.pageIndex = this.bandejaService.offset
+    this.paginator.pageSize = this.bandejaService.limit
+  }
 
   ngOnInit(): void {
-
-    this.bandejaService.obtener_bandejaSalida().subscribe(tramites => {
-      this.dataSource = tramites
-      this.isLoadingResults = false
-
+    this.bandejaService.Get().subscribe(data => {
+      this.resulstLenght = data.total
+      this.dataSource = data.tramites
     })
+
   }
+
   generar_hoja_ruta(id_tramite: string, tipo_hoja: 'tramites_externos' | 'tramites_internos') {
     if (tipo_hoja === 'tramites_externos') {
       this.externoService.getOne(id_tramite).subscribe(data => {
@@ -60,7 +70,15 @@ export class BandejaSalidaComponent implements OnInit {
         HojaRutaInterna(data.tramite, data.workflow, tipo_hoja)
       })
     }
-
   }
+  pagination(event: PageEvent) {
+    this.bandejaService.offset = event.pageIndex
+    this.bandejaService.limit = event.pageSize
+    this.bandejaService.Get().subscribe(data => {
+      this.resulstLenght = data.total
+      this.dataSource = data.tramites
+    })
+  }
+
 
 }

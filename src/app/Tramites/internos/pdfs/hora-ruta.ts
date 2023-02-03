@@ -35,10 +35,10 @@ export const HojaRutaInterna = async (tramite: AllInfoOneInterno, workflow: any[
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO: ${ordinales.toOrdinal(1)} (nombre y cargo): `.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
+                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(1)} (nombre y cargo): `.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
 
                         [
-                            {
+                            {       
                                 border: [true, false, false, false],
                                 table: {
                                     body: [
@@ -137,7 +137,7 @@ export const HojaRutaInterna = async (tramite: AllInfoOneInterno, workflow: any[
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO: ${ordinales.toOrdinal(index + 1)} (nombre y cargo): `.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, true, true, false] }, ''],
+                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(index + 1)} (nombre y cargo): `.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, true, true, false] }, ''],
                         [
                             {
                                 border: [true, false, false, false],
@@ -275,7 +275,7 @@ export const HojaRutaInterna = async (tramite: AllInfoOneInterno, workflow: any[
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO: ${ordinales.toOrdinal(1)} (nombre y cargo): ${workflow[0].receptor.funcionario} (${workflow[0].receptor.cargo})`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
+                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(1)}: ${workflow[0].receptor.funcionario} (${workflow[0].receptor.cargo}) `.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
                         [
                             {
                                 border: [true, false, false, false],
@@ -398,7 +398,7 @@ export const HojaRutaInterna = async (tramite: AllInfoOneInterno, workflow: any[
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO: ${ordinales.toOrdinal(index + 1)} (nombre y cargo): ${workflow[index].receptor.funcionario} (${workflow[index].receptor.cargo}) `.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
+                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(index + 1)}: ${workflow[index].receptor.funcionario} (${workflow[index].receptor.cargo})`.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
                         [
                             {
                                 border: [true, false, false, false],
@@ -494,7 +494,7 @@ export const HojaRutaInterna = async (tramite: AllInfoOneInterno, workflow: any[
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO: ${ordinales.toOrdinal(index + 1)} (nombre y cargo):`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, true, true, false] }, ''],
+                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(index + 1)} (nombre y cargo):`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, true, true, false] }, ''],
                         [
                             {
                                 border: [true, false, false, false],
@@ -727,9 +727,10 @@ export const HojaRutaInterna = async (tramite: AllInfoOneInterno, workflow: any[
                                         [`${tramite.cite !== '' ? 'CITE: ' + tramite.cite : ''}`,
                                         {
                                             table: {
-                                                widths: [160, 80],
+                                                widths: [80, 105, 40],
                                                 body: [
                                                     [
+                                                        { text: '', border: [false, false, false, false] },
                                                         { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
                                                         { text: `${destinatario.numero_interno}` },
                                                     ]
@@ -738,7 +739,7 @@ export const HojaRutaInterna = async (tramite: AllInfoOneInterno, workflow: any[
                                         },
                                         ],
                                         [`REMITENTE: ${tramite.remitente.nombre}`, `CARGO: ${tramite.remitente.cargo}`],
-                                        [`DESTINATARIO: ${tramite.destinatario.nombre}`, `CARGO:${tramite.destinatario.cargo}`],
+                                        [`DESTINATARIO: ${tramite.destinatario.nombre}`, `CARGO: ${tramite.destinatario.cargo}`],
                                         [{ text: `REFERENCIA: ${tramite.detalle}`, colSpan: 2 }]
                                     ]
                                 },
