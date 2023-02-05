@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { BehaviorSubject, elementAt, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AllInfoOneExterno } from '../externos/models/externo.model';

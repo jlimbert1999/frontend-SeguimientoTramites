@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacyPaginator as MatPaginator, LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
 import { DialogExternoComponent } from './dialog-externo/dialog-externo.component';
 import { DialogRemisionComponent } from '../dialog-remision/dialog-remision.component';
 import { AuthService } from 'src/app/auth/services/auth.service';

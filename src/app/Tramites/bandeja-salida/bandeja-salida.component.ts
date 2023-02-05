@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { DialogRemisionComponent } from '../dialog-remision/dialog-remision.component';
 import { BandejaSalidaModel_View } from '../models/mail.model';
@@ -12,7 +12,7 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ExternosService } from '../services/externos.service';
 import { InternosService } from '../services/internos.service';
 import { HojaRutaInterna } from '../internos/pdfs/hora-ruta';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator, LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
 import { BandejaSalidaService } from '../services/bandeja-salida.service';
 import { async, BehaviorSubject, map, Subject, switchMap } from 'rxjs';
 

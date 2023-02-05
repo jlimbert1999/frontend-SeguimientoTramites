@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacyPaginator as MatPaginator, LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTable as MatTable, MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { DetallesMovilidadComponent } from 'src/app/Configuraciones/funcionarios/detalles-movilidad/detalles-movilidad.component';
 import { PaginationService } from 'src/app/Configuraciones/services/pagination.service';

@@ -9,7 +9,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ControlComponent } from './control/control.component';
 import { FichaComponent } from './ficha/ficha.component';
 import { RouterModule } from '@angular/router';
-import { NgxGraphModule } from '@swimlane/ngx-graph';
+// import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { InternosComponent } from './internos/internos.component';
 import { ExternosComponent } from './externos/externos.component';
 import { DialogExternoComponent } from './externos/dialog-externo/dialog-externo.component';
@@ -54,7 +54,7 @@ import { ConcluidosComponent } from './externos/concluidos/concluidos.component'
     ReactiveFormsModule,
     NgxMatSelectSearchModule,
     RouterModule,
-    NgxGraphModule,
+    // NgxGraphModule,
     SharedModule,
     
   ]
