@@ -59,4 +59,11 @@ export class ReportesExternoService {
       })
     )
   }
+  getConclude(){
+    return this.http.get<{ ok: boolean, tramites: any }>(`${base_url}/reportes-externos/conclude`).pipe(
+      map(resp => {
+        return resp.tramites
+      })
+    )
+  }
 }

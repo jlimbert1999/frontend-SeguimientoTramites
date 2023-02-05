@@ -17,6 +17,7 @@ import { ReporteTipoComponent } from '../Reportes/reporte-tipo/reporte-tipo.comp
 import { BandejaEntradaComponent } from '../Tramites/bandeja-entrada/bandeja-entrada.component';
 import { BandejaSalidaComponent } from '../Tramites/bandeja-salida/bandeja-salida.component';
 import { ControlComponent } from '../Tramites/control/control.component';
+import { ConcluidosComponent } from '../Tramites/externos/concluidos/concluidos.component';
 import { ExternosComponent } from '../Tramites/externos/externos.component';
 import { FichaExternoComponent } from '../Tramites/externos/ficha-externo/ficha-externo.component';
 import { MailFichaExternoComponent } from '../Tramites/externos/mail-ficha-externo/mail-ficha-externo.component';
@@ -37,13 +38,14 @@ const routes: Routes = [
             { path: 'groupware', component: GroupwareComponent },
             { path: 'tipos', component: TiposTramitesComponent },
             { path: 'perfil', component: CuentaComponent },
-            
+
             // EXTERNOS
             { path: 'tramites-externos', component: ExternosComponent },
+            { path: 'tramites-externos-concluidos', component: ConcluidosComponent },
             { path: 'tramites-externos/ficha/:id', component: FichaExternoComponent },
             { path: 'bandeja-entrada/mail-ficha-externo/:id', component: MailFichaExternoComponent },
             { path: 'bandeja-salida/ficha-externo/:id', component: FichaExternoComponent },
-           
+
             // INTERNOS
             { path: 'tramites-internos', component: InternosComponent },
             { path: 'tramites-internos/ficha/:id', component: FichaInternoComponent },
@@ -54,8 +56,8 @@ const routes: Routes = [
             // BANDEJAS
             { path: 'bandeja-entrada', component: BandejaEntradaComponent },
             { path: 'bandeja-salida', component: BandejaSalidaComponent },
-          
-           
+
+
 
             // REPORTES
             { path: 'reporte-ficha', component: ReporteFichaComponent },

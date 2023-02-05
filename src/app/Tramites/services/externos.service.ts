@@ -108,5 +108,12 @@ export class ExternosService {
       })
     )
   }
+  unarchive(id_tramite: string) {
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/externos/desarchivar/${id_tramite}`, {}).pipe(
+      map(resp => {
+        return resp.message
+      })
+    )
+  }
 
 }
