@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
 import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
@@ -30,6 +30,7 @@ export class InternosComponent implements OnInit {
     { value: 'alterno', viewValue: 'ALTERNO' },
     { value: 'cite', viewValue: 'CITE' },
   ]
+  
 
 
   constructor(

@@ -15,7 +15,7 @@
 
 <div class="container-fluid" [@fadeInOnEnter]>
     <div [@expandOnEnter] [@collapseOnLeave] *ngIf="internoService.searchOptions.active">
-        <mat-card class="example-card">
+        <mat-card appearance="outlined" class="example-card">
             <mat-card-content>
                 <div class="row">
                     <div class="col-sm-2">
@@ -134,7 +134,7 @@
                     </td>
                 </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </div>

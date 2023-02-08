@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { UsuarioDialogComponent } from '../cuentas/usuario-dialog/usuario-dialog.component';
 import { UsuariosService } from '../services/usuarios.service';
 import { read, utils } from "xlsx";

@@ -15,9 +15,6 @@
       <mat-icon>notifications</mat-icon>
     </button>
 
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-   <mat-icon>share</mat-icon>
- </button>
 
     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
       <mat-icon>account_circle</mat-icon>
@@ -61,31 +58,46 @@
       </mat-nav-list>
 
 
+
+
       <ng-template #parentMenu let-menu="menu">
         <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="active">
-          <div [ngSwitch]="menu.routerLink">
-            <div *ngSwitchCase="'bandeja-entrada'">
-              <mat-icon [matBadge]="number_mails|async" [matBadgeHidden]="(number_mails|async)===0"
-                matBadgeColor="warn">{{menu.icon}}</mat-icon>{{menu.text}}
-            </div>
-            <div *ngSwitchDefault>
-              <mat-icon>{{menu.icon}}</mat-icon> {{menu.text}}
-            </div>
-          </div>
-
+          <!-- <ng-container [ngSwitch]="menu.routerLink">
+            <ng-container *ngSwitchCase="'bandeja-entrada'">
+              <mat-icon matListItemIcon [matBadge]="number_mails|async" [matBadgeHidden]="(number_mails|async)===0"
+                matBadgeColor="warn">{{menu.icon}}</mat-icon>
+              <div matListItemTitle>{{menu.name}}</div>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <mat-icon matListItemIcon>{{menu.icon}}</mat-icon>
+              <div matListItemTitle>{{menu.text}}</div>
+            </ng-container>
+          </ng-container> -->
+          <mat-icon matListItemIcon>{{menu.icon}}</mat-icon>
+          <div matListItemTitle>{{menu.text}}</div>
         </mat-list-item>
-        <mat-divider></mat-divider>
       </ng-template>
 
       <ng-template #childMenu let-menu="menu">
-        <mat-expansion-panel [class.mat-elevation-z0]="true" [expanded]="true">
+        <mat-expansion-panel [class.mat-elevation-z0]="true" [expanded]="true" class="menu-list">
           <mat-expansion-panel-header>
-            <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>{{menu.text}}
+            <mat-panel-title>
+              <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>
+            </mat-panel-title>
+            <mat-panel-description>
+              {{menu.text}}
+            </mat-panel-description>
+
+            <!-- <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>
+            <mat-panel-title>
+              Personal data
+            </mat-panel-title> -->
           </mat-expansion-panel-header>
           <mat-nav-list>
             <mat-list-item [routerLink]="submenu.routerLink" *ngFor="let submenu of menu.children"
               routerLinkActive="active">
-              <mat-icon>{{submenu.icon}}</mat-icon> {{submenu.text}}
+              <mat-icon matListItemIcon>{{menu.icon}}</mat-icon>
+              <div matListItemTitle>{{menu.text}}</div>
             </mat-list-item>
           </mat-nav-list>
         </mat-expansion-panel>

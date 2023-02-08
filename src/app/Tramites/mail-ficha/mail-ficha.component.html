@@ -5,7 +5,7 @@
     <span>Ficha de tramite para eliminar</span>
 </mat-toolbar>
 <div class="container-fluid">
-    <mat-card *ngIf="Detalles" class="example-card">
+    <mat-card appearance="outlined" *ngIf="Detalles" class="example-card">
         <mat-card-header>
             <div mat-card-avatar class="example-header-image"></div>
             <mat-card-title>{{Detalles.emisor.funcionario.nombre | titlecase}}</mat-card-title>

@@ -22,12 +22,12 @@ table {
     text-align: center;
 }
 
-th.mat-header-cell {
+th.mat-mdc-header-cell {
     color: white;
     background-color: #463f3a;
 }
 
-.mat-row:hover {
+.mat-mdc-row:hover {
     background-color: #e2eafc;
 }
 
@@ -57,7 +57,7 @@ th.mat-header-cell {
     justify-content: center;
 }
 
-.mat-cell {
+.mat-mdc-cell {
     font-size: 12px;
 }
 

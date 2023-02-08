@@ -12,7 +12,7 @@
             </button>
         </ng-container>
         <ng-container *ngIf="dependenciasService.busqueda==true">
-            <mat-form-field floatLabel="never" style="width: 100%;">
+            <mat-form-field style="width: 100%;">
                 <mat-label>Ingrese el nombre o sigla de la dependencia</mat-label>
                 <input #txtSearch [(ngModel)]="dependenciasService.termino_busqueda" matInput type="text"
                     (keyup)="buscar_dependencia()">

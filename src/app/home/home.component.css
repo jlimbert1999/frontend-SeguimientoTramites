@@ -30,16 +30,10 @@ h1.example-app-name {
     flex: 1 0 auto;
 }
 
-.example-card {
-    max-width: 200px;
-}
 
 
-.example-spacer {
-    flex: 1 1 auto;
-}
 
-.mat-list-item.active {
+.mat-mdc-list-item.active {
     background-color: #64B5F6;
     color: white;
     border-left: 8px solid #1E88E5;
@@ -72,12 +66,37 @@ h1.example-app-name {
     backdrop-filter: blur(2px);
 }
 
+.mat-mdc-list-item-icon {
+    color: rgba(0, 0, 0, 255);
+}
+
+mat-sidenav {
+    width: 250px;
+}
+/* 
+
+
+.menu-list mat-panel-title {
+    flex-basis: 0;
+}
+
+.menu-list mat-panel-description {
+    flex-basis: 100%;
+}
+.menu-list mat-panel-description {
+    font-size: 16px;
+}
+.menu-list mat-icon{
+    margin-right: 8px;
+} */
+
+
 ::ng-deep .mat-expansion-panel-header {
     padding: 0 16px !important;
 }
 
 ::ng-deep .mat-nav-list .mat-icon {
-    margin-right: 30px;
+    margin-right: 10px;
 }
 
 ::ng-deep .mat-expansion-panel-body {
@@ -88,29 +107,26 @@ h1.example-app-name {
     height: 48px !important;
 }
 
-::ng-deep .mat-expansion-panel .mat-list-item {
+::ng-deep .mat-expansion-panel .mat-mdc-list-item {
     padding-left: 15px !important;
 }
 
 ::ng-deep .mat-nav-list .is-active {
-    background-color: cornflowerblue;
-    border-left: 8px solid rgb(139, 137, 133);
-    width: calc(100% - 8px) !important;
+    background-color: rgb(204, 204, 204)!important;
+    border-left     : 8px solid rgb(139, 137, 133);
+    width           : calc(100% - 8px)!important;;
 }
 
+ 
 
-
-::ng-deep .mat-list-base {
+::ng-deep .mat-mdc-list-base {
     padding-top: 0 !important;
 }
 
-::ng-deep .mat-nav-list .mat-list-item.is-active .mat-list-item-content {
+/* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version. */
+::ng-deep .mat-nav-list .mat-mdc-list-item.is-active .mat-list-item-content {
     padding: 0 8px;
-}
-
-mat-sidenav {
-    width: 250px;
-}
+} 
 
 /* mat-sidenav-content {
     background-image: url('../../assets/img/logo_alcaldia.png');
@@ -118,3 +134,8 @@ mat-sidenav {
     background-position: center;
     box-shadow: 0 0 0 0 !important;
 } */
+
+mat-sidenav-content{
+    background-color: #DEE2E6;
+    
+}

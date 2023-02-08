@@ -32,7 +32,6 @@ export class FichaInternoComponent implements OnInit, OnDestroy {
           this.Workflow = data.workflow
           this.createTimer(this.Tramite.fecha_registro, this.Tramite.fecha_finalizacion, this.Tramite.estado)
         })
-       
       }
     })
   }

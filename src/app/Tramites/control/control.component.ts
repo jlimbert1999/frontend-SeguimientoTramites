@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatTableDataSource } from '@angular/material/table';
 import { TramiteService } from '../services/tramite.service';
 import * as XLSX from 'xlsx';
 import { reporte_tramites_realizados } from 'src/app/generacion_pdfs/reportes';

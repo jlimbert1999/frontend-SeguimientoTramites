@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatTableDataSource } from '@angular/material/table';
 import { BehaviorSubject, elementAt, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AllInfoOneExterno } from '../externos/models/externo.model';
@@ -44,23 +44,30 @@ export class BandejaService {
     )
   }
 
-  getUsersForSend(id_dependencia: string) {
-    return this.http.get<{ ok: boolean, data: any[] }>(`${base_url}/bandejas/users/${id_dependencia}`).pipe(
+  // getUsersForSend(id_dependencia: string) {
+  //   return this.http.get<{ ok: boolean, data: any[] }>(`${base_url}/bandejas/users/${id_dependencia}`).pipe(
+  //     map(resp => {
+  //       let users: UsersMails[] = []
+  //       resp.data.map(user => {
+  //         users.push({
+  //           id_cuenta: user._id,
+  //           fullname: `${user.funcionario.nombre} ${user.funcionario.paterno} ${user.funcionario.materno}`,
+  //           jobtitle: `${user.funcionario.cargo}`,
+  //           online: false
+  //         })
+  //       })
+  //       return users
+  //     })
+  //   )
+  // }
+  getUsersForSend(text: string) {
+    return this.http.get<{ ok: boolean, cuentas: any[] }>(`${base_url}/bandejas/users/${text}`).pipe(
       map(resp => {
-        let users: UsersMails[] = []
-        resp.data.map(user => {
-          users.push({
-            id_cuenta: user._id,
-            fullname: `${user.funcionario.nombre} ${user.funcionario.paterno} ${user.funcionario.materno}`,
-            jobtitle: `${user.funcionario.cargo}`,
-            online: false
-          })
-        })
-        return users
+        return resp.cuentas
       })
     )
   }
-  AddMail(data: EnvioModel) {
+  AddMail(data: EnvioModel[]) {
     return this.http.post<{ ok: boolean, mail: any }>(`${base_url}/bandejas`, data).pipe(
       map(resp => {
         return resp.mail

@@ -10,7 +10,7 @@
         </button>
     </ng-container>
     <ng-container *ngIf="tiposTramitesService.busqueda">
-        <mat-form-field floatLabel="never" style="width: 100%;">
+        <mat-form-field  style="width: 100%;">
             <mat-label>Ingrese el nombre o sigla de la institucion</mat-label>
             <input (keyup)="buscar_TipoTramites()" #txtSearch [(ngModel)]="tiposTramitesService.termino_busqueda"
                 matInput type="text">

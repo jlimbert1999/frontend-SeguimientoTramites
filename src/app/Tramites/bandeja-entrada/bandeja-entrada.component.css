@@ -1,4 +1,4 @@
-.mat-cell {
+.mat-mdc-cell {
     font-size: 11px;
     padding-right: 20px
 }
@@ -22,7 +22,7 @@ tr.example-detail-row {
     display: flex;
 }
 
-.mail_recibido .mat-cell {
+.mail_recibido .mat-mdc-cell {
     background-color: #FE5F55;
     color: white;
 }
@@ -71,7 +71,7 @@ td.mat-column-fecha_envio {
         box-shadow: none;
     }
 
-    .mat-header-row {
+    .mat-mdc-header-row {
         display: none;
     }
 
@@ -80,15 +80,15 @@ td.mat-column-fecha_envio {
         width: 100%;
     }
 
-    .mat-table {
+    .mat-mdc-table {
         background: transparent;
     }
 
-    .mat-table * {
+    .mat-mdc-table * {
         box-sizing: border-box;
     }
 
-    .mat-table .mat-row {
+    .mat-mdc-table .mat-mdc-row {
         display: block;
         overflow: hidden;
         height: auto;
@@ -99,12 +99,12 @@ td.mat-column-fecha_envio {
         border-radius: 3px;
     }
 
-    .mat-table .mat-row+.mat-row {
+    .mat-mdc-table .mat-mdc-row+.mat-row {
         margin-top: 24px;
     }
 
 
-    .mat-table .mat-cell {
+    .mat-mdc-table .mat-mdc-cell {
         display: block;
         width: 100%;
         padding: 0 16px;
@@ -113,20 +113,20 @@ td.mat-column-fecha_envio {
 
     }
 
-    .mat-table .mat-cell:first-child {
+    .mat-mdc-table .mat-mdc-cell:first-child {
         padding: 0 48px 0 16px;
     }
 
-    .mat-table .mat-cell:first-child a {
+    .mat-mdc-table .mat-mdc-cell:first-child a {
         font-size: 20px;
         color: inherit;
     }
 
-    .mat-table .mat-cell:first-child:before {
+    .mat-mdc-table .mat-mdc-cell:first-child:before {
         display: none;
     }
 
-    .mat-table .mat-cell.m-card-sub-title {
+    .mat-mdc-table .mat-mdc-cell.m-card-sub-title {
         margin-top: 8px;
         padding: 0 48px 0 16px;
         color: rgba(0, 0, 0, 0.54);
@@ -134,13 +134,13 @@ td.mat-column-fecha_envio {
         
     }
 
-    .mat-table .has_label_on_mobile:before {
+    .mat-mdc-table .has_label_on_mobile:before {
         content: attr(data-label);
         display: inline;
         font-weight: bold;
     }
 
-    .mat-table .mat-column-opciones {
+    .mat-mdc-table .mat-column-opciones {
         width: auto;
         padding: 8px 0 0 !important;
         margin: 0;
@@ -149,19 +149,19 @@ td.mat-column-fecha_envio {
         right: 0;
     }
 
-    .mat-table .mat-column-opciones:before {
+    .mat-mdc-table .mat-column-opciones:before {
         display: none;
     }
 
-    .mat-paginator {
+    .mat-mdc-paginator {
         margin-top: 24px;
     }
 
-    .mat-table .mat-column-expandedDetail {
+    .mat-mdc-table .mat-column-expandedDetail {
         display: none;
     }
 
-    .mat-table .mat-column-expand {
+    .mat-mdc-table .mat-column-expand {
         display: none;
     }
 }

@@ -1,13 +1,4 @@
-mat-form-field {
-    width: 100%;
-}
-
-.example-option-img {
+.c-pill{
+    margin-left: 10px;
     vertical-align: middle;
-    margin-right: 8px;
-}
-
-.multiline-mat-option.mat-option {
-    white-space: normal;
-    line-height: normal;
 }

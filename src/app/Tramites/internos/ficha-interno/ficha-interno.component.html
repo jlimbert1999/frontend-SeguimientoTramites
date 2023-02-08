@@ -4,142 +4,161 @@
     </button>
     <span>Tramite: Interno</span>
 </mat-toolbar>
-<div class="container-fluid" [@slideInLeftOnEnter]>
-    <mat-tab-group mat-align-tabs="center" *ngIf="Tramite">
-        <mat-tab>
-            <ng-template mat-tab-label>
-                <mat-icon class="example-tab-icon">info</mat-icon>
-                Informacion
-            </ng-template>
-            <ng-container>
-                <div class="card">
-                    <h4 class="card-header fw-bold text-bg-secondary mb-3">INFORMACION TRAMITE</h4>
-                    <div class="card-body">
-                        <form class="row g-3">
-                            <div class="col-md-8">
-                                <label class="form-label">Tipo de tramite</label>
-                                <input class="form-control" type="text" value="{{Tramite.tipo_tramite.nombre}}" disabled
-                                    readonly>
+
+
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="end" *ngIf="Tramite" [@slideInLeftOnEnter]>
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">info</mat-icon>
+            Informacion
+        </ng-template>
+        <ng-container>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-7">
+                        <div class="card shadow mb-2 bg-body-tertiary rounded">
+                            <div class="card-header fw-bold">
+                                TRAMITE
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Alterno</label>
-                                <input class="form-control" type="text" value="{{Tramite.alterno}}" disabled readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Referencia</label>
-                                <textarea class="form-control" value="{{Tramite.detalle}}" readonly></textarea>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Fecha registro</label>
-                                <input class="form-control" type="text" value="{{Tramite.fecha_registro|date:'short'}}"
-                                    disabled readonly>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Cantidad</label>
-                                <input class="form-control" type="text" value="{{Tramite.cantidad}}" disabled readonly>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Cite</label>
-                                <input class="form-control" type="text" value="{{Tramite.cite}}" disabled readonly>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">Estado</label>
-                                <h2>
-                                    <span class="badge" [ngClass]="Tramite.estado|state">
-                                        {{Tramite.estado|uppercase}}
-                                    </span>
-                                </h2>
-                            </div>
-                            <div [ngSwitch]="Tramite.estado" class="col-md-4">
-                                <div *ngSwitchCase="'CONCLUIDO'">
-                                    <label class="form-label">Duracion proceso</label>
-                                    <h2> {{count}}</h2>
-                                </div>
-                                <div *ngSwitchDefault>
-                                    <label class="form-label">Tiempo transcurrido</label>
-                                    <h2> <span class="badge text-bg-success">{{count}}</span></h2>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label">UBICACION</label>
-                                <div class="card border-primary mb-3">
-                                    <div class="card-body">
-                                        <h4 class="card-title fw-bold">{{Tramite.ubicacion.funcionario|fullname}} -
-                                            {{Tramite.ubicacion.funcionario.cargo|uppercase}}</h4>
-                                        <p class="card-text">{{Tramite.ubicacion.dependencia.nombre}} -
-                                            {{Tramite.ubicacion.dependencia.institucion.sigla}}</p>
+                            <div class="card-body">
+                                <form class="row g-3">
+                                    <div class="col-md-8">
+                                        <label class="form-label">Tipo de tramite</label>
+                                        <input type="text" class="form-control" disabled
+                                            [value]="Tramite.tipo_tramite.nombre">
                                     </div>
-                                </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Cite</label>
+                                        <input type="text" class="form-control" disabled [value]="Tramite.cite">
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="inputAddress" class="form-label">Referencia</label>
+                                        <textarea class="form-control" disabled [value]="Tramite.detalle"></textarea>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Fecha registro</label>
+                                        <input type="text" class="form-control" disabled
+                                            [value]="Tramite.fecha_registro|date:'short'">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Cantidad hojas</label>
+                                        <input type="text" class="form-control" disabled [value]="Tramite.cantidad">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Cite</label>
+                                        <input type="text" class="form-control" disabled [value]="Tramite.cite">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Estado</label>
+                                        <h2>
+                                            <span class="badge" [ngClass]="Tramite.estado|state">
+                                                {{Tramite.estado|uppercase}}
+                                            </span>
+                                        </h2>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Ubicacion</label>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h3 class="card-title fw-bold">
+                                                    {{Tramite.ubicacion.funcionario|fullname|titlecase}} (
+                                                    {{Tramite.ubicacion.funcionario.cargo|uppercase}})</h3>
+                                                <h5 class="card-subtitle mb-2 text-muted">
+                                                    {{Tramite.ubicacion.dependencia.nombre}} -
+                                                    {{Tramite.ubicacion.dependencia.institucion.sigla}}</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div [ngSwitch]="Tramite.estado" class="col-md-4">
+                                        <div *ngSwitchCase="'CONCLUIDO'">
+                                            <label class="form-label">Duracion proceso</label>
+                                            <h2> {{count}}</h2>
+                                        </div>
+                                        <div *ngSwitchDefault>
+                                            <label class="form-label">Tiempo transcurrido</label>
+                                            <h2> <span class="badge text-bg-success">{{count}}</span></h2>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="col-md-12" *ngIf="Tramite.detalle_conclusion">
-                                <label class="form-label">Referencia concluido</label>
-                                <textarea class="form-control" value="{{Tramite.detalle_conclusion}}" readonly></textarea>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <br>
-                <div class="card">
-                    <h4 class="card-header fw-bold text-bg-secondary mb-3">INFORMACION REMITENTE</h4>
-                    <div class="card-body">
-                        <form class="row g-3">
-                            <div class="col-md-12">
-                                <label class="form-label">Nombre</label>
-                                <input class="form-control" type="text" value="{{Tramite.remitente.nombre}}" disabled
-                                    readonly>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Cargo</label>
-                                <input class="form-control" type="text" value="{{Tramite.remitente.cargo}}" disabled
-                                    readonly>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <br>
-                <div class="card">
-                    <h4 class="card-header fw-bold text-bg-secondary mb-3">INFORMACION DESTINATARIO</h4>
-                    <div class="card-body">
-                        <form class="row g-3">
-                            <div class="col-md-12">
-                                <label class="form-label">Nombre</label>
-                                <input class="form-control" type="text" value="{{Tramite.destinatario.nombre}}" disabled
-                                    readonly>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Cargo</label>
-                                <input class="form-control" type="text" value="{{Tramite.destinatario.cargo}}" disabled
-                                    readonly>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <br>
-                <div class="card">
-                    <h4 class="card-header fw-bold text-bg-secondary mb-3">OBSERVACIONES</h4>
-                    <div class="card-body">
-                        <app-observaciones [Options]="false"
-                            [Observaciones]="Tramite.observaciones"></app-observaciones>
-                    </div>
-                </div>
-            </ng-container>
-        </mat-tab>
 
-        <mat-tab *ngIf="Workflow.length!==0">
-            <ng-template mat-tab-label>
-                <mat-icon class="example-tab-icon">groups</mat-icon>
-                Flujo de trabajo
-            </ng-template>
-            <app-list-workflow *ngIf="Workflow" [Workflow]="Workflow"
-                [fecha_registro]="Tramite.fecha_registro"></app-list-workflow>
-        </mat-tab>
-        <mat-tab *ngIf="Workflow.length!==0">
-            <ng-template mat-tab-label>
-                <mat-icon class="example-tab-icon">tenancy</mat-icon>
-                Flujo de trabajo grafico
-            </ng-template>
-            <app-graph-workflow *ngIf="Workflow" [Workflow]="Workflow"></app-graph-workflow>
-        </mat-tab>
+                        </div>
 
-    </mat-tab-group>
-</div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="card shadow mb-2 bg-body-tertiary rounded">
+                            <div class="card-header fw-bold">
+                                REMITENTE
+                            </div>
+                            <div class="card-body">
+                                <form class="row g-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label">Nombre</label>
+                                        <input class="form-control" type="text" value="{{Tramite.remitente.nombre}}"
+                                            disabled readonly>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Cargo</label>
+                                        <input class="form-control" type="text" value="{{Tramite.remitente.cargo}}"
+                                            disabled readonly>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card shadow mb-2 bg-body-tertiary rounded">
+                            <div class="card-header fw-bold">
+                                DESTINATARIO
+                            </div>
+                            <div class="card-body">
+                                <form class="row g-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label">Nombre</label>
+                                        <input class="form-control" type="text" value="{{Tramite.remitente.nombre}}"
+                                            disabled readonly>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Cargo</label>
+                                        <input class="form-control" type="text" value="{{Tramite.remitente.cargo}}"
+                                            disabled readonly>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card shadow mb-2 bg-body-tertiary rounded">
+                            <div class="card-header fw-bold">
+                                OOBSERVACIONES
+                            </div>
+                            <div class="card-body">
+                                <app-observaciones [Options]="false"
+                                    [Observaciones]="Tramite.observaciones"></app-observaciones>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </ng-container>
+    </mat-tab>
+
+    <mat-tab *ngIf="Workflow.length!==0">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">groups</mat-icon>
+            Flujo de trabajo
+        </ng-template>
+        <app-list-workflow *ngIf="Workflow" [Workflow]="Workflow"
+            [fecha_registro]="Tramite.fecha_registro"></app-list-workflow>
+    </mat-tab>
+    <mat-tab *ngIf="Workflow.length!==0">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">tenancy</mat-icon>
+            Flujo de trabajo grafico
+        </ng-template>
+        <app-graph-workflow *ngIf="Workflow" [Workflow]="Workflow"></app-graph-workflow>
+    </mat-tab>
+</mat-tab-group>
+
+<!-- </div> -->

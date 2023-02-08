@@ -157,7 +157,7 @@
                         <form [formGroup]="Form_Cuenta">
                             <div class="card">
                                 <div class="card-body">
-                                    <mat-form-field appearance="legacy">
+                                    <mat-form-field>
                                         <mat-label>Login</mat-label>
                                         <input formControlName="login" matInput>
                                     </mat-form-field>
@@ -170,7 +170,7 @@
                                         </mat-select>
                                     </mat-form-field>
 
-                                    <mat-form-field *ngIf="cambiar_password" appearance="legacy">
+                                    <mat-form-field *ngIf="cambiar_password">
                                         <mat-label>Password</mat-label>
                                         <input formControlName="password" matInput>
                                     </mat-form-field>

@@ -2,7 +2,7 @@
 <mat-dialog-content>
   <form [formGroup]="TramiteFormGroup" class="example-form">
     <div class="row" *ngIf="!data">
-      <mat-form-field appearance="fill">
+      <mat-form-field>
         <mat-label>Seleccione el tipo de tramite</mat-label>
         <mat-select (selectionChange)="selectType($event.value)" formControlName="tipo_tramite">
           <mat-option *ngFor="let tipo of tipos_tramites" [value]="tipo.id_tipoTramite">
@@ -12,7 +12,7 @@
       </mat-form-field>
     </div>
     <div class="row">
-      <mat-form-field class="example-full-width" appearance="fill">
+      <mat-form-field class="example-full-width">
         <mat-label>Referencia del tramite</mat-label>
         <textarea formControlName="detalle" matInput></textarea>
       </mat-form-field>
@@ -20,7 +20,7 @@
     </div>
     <div class="row">
       <div class="col-sm-6">
-        <mat-form-field class="example-full-width" appearance="fill">
+        <mat-form-field class="example-full-width">
           <mat-label>Nombre del remitente</mat-label>
           <input type="text" class="uppercase" matInput formControlName="nombre_remitente" [matAutocomplete]="auto">
           <mat-autocomplete #auto="matAutocomplete">
@@ -32,7 +32,7 @@
         </mat-form-field>
       </div>
       <div class="col-sm-6">
-        <mat-form-field class="example-full-width" appearance="fill">
+        <mat-form-field class="example-full-width">
           <mat-label>Cargo del remitente</mat-label>
           <input class="uppercase" formControlName="cargo_remitente" matInput>
         </mat-form-field>
@@ -40,7 +40,7 @@
     </div>
     <div class="row">
       <div class="col-sm-6">
-        <mat-form-field class="example-full-width" appearance="fill">
+        <mat-form-field class="example-full-width">
           <mat-label>Nombre del destinatario</mat-label>
           <input class="uppercase" type="text" matInput formControlName="nombre_destinatario" matAutocompletePosition="below"
             [matAutocomplete]="auto1">
@@ -54,7 +54,7 @@
         </mat-form-field>
       </div>
       <div class="col-sm-6">
-        <mat-form-field class="example-full-width" appearance="fill">
+        <mat-form-field class="example-full-width">
           <mat-label>Cargo del destinatario</mat-label>
           <input class="uppercase" formControlName="cargo_destinatario" matInput>
         </mat-form-field>
@@ -62,13 +62,13 @@
     </div>
     <div class="row">
       <div class="col-sm-6">
-        <mat-form-field class="example-full-width" appearance="fill">
+        <mat-form-field class="example-full-width">
           <mat-label>CITE</mat-label>
           <input formControlName="cite" matInput>
         </mat-form-field>
       </div>
       <div class="col-sm-6">
-        <mat-form-field class="example-full-width" appearance="fill">
+        <mat-form-field class="example-full-width">
           <mat-label>Cant. Hojas / Anexos</mat-label>
           <input formControlName="cantidad" matInput>
         </mat-form-field>
