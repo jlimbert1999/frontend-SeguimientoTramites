@@ -1,96 +1,9 @@
 <h2 mat-dialog-title>REMISION TRAMITE</h2>
 <mat-dialog-content>
-    <!-- <div class="contianer-fluid">
-        <form class="row g-3">
-            <div class="col-md-3">
-                <label class="form-label">Alterno</label>
-                <input disabled type="text" class="form-control" [value]="Data.tramite.alterno">
-            </div>
-            <div class="col-md-9">
-                <label class="form-label">Tipo</label>
-                <input disabled type="text" class="form-control" [value]="Data.tramite.nombre">
-            </div>
-        </form>
-        <br>
-        <div class="row">
-            <mat-form-field class="example-full-width">
-                <mat-select (selectionChange)="addReceiver($event.value)" placeholder="Buscar funcionario" #userSelect>
-                    <mat-option>
-                        <ngx-mat-select-search [formControl]="userFilterCtrl" placeholderLabel="Nombre o Cargo"
-                            noEntriesFoundLabel="Sin resultados"></ngx-mat-select-search>
-                    </mat-option>
-                    <mat-option *ngFor="let user of filteredUsers | async " [value]="user">
-                        <span>{{user.funcionario.fullname|titlecase}}</span>
-                        <small class="jobtitle">({{user.funcionario.cargo|uppercase}}</small>
-                        <span class="c-pill" [ngClass]="user.online?'c-pill--success':'c-pill--danger'">{{user.online?'Conectado':'Sin conexion'}}</span>
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div class="card mb-3">
-            <div class="card-body">
-              <h3 class="card-title">Destinatarios</h3>
-              <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Color selection">
-                <mat-chip *ngFor="let item of funcionarios" (removed)="removeReceiver(item)">
-                    <img matChipAvatar src="../../../assets/img/account.png" alt="Photo of a Shiba Inu" />
-                    {{item.funcionario.fullname|titlecase}}
-                    <button matChipRemove [attr.aria-label]="'remove ' + item">
-                        <mat-icon>cancel</mat-icon>
-                    </button>
-                </mat-chip>
-            </mat-chip-listbox>
-            </div>
-          </div>
-        <br>
-
-        <form [formGroup]="FormEnvio">
-            <div class="row">
-                <div class="col-8">
-                    <mat-form-field class="example-full-width">
-                        <mat-label>Instruccion / Proveido</mat-label>
-                        <input formControlName="motivo" matInput required>
-                        <mat-error *ngIf="FormEnvio.controls['motivo'].invalid">
-                            Ingrese el motivo
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-4">
-                    <mat-form-field class="example-full-width">
-                        <mat-label>Cantidad</mat-label>
-                        <input formControlName="cantidad" matInput required>
-                        <mat-error *ngIf="FormEnvio.controls['cantidad'].invalid">
-                            Ingrese la cantidad
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-4">
-                    <mat-form-field class="example-full-width">
-                        <mat-label>Nro. Registro interno</mat-label>
-                        <input formControlName="numero_interno" matInput>
-                    </mat-form-field>
-                </div>
-            </div>
-        </form>
-    </div> -->
     <form [formGroup]="FormEnvio">
         <div class="row mb-3">
             <label class="col-sm-2 col-form-label">Destinatario: </label>
             <div class="col-sm-10">
-                <mat-form-field class="example-full-width">
-                    <mat-select (selectionChange)="addReceiver($event.value)" placeholder="Buscar funcionario">
-                        <mat-option>
-                            <ngx-mat-select-search [formControl]="userFilterCtrl" placeholderLabel="Nombre o Cargo"
-                                noEntriesFoundLabel="Sin resultados" ></ngx-mat-select-search>
-                        </mat-option>
-                        <mat-option *ngFor="let user of filteredUsers | async " [value]="user">
-                            <span>{{user.funcionario.fullname|titlecase}}</span>
-                            <small class="jobtitle">({{user.funcionario.cargo|uppercase}}</small>
-                            <span class="c-pill" [ngClass]="user.online?'c-pill--success':'c-pill--danger'">{{user.online?'Conectado':'Sin conexion'}}</span>
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
                 <mat-chip-listbox aria-label="Color selection">
                     <mat-chip *ngFor="let item of funcionarios" (removed)="removeReceiver(item)">
                         <img matChipAvatar src="../../../assets/img/account.png" alt="Photo of a Shiba Inu" />
@@ -100,6 +13,20 @@
                         </button>
                     </mat-chip>
                 </mat-chip-listbox>
+                <mat-form-field class="example-full-width">
+                    <mat-select (selectionChange)="addReceiver($event.value)" placeholder="Buscar funcionario">
+                        <mat-option>
+                            <ngx-mat-select-search [formControl]="userFilterCtrl" placeholderLabel="Nombre o Cargo"
+                                noEntriesFoundLabel="Sin resultados" [searching]="searching"></ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let user of filteredUsers | async " [value]="user">
+                            <span>{{user.funcionario.fullname|titlecase}}</span>
+                            <small class="jobtitle">({{user.funcionario.cargo|uppercase}}</small>
+                            <span class="c-pill" [ngClass]="user.online?'c-pill--success':'c-pill--danger'">{{user.online?'Conectado':'Sin conexion'}}</span>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                
             </div>
         </div>
         <div class="row mb-3">
@@ -119,7 +46,7 @@
         </div>
 
         <div class="row">
-            <div class="col-4">
+            <div class="col-sm-4">
                 <mat-form-field class="example-full-width">
                     <mat-label>Cantidad: hojas / anexos</mat-label>
                     <input formControlName="cantidad" matInput required>
@@ -128,7 +55,7 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-            <div class="col-4">
+            <div class="col-sm-4">
                 <mat-form-field class="example-full-width">
                     <mat-label>Numero de registro interno</mat-label>
                     <input formControlName="numero_interno" matInput>

@@ -29,7 +29,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
   displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'enviado', 'opciones'];
   filterOpions = [
     { value: 'solicitante', viewValue: 'SOLICITANTE / DNI' },
-    { value: 'alterno', viewValue: 'ALTERNO' },
+    { value: 'alterno', viewValue: 'ALTERNO' }
   ]
 
 
