@@ -5,10 +5,10 @@
             <label class="col-sm-2 col-form-label">Destinatario: </label>
             <div class="col-sm-10">
                 <mat-chip-listbox aria-label="Color selection">
-                    <mat-chip *ngFor="let item of funcionarios" (removed)="removeReceiver(item)">
+                    <mat-chip *ngFor="let account of accounts" (removed)="removeReceiver(account)">
                         <img matChipAvatar src="../../../assets/img/account.png" alt="Photo of a Shiba Inu" />
-                        {{item.funcionario.fullname|titlecase}}
-                        <button matChipRemove [attr.aria-label]="'remove ' + item">
+                        {{account.funcionario|fullname|titlecase}}
+                        <button matChipRemove [attr.aria-label]="'remove ' + account">
                             <mat-icon>cancel</mat-icon>
                         </button>
                     </mat-chip>

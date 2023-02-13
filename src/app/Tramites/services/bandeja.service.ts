@@ -61,13 +61,13 @@ export class BandejaService {
   //   )
   // }
   getUsersForSend(text: string) {
-    return this.http.get<{ ok: boolean, cuentas: any[] }>(`${base_url}/bandejas/users/${text}`).pipe(
+    return this.http.get<{ ok: boolean, cuentas: UsersMails[] }>(`${base_url}/bandejas/users/${text}`).pipe(
       map(resp => {
         return resp.cuentas
       })
     )
   }
-  AddMail(data: EnvioModel[]) {
+  AddMail(data: any) {
     return this.http.post<{ ok: boolean, mail: any }>(`${base_url}/bandejas`, data).pipe(
       map(resp => {
         return resp.mail
