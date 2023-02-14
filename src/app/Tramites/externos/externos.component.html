@@ -104,12 +104,11 @@
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu">
-                            <button (click)="Edit(row)" [disabled]="row.estado!=='INSCRITO'" mat-menu-item>
+                            <button (click)="Edit(row)" mat-menu-item>
                                 <mat-icon>edit</mat-icon>
                                 <span>Editar tramite</span>
                             </button>
-                            <button (click)="Send(row)" [disabled]="denied_options(row.estado, row.ubicacion)"
-                                mat-menu-item>
+                            <button (click)="Send(row)" [disabled]="row.estado!=='INSCRITO'" mat-menu-item>
                                 <mat-icon>send</mat-icon>
                                 <span>Remitir tramite</span>
                             </button>
@@ -121,7 +120,8 @@
                                 <mat-icon>feed</mat-icon>
                                 <span>Hoja de ruta</span>
                             </button>
-                            <button (click)="conclude(row)" [disabled]="denied_options(row.estado, row.ubicacion)" mat-menu-item>
+                            <button (click)="conclude(row)" [disabled]="denied_options(row.estado, row.ubicacion)"
+                                mat-menu-item>
                                 <mat-icon>domain_verification</mat-icon>
                                 <span>Concluir tramite</span>
                             </button>

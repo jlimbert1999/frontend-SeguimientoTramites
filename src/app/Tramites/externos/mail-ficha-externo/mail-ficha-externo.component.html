@@ -27,7 +27,7 @@
             <p>Fecha: {{Detalles.fecha_envio|date:'short'}}</p>
         </mat-card-content>
     </mat-card> --> 
-    <app-mail-header *ngIf="Detalles" [Data]="Detalles"></app-mail-header>
+    <!-- <app-mail-header *ngIf="Detalles" [Data]="Detalles"></app-mail-header> -->
 
     <mat-tab-group  mat-align-tabs="center">
         <mat-tab>
@@ -35,7 +35,7 @@
                 <mat-icon class="example-tab-icon">info</mat-icon>
                 Informacion
             </ng-template>
-            <ng-container *ngIf="Tramite">
+            <!-- <ng-container *ngIf="Tramite">
                 <div class="card">
                     <h4 class="card-header fw-bold text-bg-secondary mb-3">{{Tramite.tipo_tramite.nombre|uppercase}}
                     </h4>
@@ -208,10 +208,7 @@
                             [type]="'tramites_externos'"></app-observaciones>
                     </div>
                 </div>
-
-            </ng-container>
-
-
+            </ng-container> -->
 
         </mat-tab>
         <mat-tab>

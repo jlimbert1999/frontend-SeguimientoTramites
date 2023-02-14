@@ -60,7 +60,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     })
     this.socketService.listenMails().subscribe(mail => {
       this.bandejaService.addMail(mail)
-      this.notificationService.addNotificationNewMail(mail.emisor.funcionario, this.bandejaService.PaginationMailsIn.total)
+      let toast = this.toastr.info(`ha enviado un tramite`, "Nuevo tramite recibido", {
+        positionClass: 'toast-bottom-right',
+        timeOut: 7000,
+      })
+      // this.notificationService.addNotificationNewMail(mail.emisor.funcionario, this.bandejaService.PaginationMailsIn.total)
     })
     this.socketService.listenNotifications().subscribe((data: any) => {
       this.notificationService.addNotificationEvent(data.message, data.fullname)

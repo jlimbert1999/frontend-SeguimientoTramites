@@ -43,7 +43,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public Data: Mail,
     public dialogRef: MatDialogRef<DialogRemisionComponent>,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnDestroy(): void {
     this._onDestroy.next();
@@ -100,9 +100,10 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
           allowOutsideClick: false,
         });
         Swal.showLoading();
-        this.bandejaService.AddMail(mails).subscribe((tramite) => {
-          // if (ids.length > 0) {
-          //   // this.socketService.socket.emit("mail", { ids, tramite })
+        this.bandejaService.AddMail(mails).subscribe(data => {
+          console.log(data)
+          // if (this.socketIds.length > 0) {
+          //   this.socketService.socket.emit("mail", { id_accounts: this.socketIds, mails:mails_send})
           // }
           this.toastr.success(undefined, 'Tramite enviado!', {
             positionClass: 'toast-bottom-right',
@@ -111,6 +112,8 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
           // this.dialogRef.close(tramite);
           Swal.close();
         });
+
+        Swal.close();
       }
     });
   }
@@ -128,11 +131,12 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
       if (user.online) {
         this.socketIds.push(user._id);
       }
-      delete user.online
+      delete user.online;
       this.accounts.push(user);
     }
   }
   removeReceiver(user: any): void {
     this.accounts = this.accounts.filter((item) => item._id !== user._id);
+    this.socketIds = this.socketIds.filter(socketId => socketId !== user._id);
   }
 }

@@ -12,6 +12,9 @@ import { LocationComponent } from './location/location.component';
 import { FullnamePipe } from './pipes/fullname.pipe';
 import { PanelNotificationComponent } from './panel-notification/panel-notification.component';
 import { PaginatorComponent } from './paginator/paginator.component';
+import { InfoTramiteInternoComponent } from './info-tramite-interno/info-tramite-interno.component';
+import { InfoTramiteExternoComponent } from './info-tramite-externo/info-tramite-externo.component';
+import { StatePipe } from '../Tramites/pipes/state.pipe';
 
 
 @NgModule({
@@ -25,7 +28,10 @@ import { PaginatorComponent } from './paginator/paginator.component';
     LocationComponent,
     FullnamePipe,
     PanelNotificationComponent,
-    PaginatorComponent
+    PaginatorComponent,
+    InfoTramiteInternoComponent,
+    InfoTramiteExternoComponent,
+
   ],
   imports: [
     CommonModule,
@@ -40,7 +46,9 @@ import { PaginatorComponent } from './paginator/paginator.component';
     ObservacionesComponent,
     FullnamePipe,
     PaginatorComponent,
-    MailHeaderComponent
+    
+    MailHeaderComponent,
+    InfoTramiteExternoComponent
   ]
 })
 export class SharedModule { }

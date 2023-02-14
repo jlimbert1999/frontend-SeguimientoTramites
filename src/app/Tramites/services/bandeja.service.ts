@@ -16,6 +16,7 @@ const base_url = environment.base_url
 export class BandejaService {
 
   constructor(private http: HttpClient, private notificatonService: NotificationsService) { }
+  
   DataMailsIn: BandejaEntradaData[] = [];
   PaginationMailsIn = {
     limit: 10,

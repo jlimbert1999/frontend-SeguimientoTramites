@@ -147,3 +147,7 @@ export interface Mail {
     cantidad: string;
   };
 }
+
+export interface MailInData {
+  
+}

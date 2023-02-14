@@ -27,8 +27,6 @@ export class MailFichaExternoComponent implements OnInit {
     private bandejaService: BandejaService,
     private _location: Location,
   ) {
-
-
   }
 
   ngOnInit(): void {

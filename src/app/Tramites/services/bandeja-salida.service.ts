@@ -21,6 +21,7 @@ export class BandejaSalidaService {
     return this.http.get<{ ok: boolean, tramites: BandejaSalidaModel_View[], total: number }>(
       `${base_url}/bandejas/salida`, { params }).pipe(
         map(resp => {
+          
           return { tramites: resp.tramites, total: resp.total }
         })
       )
