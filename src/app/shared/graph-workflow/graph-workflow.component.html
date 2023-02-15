@@ -1,6 +1,6 @@
-<!-- <div class="areachart-wrapper dark">
-    <ngx-graph class="chart-container" [links]="links" [nodes]="nodos" [clusters]="clusters" layout="dagreCluster"
-        [showMiniMap]="true" [draggingEnabled]="false">
+<div class="areachart-wrapper dark">
+    <ngx-graph class="chart-container" [links]="links" [nodes]="nodos" [clusters]="clusters" [animate]="false"
+        layout="dagreCluster" [showMiniMap]="true" [draggingEnabled]="false">
         <ng-template #defsTemplate>
             <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4"
                 orient="auto">
@@ -21,10 +21,11 @@
                         <mat-card class="example-card">
                             <mat-card-header>
                                 <div mat-card-avatar class="example-header-image"></div>
-                                <mat-card-title >
-                                    {{node.data.funcionario|titlecase}}
+                                <mat-card-title>
+                                    {{node.data.funcionario|fullname|titlecase}}
                                 </mat-card-title>
-                                <mat-card-subtitle style="font-size: 12px;">{{node.data.cargo|uppercase}}
+                                <mat-card-subtitle style="font-size: 12px;">
+                                    {{node.data.funcionario.cargo|uppercase}}
                                 </mat-card-subtitle>
                             </mat-card-header>
                             <mat-card-content>
@@ -54,4 +55,4 @@
             </svg:g>
         </ng-template>
     </ngx-graph>
-</div> -->
+</div>

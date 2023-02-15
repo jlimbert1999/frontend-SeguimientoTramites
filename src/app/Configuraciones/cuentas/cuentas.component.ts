@@ -6,7 +6,6 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSelect } from '@angular/material/select';
 import { MatTableDataSource } from '@angular/material/table';
 import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
-import { index, Numeric } from 'd3';
 import { map, Observable, ReplaySubject, Subject, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { CuentaModel, CuentaData } from '../models/cuenta.model';

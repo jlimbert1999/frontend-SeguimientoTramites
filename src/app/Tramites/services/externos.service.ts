@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { AllInfoOneExterno, Externo, Representante, Solicitante } from '../externos/models/externo.model';
 import { TypeTramiteData } from '../externos/models/tipos';
 import { ExternoData } from '../externos/models/externo.model';
+import { ExternoData1, WorkflowData } from '../models/ExternoModels/Externo.interface';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -79,7 +80,7 @@ export class ExternosService {
     )
   }
   getOne(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: AllInfoOneExterno, workflow: any[] }>(`${base_url}/externos/${id_tramite}`).pipe(
+    return this.http.get<{ ok: boolean, tramite: ExternoData1, workflow: WorkflowData[] }>(`${base_url}/externos/${id_tramite}`).pipe(
       map(resp => {
         return { tramite: resp.tramite, workflow: resp.workflow }
       })

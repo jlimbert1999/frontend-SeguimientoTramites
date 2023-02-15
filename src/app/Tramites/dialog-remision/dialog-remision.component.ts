@@ -102,9 +102,9 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
         Swal.showLoading();
         this.bandejaService.AddMail(mails).subscribe(data => {
           console.log(data)
-          // if (this.socketIds.length > 0) {
-          //   this.socketService.socket.emit("mail", { id_accounts: this.socketIds, mails:mails_send})
-          // }
+          if (this.socketIds.length > 0) {
+            this.socketService.socket.emit("mail", { id_accounts: this.socketIds, mails: data })
+          }
           this.toastr.success(undefined, 'Tramite enviado!', {
             positionClass: 'toast-bottom-right',
             timeOut: 3000,

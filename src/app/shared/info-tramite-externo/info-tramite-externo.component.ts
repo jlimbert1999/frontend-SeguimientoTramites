@@ -1,26 +1,45 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import * as moment from 'moment';
+import { ExternoData1 } from 'src/app/Tramites/models/ExternoModels/Externo.interface';
 
 @Component({
   selector: 'app-info-tramite-externo',
   templateUrl: './info-tramite-externo.component.html',
   styleUrls: ['./info-tramite-externo.component.css']
 })
-export class InfoTramiteExternoComponent implements OnInit {
-  @Input() Tramite: any
+export class InfoTramiteExternoComponent implements OnInit , OnDestroy{
+  @Input() Tramite: ExternoData1
   timer: any;
   count: any
 
   constructor(private _location: Location,) {
-   
+
   }
   ngOnInit(): void {
-    console.log(this.Tramite)
+    this.createTimer(this.Tramite.fecha_registro, this.Tramite.fecha_finalizacion, this.Tramite.estado)
   }
 
   regresar() {
     this._location.back();
+  }
+
+  
+  ngOnDestroy(): void {
+    clearInterval(this.timer);
+  }
+
+  createTimer(fecha_inicio: any, fecha_fin: any | undefined, estado: string,) {
+    fecha_inicio = moment(new Date((fecha_inicio)))
+    fecha_fin = fecha_fin ? moment(new Date(fecha_fin)) : moment(new Date())
+    this.count = this.duration(fecha_inicio, fecha_fin)
+    if (estado !== "CONCLUIDO") {
+      this.timer = setInterval(() => {
+        fecha_fin = moment(new Date())
+        this.count = this.duration(fecha_inicio, fecha_fin)
+      }, 1000)
+    }
+
   }
 
   duration(inicio: any, fin: any) {

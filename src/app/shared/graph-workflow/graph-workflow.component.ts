@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import { ExternosService } from 'src/app/Tramites/services/externos.service';
+import { WorkflowData } from 'src/app/Tramites/models/ExternoModels/Externo.interface';
 
 @Component({
   selector: 'app-graph-workflow',
@@ -9,17 +9,18 @@ import { ExternosService } from 'src/app/Tramites/services/externos.service';
   
 })
 export class GraphWorkflowComponent implements OnInit {
-  @Input() Workflow: any[]
+  @Input() Workflow: WorkflowData[]
   nodos: any[] = []
   links: any[] = []
   clusters: { id: string, label: string, childNodeIds: string[] }[] = []
-  constructor(private externoService: ExternosService) { }
+  constructor() { }
 
   ngOnInit(): void {
+    console.log(this.Workflow)
     this.crear_workflow(this.Workflow)
   }
 
-  crear_workflow(workflow: any[]) {
+  crear_workflow(workflow: WorkflowData[]) {
     let instituciones: any[] = []
     let found
     let foundInstitucion
@@ -34,7 +35,7 @@ export class GraphWorkflowComponent implements OnInit {
             dependencia: element.emisor.cuenta.dependencia.nombre,
             institucion: element.emisor.cuenta.dependencia.institucion.sigla,
             funcionario: element.emisor.funcionario,
-            cargo: element.emisor.cargo
+            cargo: element.emisor.funcionario.cargo
           },
           position: `x${index}`
         })
@@ -56,7 +57,7 @@ export class GraphWorkflowComponent implements OnInit {
             dependencia: element.receptor.cuenta.dependencia.nombre,
             institucion: element.receptor.cuenta.dependencia.institucion.sigla,
             funcionario: element.receptor.funcionario,
-            cargo: element.receptor.cargo
+            cargo: element.receptor.funcionario.cargo
           },
           position: `x${index}`
         })
@@ -86,6 +87,7 @@ export class GraphWorkflowComponent implements OnInit {
       })
     })
     this.clusters = instituciones
+    console.log(this.links)
 
   }
 

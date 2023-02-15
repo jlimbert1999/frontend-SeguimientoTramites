@@ -4,7 +4,7 @@
     </button>
     <span>Tramite: Externo</span>
 </mat-toolbar>
-<div class="container-fluid" [@slideInLeftOnEnter]>
+<div [@slideInLeftOnEnter]>
     <mat-tab-group mat-align-tabs="center">
         <mat-tab>
             <ng-template mat-tab-label>
@@ -12,7 +12,6 @@
                 Informacion
             </ng-template>
             <app-info-tramite-externo *ngIf="Tramite" [Tramite]="Tramite"></app-info-tramite-externo>
-         
         </mat-tab>
         <mat-tab *ngIf="Workflow.length!==0">
             <ng-template mat-tab-label>

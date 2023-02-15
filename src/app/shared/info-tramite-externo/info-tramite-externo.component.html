@@ -35,7 +35,7 @@
                         <div class="col-md-2">
                             <label class="form-label">Estado</label>
                             <h2>
-                                <span class="badge" [ngClass]="Tramite.estado">
+                                <span class="badge" [ngClass]="Tramite.estado|state">
                                     {{Tramite.estado|uppercase}}
                                 </span>
                             </h2>
@@ -86,13 +86,13 @@
                                 readonly>
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label">Telefono</label>
-                            <input class="form-control" type="text" value="{{Tramite.solicitante.telefono}}" disabled
+                            <label class="form-label">Documento</label>
+                            <input class="form-control" type="text" value="{{Tramite.solicitante.documento}}" disabled
                                 readonly>
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label">Telefono</label>
-                            <input class="form-control" type="text" value="{{Tramite.solicitante.telefono}}" disabled
+                            <label class="form-label">Dni</label>
+                            <input class="form-control" type="text" value="{{Tramite.solicitante.dni}}" disabled
                                 readonly>
                         </div>
                     </form>

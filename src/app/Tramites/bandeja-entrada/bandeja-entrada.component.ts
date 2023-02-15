@@ -65,7 +65,7 @@ export class BandejaEntradaComponent implements OnInit {
     private toastr: ToastrService,
     private internoService: InternosService,
     private externoService: ExternosService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // if (this.bandejaService.searchOptionsIn.active) {
@@ -78,80 +78,81 @@ export class BandejaEntradaComponent implements OnInit {
   }
 
   send(elemento: BandejaEntradaData) {
-    // if (elemento.tramite.estado === 'OBSERVADO') {
-    //   Swal.fire('El tramite tiene observaciones pendedientes', undefined, 'info')
-    // }
-    // else {
-    //   const dialogRef = this.dialog.open(DialogRemisionComponent, {
-    //     width: '1200px',
-    //     data: {
-    //       _id: elemento.tramite._id,
-    //       tipo: elemento.tipo,
-    //       tramite: {
-    //         nombre: elemento.tramite.tipo_tramite.nombre,
-    //         alterno: elemento.tramite.alterno,
-    //         cantidad: elemento.cantidad
-    //       }
-    //     }
-    //   });
-    //   dialogRef.afterClosed().subscribe(result => {
-    //     if (result) {
-    //       this.bandejaService.getmMailsIn().subscribe()
-    //     }
-    //   });
-    // }
+    if (elemento.tramite.estado === 'OBSERVADO') {
+      Swal.fire('El tramite tiene observaciones pendedientes', undefined, 'info')
+    }
+    else {
+      console.log(elemento)
+      const dialogRef = this.dialog.open(DialogRemisionComponent, {
+        width: '1200px',
+        data: {
+          _id: elemento.tramite._id,
+          tipo: elemento.tipo,
+          tramite: {
+            nombre: '',
+            alterno: elemento.tramite.alterno,
+            cantidad: elemento.cantidad
+          }
+        }
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          // this.bandejaService.getmMailsIn().subscribe()
+        }
+      });
+    }
   }
   aceptar_tramite(elemento: BandejaEntradaData) {
-    // Swal.fire({
-    //   title: `Aceptar tramite ${elemento.tramite.alterno}?`,
-    //   text: `El tramite sera marcado como aceptado`,
-    //   icon: 'question',
-    //   showCancelButton: true,
-    //   confirmButtonColor: '#3085d6',
-    //   cancelButtonColor: '#d33',
-    //   confirmButtonText: 'Aceptar',
-    //   cancelButtonText: 'Cancelar',
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     this.bandejaService.aceptar_tramite(elemento._id).subscribe(message => {
-    //       const indexFound = this.bandejaService.DataMailsIn.findIndex(mail => mail._id === elemento._id)
-    //       this.bandejaService.DataMailsIn[indexFound].recibido = true
-    //       this.bandejaService.DataMailsIn[indexFound].tramite.estado = 'EN REVISION'
-    //       this.bandejaService.DataMailsIn = [...this.bandejaService.DataMailsIn]
-    //       this.toastr.success(undefined, message, {
-    //         positionClass: 'toast-bottom-right',
-    //         timeOut: 3000,
-    //       })
-    //     })
-    //   }
-    // })
+    Swal.fire({
+      title: `Aceptar tramite ${elemento.tramite.alterno}?`,
+      text: `El tramite sera marcado como aceptado`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.bandejaService.aceptar_tramite(elemento._id).subscribe(message => {
+          // const indexFound = this.bandejaService.DataMailsIn.findIndex(mail => mail._id === elemento._id)
+          // this.bandejaService.DataMailsIn[indexFound].recibido = true
+          // this.bandejaService.DataMailsIn[indexFound].tramite.estado = 'EN REVISION'
+          // this.bandejaService.DataMailsIn = [...this.bandejaService.DataMailsIn]
+          // this.toastr.success(undefined, message, {
+          //   positionClass: 'toast-bottom-right',
+          //   timeOut: 3000,
+          // })
+        })
+      }
+    })
   }
   rechazar_tramite(elemento: BandejaEntradaData) {
-    // Swal.fire({
-    //   icon: 'info',
-    //   title: 'Ingrese el motivo para el rechazo del tramite',
-    //   input: 'text',
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Aceptar',
-    //   cancelButtonText: 'Cancelar'
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     if (result.value) {
-    //       this.bandejaService.rechazar_tramite(elemento._id, result.value).subscribe(message => {
-    //         this.toastr.info(undefined, message, {
-    //           positionClass: 'toast-bottom-right',
-    //           timeOut: 3000,
-    //         })
-    //         this.bandejaService.getmMailsIn().subscribe()
-    //       })
-    //     } else {
-    //       Swal.fire({
-    //         title: "Debe ingrese el motivo para rechazar",
-    //         icon: 'warning'
-    //       })
-    //     }
-    //   }
-    // })
+    Swal.fire({
+      icon: 'info',
+      title: 'Ingrese el motivo para el rechazo del tramite',
+      input: 'text',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (result.value) {
+          this.bandejaService.rechazar_tramite(elemento._id, result.value).subscribe(message => {
+            this.toastr.info(undefined, message, {
+              positionClass: 'toast-bottom-right',
+              timeOut: 3000,
+            })
+            // this.bandejaService.getmMailsIn().subscribe()
+          })
+        } else {
+          Swal.fire({
+            title: "Debe ingrese el motivo para rechazar",
+            icon: 'warning'
+          })
+        }
+      }
+    })
   }
   concluir_tramite(
     tipo: 'tramites_internos' | 'tramites_externos',

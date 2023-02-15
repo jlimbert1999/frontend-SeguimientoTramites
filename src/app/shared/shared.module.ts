@@ -5,7 +5,6 @@ import { MaterialModule } from '../angular-material/material.module';
 import { InfoTramiteComponent } from './info-tramite/info-tramite.component';
 import { MailHeaderComponent } from './mail-header/mail-header.component';
 import { GraphWorkflowComponent } from './graph-workflow/graph-workflow.component';
-// import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { ListWorkflowComponent } from './list-workflow/list-workflow.component';
 import { ObservacionesComponent } from './observaciones/observaciones.component';
 import { LocationComponent } from './location/location.component';
@@ -14,7 +13,8 @@ import { PanelNotificationComponent } from './panel-notification/panel-notificat
 import { PaginatorComponent } from './paginator/paginator.component';
 import { InfoTramiteInternoComponent } from './info-tramite-interno/info-tramite-interno.component';
 import { InfoTramiteExternoComponent } from './info-tramite-externo/info-tramite-externo.component';
-import { StatePipe } from '../Tramites/pipes/state.pipe';
+import { StatePipe } from './pipes/state.pipe';
+import { NgxGraphModule } from '@swimlane/ngx-graph';
 
 
 @NgModule({
@@ -31,12 +31,13 @@ import { StatePipe } from '../Tramites/pipes/state.pipe';
     PaginatorComponent,
     InfoTramiteInternoComponent,
     InfoTramiteExternoComponent,
+    StatePipe,
 
   ],
   imports: [
     CommonModule,
     MaterialModule,
-    // NgxGraphModule,
+    NgxGraphModule,
   ],
   exports: [
     TablaComponent,
@@ -45,8 +46,9 @@ import { StatePipe } from '../Tramites/pipes/state.pipe';
     ListWorkflowComponent,
     ObservacionesComponent,
     FullnamePipe,
+    StatePipe,
     PaginatorComponent,
-    
+
     MailHeaderComponent,
     InfoTramiteExternoComponent
   ]
