@@ -42,7 +42,7 @@ export interface ExternoData {
     solicitante: Solicitante
     representante?: Representante
     cite: string
-    ubicacion: string
+    // ubicacion: string
     tipo_tramite: {
         nombre: string
     }
