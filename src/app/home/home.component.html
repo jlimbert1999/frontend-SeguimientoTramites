@@ -37,71 +37,42 @@
   <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
       fixedTopGap="56" [opened]="true">
-      <!-- <mat-nav-list>
-        <ng-container *ngFor="let item of Menu">
-          <div mat-subheader>{{item.modulo}}</div>
-          <mat-list-item *ngFor="let submodulo of item.submodulos" [routerLink]="submodulo.ruta"
-            routerLinkActive="active">
-            <mat-icon mat-list-icon>
-              {{submodulo.icon}}</mat-icon>
-            <a matLine>{{submodulo.nombre}}</a>
-          </mat-list-item>
-          <mat-divider></mat-divider>
-        </ng-container>
-      </mat-nav-list> -->
       <mat-nav-list class="side-navnar">
         <ng-container *ngFor="let menu of Menu; index as i;">
           <ng-container [ngTemplateOutlet]="menu.children ?  childMenu : parentMenu"
             [ngTemplateOutletContext]="{menu:menu}">
           </ng-container>
         </ng-container>
+
       </mat-nav-list>
-
-
-
-
+      <!-- 
       <ng-template #parentMenu let-menu="menu">
         <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="active">
-          <!-- <ng-container [ngSwitch]="menu.routerLink">
-            <ng-container *ngSwitchCase="'bandeja-entrada'">
-              <mat-icon matListItemIcon [matBadge]="number_mails|async" [matBadgeHidden]="(number_mails|async)===0"
-                matBadgeColor="warn">{{menu.icon}}</mat-icon>
-              <div matListItemTitle>{{menu.name}}</div>
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-              <mat-icon matListItemIcon>{{menu.icon}}</mat-icon>
-              <div matListItemTitle>{{menu.text}}</div>
-            </ng-container>
-          </ng-container> -->
           <mat-icon matListItemIcon>{{menu.icon}}</mat-icon>
           <div matListItemTitle>{{menu.text}}</div>
         </mat-list-item>
       </ng-template>
+       -->
+      <ng-template #parentMenu let-menu="menu">
+        <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="is-active" [routerLinkActiveOptions]="{exact:
+            true}">
+          <mat-icon>{{menu.icon}}</mat-icon> {{menu.text}}s
+        </mat-list-item>
+      </ng-template>
 
       <ng-template #childMenu let-menu="menu">
-        <mat-expansion-panel [class.mat-elevation-z0]="true" [expanded]="true" class="menu-list">
+        <mat-expansion-panel [class.mat-elevation-z0]="true">
           <mat-expansion-panel-header>
-            <mat-panel-title>
-              <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>
-            </mat-panel-title>
-            <mat-panel-description>
-              {{menu.text}}
-            </mat-panel-description>
-
-            <!-- <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>
-            <mat-panel-title>
-              Personal data
-            </mat-panel-title> -->
+            <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>{{menu.text}}
           </mat-expansion-panel-header>
           <mat-nav-list>
             <mat-list-item [routerLink]="submenu.routerLink" *ngFor="let submenu of menu.children"
-              routerLinkActive="active">
-              <mat-icon matListItemIcon>{{menu.icon}}</mat-icon>
-              <div matListItemTitle>{{menu.text}}</div>
+              routerLinkActive="is-active" [routerLinkActiveOptions]="{exact:
+                    true}">
+              <mat-icon>{{submenu.icon}}</mat-icon> {{submenu.text}}
             </mat-list-item>
           </mat-nav-list>
         </mat-expansion-panel>
-        <mat-divider></mat-divider>
       </ng-template>
 
     </mat-sidenav>

@@ -11,7 +11,7 @@
 .example-is-mobile .example-toolbar {
     position: fixed;
     /* Make sure the toolbar will stay on top of the content as it scrolls past. */
-    z-index: 2;
+    z-index: 1;
 }
 
 h1.example-app-name {
@@ -71,24 +71,8 @@ h1.example-app-name {
 }
 
 mat-sidenav {
-    width: 250px;
+    width: 270px;
 }
-/* 
-
-
-.menu-list mat-panel-title {
-    flex-basis: 0;
-}
-
-.menu-list mat-panel-description {
-    flex-basis: 100%;
-}
-.menu-list mat-panel-description {
-    font-size: 16px;
-}
-.menu-list mat-icon{
-    margin-right: 8px;
-} */
 
 
 ::ng-deep .mat-expansion-panel-header {
@@ -107,7 +91,7 @@ mat-sidenav {
     height: 48px !important;
 }
 
-::ng-deep .mat-expansion-panel .mat-mdc-list-item {
+::ng-deep .mat-expansion-panel .mat-list-item {
     padding-left: 15px !important;
 }
 
@@ -119,22 +103,13 @@ mat-sidenav {
 
  
 
-::ng-deep .mat-mdc-list-base {
+::ng-deep .mat-list-base {
     padding-top: 0 !important;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version. */
-::ng-deep .mat-nav-list .mat-mdc-list-item.is-active .mat-list-item-content {
+::ng-deep .mat-nav-list .mat-list-item.is-active .mat-list-item-content {
     padding: 0 8px;
 } 
-
-/* mat-sidenav-content {
-    background-image: url('../../assets/img/logo_alcaldia.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    box-shadow: 0 0 0 0 !important;
-} */
-
 mat-sidenav-content{
     background-color: #DEE2E6;
     
