@@ -12,6 +12,7 @@ import { HojaRutaInterna } from '../internos/pdfs/hora-ruta';
 import { BandejaSalidaService } from '../services/bandeja-salida.service';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-bandeja-salida',
@@ -27,7 +28,7 @@ import { MatDialog } from '@angular/material/dialog';
   ],
 })
 export class BandejaSalidaComponent implements OnInit, AfterViewInit {
-  dataSource: BandejaSalidaModel_View[] = []
+  dataSource: any[] = []
   displayedColumns = ['grupo', 'alterno', 'tipo', 'estado', 'fecha_envio', 'situacion', 'opciones', 'expand']
   isLoadingResults = true;
   expandedElement: BandejaSalidaModel_View | null;
@@ -74,6 +75,13 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
     this.bandejaService.Get().subscribe(data => {
       this.resulstLenght = data.total
       this.dataSource = data.tramites
+    })
+  }
+  cancel(id_bandeja: any) {
+    this.bandejaService.cancel(id_bandeja).subscribe(message => {
+      Swal.fire({ title: 'Envio cancelado!', icon: 'success', text: message })
+      this.dataSource = this.dataSource.filter(mail => mail._id !== id_bandeja)
+      this.dataSource = [...this.dataSource]
     })
   }
 

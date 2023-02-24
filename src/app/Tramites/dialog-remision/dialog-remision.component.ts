@@ -82,7 +82,6 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
       numero_interno: this.FormEnvio.get('numero_interno')?.value,
       receptores: this.accounts,
     };
-
     Swal.fire({
       title: `Remitir el tramite ${this.Data.tramite.alterno}?`,
       text: `Numero de destinatarios: ${this.accounts.length}`,
@@ -101,9 +100,8 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
         });
         Swal.showLoading();
         this.bandejaService.AddMail(mails).subscribe(data => {
-          console.log(data)
           if (this.socketIds.length > 0) {
-            this.socketService.socket.emit("mail", { id_accounts: this.socketIds, mails: data })
+            this.socketService.socket.emit("mail", data)
           }
           this.toastr.success(undefined, 'Tramite enviado!', {
             positionClass: 'toast-bottom-right',
@@ -112,8 +110,6 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
           // this.dialogRef.close(tramite);
           Swal.close();
         });
-
-        Swal.close();
       }
     });
   }

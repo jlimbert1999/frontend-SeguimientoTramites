@@ -98,6 +98,24 @@
                     </form>
                 </div>
             </div>
+
+            <div class="col-sm-12" *ngIf="Tramite.eventos">
+                <div class="card shadow mb-2 bg-body-tertiary rounded">
+                    <div class="card-header fw-bold">
+                        EVENTOS
+                    </div>
+                    <div class="card-body">
+                        <mat-list>
+                            <div mat-subheader>Conclusiones</div>
+                            <mat-list-item *ngFor="let folder of Tramite.eventos">
+                              <mat-icon matListItemIcon>info</mat-icon>
+                              <div matListItemTitle>{{folder.descripcion}}</div>
+                              <div matListItemLine>Fecha: Pendiente</div>
+                            </mat-list-item>
+                            
+                          </mat-list>
+                    </div>
+                </div>
             <!-- <div class="card shadow mb-2 bg-body-tertiary rounded">
                 <div class="card-header fw-bold">
                     DESTINATARIO

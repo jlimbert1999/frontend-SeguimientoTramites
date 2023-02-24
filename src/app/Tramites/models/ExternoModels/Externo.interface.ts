@@ -17,7 +17,8 @@ export interface ExternoData1 {
     observaciones:any[]
     tipo_tramite: {
         nombre: string
-    }
+    },
+    eventos?:any[]
     
 }
 

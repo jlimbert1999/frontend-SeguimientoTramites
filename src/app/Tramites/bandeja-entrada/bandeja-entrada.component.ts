@@ -97,7 +97,7 @@ export class BandejaEntradaComponent implements OnInit {
       });
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          // this.bandejaService.getmMailsIn().subscribe()
+          this.bandejaService.Get().subscribe()
         }
       });
     }
@@ -159,39 +159,39 @@ export class BandejaEntradaComponent implements OnInit {
     id_tramite: string,
     alterno: string
   ) {
-    // Swal.fire({
-    //   icon: 'question',
-    //   title: `Concluir el tramite ${alterno}?`,
-    //   text: `Ingrese una referencia para concluir `,
-    //   input: 'textarea',
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Aceptar',
-    //   customClass: {
-    //     validationMessage: 'my-validation-message'
-    //   },
-    //   preConfirm: (value) => {
-    //     if (!value) {
-    //       Swal.showValidationMessage(
-    //         '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
-    //       )
-    //     }
-    //   }
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     if (tipo === 'tramites_externos') {
-    //       this.externoService.conclude(id_tramite, result.value!).subscribe(message => {
-    //         Swal.fire(message, undefined, 'success')
-    //         this.bandejaService.getmMailsIn().subscribe()
-    //       })
-    //     }
-    //     else if (tipo === 'tramites_internos') {
-    //       this.internoService.conclude(id_tramite, result.value!).subscribe(message => {
-    //         Swal.fire(message, undefined, 'success')
-    //         this.bandejaService.getmMailsIn().subscribe()
-    //       })
-    //     }
-    //   }
-    // })
+    Swal.fire({
+      icon: 'question',
+      title: `Concluir el tramite ${alterno}?`,
+      text: `Ingrese una referencia para concluir `,
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      customClass: {
+        validationMessage: 'my-validation-message'
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
+          )
+        }
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (tipo === 'tramites_externos') {
+          this.externoService.conclude(id_tramite, result.value!).subscribe(message => {
+            Swal.fire(message, undefined, 'success')
+            this.bandejaService.Get().subscribe()
+          })
+        }
+        else if (tipo === 'tramites_internos') {
+          this.internoService.conclude(id_tramite, result.value!).subscribe(message => {
+            Swal.fire(message, undefined, 'success')
+            this.bandejaService.Get().subscribe()
+          })
+        }
+      }
+    })
   }
   paginacion(page: PageEvent) {
     // this.bandejaService.PaginationMailsIn.limit = page.pageSize

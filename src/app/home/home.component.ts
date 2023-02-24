@@ -4,13 +4,12 @@ import { AuthService } from '../auth/services/auth.service';
 import { BandejaService } from '../Tramites/services/bandeja.service';
 import { SocketService } from '../Tramites/services/socket.service';
 import { ToastrService } from 'ngx-toastr';
-import { BandejaEntradaData } from '../Tramites/models/mail.model';
-import { Subject } from 'rxjs';
 import { LoaderService } from '../auth/services/loader.service';
 import { Router } from '@angular/router';
 import { NotificationsService } from '../Tramites/services/notifications.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { PanelNotificationComponent } from '../shared/panel-notification/panel-notification.component';
+import { BandejaEntradaService } from '../Tramites/services/bandeja-entrada.service';
 
 @Component({
   selector: 'app-home',
@@ -35,7 +34,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     changeDetectorRef: ChangeDetectorRef, media: MediaMatcher,
     public authService: AuthService,
     private socketService: SocketService,
-    public bandejaService: BandejaService,
+    public bandejaService: BandejaEntradaService,
     private toastr: ToastrService,
     public loader: LoaderService,
     private router: Router,
@@ -59,8 +58,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       this.logout()
     })
     this.socketService.listenMails().subscribe(mail => {
-      this.bandejaService.addMail(mail)
-      let toast = this.toastr.info(`ha enviado un tramite`, "Nuevo tramite recibido", {
+      this.bandejaService.Mails = [mail, ...this.bandejaService.Mails]
+      let toast = this.toastr.info(`${mail.emisor.funcionario.nombre} ${mail.emisor.funcionario.paterno} ${mail.emisor.funcionario.materno} ha enviado un tramite`, "Nuevo tramite recibido", {
         positionClass: 'toast-bottom-right',
         timeOut: 7000,
       })

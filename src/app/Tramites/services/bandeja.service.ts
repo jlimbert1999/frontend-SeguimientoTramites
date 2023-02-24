@@ -69,9 +69,9 @@ export class BandejaService {
     )
   }
   AddMail(data: any) {
-    return this.http.post<{ ok: boolean, mail: any }>(`${base_url}/bandejas`, data).pipe(
+    return this.http.post<{ ok: boolean, mails: any[] }>(`${base_url}/bandejas`, data).pipe(
       map(resp => {
-        return resp.mail
+        return resp.mails
       })
     )
   }
