@@ -4,7 +4,7 @@ import { TramiteService } from '../services/tramite.service';
 import * as moment from 'moment';
 import { Location } from '@angular/common';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
-import { ExternosService } from '../services/externos.service';
+import { ExternosService } from '../../Externos/services/externos.service';
 import Swal from 'sweetalert2';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { MatAccordion } from '@angular/material/expansion';

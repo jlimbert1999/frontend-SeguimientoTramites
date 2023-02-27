@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
 import { BandejaService } from '../services/bandeja.service';
-import { ExternosService } from '../services/externos.service';
+import { ExternosService } from '../../Externos/services/externos.service';
 import { Location } from '@angular/common';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
 

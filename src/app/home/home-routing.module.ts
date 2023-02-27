@@ -17,10 +17,9 @@ import { ReporteTipoComponent } from '../Reportes/reporte-tipo/reporte-tipo.comp
 import { BandejaEntradaComponent } from '../Tramites/bandeja-entrada/bandeja-entrada.component';
 import { BandejaSalidaComponent } from '../Tramites/bandeja-salida/bandeja-salida.component';
 import { ControlComponent } from '../Tramites/control/control.component';
-import { ConcluidosComponent } from '../Tramites/externos/concluidos/concluidos.component';
-import { ExternosComponent } from '../Tramites/externos/externos.component';
-import { FichaExternoComponent } from '../Tramites/externos/ficha-externo/ficha-externo.component';
-import { MailFichaExternoComponent } from '../Tramites/externos/mail-ficha-externo/mail-ficha-externo.component';
+import { ConcluidosComponent } from '../Externos/concluidos/concluidos.component';
+import { ExternosComponent } from '../Externos/externos.component';
+import { MailFichaExternoComponent } from '../Externos/mail-ficha-externo/mail-ficha-externo.component';
 import { FichaComponent } from '../Tramites/ficha/ficha.component';
 import { FichaInternoComponent } from '../Tramites/internos/ficha-interno/ficha-interno.component';
 import { InternosComponent } from '../Tramites/internos/internos.component';
@@ -38,13 +37,31 @@ const routes: Routes = [
             { path: 'groupware', component: GroupwareComponent },
             { path: 'tipos', component: TiposTramitesComponent },
             { path: 'perfil', component: CuentaComponent },
+            {
+                path: 'tramites-externos',
+                loadChildren: () =>
+                    import(`../Externos/externos-routing.module`).then((m) => m.ExternosRoutingModule),
+            },
+            //   {
+            //     path: 'module-two',
+            //     loadChildren: () =>
+            //       import(`./moduleTwo/module-two.module`).then((m) => m.ModuleTwoModule),
+            //   },
+            //   {
+            //     path: 'module-three',
+            //     loadChildren: () =>
+            //       import(`./moduleThree/module-three.module`).then(
+            //         (m) => m.ModuleThreeModule
+            //       ),
+            //   },
+            //   { path: '', redirectTo: 'module-one', pathMatch: 'full' },
 
             // EXTERNOS
-            { path: 'tramites-externos', component: ExternosComponent },
-            { path: 'tramites-externos-concluidos', component: ConcluidosComponent },
-            { path: 'tramites-externos/ficha/:id', component: FichaExternoComponent },
+            // { path: 'tramites-externos', component: ExternosComponent },
+            // { path: 'tramites-externos-concluidos', component: ConcluidosComponent },
+            // { path: 'tramites-externos/ficha/:id', component: FichaExternoComponent },
             { path: 'bandeja-entrada/mail-ficha-externo/:id', component: MailFichaExternoComponent },
-            { path: 'bandeja-salida/ficha-externo/:id', component: FichaExternoComponent },
+            // { path: 'bandeja-salida/ficha-externo/:id', component: FichaExternoComponent },
 
             // INTERNOS
             { path: 'tramites-internos', component: InternosComponent },

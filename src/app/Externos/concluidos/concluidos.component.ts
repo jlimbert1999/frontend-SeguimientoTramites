@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import { ReportesExternoService } from 'src/app/Reportes/services/reportes-externo.service';
 import Swal from 'sweetalert2';
-import { ExternosService } from '../../services/externos.service';
+import { ExternosService } from '../services/externos.service';
 
 @Component({
   selector: 'app-concluidos',

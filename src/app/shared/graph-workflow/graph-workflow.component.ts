@@ -1,18 +1,22 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import { WorkflowData } from 'src/app/Tramites/models/ExternoModels/Externo.interface';
+import { WorkflowData } from 'src/app/Externos/models/Externo.interface';
+import * as shape from 'd3-shape';
 
 @Component({
   selector: 'app-graph-workflow',
   templateUrl: './graph-workflow.component.html',
   styleUrls: ['./graph-workflow.component.css'],
-  
+
 })
 export class GraphWorkflowComponent implements OnInit {
   @Input() Workflow: WorkflowData[]
   nodos: any[] = []
   links: any[] = []
   clusters: { id: string, label: string, childNodeIds: string[] }[] = []
+
+  curve: any = shape.curveMonotoneX;
+
   constructor() { }
 
   ngOnInit(): void {
@@ -91,5 +95,5 @@ export class GraphWorkflowComponent implements OnInit {
 
   }
 
-  
+
 }

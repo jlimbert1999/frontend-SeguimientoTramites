@@ -11,18 +11,15 @@ import { FichaComponent } from './ficha/ficha.component';
 import { RouterModule } from '@angular/router';
 // import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { InternosComponent } from './internos/internos.component';
-import { ExternosComponent } from './externos/externos.component';
-import { DialogExternoComponent } from './externos/dialog-externo/dialog-externo.component';
+import { DialogExternoComponent } from '../Externos/dialog-externo/dialog-externo.component';
 import { DialogInternosComponent } from './internos/dialog-internos/dialog-internos.component';
 import { DialogReenvioComponent } from './dialog-reenvio/dialog-reenvio.component';
 import { MailFichaComponent } from './mail-ficha/mail-ficha.component';
 import { SharedModule } from '../shared/shared.module';
 import { FichaInternoComponent } from './internos/ficha-interno/ficha-interno.component';
 import { MailFichaInternoComponent } from './internos/mail-ficha-interno/mail-ficha-interno.component';
-import { FichaExternoComponent } from './externos/ficha-externo/ficha-externo.component';
-import { MailFichaExternoComponent } from './externos/mail-ficha-externo/mail-ficha-externo.component';
-import { SolicitantePipe } from './externos/pipes/solicitante.pipe';
-import { ConcluidosComponent } from './externos/concluidos/concluidos.component';
+
+import { ConcluidosComponent } from '../Externos/concluidos/concluidos.component';
 
 
 @NgModule({
@@ -33,16 +30,15 @@ import { ConcluidosComponent } from './externos/concluidos/concluidos.component'
     ControlComponent,
     FichaComponent,
     InternosComponent,
-    ExternosComponent,
-    DialogExternoComponent,
+
+   
     DialogInternosComponent,
     DialogReenvioComponent,
     MailFichaComponent,
     FichaInternoComponent,
     MailFichaInternoComponent,
-    FichaExternoComponent,
-    MailFichaExternoComponent,
-    SolicitantePipe,
+   
+   
     ConcluidosComponent
   ],
   imports: [

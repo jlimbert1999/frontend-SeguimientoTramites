@@ -4,7 +4,7 @@
 }
 
 .badge {
-    font-size: 9px;
+    font-size: 11px;
 }
 
 td.mat-column-alterno {
@@ -54,6 +54,7 @@ td.mat-column-opciones {
     overflow: auto;
     max-height: 70vh;
 }
+
 .search {
     position: relative;
     overflow: auto;
@@ -157,4 +158,9 @@ td.mat-column-opciones {
     }
 
 
+}
+
+.mat-mdc-form-field {
+    font-size: 14px;
+    width: 100%;
 }

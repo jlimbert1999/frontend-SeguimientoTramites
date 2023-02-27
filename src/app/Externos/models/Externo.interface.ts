@@ -1,6 +1,14 @@
 import { RepresentanteDto, SolicitanteDto } from "./Externo.dto"
+export interface TypeTramiteData {
+    id_tipoTramite: string
+    nombre: string
+    segmento: string
+    requerimientos: {
+        nombre: string
+    }[]
+}
 
-export interface ExternoData1 {
+export interface Externo {
     _id: string
     alterno: string
     cantidad: string
@@ -19,8 +27,31 @@ export interface ExternoData1 {
         nombre: string
     },
     eventos?:any[]
-    
 }
+
+export interface Solicitante {
+    _id?: string
+    nombre: string
+    paterno: string
+    materno: string
+    telefono: string
+    tipo: 'NATURAL' | 'JURIDICO'
+    dni: string
+    expedido: string
+    documento: string
+}
+export interface Representante {
+    _id?: string
+    nombre: string
+    paterno: string
+    materno: string
+    telefono: string
+    tipo: string
+    dni: string
+    expedido: string
+    documento: string
+}
+
 
 export interface WorkflowData {
     cantidad: string

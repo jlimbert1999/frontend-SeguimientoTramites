@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { ExternosService } from '../../services/externos.service';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
-import { ExternoData1, WorkflowData } from '../../models/ExternoModels/Externo.interface';
+import { Externo, WorkflowData } from '../../models/Externo.interface';
+import { ExternosService } from '../../services/externos.service';
 
 @Component({
   selector: 'app-ficha-externo',
@@ -14,7 +14,7 @@ import { ExternoData1, WorkflowData } from '../../models/ExternoModels/Externo.i
   ]
 })
 export class FichaExternoComponent implements OnInit {
-  Tramite: ExternoData1
+  Tramite: Externo
   Workflow: WorkflowData[] = []
   timer: any;
   count: any

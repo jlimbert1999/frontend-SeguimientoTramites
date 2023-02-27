@@ -15,6 +15,7 @@ import { InfoTramiteInternoComponent } from './info-tramite-interno/info-tramite
 import { InfoTramiteExternoComponent } from './info-tramite-externo/info-tramite-externo.component';
 import { StatePipe } from './pipes/state.pipe';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
+import { ToolbarComponent } from './toolbar/toolbar.component';
 
 
 @NgModule({
@@ -32,6 +33,7 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
     InfoTramiteInternoComponent,
     InfoTramiteExternoComponent,
     StatePipe,
+    ToolbarComponent
 
   ],
   imports: [
@@ -50,7 +52,8 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
     PaginatorComponent,
 
     MailHeaderComponent,
-    InfoTramiteExternoComponent
+    InfoTramiteExternoComponent,
+    ToolbarComponent
   ]
 })
 export class SharedModule { }

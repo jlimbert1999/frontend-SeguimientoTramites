@@ -1,62 +1,23 @@
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
-  <mat-toolbar color="primary" class="example-toolbar">
-    <button mat-icon-button (click)="snav.toggle()">
-      <mat-icon>menu</mat-icon>
-    </button>
-    <span class="campo_cuenta">
-      <div mat-line> {{authService.Account.funcionario.nombre_completo|titlecase}}</div>
-      <div mat-line style="font-size: 11px">{{authService.Account.funcionario.cargo|titlecase}}
-        ({{authService.Account.rol|titlecase}})</div>
-    </span>
 
-    <span class="example-spacer"></span>
-
-    <button mat-icon-button (click)="openBottomSheet()">
-      <mat-icon>notifications</mat-icon>
-    </button>
-
-
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-      <mat-icon>account_circle</mat-icon>
-    </button>
-
-
-    <mat-menu #menu="matMenu">
-      <button *ngIf="authService.Account.rol!=='admin'" mat-menu-item (click)="editAccount()">
-        <mat-icon>settings</mat-icon>
-        <span>Configurar cuenta</span>
-      </button>
-      <button (click)="logout()" mat-menu-item>
-        <mat-icon>logout</mat-icon>
-        <span>Cerrar sesion</span>
-      </button>
-    </mat-menu>
-
-  </mat-toolbar>
-
-  <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
+  <mat-sidenav-container class="example-sidenav-container">
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
-      fixedTopGap="56" [opened]="true">
+      [opened]="true">
+      <mat-toolbar>
+        <span>Menu</span>
+      </mat-toolbar>
       <mat-nav-list class="side-navnar">
         <ng-container *ngFor="let menu of Menu; index as i;">
           <ng-container [ngTemplateOutlet]="menu.children ?  childMenu : parentMenu"
             [ngTemplateOutletContext]="{menu:menu}">
           </ng-container>
         </ng-container>
-
       </mat-nav-list>
-      <!-- 
-      <ng-template #parentMenu let-menu="menu">
-        <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="active">
-          <mat-icon matListItemIcon>{{menu.icon}}</mat-icon>
-          <div matListItemTitle>{{menu.text}}</div>
-        </mat-list-item>
-      </ng-template>
-       -->
+
       <ng-template #parentMenu let-menu="menu">
         <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="is-active" [routerLinkActiveOptions]="{exact:
             true}">
-          <mat-icon>{{menu.icon}}</mat-icon> {{menu.text}}s
+          <mat-icon>{{menu.icon}}</mat-icon> {{menu.text}}
         </mat-list-item>
       </ng-template>
 
@@ -83,6 +44,10 @@
         <mat-progress-spinner class="load-spiner" [mode]="'indeterminate'"></mat-progress-spinner>
       </ng-container>
       <router-outlet></router-outlet>
+      
     </mat-sidenav-content>
+  
+    
   </mat-sidenav-container>
+  
 </div>

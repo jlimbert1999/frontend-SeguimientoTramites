@@ -2,15 +2,18 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { DialogExternoComponent } from './dialog-externo/dialog-externo.component';
-import { DialogRemisionComponent } from '../dialog-remision/dialog-remision.component';
+import { DialogRemisionComponent } from '../Tramites/dialog-remision/dialog-remision.component';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
-import { ExternosService } from '../services/externos.service';
-import { Externo, ExternoData, Representante, Solicitante } from './models/externo.model';
+import { ExternosService } from './services/externos.service';
 import Swal from 'sweetalert2';
 import { Ficha } from './pdf/ficha';
 import { HojaRuta } from './pdf/hoja-ruta';
-import { EnvioModel } from '../models/mail.model';
+import { EnvioModel } from '../Tramites/models/mail.model';
+import { ExternoDto, RepresentanteDto, SolicitanteDto } from './models/Externo.dto';
+import { Externo, Representante, Solicitante } from './models/Externo.interface';
+import { MatSort } from '@angular/material/sort';
+
 
 @Component({
   selector: 'app-externos',
@@ -25,8 +28,8 @@ import { EnvioModel } from '../models/mail.model';
 })
 export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  Data: ExternoData[] = []
-  displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'enviado', 'opciones'];
+  Data: Externo[] = []
+  displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
   filterOpions = [
     { value: 'solicitante', viewValue: 'SOLICITANTE / DNI' },
     { value: 'alterno', viewValue: 'ALTERNO' }
@@ -35,6 +38,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+
 
   constructor(
     public dialog: MatDialog,
@@ -48,27 +52,23 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    if (this.externoService.searchOptions.active) {
-      this.GetSearch()
-    }
-    else {
-      this.Get()
-    }
+    this.Get()
   }
 
   Get() {
-    this.externoService.Get().subscribe(tramites => {
-      this.Data = tramites
-    })
-  }
-
-  GetSearch() {
-    if (this.externoService.searchOptions.text !== '' && this.externoService.searchOptions.type !== '') {
+    if (this.externoService.textSearch !== '') {
       this.externoService.GetSearch().subscribe(tramites => {
         this.Data = tramites
       })
     }
+    else {
+      this.externoService.Get().subscribe(tramites => {
+        this.Data = tramites
+      })
+    }
+
   }
+
 
 
   Add() {
@@ -76,7 +76,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
       width: '1000px',
       disableClose: true
     });
-    dialogRef.afterClosed().subscribe((result: { tramite: Externo, solicitante: Solicitante, representante: Representante | null }) => {
+    dialogRef.afterClosed().subscribe((result: { tramite: ExternoDto, solicitante: SolicitanteDto, representante: RepresentanteDto | null }) => {
       if (result) {
         this.showLoadingRequest()
         this.externoService.Add(result.tramite, result.solicitante, result.representante).subscribe(tramite => {
@@ -90,7 +90,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
   }
-  Edit(tramite: ExternoData) {
+  Edit(tramite: Externo) {
     const dialogRef = this.dialog.open(DialogExternoComponent, {
       width: '1000px',
       data: tramite,
@@ -110,14 +110,14 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  Send(tramite: ExternoData) {
+  Send(tramite: Externo) {
     const dialogRef = this.dialog.open(DialogRemisionComponent, {
       width: '1200px',
       data: {
         _id: tramite._id,
         tipo: 'tramites_externos',
         tramite: {
-          
+
           alterno: tramite.alterno,
           cantidad: tramite.cantidad
         }
@@ -127,7 +127,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const indexFound = this.Data.findIndex(element => element._id === tramite._id)
-       
+
         this.Data = [...this.Data]
       }
     });
@@ -135,12 +135,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
   pagination(page: PageEvent) {
     this.externoService.offset = page.pageIndex
     this.externoService.limit = page.pageSize
-    if (this.externoService.searchOptions.active) {
-      this.GetSearch()
-    }
-    else {
-      this.Get()
-    }
+    this.Get()
   }
 
   denied_options(estado: string, responsable: string) {
@@ -150,30 +145,12 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     return false
   }
 
-
-  search(event: Event) {
-    this.externoService.offset = 0
-    this.externoService.searchOptions.text = (event.target as HTMLInputElement).value;
-    this.GetSearch()
-  }
-
-  changeSearchMode(option: boolean) {
-    this.externoService.offset = 0
-    this.externoService.searchOptions.active = option
-    if (!option) {
-      this.externoService.searchOptions.text = ""
-      this.externoService.searchOptions.type = ""
-      this.Get()
-    }
-  }
-
-
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getOne(id_tramite).subscribe(data => {
       HojaRuta(data.tramite, data.workflow)
     })
   }
-  GenerateFicha(tramite: ExternoData) {
+  GenerateFicha(tramite: Externo) {
     Ficha(tramite)
   }
   showLoadingRequest() {
@@ -184,8 +161,8 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     Swal.showLoading()
   }
-  
-  conclude(tramite: ExternoData) {
+
+  conclude(tramite: Externo) {
     Swal.fire({
       icon: 'question',
       title: `Concluir el tramite ${tramite.alterno}?`,
@@ -214,6 +191,19 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     })
 
+  }
+
+  applyFilter(event: Event) {
+    this.paginator.firstPage();
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.externoService.textSearch = filterValue.toLowerCase();
+    this.Get()
+  }
+
+  cancelSearch() {
+    this.paginator.firstPage();
+    this.externoService.textSearch = "";
+    this.Get();
   }
 
 

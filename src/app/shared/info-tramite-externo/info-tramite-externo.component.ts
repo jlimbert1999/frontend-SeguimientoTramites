@@ -1,7 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import * as moment from 'moment';
-import { ExternoData1 } from 'src/app/Tramites/models/ExternoModels/Externo.interface';
+import { Externo } from 'src/app/Externos/models/Externo.interface';
+
 
 @Component({
   selector: 'app-info-tramite-externo',
@@ -9,7 +10,7 @@ import { ExternoData1 } from 'src/app/Tramites/models/ExternoModels/Externo.inte
   styleUrls: ['./info-tramite-externo.component.css']
 })
 export class InfoTramiteExternoComponent implements OnInit , OnDestroy{
-  @Input() Tramite: ExternoData1
+  @Input() Tramite: Externo
   timer: any;
   count: any
 

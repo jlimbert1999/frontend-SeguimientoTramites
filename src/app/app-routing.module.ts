@@ -12,6 +12,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes),
     HomeRoutingModule
+   
   ],
   exports: [RouterModule]
 })

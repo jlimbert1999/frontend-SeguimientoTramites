@@ -3,10 +3,10 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Content, TDocumentDefinitions } from "pdfmake/interfaces";
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
-import { ExternoData1 } from "../../models/ExternoModels/Externo.interface";
+import { Externo } from "../models/Externo.interface";
 const ordinales = require("ordinales-js");
 
-export const HojaRuta = async (tramite: ExternoData1, workflow: any[]) => {
+export const HojaRuta = async (tramite: Externo, workflow: any[]) => {
     const img1: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     workflow = workflow.filter(flujo => flujo.recibido === true || flujo.recibido === undefined)
     let docDefinition: TDocumentDefinitions

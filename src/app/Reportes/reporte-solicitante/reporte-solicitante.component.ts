@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ExternoData } from 'src/app/Tramites/externos/models/externo.model';
+import { Externo } from 'src/app/Externos/models/Externo.interface';
 import { ReportesExternoService } from '../services/reportes-externo.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { ReportesExternoService } from '../services/reportes-externo.service';
 })
 export class ReporteSolicitanteComponent implements OnInit {
   termino: string
-  data: ExternoData[] = []
+  data: Externo[] = []
   displayedColumns: string[] = ['ubicacion', 'alterno', 'tramite', 'descripcion', 'estado', 'solicitante', 'fecha_registro'];
 
   constructor(private reporteService: ReportesExternoService) { }

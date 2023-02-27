@@ -3,16 +3,17 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { BandejaSalidaModel_View } from '../models/mail.model';
 import { BandejaService } from '../services/bandeja.service';
-import { crear_hoja_ruta } from "../pdf/tramites";
+
 import { TramiteService } from '../services/tramite.service';
 import { fadeInOnEnterAnimation } from 'angular-animations';
-import { ExternosService } from '../services/externos.service';
+import { ExternosService } from '../../Externos/services/externos.service';
 import { InternosService } from '../services/internos.service';
 import { HojaRutaInterna } from '../internos/pdfs/hora-ruta';
 import { BandejaSalidaService } from '../services/bandeja-salida.service';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
+import { Externo } from 'src/app/Externos/models/Externo.interface';
 
 @Component({
   selector: 'app-bandeja-salida',
@@ -87,3 +88,9 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
 
 
 }
+
+
+function crear_hoja_ruta(tramite: Externo, workflow: import("src/app/Externos/models/Externo.interface").WorkflowData[], tipo_hoja: string) {
+  throw new Error('Function not implemented.');
+}
+

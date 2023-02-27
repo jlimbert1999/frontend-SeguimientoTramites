@@ -2,10 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { ExternosService } from '../../services/externos.service';
-import { TypeTramiteData } from '../models/tipos';
-import { Externo, ExternoData, Representante, Solicitante } from '../models/externo.model';
-
+import { Externo, Representante, Solicitante, TypeTramiteData } from '../models/Externo.interface';
+import { ExternosService } from '../services/externos.service';
 @Component({
   selector: 'app-dialog-externo',
   templateUrl: './dialog-externo.component.html',
@@ -45,7 +43,7 @@ export class DialogExternoComponent implements OnInit {
     private authService: AuthService,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<DialogExternoComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ExternoData,
+    @Inject(MAT_DIALOG_DATA) public data: Externo,
 
   ) { }
 

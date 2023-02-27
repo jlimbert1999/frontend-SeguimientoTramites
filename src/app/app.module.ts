@@ -10,7 +10,6 @@ import { MaterialModule } from './angular-material/material.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InterceptorService } from './interceptors/interceptor.service';
 import { AuthModule } from './auth/auth.module';
-import { TramitesModule } from './Tramites/tramites.module';
 import { ToastrModule } from 'ngx-toastr';
 import { ReportesModule } from './Reportes/reportes.module';
 
@@ -18,6 +17,8 @@ import { ReportesModule } from './Reportes/reportes.module';
 import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import { TramitesModule } from './Tramites/tramites.module';
+import { ExternosModule } from './Externos/externos.module';
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
@@ -33,6 +34,7 @@ registerLocaleData(localeEs, 'es');
     ConfiguracionesModule,
     AuthModule,
     TramitesModule,
+    ExternosModule,
     ReportesModule,
     MaterialModule
   ],

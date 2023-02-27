@@ -3,9 +3,9 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Content, TDocumentDefinitions } from "pdfmake/interfaces";
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
-import { ExternoData } from "../models/externo.model";
+import { Externo } from "../models/Externo.interface";
 
-export const Ficha = async (tramite: ExternoData) => {
+export const Ficha = async (tramite: Externo) => {
     const img1: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia.png')
     let docDefinition: TDocumentDefinitions
     let solicitante: Content

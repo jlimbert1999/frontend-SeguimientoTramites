@@ -1,50 +1,18 @@
-<p>
-    <mat-toolbar>
-        <span>Externos</span>
-        <span class="example-spacer"></span>
-        <button matTooltip="Buscar tramite" (click)="changeSearchMode(true)" mat-icon-button
-            class="example-icon favorite-icon">
-            <mat-icon>search</mat-icon>
-        </button>
-        <button matTooltip="Agregar tramite" (click)="Add()" mat-icon-button class="example-icon favorite-icon">
-            <mat-icon>add</mat-icon>
-        </button>
-    </mat-toolbar>
-</p>
+<app-toolbar title="Externos" (add)="Add()"></app-toolbar>
 
 <div class="container-fluid" [@fadeInOnEnter]>
-    <div [@expandOnEnter] [@collapseOnLeave] *ngIf="externoService.searchOptions.active">
-        <mat-card appearance="outlined" class="example-card">
-            <mat-card-content>
-                <div class="row">
-                    <div class="col-sm-2">
-                        <mat-form-field appearance="fill" class="example-full-width">
-                            <mat-label>Tipo de busqueda</mat-label>
-                            <mat-select [(ngModel)]="externoService.searchOptions.type">
-                                <mat-option *ngFor="let option of filterOpions" [value]="option.value">
-                                    {{option.viewValue}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-sm-10">
-                        <mat-form-field appearance="fill" class="example-full-width">
-                            <mat-label>Termino a buscar</mat-label>
-                            <input [(ngModel)]="externoService.searchOptions.text" (keyup)="search($event)" matInput>
-                        </mat-form-field>
-                    </div>
-                </div>
-                <mat-divider></mat-divider>
-            </mat-card-content>
-            <mat-card-actions>
-                <button mat-stroked-button color="warn" (click)="changeSearchMode(false)">Cancelar</button>
-            </mat-card-actions>
-        </mat-card>
-        <br>
-    </div>
+    <mat-form-field>
+        <mat-label>Buscar tramite</mat-label>
+        <input matInput [(ngModel)]="externoService.textSearch" (keyup)="applyFilter($event)"
+            placeholder="Alterno / Referencia / Solicitante" #input>
+        <button *ngIf="externoService.textSearch!==''" matSuffix mat-icon-button aria-label="Clear"
+            (click)="cancelSearch()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
 
     <div class="example-container mat-elevation-z8">
-        <div class="example-table-container" [ngClass]="externoService.searchOptions.active?'search':''">
+        <div class="example-table-container">
             <table mat-table [dataSource]="Data" [class.isMobile]="'isMobile'">
                 <ng-container matColumnDef="alterno">
                     <th mat-header-cell *matHeaderCellDef>Alterno</th>
@@ -84,19 +52,7 @@
                     <th mat-header-cell *matHeaderCellDef>Fecha</th>
                     <td mat-cell *matCellDef="let row">{{row.fecha_registro|date:'short'}}</td>
                 </ng-container>
-                <ng-container matColumnDef="enviado">
-                    <th mat-header-cell *matHeaderCellDef>Enviado</th>
-                    <td mat-cell *matCellDef="let row">
-                        <div [ngSwitch]="denied_options(row.estado, row.ubicacion)">
-                            <div *ngSwitchCase="true">
-                                <mat-icon style="color: green;">check_circle</mat-icon>
-                            </div>
-                            <div *ngSwitchCase="false">
-                                <mat-icon style="color: red;">warning</mat-icon>
-                            </div>
-                        </div>
-                    </td>
-                </ng-container>
+
                 <ng-container matColumnDef="opciones" justify="end">
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let row">
@@ -128,10 +84,16 @@
                         </mat-menu>
                     </td>
                 </ng-container>
+
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <!-- Row shown when there is no matching data. -->
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="4">Sin resultados para el termino "{{input.value}}"</td>
+                </tr>
             </table>
         </div>
+
         <mat-paginator (page)="pagination($event)" [pageIndex]="externoService.offset"
             [length]="externoService.resultsLength" [pageSizeOptions]="[10, 20, 30, 50]"
             showFirstLastButtons></mat-paginator>

@@ -3,10 +3,9 @@ import { Injectable, Query, QueryList } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { TiposTramitesModel } from 'src/app/Configuraciones/models/tiposTramites.model';
 import { environment } from 'src/environments/environment';
-import { AllInfoOneExterno, Externo, Representante, Solicitante } from '../externos/models/externo.model';
-import { TypeTramiteData } from '../externos/models/tipos';
-import { ExternoData } from '../externos/models/externo.model';
-import { ExternoData1, WorkflowData } from '../models/ExternoModels/Externo.interface';
+import { ExternoDto, RepresentanteDto, SolicitanteDto } from '../models/Externo.dto';
+import { Externo, TypeTramiteData, WorkflowData } from '../models/Externo.interface';
+
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -15,12 +14,7 @@ export class ExternosService {
   resultsLength: number = 0
   offset: number = 0
   limit: number = 10
-
-  searchOptions = {
-    active: false,
-    type: "",
-    text: ""
-  }
+  textSearch: string = ""
 
 
 
@@ -40,8 +34,8 @@ export class ExternosService {
     )
   }
 
-  Add(tramite: Externo, solicitante: Solicitante, representante: Representante | null) {
-    return this.http.post<{ ok: boolean, tramite: ExternoData }>(`${base_url}/externos`, { tramite, solicitante, representante }).pipe(
+  Add(tramite: ExternoDto, solicitante: SolicitanteDto, representante: RepresentanteDto | null) {
+    return this.http.post<{ ok: boolean, tramite: Externo }>(`${base_url}/externos`, { tramite, solicitante, representante }).pipe(
       map(resp => {
         this.resultsLength += 1
         return resp.tramite
@@ -52,7 +46,7 @@ export class ExternosService {
     let params = new HttpParams()
       .set('limit', this.limit)
       .set('offset', this.offset)
-    return this.http.get<{ ok: boolean, tramites: ExternoData[], total: number }>(`${base_url}/externos`, { params }).pipe(
+    return this.http.get<{ ok: boolean, tramites: Externo[], total: number }>(`${base_url}/externos`, { params }).pipe(
       map(resp => {
         this.resultsLength = resp.total
         return resp.tramites
@@ -60,7 +54,7 @@ export class ExternosService {
     )
   }
   Edit(id_tramite: string, tramite: any, solicitante: any, representante: any | null) {
-    return this.http.put<{ ok: boolean, tramite: ExternoData }>(`${base_url}/externos/${id_tramite}`, { tramite, solicitante, representante }).pipe(
+    return this.http.put<{ ok: boolean, tramite: Externo }>(`${base_url}/externos/${id_tramite}`, { tramite, solicitante, representante }).pipe(
       map(resp => {
         return resp.tramite
       })
@@ -68,11 +62,9 @@ export class ExternosService {
   }
   GetSearch() {
     let params = new HttpParams()
-      .set('type', this.searchOptions.type)
       .set('limit', this.limit)
       .set('offset', this.offset)
-
-    return this.http.get<{ ok: boolean, tramites: ExternoData[], total: number }>(`${base_url}/externos/search/${this.searchOptions.text}`, { params }).pipe(
+    return this.http.get<{ ok: boolean, tramites: Externo[], total: number }>(`${base_url}/externos/search/${this.textSearch}`, { params }).pipe(
       map(resp => {
         this.resultsLength = resp.total
         return resp.tramites
@@ -80,7 +72,7 @@ export class ExternosService {
     )
   }
   getOne(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: ExternoData1, workflow: WorkflowData[] }>(`${base_url}/externos/${id_tramite}`).pipe(
+    return this.http.get<{ ok: boolean, tramite: Externo, workflow: WorkflowData[] }>(`${base_url}/externos/${id_tramite}`).pipe(
       map(resp => {
         return { tramite: resp.tramite, workflow: resp.workflow }
       })
@@ -116,5 +108,7 @@ export class ExternosService {
       })
     )
   }
+
+  
 
 }

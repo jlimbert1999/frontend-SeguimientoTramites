@@ -19,7 +19,7 @@ import Swal from 'sweetalert2';
 import { DialogRemisionComponent } from '../dialog-remision/dialog-remision.component';
 import { BandejaEntradaData } from '../models/mail.model';
 import { BandejaEntradaService } from '../services/bandeja-entrada.service';
-import { ExternosService } from '../services/externos.service';
+import { ExternosService } from '../../Externos/services/externos.service';
 import { InternosService } from '../services/internos.service';
 
 @Component({

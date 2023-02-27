@@ -1,0 +1,4 @@
+.list-group{
+    overflow-y: scroll;
+    min-height: 355px;
+}

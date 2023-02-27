@@ -1,5 +1,5 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { AuthService } from '../auth/services/auth.service';
 import { BandejaService } from '../Tramites/services/bandeja.service';
 import { SocketService } from '../Tramites/services/socket.service';
@@ -10,6 +10,8 @@ import { NotificationsService } from '../Tramites/services/notifications.service
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { PanelNotificationComponent } from '../shared/panel-notification/panel-notification.component';
 import { BandejaEntradaService } from '../Tramites/services/bandeja-entrada.service';
+import { SidenavService } from '../shared/services/sidenav.service';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-home',
@@ -23,11 +25,15 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   loading$ = this.loader.loading$;
 
   number_mails = this.notificationService.number_mails$
-
+  @ViewChild('snav') public sidenav: MatSidenav;
 
   private _mobileQueryListener: () => void;
 
   ngAfterViewInit() {
+    this.sidenavService.sideNavToggleSubject.subscribe(() => {
+      this.sidenav.toggle();
+    })
+    this.sidenav.open()
 
   }
   constructor(
@@ -39,7 +45,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     public loader: LoaderService,
     private router: Router,
     private notificationService: NotificationsService,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private sidenavService: SidenavService
   ) {
     this.startConectGroupware()
     this.mobileQuery = media.matchMedia('(max-width: 600px)');

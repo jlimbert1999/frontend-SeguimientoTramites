@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { ExternosService } from 'src/app/Externos/services/externos.service';
 import { BandejaService } from 'src/app/Tramites/services/bandeja.service';
-import { ExternosService } from 'src/app/Tramites/services/externos.service';
+
 import { InternosService } from 'src/app/Tramites/services/internos.service';
 import Swal from 'sweetalert2';
 import { HojaTipoTramite } from '../pdf-externos/pdf-TipoTramite';
