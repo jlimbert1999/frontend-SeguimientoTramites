@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BandejaService } from '../../services/bandeja.service';
-import { InternosService } from '../../services/internos.service';
+import { BandejaService } from '../../Tramites/services/bandeja.service';
+import { InternosService } from '../../Tramites/services/internos.service';
 import { Location } from '@angular/common';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import * as moment from 'moment';

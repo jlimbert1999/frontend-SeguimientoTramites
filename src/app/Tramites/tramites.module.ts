@@ -10,14 +10,14 @@ import { ControlComponent } from './control/control.component';
 import { FichaComponent } from './ficha/ficha.component';
 import { RouterModule } from '@angular/router';
 // import { NgxGraphModule } from '@swimlane/ngx-graph';
-import { InternosComponent } from './internos/internos.component';
+import { InternosComponent } from '../Internos/internos.component';
 import { DialogExternoComponent } from '../Externos/dialog-externo/dialog-externo.component';
-import { DialogInternosComponent } from './internos/dialog-internos/dialog-internos.component';
+import { DialogInternosComponent } from '../Internos/dialog-internos/dialog-internos.component';
 import { DialogReenvioComponent } from './dialog-reenvio/dialog-reenvio.component';
 import { MailFichaComponent } from './mail-ficha/mail-ficha.component';
 import { SharedModule } from '../shared/shared.module';
-import { FichaInternoComponent } from './internos/ficha-interno/ficha-interno.component';
-import { MailFichaInternoComponent } from './internos/mail-ficha-interno/mail-ficha-interno.component';
+import { FichaInternoComponent } from '../Internos/ficha-interno/ficha-interno.component';
+import { MailFichaInternoComponent } from '../Internos/mail-ficha-interno/mail-ficha-interno.component';
 
 import { ConcluidosComponent } from '../Externos/concluidos/concluidos.component';
 

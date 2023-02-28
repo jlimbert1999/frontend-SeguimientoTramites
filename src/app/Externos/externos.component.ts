@@ -117,7 +117,6 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
         _id: tramite._id,
         tipo: 'tramites_externos',
         tramite: {
-
           alterno: tramite.alterno,
           cantidad: tramite.cantidad
         }
@@ -127,7 +126,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const indexFound = this.Data.findIndex(element => element._id === tramite._id)
-
+        this.Data[indexFound].estado = "EN REVISION";
         this.Data = [...this.Data]
       }
     });

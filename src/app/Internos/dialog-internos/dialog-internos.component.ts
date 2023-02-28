@@ -4,7 +4,7 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 import { map, Observable, startWith, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { InternosService } from '../../services/internos.service';
+import { InternosService } from '../../Tramites/services/internos.service';
 import { Interno, InternoData } from '../models/interno.model';
 
 @Component({

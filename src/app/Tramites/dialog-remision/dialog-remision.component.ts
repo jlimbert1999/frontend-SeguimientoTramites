@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 import { EnvioModel, Mail, MailDto, UsersMails } from '../models/mail.model';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BandejaEntradaService } from '../services/bandeja-entrada.service';
 
 @Component({
   selector: 'app-dialog-remision',
@@ -37,7 +38,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   public searching: boolean = false;
 
   constructor(
-    private bandejaService: BandejaService,
+    private bandejaService: BandejaEntradaService,
     private socketService: SocketService,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public Data: Mail,
@@ -59,11 +60,10 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
       )
       .subscribe((text) => {
         if (text || text !== '') {
-          this.bandejaService.getUsersForSend(text).subscribe((users) => {
+          this.bandejaService.GetAccounts(text).subscribe((users) => {
             this.searching = false;
             users.map((user) => {
-              let onlineUser = this.socketService.OnlineUsers.find(
-                (userSocket) => userSocket.id_cuenta === user._id
+              let onlineUser = this.socketService.OnlineUsers.find((userSocket) => userSocket.id_cuenta === user._id
               );
               user.online = onlineUser ? true : false;
             });
@@ -99,7 +99,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
           allowOutsideClick: false,
         });
         Swal.showLoading();
-        this.bandejaService.AddMail(mails).subscribe(data => {
+        this.bandejaService.Add(mails).subscribe(data => {
           if (this.socketIds.length > 0) {
             this.socketService.socket.emit("mail", data)
           }
@@ -107,8 +107,10 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
             positionClass: 'toast-bottom-right',
             timeOut: 3000,
           });
-          // this.dialogRef.close(tramite);
+      
           Swal.close();
+          this.dialogRef.close({})
+
         });
       }
     });

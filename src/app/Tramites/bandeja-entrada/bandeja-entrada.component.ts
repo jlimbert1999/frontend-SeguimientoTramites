@@ -115,14 +115,13 @@ export class BandejaEntradaComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.bandejaService.aceptar_tramite(elemento._id).subscribe(message => {
-          // const indexFound = this.bandejaService.DataMailsIn.findIndex(mail => mail._id === elemento._id)
-          // this.bandejaService.DataMailsIn[indexFound].recibido = true
-          // this.bandejaService.DataMailsIn[indexFound].tramite.estado = 'EN REVISION'
-          // this.bandejaService.DataMailsIn = [...this.bandejaService.DataMailsIn]
-          // this.toastr.success(undefined, message, {
-          //   positionClass: 'toast-bottom-right',
-          //   timeOut: 3000,
-          // })
+          const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
+          this.bandejaService.Mails[indexFound].recibido = true
+          this.bandejaService.Mails = [...this.bandejaService.Mails]
+          this.toastr.success(undefined, message, {
+            positionClass: 'toast-bottom-right',
+            timeOut: 3000,
+          })
         })
       }
     })

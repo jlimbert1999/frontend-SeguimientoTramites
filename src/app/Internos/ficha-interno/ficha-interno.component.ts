@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import { ActivatedRoute } from '@angular/router';
-import { InternosService } from '../../services/internos.service';
+import { InternosService } from '../../Tramites/services/internos.service';
 import * as moment from 'moment';
 import { AllInfoOneInterno } from '../models/interno.model';
 

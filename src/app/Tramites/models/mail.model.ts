@@ -142,7 +142,6 @@ export interface Mail {
   _id: string;
   tipo: 'tramites_externos' | 'tramites_internos';
   tramite: {
-    nombre: string;
     alterno: string;
     cantidad: string;
   };

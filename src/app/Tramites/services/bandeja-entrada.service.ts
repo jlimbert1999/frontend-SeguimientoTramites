@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { UsersMails } from '../models/mail.model';
 
 const base_url = environment.base_url;
 
@@ -14,7 +15,7 @@ export class BandejaEntradaService {
   length: number = 0;
   Mails: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   Get() {
     const params = new HttpParams()
@@ -47,5 +48,20 @@ export class BandejaEntradaService {
       })
     )
   }
+  Add(data: any) {
+    return this.http.post<{ ok: boolean, mails: any[] }>(`${base_url}/bandejas/entrada`, data).pipe(
+      map(resp => {
+        return resp.mails
+      })
+    )
+  }
+  GetAccounts(text: string) {
+    return this.http.get<{ ok: boolean, cuentas: UsersMails[] }>(`${base_url}/bandejas/entrada/users/${text}`).pipe(
+      map(resp => {
+        return resp.cuentas
+      })
+    )
+  }
+
 
 }

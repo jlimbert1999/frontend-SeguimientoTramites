@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { AllInfoOneInterno, InternoData } from '../internos/models/interno.model';
+import { AllInfoOneInterno, InternoData } from '../../Internos/models/interno.model';
 const base_url = environment.base_url
 
 

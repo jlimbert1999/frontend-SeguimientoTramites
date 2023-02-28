@@ -8,7 +8,7 @@ import { TramiteService } from '../services/tramite.service';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ExternosService } from '../../Externos/services/externos.service';
 import { InternosService } from '../services/internos.service';
-import { HojaRutaInterna } from '../internos/pdfs/hora-ruta';
+import { HojaRutaInterna } from '../../Internos/pdfs/hora-ruta';
 import { BandejaSalidaService } from '../services/bandeja-salida.service';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';

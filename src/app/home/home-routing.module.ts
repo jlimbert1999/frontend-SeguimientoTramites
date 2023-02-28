@@ -21,9 +21,9 @@ import { ConcluidosComponent } from '../Externos/concluidos/concluidos.component
 import { ExternosComponent } from '../Externos/externos.component';
 import { MailFichaExternoComponent } from '../Externos/mail-ficha-externo/mail-ficha-externo.component';
 import { FichaComponent } from '../Tramites/ficha/ficha.component';
-import { FichaInternoComponent } from '../Tramites/internos/ficha-interno/ficha-interno.component';
-import { InternosComponent } from '../Tramites/internos/internos.component';
-import { MailFichaInternoComponent } from '../Tramites/internos/mail-ficha-interno/mail-ficha-interno.component';
+import { FichaInternoComponent } from '../Internos/ficha-interno/ficha-interno.component';
+import { InternosComponent } from '../Internos/internos.component';
+import { MailFichaInternoComponent } from '../Internos/mail-ficha-interno/mail-ficha-interno.component';
 import { HomeComponent } from './home.component';
 
 const routes: Routes = [

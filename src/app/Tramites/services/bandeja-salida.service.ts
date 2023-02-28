@@ -16,13 +16,12 @@ export class BandejaSalidaService {
 
   Get() {
     const params = new HttpParams()
-      .set('offset', this.offset) 
+      .set('offset', this.offset)
       .set('limit', this.limit)
-    return this.http.get<{ ok: boolean, tramites: any[], total: number }>(
+    return this.http.get<{ ok: boolean, mails: any[], length: number }>(
       `${base_url}/bandejas/salida`, { params }).pipe(
         map(resp => {
-          console.log(resp.tramites)
-          return { tramites: resp.tramites, total: resp.total }
+          return { tramites: resp.mails, total: resp.length }
         })
       )
   }
