@@ -94,8 +94,8 @@ export class ExternosService {
     )
   }
 
-  conclude(id_tramite: string, referencia: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/externos/concluir/${id_tramite}`, { referencia }).pipe(
+  conclude(id_tramite: string, descripcion: string) {
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/tramites/externos/concluir/${id_tramite}`, { descripcion }).pipe(
       map(resp => {
         return resp.message
       })
@@ -109,6 +109,6 @@ export class ExternosService {
     )
   }
 
-  
+
 
 }

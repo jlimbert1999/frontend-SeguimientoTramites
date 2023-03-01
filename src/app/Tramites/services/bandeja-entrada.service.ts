@@ -14,7 +14,6 @@ export class BandejaEntradaService {
   limit: number = 10;
   length: number = 0;
   Mails: any[] = [];
-
   constructor(private http: HttpClient) { }
 
   Get() {
@@ -34,6 +33,7 @@ export class BandejaEntradaService {
         })
       );
   }
+
   rechazar_tramite(id_bandeja: string, motivo_rechazo: string) {
     return this.http.put<{ ok: boolean, message: string }>(`${base_url}/bandejas/rechazar/${id_bandeja}`, { motivo_rechazo }).pipe(
       map(resp => {

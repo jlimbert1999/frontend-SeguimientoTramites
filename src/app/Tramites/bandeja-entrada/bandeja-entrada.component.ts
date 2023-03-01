@@ -161,7 +161,7 @@ export class BandejaEntradaComponent implements OnInit {
     Swal.fire({
       icon: 'question',
       title: `Concluir el tramite ${alterno}?`,
-      text: `Ingrese una referencia para concluir `,
+      text: `Ingrese una referencia para concluir`,
       input: 'textarea',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
@@ -174,6 +174,7 @@ export class BandejaEntradaComponent implements OnInit {
             '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
           )
         }
+        
       }
     }).then((result) => {
       if (result.isConfirmed) {
