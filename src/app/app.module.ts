@@ -19,6 +19,7 @@ import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { TramitesModule } from './Tramites/tramites.module';
 import { ExternosModule } from './Externos/externos.module';
+import { ArchivosModule } from './Archivos/archivos.module';
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
@@ -35,6 +36,7 @@ registerLocaleData(localeEs, 'es');
     AuthModule,
     TramitesModule,
     ExternosModule,
+    ArchivosModule,
     ReportesModule,
     MaterialModule
   ],

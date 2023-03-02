@@ -42,6 +42,11 @@ const routes: Routes = [
                 loadChildren: () =>
                     import(`../Externos/externos-routing.module`).then((m) => m.ExternosRoutingModule),
             },
+            {
+                path: 'archivos',
+                loadChildren: () =>
+                    import(`../Archivos/archivos-routing.module`).then((m) => m.ArchivosRoutingModule),
+            },
             //   {
             //     path: 'module-two',
             //     loadChildren: () =>

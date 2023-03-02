@@ -153,14 +153,10 @@ export class BandejaEntradaComponent implements OnInit {
       }
     })
   }
-  concluir_tramite(
-    tipo: 'tramites_internos' | 'tramites_externos',
-    id_tramite: string,
-    alterno: string
-  ) {
+  concluir(mail: BandejaEntradaData) {
     Swal.fire({
       icon: 'question',
-      title: `Concluir el tramite ${alterno}?`,
+      title: `Concluir el tramite ${mail.tramite.alterno}?`,
       text: `Ingrese una referencia para concluir`,
       input: 'textarea',
       showCancelButton: true,
@@ -174,22 +170,13 @@ export class BandejaEntradaComponent implements OnInit {
             '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
           )
         }
-        
+
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        if (tipo === 'tramites_externos') {
-          this.externoService.conclude(id_tramite, result.value!).subscribe(message => {
-            Swal.fire(message, undefined, 'success')
-            this.bandejaService.Get().subscribe()
-          })
-        }
-        else if (tipo === 'tramites_internos') {
-          this.internoService.conclude(id_tramite, result.value!).subscribe(message => {
-            Swal.fire(message, undefined, 'success')
-            this.bandejaService.Get().subscribe()
-          })
-        }
+        this.bandejaService.Conclude(mail._id, result.value!).subscribe(message => {
+          console.log(message)
+        })
       }
     })
   }

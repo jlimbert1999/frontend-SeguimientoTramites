@@ -63,5 +63,13 @@ export class BandejaEntradaService {
     )
   }
 
+  Conclude(id_bandeja: string, descripcion: string) {
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/bandejas/concluir/${id_bandeja}`, { descripcion }).pipe(
+      map(resp => {
+        return resp.message
+      })
+    )
+  }
+
 
 }
