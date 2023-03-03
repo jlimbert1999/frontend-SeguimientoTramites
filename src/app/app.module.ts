@@ -20,6 +20,7 @@ import localeEs from '@angular/common/locales/es';
 import { TramitesModule } from './Tramites/tramites.module';
 import { ExternosModule } from './Externos/externos.module';
 import { ArchivosModule } from './Archivos/archivos.module';
+import { InternosModule } from './Internos/internos.module';
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
@@ -38,7 +39,8 @@ registerLocaleData(localeEs, 'es');
     ExternosModule,
     ArchivosModule,
     ReportesModule,
-    MaterialModule
+    MaterialModule,
+    InternosModule
   ],
   providers: [
     {

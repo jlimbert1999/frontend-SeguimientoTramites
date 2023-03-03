@@ -2,9 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import { ActivatedRoute } from '@angular/router';
-import { InternosService } from '../../Tramites/services/internos.service';
 import * as moment from 'moment';
-import { AllInfoOneInterno } from '../models/interno.model';
+import { InternosService } from '../services/internos.service';
 
 @Component({
   selector: 'app-ficha-interno',
@@ -15,7 +14,7 @@ import { AllInfoOneInterno } from '../models/interno.model';
   ]
 })
 export class FichaInternoComponent implements OnInit, OnDestroy {
-  Tramite: AllInfoOneInterno
+  Tramite: any
   Workflow: any
   timer: any;
   count: any

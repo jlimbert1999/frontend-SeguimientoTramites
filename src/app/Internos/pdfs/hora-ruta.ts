@@ -3,10 +3,9 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Content, TDocumentDefinitions } from "pdfmake/interfaces";
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
-import { AllInfoOneInterno } from "../models/interno.model";
 const ordinales = require("ordinales-js");
 
-export const HojaRutaInterna = async (tramite: AllInfoOneInterno, workflow: any[], tipo: 'tramites_externos' | 'tramites_internos' | 'copia') => {
+export const HojaRutaInterna = async (tramite: any, workflow: any[], tipo: 'tramites_externos' | 'tramites_internos' | 'copia') => {
     const imagePath_Alcaldia: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     workflow = workflow.filter(flujo => flujo.recibido === true || flujo.recibido === undefined)
     let docDefinition: TDocumentDefinitions

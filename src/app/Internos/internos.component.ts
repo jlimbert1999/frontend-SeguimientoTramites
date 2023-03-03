@@ -5,10 +5,9 @@ import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimatio
 import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
 import { DialogRemisionComponent } from '../Tramites/dialog-remision/dialog-remision.component';
-import { InternosService } from '../Tramites/services/internos.service';
 import { DialogInternosComponent } from './dialog-internos/dialog-internos.component';
-import { InternoData } from './models/interno.model';
 import { HojaRutaInterna } from './pdfs/hora-ruta';
+import { InternosService } from './services/internos.service';
 
 @Component({
   selector: 'app-internos',
@@ -22,7 +21,7 @@ import { HojaRutaInterna } from './pdfs/hora-ruta';
 })
 export class InternosComponent implements OnInit {
   displayedColumns: string[] = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'enviado', 'opciones']
-  Data: InternoData[]
+  Data: any[]
 
   filterOpions = [
     { value: 'remitente', viewValue: 'REMITENTE / CARGO' },
@@ -40,12 +39,7 @@ export class InternosComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if (this.internoService.searchOptions.active) {
-      this.GetSearch()
-    }
-    else {
-      this.Get()
-    }
+   this.Get()
   }
   Get() {
     this.internoService.Get().subscribe(tramites => {
@@ -54,49 +48,49 @@ export class InternosComponent implements OnInit {
   }
 
   GetSearch() {
-    if (this.internoService.searchOptions.text !== '' && this.internoService.searchOptions.type !== '') {
-      this.internoService.GetSearch().subscribe(tramites => {
-        this.Data = tramites
-      })
-    }
+    // if (this.internoService.searchOptions.text !== '' && this.internoService.searchOptions.type !== '') {
+    //   this.internoService.GetSearch().subscribe(tramites => {
+    //     this.Data = tramites
+    //   })
+    // }
   }
   Add() {
-    const dialogRef = this.dialog.open(DialogInternosComponent, {
-      width: '1000px',
-      disableClose: true
-    });
-    dialogRef.afterClosed().subscribe((result: InternoData) => {
-      if (result) {
-        this.showLoadingRequest()
-        this.internoService.Add(result).subscribe(tramite => {
-          if (this.Data.length === this.internoService.limit) {
-            this.Data.pop()
-          }
-          this.Data = [tramite, ...this.Data]
-          Swal.close();
-          this.Send(tramite)
-        })
-      }
-    });
+    // const dialogRef = this.dialog.open(DialogInternosComponent, {
+    //   width: '1000px',
+    //   disableClose: true
+    // });
+    // dialogRef.afterClosed().subscribe((result: any) => {
+    //   if (result) {
+    //     this.showLoadingRequest()
+    //     this.internoService.Add(result).subscribe(tramite => {
+    //       if (this.Data.length === this.internoService.limit) {
+    //         this.Data.pop()
+    //       }
+    //       this.Data = [tramite, ...this.Data]
+    //       Swal.close();
+    //       this.Send(tramite)
+    //     })
+    //   }
+    // });
   }
-  Edit(tramite: InternoData) {
-    const dialogRef = this.dialog.open(DialogInternosComponent, {
-      width: '1000px',
-      data: tramite
-    });
-    dialogRef.afterClosed().subscribe((result: InternoData) => {
-      if (result) {
-        this.showLoadingRequest()
-        this.internoService.editInterno(tramite._id, result).subscribe(tramite => {
-          const indexFound = this.Data.findIndex(element => element._id === tramite._id)
-          this.Data[indexFound] = tramite
-          this.Data = [...this.Data]
-          Swal.close();
-        })
-      }
-    });
+  Edit(tramite: any) {
+    // const dialogRef = this.dialog.open(DialogInternosComponent, {
+    //   width: '1000px',
+    //   data: tramite
+    // });
+    // dialogRef.afterClosed().subscribe((result: any) => {
+    //   if (result) {
+    //     this.showLoadingRequest()
+    //     this.internoService.editInterno(tramite._id, result).subscribe(tramite => {
+    //       const indexFound = this.Data.findIndex(element => element._id === tramite._id)
+    //       this.Data[indexFound] = tramite
+    //       this.Data = [...this.Data]
+    //       Swal.close();
+    //     })
+    //   }
+    // });
   }
-  Send(tramite: InternoData) {
+  Send(tramite: any) {
     const dialogRef = this.dialog.open(DialogRemisionComponent, {
       width: '1200px',
       data: {
@@ -119,9 +113,9 @@ export class InternosComponent implements OnInit {
     });
   }
   generar_hoja_ruta(id_tramite: string) {
-    this.internoService.GetOne(id_tramite).subscribe(data => {
-      HojaRutaInterna(data.tramite, data.workflow, 'tramites_internos')
-    })
+    // this.internoService.GetOne(id_tramite).subscribe(data => {
+    //   HojaRutaInterna(data.tramite, data.workflow, 'tramites_internos')
+    // })
   }
 
 
@@ -134,30 +128,30 @@ export class InternosComponent implements OnInit {
 
 
   search(event: Event) {
-    this.internoService.offset = 0
-    this.internoService.searchOptions.text = (event.target as HTMLInputElement).value;
-    this.GetSearch()
+    // this.internoService.offset = 0
+    // this.internoService.searchOptions.text = (event.target as HTMLInputElement).value;
+    // this.GetSearch()
   }
 
   changeSearchMode(option: boolean) {
-    this.internoService.offset = 0
-    this.internoService.searchOptions.active = option
-    if (!option) {
-      this.internoService.searchOptions.text = ""
-      this.internoService.searchOptions.type = ""
-      this.Get()
-    }
+    // this.internoService.offset = 0
+    // this.internoService.searchOptions.active = option
+    // if (!option) {
+    //   this.internoService.searchOptions.text = ""
+    //   this.internoService.searchOptions.type = ""
+    //   this.Get()
+    // }
   }
 
   pagination(page: PageEvent) {
-    this.internoService.offset = page.pageIndex
-    this.internoService.limit = page.pageSize
-    if (this.internoService.searchOptions.active) {
-      this.GetSearch()
-    }
-    else {
-      this.Get()
-    }
+    // this.internoService.offset = page.pageIndex
+    // this.internoService.limit = page.pageSize
+    // if (this.internoService.searchOptions.active) {
+    //   this.GetSearch()
+    // }
+    // else {
+    //   this.Get()
+    // }
   }
 
 

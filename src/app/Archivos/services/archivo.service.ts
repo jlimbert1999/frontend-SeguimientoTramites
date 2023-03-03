@@ -24,4 +24,14 @@ export class ArchivoService {
         })
       );
   }
+
+  Unarchive(id_archivo: string, descripcion: string) {
+    return this.http.put<{ ok: boolean, message: any }>(`${base_url}/archivos/${id_archivo}`, { descripcion })
+      .pipe(
+        map((resp) => {
+          return resp.message
+        })
+      );
+  }
+
 }

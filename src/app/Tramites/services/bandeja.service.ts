@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { BehaviorSubject, elementAt, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { AllInfoOneInterno } from '../../Internos/models/interno.model';
 import { BandejaEntradaData, BandejaSalidaModel_View, EnvioModel, MailDetails, UsersMails } from '../models/mail.model';
 import { NotificationsService } from './notifications.service';
 import { SocketService } from './socket.service';
@@ -128,14 +127,14 @@ export class BandejaService {
   }
 
   getMailExterno(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: AllInfoOneInterno, workflow: any[] }>(`${base_url}/bandejas/externo/${id_tramite}`).pipe(
+    return this.http.get<{ ok: boolean, tramite: any, workflow: any[] }>(`${base_url}/bandejas/externo/${id_tramite}`).pipe(
       map(resp => {
         return { tramite: resp.tramite, workflow: resp.workflow }
       })
     )
   }
   getMailInterno(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: AllInfoOneInterno, workflow: any[] }>(`${base_url}/bandejas/interno/${id_tramite}`).pipe(
+    return this.http.get<{ ok: boolean, tramite: any, workflow: any[] }>(`${base_url}/bandejas/interno/${id_tramite}`).pipe(
       map(resp => {
         return { tramite: resp.tramite, workflow: resp.workflow }
       })

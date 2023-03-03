@@ -29,14 +29,14 @@ import { ConcluidosComponent } from '../Externos/concluidos/concluidos.component
     DialogRemisionComponent,
     ControlComponent,
     FichaComponent,
-    InternosComponent,
+    // InternosComponent,
 
    
-    DialogInternosComponent,
+    // DialogInternosComponent,
     DialogReenvioComponent,
     MailFichaComponent,
-    FichaInternoComponent,
-    MailFichaInternoComponent,
+    // FichaInternoComponent,
+    // MailFichaInternoComponent,
    
    
     ConcluidosComponent

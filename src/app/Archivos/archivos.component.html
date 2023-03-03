@@ -26,7 +26,7 @@
             <ng-container matColumnDef="opciones">
                 <th mat-header-cell *matHeaderCellDef> </th>
                 <td mat-cell *matCellDef="let element">
-                    <button mat-icon-button aria-label="Example icon button with a vertical three dot icon">
+                    <button (click)="unarchive(element)" mat-icon-button aria-label="Example icon button with a vertical three dot icon">
                         <mat-icon>restore_page</mat-icon>
                     </button>
                 </td>

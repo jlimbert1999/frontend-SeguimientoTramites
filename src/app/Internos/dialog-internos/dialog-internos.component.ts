@@ -5,7 +5,6 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { map, Observable, startWith, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { InternosService } from '../../Tramites/services/internos.service';
-import { Interno, InternoData } from '../models/interno.model';
 
 @Component({
   selector: 'app-dialog-internos',
@@ -35,7 +34,7 @@ export class DialogInternosComponent implements OnInit {
     private authService: AuthService,
     private internoService: InternosService,
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: InternoData,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<DialogInternosComponent>,) {
   }
 
@@ -90,7 +89,7 @@ export class DialogInternosComponent implements OnInit {
       nombre_destinatario,
       cargo_destinatario,
       ...Object } = this.TramiteFormGroup.value
-    let tramite: Interno = {
+    let tramite: any = {
       remitente: {
         nombre: nombre_remitente,
         cargo: cargo_remitente

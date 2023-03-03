@@ -1,11 +1,32 @@
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
-
   <mat-sidenav-container class="example-sidenav-container">
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
       [opened]="true">
       <mat-toolbar>
-        <span>{{authService.Account.funcionario.nombre_completo}}</span>
+        <span>Menu</span>
       </mat-toolbar>
+      <mat-card class="card-profile">
+        <mat-card-header>
+          <div mat-card-avatar class="card-profile-image"></div>
+          <mat-card-title>{{authService.Account.funcionario.nombre_completo|titlecase|slice:0:30}}
+          </mat-card-title>
+          <mat-card-subtitle>{{authService.Account.funcionario.cargo|titlecase}}</mat-card-subtitle>
+          <div style="flex-grow: 1"></div>
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button (click)="editAccount()" mat-menu-item>
+              <mat-icon>manage_accounts</mat-icon>
+              <span>Configurar cuenta</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>logout</mat-icon>
+              <span>Cerrar sesion</span>
+            </button>
+          </mat-menu>
+        </mat-card-header>
+      </mat-card>
       <mat-nav-list class="side-navnar">
         <ng-container *ngFor="let menu of Menu; index as i;">
           <ng-container [ngTemplateOutlet]="menu.children ?  childMenu : parentMenu"
@@ -44,10 +65,10 @@
         <mat-progress-spinner class="load-spiner" [mode]="'indeterminate'"></mat-progress-spinner>
       </ng-container>
       <router-outlet></router-outlet>
-      
+
     </mat-sidenav-content>
-  
-    
+
+
   </mat-sidenav-container>
-  
+
 </div>

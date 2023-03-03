@@ -43,6 +43,11 @@ const routes: Routes = [
                     import(`../Externos/externos-routing.module`).then((m) => m.ExternosRoutingModule),
             },
             {
+                path: 'tramites-internos',
+                loadChildren: () =>
+                    import(`../Internos/internos-routing.module`).then((m) => m.InternosRoutingModule),
+            },
+            {
                 path: 'archivos',
                 loadChildren: () =>
                     import(`../Archivos/archivos-routing.module`).then((m) => m.ArchivosRoutingModule),
@@ -69,8 +74,8 @@ const routes: Routes = [
             // { path: 'bandeja-salida/ficha-externo/:id', component: FichaExternoComponent },
 
             // INTERNOS
-            { path: 'tramites-internos', component: InternosComponent },
-            { path: 'tramites-internos/ficha/:id', component: FichaInternoComponent },
+            // { path: 'tramites-internos', component: InternosComponent },
+            // { path: 'tramites-internos/ficha/:id', component: FichaInternoComponent },
             { path: 'bandeja-entrada/mail-ficha-interno/:id', component: MailFichaInternoComponent },
             { path: 'bandeja-salida/ficha-interno/:id', component: FichaInternoComponent },
 

@@ -1,50 +1,8 @@
-<p>
-    <mat-toolbar>
-        <span>Internos</span>
-        <span class="example-spacer"></span>
-        <button matTooltip="Buscar tramite" (click)="changeSearchMode(true)" mat-icon-button
-            class="example-icon favorite-icon">
-            <mat-icon>search</mat-icon>
-        </button>
-        <button (click)="Add()" mat-icon-button class="example-icon"
-            aria-label="Example icon-button with share icon">
-            <mat-icon>add</mat-icon>
-        </button>
-    </mat-toolbar>
-</p>
-
+<app-toolbar title="Internos" (add)="Add()"></app-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
-    <div [@expandOnEnter] [@collapseOnLeave] *ngIf="internoService.searchOptions.active">
-        <mat-card appearance="outlined" class="example-card">
-            <mat-card-content>
-                <div class="row">
-                    <div class="col-sm-2">
-                        <mat-form-field appearance="fill" class="example-full-width">
-                            <mat-label>Tipo de busqueda</mat-label>
-                            <mat-select [(ngModel)]="internoService.searchOptions.type">
-                                <mat-option *ngFor="let option of filterOpions" [value]="option.value">
-                                    {{option.viewValue}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-sm-10">
-                        <mat-form-field appearance="fill" class="example-full-width">
-                            <mat-label>Termino a buscar</mat-label>
-                            <input [(ngModel)]="internoService.searchOptions.text" (keyup)="search($event)" matInput>
-                        </mat-form-field>
-                    </div>
-                </div>
-                <mat-divider></mat-divider>
-            </mat-card-content>
-            <mat-card-actions>
-                <button mat-stroked-button color="warn" (click)="changeSearchMode(false)">Cancelar</button>
-            </mat-card-actions>
-        </mat-card>
-        <br>
-    </div>
+    
     <div class="example-container mat-elevation-z8">
-        <div class="example-table-container" [ngClass]="internoService.searchOptions.active?'search':''">
+        <div class="example-table-container">
             <table mat-table [dataSource]="Data">
                 <ng-container matColumnDef="alterno">
                     <th mat-header-cell *matHeaderCellDef> Alterno </th>

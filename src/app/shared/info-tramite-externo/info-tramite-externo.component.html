@@ -1,60 +1,60 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-8">
-                <div class="card shadow mb-2 bg-body-tertiary rounded">
-                    <div class="card-header fw-bold">
-                        TRAMITE
-                    </div>
-                    <div class="card-body">
-                        <form class="row g-3">
-                            <div class="col-md-8">
-                                <label class="form-label">Tipo de tramite</label>
-                                <input type="text" class="form-control" disabled [value]="Tramite.tipo_tramite.nombre">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Cite</label>
-                                <input type="text" class="form-control" disabled [value]="Tramite.cite">
-                            </div>
-                            <div class="col-12">
-                                <label for="inputAddress" class="form-label">Referencia</label>
-                                <textarea class="form-control" disabled [value]="Tramite.detalle"></textarea>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Fecha registro</label>
-                                <input type="text" class="form-control" disabled
-                                    [value]="Tramite.fecha_registro|date:'short'">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Cantidad hojas</label>
-                                <input type="text" class="form-control" disabled [value]="Tramite.cantidad">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Cite</label>
-                                <input type="text" class="form-control" disabled [value]="Tramite.cite">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">Estado</label>
-                                <h2>
-                                    <span class="badge" [ngClass]="Tramite.estado|state">
-                                        {{Tramite.estado|uppercase}}
-                                    </span>
-                                </h2>
-                            </div>
-                            <div [ngSwitch]="Tramite.estado" class="col-md-4">
-                                <div *ngSwitchCase="'CONCLUIDO'">
-                                    <label class="form-label">Duracion proceso</label>
-                                    <h2> {{count}}</h2>
-                                </div>
-                                <div *ngSwitchDefault>
-                                    <label class="form-label">Tiempo transcurrido</label>
-                                    <h2> <span class="badge text-bg-success">{{count}}</span></h2>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+            <div class="card shadow mb-2 bg-body-tertiary rounded">
+                <div class="card-header fw-bold">
+                    TRAMITE
                 </div>
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Tipo de tramite</label>
+                            <input type="text" class="form-control" disabled [value]="Tramite.tipo_tramite.nombre">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Cite</label>
+                            <input type="text" class="form-control" disabled [value]="Tramite.cite">
+                        </div>
+                        <div class="col-12">
+                            <label for="inputAddress" class="form-label">Referencia</label>
+                            <textarea class="form-control" disabled [value]="Tramite.detalle"></textarea>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Fecha registro</label>
+                            <input type="text" class="form-control" disabled
+                                [value]="Tramite.fecha_registro|date:'short'">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Cantidad hojas</label>
+                            <input type="text" class="form-control" disabled [value]="Tramite.cantidad">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Cite</label>
+                            <input type="text" class="form-control" disabled [value]="Tramite.cite">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Estado</label>
+                            <h2>
+                                <span class="badge" [ngClass]="Tramite.estado|state">
+                                    {{Tramite.estado|uppercase}}
+                                </span>
+                            </h2>
+                        </div>
+                        <div [ngSwitch]="Tramite.estado" class="col-md-4">
+                            <div *ngSwitchCase="'CONCLUIDO'">
+                                <label class="form-label">Duracion proceso</label>
+                                <h2> {{count}}</h2>
+                            </div>
+                            <div *ngSwitchDefault>
+                                <label class="form-label">Tiempo transcurrido</label>
+                                <h2> <span class="badge text-bg-success">{{count}}</span></h2>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-       
+
         <div class="col-sm-4">
             <div class="card shadow mb-2 bg-body-tertiary rounded">
                 <div class="card-header fw-bold">
@@ -62,8 +62,9 @@
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item" *ngFor="let requerimiento of Tramite.requerimientos">{{requerimiento}}</li>
-                      </ul>
+                        <li class="list-group-item" *ngFor="let requerimiento of Tramite.requerimientos">
+                            {{requerimiento}}</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -71,9 +72,22 @@
             <div class="card shadow mb-2 bg-body-tertiary rounded">
                 <div class="card-header fw-bold">
                     OBSERVACIONES
+                    
                 </div>
                 <div class="card-body">
                     <app-observaciones [Options]="false" [Observaciones]="Tramite.observaciones"></app-observaciones>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="Tramite.eventos" class="col-sm-12">
+            <div class="card shadow mb-2 bg-body-tertiary rounded">
+                <div class="card-header fw-bold">
+                    Eventoa
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item" *ngFor="let evento of Tramite.eventos"> {{evento.funcionario|fullname}} {{evento.descripcion}}</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -114,13 +128,12 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Dni</label>
-                        <input class="form-control" type="text" value="{{Tramite.solicitante.dni}}" disabled
-                            readonly>
+                        <input class="form-control" type="text" value="{{Tramite.solicitante.dni}}" disabled readonly>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-   
+
 </div>

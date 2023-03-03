@@ -1,8 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
+import { Interno } from 'src/app/Internos/models/Interno.interface';
 import { environment } from 'src/environments/environment';
-import { AllInfoOneInterno, InternoData } from '../../Internos/models/interno.model';
 const base_url = environment.base_url
 
 
@@ -22,8 +22,8 @@ export class InternosService {
 
   constructor(private http: HttpClient) { }
 
-  Add(tramite: InternoData) {
-    return this.http.post<{ ok: boolean, tramite: InternoData }>(`${base_url}/internos`, tramite).pipe(
+  Add(tramite: Interno) {
+    return this.http.post<{ ok: boolean, tramite: Interno }>(`${base_url}/internos`, tramite).pipe(
       map(resp => {
         this.resultsLength += 1
         return resp.tramite
@@ -34,7 +34,7 @@ export class InternosService {
     let params = new HttpParams()
       .set('limit', this.limit)
       .set('offset', this.offset)
-    return this.http.get<{ ok: boolean, tramites: InternoData[], total: number }>(`${base_url}/internos`, { params }).pipe(
+    return this.http.get<{ ok: boolean, tramites: Interno[], total: number }>(`${base_url}/internos`, { params }).pipe(
       map(resp => {
         this.resultsLength = resp.total
         return resp.tramites
@@ -49,7 +49,7 @@ export class InternosService {
     )
   }
   GetOne(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: AllInfoOneInterno, workflow: any[] }>(`${base_url}/internos/${id_tramite}`).pipe(
+    return this.http.get<{ ok: boolean, tramite: any, workflow: any[] }>(`${base_url}/internos/${id_tramite}`).pipe(
       map(resp => {
         return { tramite: resp.tramite, workflow: resp.workflow }
       })
@@ -95,7 +95,7 @@ export class InternosService {
       .set('type', this.searchOptions.type)
       .set('limit', this.limit)
       .set('offset', this.offset)
-    return this.http.get<{ ok: boolean, tramites: InternoData[], total: number }>(`${base_url}/internos/search/${this.searchOptions.text}`, { params }).pipe(
+    return this.http.get<{ ok: boolean, tramites: Interno[], total: number }>(`${base_url}/internos/search/${this.searchOptions.text}`, { params }).pipe(
       map(resp => {
         this.resultsLength = resp.total
         return resp.tramites
