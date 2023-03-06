@@ -4,7 +4,7 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 import { map, Observable, startWith, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { InternosService } from '../../Tramites/services/internos.service';
+import { InternosService } from '../services/internos.service';
 
 @Component({
   selector: 'app-dialog-internos',
@@ -107,13 +107,13 @@ export class DialogInternosComponent implements OnInit {
   FiltrarUsuarios(termino: string) {
     return this.internoService.getUsers(termino)
       .pipe(
-        map(response => response.usuarios)
+        map(response => response.users)
       )
   }
   FiltrarDestinatarios(termino: string) {
     return this.internoService.getUsers(termino)
       .pipe(
-        map(response => response.usuarios)
+        map(response => response.users)
       )
   }
   seleccionar_remitente(funcionario: any) {

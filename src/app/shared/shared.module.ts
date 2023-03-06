@@ -16,7 +16,7 @@ import { InfoTramiteExternoComponent } from './info-tramite-externo/info-tramite
 import { StatePipe } from './pipes/state.pipe';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { ToolbarComponent } from './toolbar/toolbar.component';
-
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -40,6 +40,7 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
     CommonModule,
     MaterialModule,
     NgxGraphModule,
+    ReactiveFormsModule
   ],
   exports: [
     TablaComponent,

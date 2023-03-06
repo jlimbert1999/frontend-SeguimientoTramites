@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
+import { WorkflowData } from 'src/app/Externos/models/Externo.interface';
 
 @Component({
   selector: 'app-list-workflow',
@@ -7,29 +8,45 @@ import * as moment from 'moment';
   styleUrls: ['./list-workflow.component.css']
 })
 export class ListWorkflowComponent implements OnInit {
-  @Input() Workflow: any[]
+  @Input() Workflow: WorkflowData[]
   @Input() fecha_registro: string
+
+  Iteraciones: any[] = []
   constructor() { }
 
   ngOnInit(): void {
     let fecha_inicio, fecha_fin
     this.Workflow.forEach((element, index) => {
-      if (index !== 0) {
-        fecha_inicio = this.Workflow[index - 1].fecha_recibido
-      }
-      else {
-        fecha_inicio = this.fecha_registro
-      }
+      let pos = this.Iteraciones.findIndex(iteracion => iteracion.cuenta._id === element.emisor.cuenta._id)
+      fecha_inicio = this.Workflow[index - 1] ? this.Workflow[index - 1].fecha_recibido : this.fecha_registro
       fecha_fin = element.fecha_envio
-      this.Workflow[index]['duracion'] = this.crear_duracion(fecha_inicio, fecha_fin)
-      if (element.recibido === true || element.recibido === false) {
-        this.Workflow[index]['respuesta'] = this.crear_duracion(element.fecha_envio, element.fecha_recibido)
+      if (pos !== -1) {
+        this.Iteraciones[pos].receptores.push(
+          {
+            ...element.receptor,
+            duracion: this.crear_duracion(fecha_inicio, fecha_fin)
+          }
+        )
       }
       else {
-        this.Workflow[index]['respuesta'] = 'Pendiente'
+        this.Iteraciones.push({
+          ...element.emisor,
+          duracion: this.crear_duracion(fecha_inicio, fecha_fin),
+          motivo: element.motivo,
+          cantidad: element.cantidad,
+          numero_interno: element.numero_interno,
+          recibido: element.recibido,
+          receptores: [{
+            ...element.receptor,
+            duracion: this.crear_duracion(fecha_inicio, fecha_fin)
+          }]
+        })
       }
     })
+    console.log(this.Iteraciones)
   }
+
+
   crear_duracion(inicio: any, fin: any) {
     inicio = moment(new Date((inicio)))
     fin = moment(new Date((fin)))

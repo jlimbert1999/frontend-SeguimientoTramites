@@ -92,6 +92,7 @@ export interface WorkflowData {
         }
     }
     fecha_envio: string
+    fecha_recibido?: string
     motivo: string
     numero_interno: string
     tipo: string

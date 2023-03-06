@@ -1,4 +1,4 @@
-.list-group{
-    overflow-y: scroll;
-    min-height: 355px;
+.panel-requerimientos {
+    overflow: auto;
+    height: 600px;
 }

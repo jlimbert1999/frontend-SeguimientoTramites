@@ -26,10 +26,14 @@ export class FichaExternoComponent implements OnInit {
   
   ngOnInit(): void {
     this.activateRoute.params.subscribe(params => {
-      this.externoService.getOne(params['id']).subscribe(data => {
-        this.Tramite = data.tramite
-        this.Workflow = data.workflow
-      })
+      console.log(params['id'])
+      if(params['id']){
+        this.externoService.getOne(params['id']).subscribe(data => {
+          this.Tramite = data.tramite
+          this.Workflow = data.workflow
+        })
+      }
+     
     })
   }
 

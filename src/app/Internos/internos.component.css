@@ -146,8 +146,7 @@ td.mat-column-opciones {
 
 }
 
-.search {
-    position: relative;
-    overflow: auto;
-    max-height: 50vh;
+.mat-mdc-form-field {
+    font-size: 14px;
+    width: 100%;
 }
