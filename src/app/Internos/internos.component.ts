@@ -109,7 +109,7 @@ export class InternosComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         const indexFound = this.dataSource.findIndex(element => element._id === tramite._id)
-        this.dataSource[indexFound].ubicacion = result.receptor
+        this.dataSource[indexFound].estado = 'EN REVISION'
         this.dataSource = [...this.dataSource]
       }
     });
@@ -121,12 +121,7 @@ export class InternosComponent implements OnInit {
   }
 
 
-  denied_options(estado: string, responsable: string) {
-    if (estado !== 'INSCRITO' || responsable !== this.authService.Account.id_cuenta) {
-      return true
-    }
-    return false
-  }
+ 
 
 
 

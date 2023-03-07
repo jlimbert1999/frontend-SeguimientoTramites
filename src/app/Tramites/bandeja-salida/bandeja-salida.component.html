@@ -1,6 +1,4 @@
-<mat-toolbar>
-    <span>Bandeja salida</span>
-</mat-toolbar>
+<app-toolbar title="Bandeja salida"></app-toolbar>
 
 <div class="container-fluid" [@fadeInOnEnter]>
     <div class="example-container mat-elevation-z8">
@@ -89,11 +87,10 @@
                                 <mat-icon>print</mat-icon>
                                 <span>Generar hoja de ruta</span>
                             </button>
-                            <button (click)="cancel(row._id)" mat-menu-item>
+                            <button (click)="cancel(row)" mat-menu-item [disabled]="row.recibido!==undefined">
                                 <mat-icon>cancel_schedule_send</mat-icon>
                                 <span>Cancelar envio</span>
                             </button>
-
                         </mat-menu>
 
                     </td>
@@ -117,8 +114,8 @@
                             <div class="card w-100">
                                 <div class="card-body">
                                     <h3 class="card-title">ENVIADO A:
-                                        {{element.receptor.funcionario}}
-                                        ({{element.receptor.cargo|titlecase}}) -
+                                        {{element.receptor.funcionario|fullname}}
+                                        ({{element.receptor.funcionario.cargo|uppercase}}) -
                                         {{element.receptor.cuenta.dependencia.institucion.sigla}} /
                                         {{element.receptor.cuenta.dependencia.nombre}}</h3>
                                     <p class="card-text">MOTIVO: {{element.motivo}}</p>

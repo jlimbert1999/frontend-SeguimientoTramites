@@ -80,9 +80,10 @@ mat-icon {
     color: #1E88E5;
 }
 
-.card-profile{
+.card-profile {
     width: 365px;
 }
+
 .card-profile,
 mat-card-title,
 mat-card-subtitle {
@@ -98,4 +99,11 @@ mat-card-subtitle {
 .card-profile-image {
     background-image: url('../../assets/img/account.png');
     background-size: cover;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }

@@ -78,12 +78,27 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
       this.dataSource = data.tramites
     })
   }
-  cancel(id_bandeja: any) {
-    this.bandejaService.cancel(id_bandeja).subscribe(message => {
-      Swal.fire({ title: 'Envio cancelado!', icon: 'success', text: message })
-      this.dataSource = this.dataSource.filter(mail => mail._id !== id_bandeja)
-      this.dataSource = [...this.dataSource]
+  cancel(mail: any) {
+    console.log(mail)
+    Swal.fire({
+      title: `Cancelar envio del tramite ${mail.tramite.alterno}?`,
+      text: `El funcionario ${mail.receptor.funcionario.nombre} ${mail.receptor.funcionario.paterno} ${mail.receptor.funcionario.materno} ya no podra ver el tramite.`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.bandejaService.cancel(mail._id).subscribe(message => {
+          Swal.fire({ title: 'Envio cancelado!', icon: 'success', text: message })
+          this.dataSource = this.dataSource.filter(element => element._id !== mail._id)
+          this.dataSource = [...this.dataSource]
+        })
+      }
     })
+
   }
 
 

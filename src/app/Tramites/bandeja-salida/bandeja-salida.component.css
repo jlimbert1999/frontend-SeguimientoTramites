@@ -49,5 +49,12 @@ tr.example-element-row:not(.example-expanded-row):active {
     /* width: 50px;
     border-right: 1px solid currentColor;
     padding-right: 24px; */
+
+    width: 32px;
+    border-left: 1px solid;
     text-align: center;
+}
+
+td.mat-column-alterno {
+    width: 170px;
 }

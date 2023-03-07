@@ -15,20 +15,43 @@ export class ListWorkflowComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    let fecha_inicio, fecha_fin
+    let fecha_inicio: any, fecha_fin
     this.Workflow.forEach((element, index) => {
       let pos = this.Iteraciones.findIndex(iteracion => iteracion.cuenta._id === element.emisor.cuenta._id)
-      fecha_inicio = this.Workflow[index - 1] ? this.Workflow[index - 1].fecha_recibido : this.fecha_registro
-      fecha_fin = element.fecha_envio
+      let respuesta
+        if (element.recibido != undefined) {
+          respuesta = this.crear_duracion(element.fecha_envio, element.fecha_recibido)
+        }
+        else {
+          respuesta = 'Pendiente'
+        }
+
       if (pos !== -1) {
-        this.Iteraciones[pos].receptores.push(
-          {
-            ...element.receptor,
-            duracion: this.crear_duracion(fecha_inicio, fecha_fin)
-          }
-        )
+
+        this.Iteraciones[pos].receptores.push({
+          ...element.receptor,
+          respuesta
+        })
       }
       else {
+        if (index === 0) {
+          fecha_inicio = this.fecha_registro
+        }
+        // create duration
+        let posLocation = index - 1
+        for (let i = posLocation; i > 0; posLocation--) {
+          if (this.Workflow[posLocation].receptor.cuenta._id === element.emisor.cuenta._id) {
+            fecha_inicio = this.Workflow[posLocation].fecha_recibido
+            break;
+          }
+        }
+        fecha_fin = element.fecha_envio
+        if (element.recibido) {
+          respuesta = this.crear_duracion(fecha_inicio, fecha_fin)
+        }
+        else {
+          respuesta = 'Pendiente'
+        }
         this.Iteraciones.push({
           ...element.emisor,
           duracion: this.crear_duracion(fecha_inicio, fecha_fin),
@@ -38,12 +61,12 @@ export class ListWorkflowComponent implements OnInit {
           recibido: element.recibido,
           receptores: [{
             ...element.receptor,
-            duracion: this.crear_duracion(fecha_inicio, fecha_fin)
+            respuesta,
           }]
         })
+
       }
     })
-    console.log(this.Iteraciones)
   }
 
 

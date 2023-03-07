@@ -110,7 +110,6 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
       
           Swal.close();
           this.dialogRef.close({})
-
         });
       }
     });
