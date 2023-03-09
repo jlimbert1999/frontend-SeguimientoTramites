@@ -196,11 +196,18 @@ export class BandejaEntradaComponent implements OnInit {
     //   this.bandejaService.searchMailsIn().subscribe()
     // }
   }
-  search(event: Event) {
-    // this.bandejaService.PaginationMailsIn.offset = 0
-    // this.bandejaService.searchOptionsIn.text = (event.target as HTMLInputElement).value;
-    // this.GetSearch()
+
+  applyFilter(event: Event) {
+    // this.paginator.firstPage();
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.bandejaService.textSearch = filterValue.toLowerCase();
+    if (this.bandejaService.textSearch !== '') {
+      this.bandejaService.Search().subscribe()
+    }
+
   }
+
+
 
   changeSearchMode(option: boolean) {
     // this.bandejaService.PaginationMailsIn.offset = 0

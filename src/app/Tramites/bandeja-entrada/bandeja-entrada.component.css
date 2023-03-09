@@ -165,3 +165,7 @@ td.mat-column-fecha_envio {
         display: none;
     }
 }
+
+.mat-form-field {
+    width: 100%;
+}

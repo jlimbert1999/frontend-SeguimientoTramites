@@ -13,6 +13,8 @@ export class BandejaEntradaService {
   offset: number = 0;
   limit: number = 10;
   length: number = 0;
+  type: string = ''
+  textSearch: string = ''
   Mails: any[] = [];
   constructor(private http: HttpClient) { }
 
@@ -67,6 +69,14 @@ export class BandejaEntradaService {
     return this.http.put<{ ok: boolean, message: string }>(`${base_url}/bandejas/concluir/${id_bandeja}`, { descripcion }).pipe(
       map(resp => {
         return resp.message
+      })
+    )
+  }
+  Search() {
+    return this.http.get<{ ok: boolean, mails: any[], length: number }>(`${base_url}/bandejas/search/${this.textSearch}?type=${this.type}`).pipe(
+      map(resp => {
+        this.length = resp.length
+        this.Mails = resp.mails
       })
     )
   }

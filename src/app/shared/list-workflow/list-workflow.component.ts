@@ -16,57 +16,50 @@ export class ListWorkflowComponent implements OnInit {
 
   ngOnInit(): void {
     let fecha_inicio: any, fecha_fin
-    this.Workflow.forEach((element, index) => {
-      let pos = this.Iteraciones.findIndex(iteracion => iteracion.cuenta._id === element.emisor.cuenta._id)
-      let respuesta
-        if (element.recibido != undefined) {
-          respuesta = this.crear_duracion(element.fecha_envio, element.fecha_recibido)
-        }
-        else {
-          respuesta = 'Pendiente'
-        }
+    if (this.Workflow.length > 0) {
+      let puntero = this.Workflow[0].emisor.cuenta._id
+      fecha_inicio = this.fecha_registro
+      fecha_fin = this.Workflow[0].fecha_envio
+      this.Iteraciones.push({
+        emisor: this.Workflow[0].emisor,
+        duracion: this.crear_duracion(fecha_inicio, fecha_fin),
+        motivo: this.Workflow[0].motivo,
+        cantidad: this.Workflow[0].cantidad,
+        receptores: []
+      })
 
-      if (pos !== -1) {
-
-        this.Iteraciones[pos].receptores.push({
-          ...element.receptor,
-          respuesta
-        })
-      }
-      else {
-        if (index === 0) {
-          fecha_inicio = this.fecha_registro
-        }
-        // create duration
-        let posLocation = index - 1
-        for (let i = posLocation; i > 0; posLocation--) {
-          if (this.Workflow[posLocation].receptor.cuenta._id === element.emisor.cuenta._id) {
-            fecha_inicio = this.Workflow[posLocation].fecha_recibido
-            break;
+      this.Workflow.forEach((element, index) => {
+        if (puntero === element.emisor.cuenta._id) {
+          let respuesta = 'Pendiente'
+          if (element.recibido != null) {
+            respuesta = this.crear_duracion(element.fecha_envio, element.fecha_recibido)
           }
-        }
-        fecha_fin = element.fecha_envio
-        if (element.recibido) {
-          respuesta = this.crear_duracion(fecha_inicio, fecha_fin)
+          this.Iteraciones[this.Iteraciones.length - 1].receptores.push({ receptor: element.receptor, respuesta })
         }
         else {
-          respuesta = 'Pendiente'
+          puntero = element.emisor.cuenta._id
+          fecha_fin = element.fecha_envio
+          for (let i = index; i >= 0; i--) {
+            if (this.Workflow[i].receptor.cuenta._id === puntero) {
+              fecha_inicio = this.Workflow[i].fecha_recibido
+              break
+            }
+          }
+          let respuesta = 'Pendiente'
+          if (element.recibido != null) {
+            respuesta = this.crear_duracion(element.fecha_envio, element.fecha_recibido)
+          }
+        
+          this.Iteraciones.push({
+            emisor: element.emisor,
+            duracion: this.crear_duracion(fecha_inicio, fecha_fin),
+            motivo: element.motivo,
+            cantidad: element.cantidad,
+            receptores: [{ receptor: element.receptor, respuesta }]
+          })
         }
-        this.Iteraciones.push({
-          ...element.emisor,
-          duracion: this.crear_duracion(fecha_inicio, fecha_fin),
-          motivo: element.motivo,
-          cantidad: element.cantidad,
-          numero_interno: element.numero_interno,
-          recibido: element.recibido,
-          receptores: [{
-            ...element.receptor,
-            respuesta,
-          }]
-        })
-
-      }
-    })
+      })
+    }
   }
 
 
@@ -105,7 +98,7 @@ export class ListWorkflowComponent implements OnInit {
 
     // if (duration.seconds() >= 1) {
     //   const seconds = Math.floor(duration.seconds());
-    //   parts.push(seconds + " " + (seconds > 1 ? "seconds" : "second"));
+    //   parts.push(seconds + " " + (seconds > 1 ? "segundos" : "segundo"));
     // }
     return parts.join(", ")
   }

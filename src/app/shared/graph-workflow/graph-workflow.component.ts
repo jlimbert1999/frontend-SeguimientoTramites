@@ -20,7 +20,6 @@ export class GraphWorkflowComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.Workflow)
     this.crear_workflow(this.Workflow)
   }
 
@@ -91,7 +90,6 @@ export class GraphWorkflowComponent implements OnInit {
       })
     })
     this.clusters = instituciones
-    console.log(this.links)
 
   }
 

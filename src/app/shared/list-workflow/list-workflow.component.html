@@ -1,7 +1,8 @@
 <div class="container-fluid">
   <mat-stepper orientation="vertical" [linear]="false" #stepper>
     <mat-step *ngFor="let item of Iteraciones" [completed]="false">
-      <ng-template matStepLabel>{{item.funcionario|fullname|titlecase}} <span class="fw-lighter">({{item.funcionario.cargo}})</span></ng-template>
+      <ng-template matStepLabel>{{item.emisor.funcionario|fullname|titlecase}} <span
+          class="fw-lighter">({{item.emisor.funcionario.cargo}})</span></ng-template>
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">DETALLES DEL ENVIO</h5>
@@ -9,23 +10,17 @@
         </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">Cantidad: {{item.cantidad}}</li>
-          <li class="list-group-item">Tiempo empleado:<span class="badge text-bg-warning fs-6">{{item.duracion}}</span> </li>
+          <li class="list-group-item">Tiempo empleado:<span class="badge text-bg-warning fs-6">{{item.duracion}}</span>
+          </li>
         </ul>
 
       </div>
       <mat-list>
         <div mat-subheader>Destinatarios</div>
-        <mat-list-item *ngFor="let receptor of item.receptores">
+        <mat-list-item *ngFor="let item of item.receptores">
           <mat-icon matListItemIcon>outgoing_mail</mat-icon>
-          <!-- <h3 matListItemTitle>{{receptor.funcionario|fullname}}</h3>
-          <p matListItemLine> 
-            <span>{{receptor.funcionario|fullname}}</span>
-            <span class="demo-2"> -- {{receptor.duracion}}</span>
-          </p>
-          <p matListItemLine class="demo-2">dsd</p> -->
-          <span matListItemTitle>{{receptor.funcionario|fullname|titlecase}} ({{receptor.funcionario.cargo}})</span>
-          <span matListItemLine>Respuesta: {{receptor.respuesta}}</span>
-          Third line
+          <span matListItemTitle>{{item.receptor.funcionario|fullname|titlecase}} ({{item.receptor.funcionario.cargo}})</span>
+          <span matListItemLine>Respuesta: {{item.respuesta}}</span>
         </mat-list-item>
       </mat-list>
       <div>

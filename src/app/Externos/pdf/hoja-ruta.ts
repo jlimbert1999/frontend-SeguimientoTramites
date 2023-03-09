@@ -7,6 +7,33 @@ import { Externo } from "../models/Externo.interface";
 const ordinales = require("ordinales-js");
 
 export const HojaRuta = async (tramite: Externo, workflow: any[]) => {
+    let Iteraciones: any[] = []
+    if(workflow.length>0){
+
+        Iteraciones.push({
+            emisor: workflow[0].emisor,
+            receptores: []
+        })
+        let puntero = workflow[0].emisor.cuenta._id
+    
+        workflow.forEach((element, index) => {
+            if (puntero === element.emisor.cuenta._id) {
+                let respuesta = 'Pendiente'
+                Iteraciones[Iteraciones.length - 1].receptores.push(element.receptor)
+            }
+            else {
+                puntero = element.emisor.cuenta._id
+                Iteraciones.push({
+                    emisor: element.emisor,
+                    receptores: [element.receptor]
+                })
+            }
+        })
+    }
+    
+ 
+
+
     const img1: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     workflow = workflow.filter(flujo => flujo.recibido === true || flujo.recibido === undefined)
     let docDefinition: TDocumentDefinitions
@@ -130,7 +157,7 @@ export const HojaRuta = async (tramite: Externo, workflow: any[]) => {
     }
     else {
         destinatario = {
-            nombre: `${workflow[0].receptor.funcionario}`,
+            nombre: `${Iteraciones[0].emisor.funcionario.nombre} ${Iteraciones[0].emisor.funcionario.paterno} ${Iteraciones[0].emisor.funcionario.paterno}`,
             cargo: workflow[0].receptor.cargo,
             salida: [moment(workflow[0].fecha_envio).format('DD-MM-YYYY'), moment(workflow[0].fecha_envio).format('HH:mm A'), workflow[0].cantidad],
             numero_interno: workflow[0].numero_interno
@@ -168,8 +195,8 @@ export const HojaRuta = async (tramite: Externo, workflow: any[]) => {
                 table: {
                     dontBreakRows: true,
                     widths: [360, '*'],
-                    body: [
-                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO: ${ordinales.toOrdinal(1)} ${workflow[0].receptor.funcionario} (${workflow[0].receptor.cargo})`.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
+                    body: [ 
+                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO: ${ordinales.toOrdinal(1)} ${workflow[0].receptor.funcionario.nombre} (${workflow[0].receptor.cargo})`.toUpperCase(), decoration: 'underline', colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
                         [
                             {
                                 border: [true, false, false, false],
@@ -629,7 +656,7 @@ export const HojaRuta = async (tramite: Externo, workflow: any[]) => {
                                                     ]
                                                 ]
                                             },
-                                            
+
                                         },
                                         ],
                                         [`REMITENTE: ${NameSolicitante}`, `CARGO: P. ${tramite.solicitante.tipo}`],

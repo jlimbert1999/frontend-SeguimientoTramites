@@ -1,13 +1,31 @@
-<mat-toolbar>
-    <span>Bandeja entrada</span>
-    <span class="example-spacer"></span>
-    <button matTooltip="Buscar tramite" (click)="changeSearchMode(true)" mat-icon-button
-        class="example-icon favorite-icon">
-        <mat-icon>search</mat-icon>
-    </button>
-
-</mat-toolbar>
+<app-toolbar title="Bandeja entrada"></app-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
+
+    <div class="row">
+        <div class="col-sm-2">
+            <mat-form-field appearance="fill">
+                <mat-label>Tipos busqueda</mat-label>
+                <mat-select [(ngModel)]="bandejaService.type">
+                    <mat-option [value]="'EXTERNO'">
+                        Tramite Externo
+                    </mat-option>
+                    <mat-option [value]="'INTERNO'">
+                        Tramite Interno
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-sm-10">
+            <mat-form-field class="example-full-width">
+                <mat-label></mat-label>
+                <mat-label *ngIf="bandejaService.type=='EXTERNO'">Alterno / Solicitante / Descripcion</mat-label>
+                <mat-label *ngIf="bandejaService.type=='INTERNO'">Alterno / Destinatario / Cite</mat-label>
+                <input  [(ngModel)]="bandejaService.textSearch" (keyup)="applyFilter($event)" [disabled]="bandejaService.type===''" matInput>
+            </mat-form-field>
+        </div>
+
+
+    </div>
     <!-- <div [@expandOnEnter] [@collapseOnLeave] *ngIf="bandejaService.searchOptionsIn.active">
         <mat-card appearance="outlined" class="example-card">
             <mat-card-content>
@@ -80,7 +98,7 @@
                     </td>
                 </ng-container>
 
-              
+
 
                 <ng-container matColumnDef="fecha_envio">
                     <th mat-header-cell *matHeaderCellDef>Recibido</th>
@@ -111,8 +129,7 @@
                                         <mat-icon>send</mat-icon>
                                         <span>Remitir tramite</span>
                                     </button>
-                                    <button (click)="concluir(row)"
-                                        mat-menu-item>
+                                    <button (click)="concluir(row)" mat-menu-item>
                                         <mat-icon>domain_verification</mat-icon>
                                         <span>Concluir tramite</span>
                                     </button>
@@ -147,9 +164,7 @@
             </table>
         </div>
 
-        <mat-paginator (page)="paginacion($event)" 
-            [pageSizeOptions]="[50, 60, 70, 80]" 
-            showFirstLastButtons>
+        <mat-paginator (page)="paginacion($event)" [pageSizeOptions]="[50, 60, 70, 80]" showFirstLastButtons>
         </mat-paginator>
     </div>
 
