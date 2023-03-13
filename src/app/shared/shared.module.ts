@@ -54,6 +54,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
     MailHeaderComponent,
     InfoTramiteExternoComponent,
+    InfoTramiteInternoComponent,
     ToolbarComponent
   ]
 })

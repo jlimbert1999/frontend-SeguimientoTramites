@@ -40,7 +40,7 @@ registerLocaleData(localeEs, 'es');
     ArchivosModule,
     ReportesModule,
     MaterialModule,
-    InternosModule
+    InternosModule,
   ],
   providers: [
     {

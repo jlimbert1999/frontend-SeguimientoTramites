@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Interno } from 'src/app/Internos/models/Interno.interface';
 
 @Component({
   selector: 'app-info-tramite-interno',
@@ -6,5 +7,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./info-tramite-interno.component.css']
 })
 export class InfoTramiteInternoComponent {
+  @Input() Tramite: Interno
+  timer: any;
+  count: any
 
 }

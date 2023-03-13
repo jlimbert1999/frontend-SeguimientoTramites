@@ -8,6 +8,8 @@ import { ReporteTipoComponent } from './reporte-tipo/reporte-tipo.component';
 import { ReporteSolicitanteComponent } from './reporte-solicitante/reporte-solicitante.component';
 import { RouterModule } from '@angular/router';
 import { ReporteContribuyenteComponent } from './reporte-contribuyente/reporte-contribuyente.component';
+import { FichaComponent } from './pages/ficha/ficha.component';
+import { SharedModule } from '../shared/shared.module';
 
 
 
@@ -19,13 +21,15 @@ import { ReporteContribuyenteComponent } from './reporte-contribuyente/reporte-c
     ReporteTipoComponent,
     ReporteSolicitanteComponent,
     ReporteContribuyenteComponent,
+    FichaComponent,
   ],
   imports: [
     CommonModule,
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    SharedModule
   ]
 })
 export class ReportesModule { }

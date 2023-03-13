@@ -10,6 +10,7 @@ export class ToolbarComponent {
   @Input() search_mode: boolean
   @Input() title: string
   @Output() add = new EventEmitter();
+  @Output() pdf = new EventEmitter();
   @Output() search = new EventEmitter()
 
 
@@ -23,6 +24,9 @@ export class ToolbarComponent {
   }
   call_search() {
     this.search.emit()
+  }
+  call_pdf(){
+    this.pdf.emit()
   }
 
   hideMenu() { 

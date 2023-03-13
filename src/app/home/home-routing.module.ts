@@ -52,6 +52,11 @@ const routes: Routes = [
                 loadChildren: () =>
                     import(`../Archivos/archivos-routing.module`).then((m) => m.ArchivosRoutingModule),
             },
+            {
+                path: 'reportes',
+                loadChildren: () =>
+                    import(`../Reportes/reportes-routing.module`).then((m) => m.ReportesRoutingModule),
+            },
             //   {
             //     path: 'module-two',
             //     loadChildren: () =>
@@ -87,10 +92,10 @@ const routes: Routes = [
 
 
             // REPORTES
-            { path: 'reporte-ficha', component: ReporteFichaComponent },
-            { path: 'reporte-estado', component: ReporteEstadoComponent },
-            { path: 'reporte-tipo', component: ReporteTipoComponent },
-            { path: 'reporte-contribuyente', component: ReporteContribuyenteComponent },
+            // { path: 'reporte-ficha', component: ReporteFichaComponent },
+            // { path: 'reporte-estado', component: ReporteEstadoComponent },
+            // { path: 'reporte-tipo', component: ReporteTipoComponent },
+            // { path: 'reporte-contribuyente', component: ReporteContribuyenteComponent },
 
             // REPORTES CON BUSQUEDAS
             { path: 'reporte-solicitante', component: ReporteSolicitanteComponent },

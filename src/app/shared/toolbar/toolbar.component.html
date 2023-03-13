@@ -1,13 +1,20 @@
 <p>
     <mat-toolbar>
-        <button mat-icon-button (click)="hideMenu()" class="example-icon" aria-label="Example icon-button with menu icon">
+        <button mat-icon-button (click)="hideMenu()" class="example-icon"
+            aria-label="Example icon-button with menu icon">
             <mat-icon>menu</mat-icon>
         </button>
         <span>{{title}}</span>
         <span class="example-spacer"></span>
-        <button mat-icon-button (click)="call_Add()" class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+        <button matTooltip="Generar PDF" mat-icon-button (click)="call_pdf()" class="example-icon favorite-icon"
+            aria-label="Example icon-button with heart icon">
+            <mat-icon>picture_as_pdf</mat-icon>
+        </button>
+
+        <button matTooltip="Agregar registro" mat-icon-button (click)="call_Add()" class="example-icon favorite-icon"
+            aria-label="Example icon-button with heart icon">
             <mat-icon>add</mat-icon>
         </button>
-      
+
     </mat-toolbar>
 </p>

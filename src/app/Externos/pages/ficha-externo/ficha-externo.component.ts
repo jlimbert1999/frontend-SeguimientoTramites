@@ -26,7 +26,6 @@ export class FichaExternoComponent implements OnInit {
   
   ngOnInit(): void {
     this.activateRoute.params.subscribe(params => {
-      console.log(params['id'])
       if(params['id']){
         this.externoService.getOne(params['id']).subscribe(data => {
           this.Tramite = data.tramite

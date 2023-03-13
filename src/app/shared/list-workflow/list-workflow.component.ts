@@ -32,15 +32,13 @@ export class ListWorkflowComponent implements OnInit {
   hasChild = (_: number, node: ListGroupware) => !!node.children && node.children.length > 0;
 
   ngOnInit(): void {
-    let fecha_inicio = this.fecha_registro
     let list: ListGroupware[] = []
-    let next: WorkflowData=this.Workflow[0]
+    let next: WorkflowData = this.Workflow[0]
     for (let i = 0; i < this.Workflow.length; i++) {
       for (let j = i; j < this.Workflow.length; j++) {
         // date init when user acept tramite
-        if (this.Workflow[j].emisor.cuenta._id == this.Workflow[i].receptor.cuenta._id) {
-          next=this.Workflow[j]
-          fecha_inicio = this.Workflow[j].fecha_recibido!
+        if (this.Workflow[i].receptor.cuenta._id == this.Workflow[j].emisor.cuenta._id) {
+          next = this.Workflow[j]
           break
         }
       }
@@ -48,13 +46,13 @@ export class ListWorkflowComponent implements OnInit {
         parentId: this.Workflow[i].emisor.cuenta._id,
         _id: this.Workflow[i].receptor.cuenta._id,
         funcionario: this.Workflow[i].receptor.funcionario,
-        duracion: this.crear_duracion( this.Workflow[i].fecha_recibido, next.fecha_envio),
-        recibido:this.Workflow[i].recibido,
-        motivo:this.Workflow[i].motivo,
-        cantidad: this.Workflow[i].cantidad,
-        numero_interno: this.Workflow[i].numero_interno,
-        fecha_envio: this.Workflow[i].fecha_envio,
-        fecha_recibido: this.Workflow[i].fecha_recibido
+        duracion: this.crear_duracion(this.Workflow[i].fecha_recibido, next.fecha_envio),
+        recibido: this.Workflow[i].recibido,
+        motivo: next.motivo,
+        cantidad: next.cantidad,
+        numero_interno: next.numero_interno,
+        fecha_recibido: this.Workflow[i].fecha_recibido,
+        fecha_envio: next.fecha_envio
       })
     }
     // insert List and root node
@@ -71,22 +69,19 @@ export class ListWorkflowComponent implements OnInit {
         _id: this.Workflow[0].emisor.cuenta._id,
         funcionario: this.Workflow[0].emisor.funcionario,
         duracion: this.crear_duracion(this.fecha_registro, this.Workflow[0].fecha_envio),
-        recibido:this.Workflow[0].recibido,
-        motivo:this.Workflow[0].motivo,
-        cantidad:this.Workflow[0].cantidad,
+        recibido: this.Workflow[0].recibido,
+        motivo: this.Workflow[0].motivo,
+        cantidad: this.Workflow[0].cantidad,
         numero_interno: this.Workflow[0].numero_interno,
         fecha_envio: this.Workflow[0].fecha_envio,
-        fecha_recibido: this.Workflow[0].fecha_recibido,
         children: arrayToTree(list)
       }
     ]
     this.dataSource.data = data
-    console.log(data)
-   
   }
 
 
- 
+
 
   crear_duracion(inicio: any, fin: any) {
     inicio = moment(new Date((inicio)))
