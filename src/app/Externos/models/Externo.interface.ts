@@ -98,4 +98,5 @@ export interface WorkflowData {
     tipo: string
     tramite: string
     recibido?:boolean
+    
 }
