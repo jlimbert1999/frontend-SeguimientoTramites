@@ -33,20 +33,12 @@ h1.example-app-name {
 
 
 
-.mat-mdc-list-item.active {
+/* .mat-mdc-list-item.active {
     background-color: #64B5F6;
     color: white;
     border-left: 8px solid #1E88E5;
     width: calc(100% - 8px) !important;
-}
-
-.campo_cuenta {
-    line-height: 1em;
-    height: 2em;
-    overflow: hidden;
-    font-size: medium;
-    margin-left: 10px;
-}
+} */
 
 .load-spiner {
     position: absolute;
@@ -71,17 +63,17 @@ h1.example-app-name {
 }
 
 mat-sidenav {
-    width: 370px;
+    width: 300px;
 }
 
-mat-icon {
+/* mat-icon {
     vertical-align: middle;
     margin-right: 29px;
     color: #1E88E5;
-}
+} */
 
 .card-profile {
-    width: 365px;
+    width: 300px;
 }
 
 .card-profile,
@@ -106,4 +98,31 @@ mat-card-subtitle {
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+
+::ng-deep .mat-expansion-panel-header {
+    padding: 0 16px !important;
+}
+
+::ng-deep .mat-mdc-nav-list .mat-icon {
+    margin-right: 20px;
+    vertical-align: middle;
+}
+
+::ng-deep .mat-mdc-expansion-panel-body {
+    padding: 0 !important;
+}
+
+::ng-deep .mat-expansion-panel-header {
+    height: 48px !important;
+}
+
+::ng-deep .mat-expansion-panel .mat-mdc-list-item {
+    padding-left: 15px !important;
+}
+
+.is-active {
+    background-color: #1E88E5;
+    color: white;
 }

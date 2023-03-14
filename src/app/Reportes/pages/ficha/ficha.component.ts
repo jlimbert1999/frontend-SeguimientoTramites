@@ -15,7 +15,7 @@ import { ReporteService } from '../../services/reporte.service';
 export class FichaComponent {
   alterno: string
   Tramite: any
-  Workflow:any[]
+  Workflow: any[]
   tipo: string
   constructor(private reporteService: ReporteService) {
 
@@ -24,13 +24,12 @@ export class FichaComponent {
     this.reporteService.getReporteFicha(this.alterno).subscribe(data => {
       this.tipo = data.tipo
       this.Tramite = data.tramite
-      this.Workflow=data.workflow
-      console.log(data)
+      this.Workflow = data.workflow
     })
   }
 
-  pdf(){
-    if(this.tipo==='tramites_externos'){
+  pdf() {
+    if (this.tipo === 'tramites_externos') {
       PDF_FichaExterno(this.Tramite, this.Workflow, '')
     }
 
