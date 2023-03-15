@@ -1,7 +1,7 @@
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
   <mat-sidenav-container class="example-sidenav-container">
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
-      [opened]="true">
+      [opened]="mobileQuery.matches ===false">
       <mat-toolbar>
         <span>Menu</span>
       </mat-toolbar>
@@ -37,7 +37,7 @@
       </mat-nav-list>
 
       <ng-template #parentMenu let-menu="menu">
-        <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="is-active">
+        <mat-list-item routerLinkActive="active" [routerLink]="menu.routerLink">
           <mat-icon>{{menu.icon}}</mat-icon> {{menu.text}}
         </mat-list-item>
       </ng-template>
@@ -49,7 +49,7 @@
           </mat-expansion-panel-header>
           <mat-nav-list>
             <mat-list-item [routerLink]="submenu.routerLink" *ngFor="let submenu of menu.children"
-              routerLinkActive="is-active">
+              routerLinkActive="active">
               <mat-icon>{{submenu.icon}}</mat-icon> {{submenu.text}}
             </mat-list-item>
           </mat-nav-list>
@@ -69,5 +69,6 @@
 
 
   </mat-sidenav-container>
+
 
 </div>

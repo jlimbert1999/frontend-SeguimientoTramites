@@ -66,7 +66,6 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
         this.Data = tramites
       })
     }
-
   }
 
 
@@ -131,6 +130,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
   }
+
   pagination(page: PageEvent) {
     this.externoService.offset = page.pageIndex
     this.externoService.limit = page.pageSize

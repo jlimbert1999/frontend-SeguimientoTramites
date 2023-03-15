@@ -21,7 +21,7 @@ export class FichaComponent {
 
   }
   generate() {
-    this.reporteService.getReporteFicha(this.alterno).subscribe(data => {
+    this.reporteService.getReporteFicha(this.alterno.trim()).subscribe(data => {
       this.tipo = data.tipo
       this.Tramite = data.tramite
       this.Workflow = data.workflow

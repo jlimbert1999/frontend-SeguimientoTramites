@@ -1,0 +1,93 @@
+<app-toolbar title="REPORTE"></app-toolbar>
+<div class="container-fluid">
+  <mat-form-field class="full-width">
+    <mat-label>Seleccione el tipo de busqueda</mat-label>
+    <mat-select (selectionChange)="selectTypeSearch($event.value)">
+      <mat-option [value]="'EXTERNO'">Buscar tramite Externo</mat-option>
+      <mat-option [value]="'INTERNO'">Buscar tramite Interno</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <ng-container [ngTemplateOutlet]="grupo === 'EXTERNO' ? formSearchExterno : grupo === 
+   'INTERNO' ? formSearchInterno : formSearchEmpty"></ng-container>
+
+  <ng-template #formSearchExterno>
+    <form [formGroup]="searchForm">
+      <mat-card class="shipping-card">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <input matInput placeholder="Alterno" formControlName="alterno">
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-select placeholder="Estado" formControlName="estado">
+                  <mat-option *ngFor="let estado of estados" [value]="estado">
+                    {{estado }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <input matInput placeholder="Cite" formControlName="cite">
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field class="full-width">
+                <mat-label>Ingrese el intervalo</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                  <input matStartDate formControlName="start" placeholder="Start date">
+                  <input matEndDate formControlName="end" placeholder="End date">
+                </mat-date-range-input>
+                <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+                <mat-error *ngIf="searchForm.controls.start.hasError('matStartDateInvalid')">Invalid start
+                  date</mat-error>
+                <mat-error *ngIf="searchForm.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-2">
+              <mat-form-field class="example-full-width">
+                <mat-label>Segmento</mat-label>
+                <mat-select (selectionChange)="getTypes($event.value)">
+                  <mat-option *ngFor="let segmento of segmentos" [value]="segmento">
+                    {{segmento|uppercase}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-10">
+              <mat-form-field class="example-full-width">
+                <mat-label>Seleccione el tipo de tramite</mat-label>
+                <mat-select formControlName="tipo_tramite">
+                  <mat-option *ngFor="let tipo of tipos" [value]="tipo.id_tipoTramite">
+                    {{tipo.nombre| uppercase}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+        </mat-card-content>
+        <mat-divider></mat-divider>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="searchExternos()">Buscar</button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </ng-template>
+  <ng-template #formSearchInterno>
+    <div>
+      table2
+    </div>
+  </ng-template>
+  <ng-template #formSearchEmpty>
+
+  </ng-template>
+
+</div>

@@ -1,4 +1,6 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { map, Observable, shareReplay } from 'rxjs';
 import { SidenavService } from '../services/sidenav.service';
 
 @Component({
@@ -7,29 +9,30 @@ import { SidenavService } from '../services/sidenav.service';
   styleUrls: ['./toolbar.component.css']
 })
 export class ToolbarComponent {
-  @Input() search_mode: boolean
   @Input() title: string
-  @Output() add = new EventEmitter();
-  @Output() pdf = new EventEmitter();
-  @Output() search = new EventEmitter()
 
+  @Input() showAdd: boolean = false
+  @Output() add = new EventEmitter();
+
+  @Input() showPDF: boolean = false
+  @Output() pdf = new EventEmitter();
+
+
+ 
 
 
   constructor(public sidenavService: SidenavService) {
-
   }
 
   call_Add() {
     this.add.emit()
   }
-  call_search() {
-    this.search.emit()
-  }
-  call_pdf(){
+
+  call_pdf() {
     this.pdf.emit()
   }
 
-  hideMenu() { 
+  hideMenu() {
     this.sidenavService.toggle();
   }
 }

@@ -10,6 +10,12 @@ import { RouterModule } from '@angular/router';
 import { ReporteContribuyenteComponent } from './reporte-contribuyente/reporte-contribuyente.component';
 import { FichaComponent } from './pages/ficha/ficha.component';
 import { SharedModule } from '../shared/shared.module';
+import { BusquedaComponent } from './pages/busqueda/busqueda.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCardModule } from '@angular/material/card';
 
 
 
@@ -22,6 +28,7 @@ import { SharedModule } from '../shared/shared.module';
     ReporteSolicitanteComponent,
     ReporteContribuyenteComponent,
     FichaComponent,
+    BusquedaComponent,
   ],
   imports: [
     CommonModule,
@@ -29,7 +36,12 @@ import { SharedModule } from '../shared/shared.module';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    SharedModule
+    SharedModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatCardModule
   ]
 })
 export class ReportesModule { }

@@ -30,6 +30,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatListModule } from '@angular/material/list';
 import { MatRadioModule } from '@angular/material/radio';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [],
@@ -66,7 +67,8 @@ import {MatChipsModule} from '@angular/material/chips';
     MatBottomSheetModule,
     MatBadgeModule,
     MatRadioModule,
-    MatChipsModule
+    MatChipsModule,
+    MatProgressBarModule
   ]
 })
 export class MaterialModule { }
