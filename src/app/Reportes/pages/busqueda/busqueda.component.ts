@@ -1,9 +1,11 @@
 import { HttpParams } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { PageEvent } from '@angular/material/paginator';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ExternosService } from 'src/app/Externos/services/externos.service';
 import { InternosService } from 'src/app/Internos/services/internos.service';
+import Swal from 'sweetalert2';
 import { PDF_busqueda } from '../../pdf/reporte-busqueda';
 import { ReporteService } from '../../services/reporte.service';
 
@@ -15,10 +17,10 @@ import { ReporteService } from '../../services/reporte.service';
     fadeInOnEnterAnimation()
   ]
 })
-export class BusquedaComponent {
-  grupo: 'INTERNO' | 'EXTERNO'
+export class BusquedaComponent implements OnInit {
+
   tipos: any[] = []
-  params = new HttpParams()
+
   campos: Object[] = []
 
   segmentos: string[] = []
@@ -47,11 +49,19 @@ export class BusquedaComponent {
     private fb: FormBuilder,
     private externoService: ExternosService,
     private internoService: InternosService,
-    private reporteService: ReporteService) { }
+    public reporteService: ReporteService) {
+
+
+
+  }
+  ngOnInit(): void {
+
+    // if(this.reporteService.)
+  }
 
 
   selectTypeSearch(type: 'INTERNO' | 'EXTERNO') {
-    this.grupo = type
+    this.reporteService.grupo = type
     this.tipos = []
     this.dataSource = []
     if (type === 'EXTERNO') {
@@ -77,10 +87,10 @@ export class BusquedaComponent {
 
   searchExternos() {
     this.campos = []
-    this.params = new HttpParams()
+    this.reporteService.params = new HttpParams()
     for (const [key, value] of Object.entries(this.searchForm.value)) {
       if (value !== null && value != "") {
-        this.params = this.params.append(key, value);
+        this.reporteService.params = this.reporteService.params.append(key, value);
         if (key === 'tipo_tramite') {
           const type_tramite = this.tipos.find(tipo => tipo.id_tipoTramite == value)
           this.campos.push(['Tipo de tramite', type_tramite.nombre])
@@ -90,12 +100,18 @@ export class BusquedaComponent {
         }
       }
     }
-    if (this.grupo) {
-      this.reporteService.getReporteSearch(this.params, this.grupo).subscribe(data => {
+    if (this.reporteService.grupo && this.reporteService.params.keys().length > 0) {
+      this.reporteService.getReporteSearch().subscribe(data => {
         this.dataSource = data.tramites
         this.lengthData = data.length
       })
     }
+  }
+  get Group() {
+    return this.reporteService.grupo
+  }
+  set fva(valor: 'INTERNO' | 'EXTERNO') {
+    this.reporteService.grupo = valor
   }
   reset() {
     this.dataSource = []
@@ -104,11 +120,25 @@ export class BusquedaComponent {
   }
   generatePDF() {
     if (this.campos.length > 0) {
-      this.reporteService.getReporteSearchNotPaginated(this.params, this.grupo, this.lengthData).subscribe(tramites => {
-        console.log(tramites)
-        PDF_busqueda('jose limbert', this.grupo, this.campos, tramites, this.lengthData)
+      Swal.fire({
+        title: 'Generando reporte....',
+        text: `Numero de registros: ${this.lengthData}. Por favor espere`,
+        allowOutsideClick: false,
+      });
+      Swal.showLoading();
+      this.reporteService.getReporteSearchNotPaginated(this.reporteService.grupo, this.lengthData).subscribe(tramites => {
+        PDF_busqueda('jose limbert', this.reporteService.grupo, this.campos, tramites, this.lengthData)
+        Swal.close()
       })
     }
 
+  }
+  pagination(page: PageEvent) {
+    this.reporteService.offset = page.pageIndex
+    this.reporteService.limit = page.pageSize
+    this.reporteService.getReporteSearch().subscribe(data => {
+      this.dataSource = data.tramites
+      this.lengthData = data.length
+    })
   }
 }

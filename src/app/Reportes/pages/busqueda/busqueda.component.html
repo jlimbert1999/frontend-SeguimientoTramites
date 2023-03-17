@@ -1,19 +1,19 @@
 <app-toolbar [showPDF]="true" title="REPORTE" (pdf)="generatePDF()"></app-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
-  <form [formGroup]="searchForm">
-    <mat-card class="shipping-card">
-      <mat-card-header>
-        <mat-card-title>Busqueda avanzada</mat-card-title>
-        <mat-card-subtitle>Seleccione el tipo de tramite que desea buscar</mat-card-subtitle>
-      </mat-card-header>
-      <section class="example-section">
-        <label class="example-margin">Tramites:</label>
-        <mat-radio-group (change)="selectTypeSearch($event.value)">
-          <mat-radio-button class="example-margin" [value]="'EXTERNO'">Externos</mat-radio-button>
-          <mat-radio-button class="example-margin" [value]="'INTERNO'">Internos</mat-radio-button>
-        </mat-radio-group>
-      </section>
-      <mat-card-content *ngIf="grupo">
+  <mat-card class="shipping-card">
+    <mat-card-header>
+      <mat-card-title>Busqueda avanzada</mat-card-title>
+      <mat-card-subtitle>Seleccione el tipo de tramite que desea buscar</mat-card-subtitle>
+    </mat-card-header>
+    <section class="example-section">
+      <label class="example-margin">Tramites:</label>
+      <mat-radio-group [(ngModel)]="reporteService.grupo" (change)="selectTypeSearch($event.value)">
+        <mat-radio-button class="example-margin" [value]="'EXTERNO'">Externos</mat-radio-button>
+        <mat-radio-button class="example-margin" [value]="'INTERNO'">Internos</mat-radio-button>
+      </mat-radio-group>
+    </section>
+    <form [formGroup]="searchForm">
+      <mat-card-content *ngIf="Group">
         <div class="row">
           <div class="col-sm-3">
             <mat-form-field class="full-width">
@@ -23,9 +23,7 @@
           <div class="col-sm-3">
             <mat-form-field class="full-width">
               <mat-select placeholder="Estado" formControlName="estado">
-                <mat-option [value]="null">
-                  -
-                </mat-option>
+                <mat-option [value]="null"> - </mat-option>
                 <mat-option *ngFor="let estado of estados" [value]="estado">
                   {{estado }}
                 </mat-option>
@@ -54,7 +52,7 @@
           </div>
         </div>
         <div class="row">
-          <div *ngIf="grupo=='EXTERNO'" class="col-sm-2">
+          <div *ngIf="Group=='EXTERNO'" class="col-sm-2">
             <mat-form-field class="example-full-width">
               <mat-label>Segmento</mat-label>
               <mat-select (selectionChange)="getTypes($event.value)">
@@ -86,10 +84,11 @@
         <button mat-button color="primary" (click)="reset()">Restablecer</button>
         <button mat-button color="primary" (click)="generatePDF()">Generar</button>
       </mat-card-actions>
-    </mat-card>
-  </form>
-  <ng-container [ngTemplateOutlet]="grupo === 'EXTERNO' ? formSearchExterno : grupo === 
-   'INTERNO' ? formSearchInterno : formSearchEmpty"></ng-container>
+    </form>
+  </mat-card>
+  <ng-container
+    [ngTemplateOutlet]="Group === 'EXTERNO' ? formSearchExterno : Group === 'INTERNO' ? formSearchInterno : formSearchEmpty">
+  </ng-container>
   <div class="example-container mat-elevation-z8">
     <div class="example-table-container">
       <ng-template #formSearchExterno>
@@ -97,7 +96,7 @@
           <ng-container matColumnDef="alterno">
             <th mat-header-cell *matHeaderCellDef>Alterno</th>
             <td mat-cell *matCellDef="let row">
-              <a [routerLink]="['ficha', row._id]">
+              <a [routerLink]="['ficha-externa', row._id]">
                 {{row.alterno}}
               </a>
             </td>
@@ -115,7 +114,7 @@
           <ng-container matColumnDef="solicitante">
             <th mat-header-cell *matHeaderCellDef>Solicitante</th>
             <td mat-cell *matCellDef="let row">
-              {{row.solicitante}}
+              {{row.solicitante|solicitante}}
             </td>
           </ng-container>
           <ng-container matColumnDef="estado">
@@ -145,12 +144,13 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
       </ng-template>
+
       <ng-template #formSearchInterno>
         <table mat-table [dataSource]="dataSource">
           <ng-container matColumnDef="alterno">
             <th mat-header-cell *matHeaderCellDef> Alterno </th>
             <td mat-cell *matCellDef="let element">
-              <a [routerLink]="['ficha', element._id]">
+              <a [routerLink]="['ficha-interna', element._id]">
                 {{element.alterno}}
               </a>
             </td>
@@ -208,19 +208,19 @@
               </mat-menu>
             </td>
           </ng-container>
-
           <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-
-
       </ng-template>
       <ng-template #formSearchEmpty>
 
       </ng-template>
-      <mat-paginator [length]="lengthData" [pageSizeOptions]="[10, 20, 30, 50]" showFirstLastButtons></mat-paginator>
+      <mat-paginator (page)="pagination($event)" [pageIndex]="reporteService.offset"
+      [length]="lengthData" [pageSizeOptions]="[10, 20, 30, 50]"
+      showFirstLastButtons></mat-paginator>
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell" colspan="4">Sin resultados para el termino </td>
       </tr>
 
     </div>
+  </div>

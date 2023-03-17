@@ -17,6 +17,7 @@ import { StatePipe } from './pipes/state.pipe';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SolicitantePipe } from './pipes/solicitante.pipe';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     InfoTramiteInternoComponent,
     InfoTramiteExternoComponent,
     StatePipe,
-    ToolbarComponent
+    ToolbarComponent,
+    SolicitantePipe
 
   ],
   imports: [
@@ -50,6 +52,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     ObservacionesComponent,
     FullnamePipe,
     StatePipe,
+    SolicitantePipe,
     PaginatorComponent,
 
     MailHeaderComponent,

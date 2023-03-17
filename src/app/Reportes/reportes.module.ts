@@ -41,7 +41,8 @@ import { MatCardModule } from '@angular/material/card';
     MatButtonModule,
     MatSelectModule,
     MatRadioModule,
-    MatCardModule
+    MatCardModule,
+    SharedModule
   ]
 })
 export class ReportesModule { }
