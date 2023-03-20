@@ -1,4 +1,4 @@
-<app-toolbar [showPDF]="true" title="REPORTE" (pdf)="generatePDF()"></app-toolbar>
+<app-toolbar title="REPORTE"></app-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
   <mat-card class="shipping-card">
     <mat-card-header>
@@ -13,7 +13,7 @@
       </mat-radio-group>
     </section>
     <form [formGroup]="searchForm">
-      <mat-card-content *ngIf="Group">
+      <mat-card-content *ngIf="reporteService.grupo">
         <div class="row">
           <div class="col-sm-3">
             <mat-form-field class="full-width">
@@ -52,7 +52,7 @@
           </div>
         </div>
         <div class="row">
-          <div *ngIf="Group=='EXTERNO'" class="col-sm-2">
+          <div *ngIf="reporteService.grupo==='EXTERNO'" class="col-sm-2">
             <mat-form-field class="example-full-width">
               <mat-label>Segmento</mat-label>
               <mat-select (selectionChange)="getTypes($event.value)">
@@ -62,7 +62,7 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="col-sm-10">
+          <div class="col-sm-5">
             <mat-form-field class="example-full-width">
               <mat-label>Seleccione el tipo de tramite</mat-label>
               <mat-select formControlName="tipo_tramite">
@@ -75,23 +75,35 @@
               </mat-select>
             </mat-form-field>
           </div>
+          <div class="col-sm-5">
+            <mat-form-field class="full-width">
+              <mat-label>Descripcion del tramite</mat-label>
+              <textarea matInput formControlName="detalle"></textarea>
+            </mat-form-field>
+          </div>
         </div>
-
       </mat-card-content>
       <mat-divider></mat-divider>
       <mat-card-actions>
-        <button mat-stroked-button color="primary" (click)="searchExternos()">Buscar</button>
-        <button mat-button color="primary" (click)="reset()">Restablecer</button>
-        <button mat-button color="primary" (click)="generatePDF()">Generar</button>
+        <button mat-stroked-button color="primary" [disabled]="!reporteService.grupo"
+          (click)="searchExternos()">Buscar</button>
+        <button mat-stroked-button color="primary" (click)="reset()">Restablecer</button>
+        <span class="example-spacer"></span>
+        <button mat-button color="primary" (click)="generatePDF()">
+          <mat-icon>picture_as_pdf</mat-icon>
+          Generar
+        </button>
       </mat-card-actions>
     </form>
   </mat-card>
+
   <ng-container
-    [ngTemplateOutlet]="Group === 'EXTERNO' ? formSearchExterno : Group === 'INTERNO' ? formSearchInterno : formSearchEmpty">
+    [ngTemplateOutlet]="reporteService.grupo === 'EXTERNO' ? formSearchExterno : reporteService.grupo === 'INTERNO' ? formSearchInterno : formSearchEmpty">
   </ng-container>
-  <div class="example-container mat-elevation-z8">
-    <div class="example-table-container">
-      <ng-template #formSearchExterno>
+
+  <ng-template #formSearchExterno>
+    <div class="example-container mat-elevation-z8">
+      <div class="example-table-container">
         <table mat-table [dataSource]="dataSource" [class.isMobile]="'isMobile'">
           <ng-container matColumnDef="alterno">
             <th mat-header-cell *matHeaderCellDef>Alterno</th>
@@ -143,9 +155,18 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-      </ng-template>
+      
+      </div>
+      <mat-paginator (page)="pagination($event)" [pageIndex]="reporteService.offset" [length]="reporteService.length"
+      [pageSizeOptions]="[10, 20, 30, 50]" showFirstLastButtons></mat-paginator>
+    
+    </div>
 
-      <ng-template #formSearchInterno>
+  </ng-template>
+
+  <ng-template #formSearchInterno>
+    <div class="example-container mat-elevation-z8">
+      <div class="example-table-container">
         <table mat-table [dataSource]="dataSource">
           <ng-container matColumnDef="alterno">
             <th mat-header-cell *matHeaderCellDef> Alterno </th>
@@ -211,16 +232,14 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-      </ng-template>
-      <ng-template #formSearchEmpty>
-
-      </ng-template>
-      <mat-paginator (page)="pagination($event)" [pageIndex]="reporteService.offset"
-      [length]="lengthData" [pageSizeOptions]="[10, 20, 30, 50]"
-      showFirstLastButtons></mat-paginator>
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4">Sin resultados para el termino </td>
-      </tr>
-
+      </div>
+      <mat-paginator (page)="pagination($event)" [pageIndex]="reporteService.offset" [length]="reporteService.length"
+        [pageSizeOptions]="[10, 20, 30, 50]" showFirstLastButtons></mat-paginator>
     </div>
-  </div>
+
+
+  </ng-template>
+
+  <ng-template #formSearchEmpty>
+
+  </ng-template>

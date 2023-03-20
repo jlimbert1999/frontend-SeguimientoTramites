@@ -73,8 +73,13 @@ export class BandejaEntradaService {
     )
   }
   Search() {
-    return this.http.get<{ ok: boolean, mails: any[], length: number }>(`${base_url}/bandejas/search/${this.textSearch}?type=${this.type}`).pipe(
+    const params = new HttpParams()
+      .set('offset', this.offset)
+      .set('limit', this.limit)
+      .set('type', this.type);
+    return this.http.get<{ ok: boolean, mails: any[], length: number }>(`${base_url}/bandejas/search/${this.textSearch}`, { params }).pipe(
       map(resp => {
+        console.log(resp.mails)
         this.length = resp.length
         this.Mails = resp.mails
       })

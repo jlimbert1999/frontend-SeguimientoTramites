@@ -5,9 +5,9 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { PageEvent } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import {
   collapseOnLeaveAnimation,
   expandOnEnterAnimation,
@@ -21,6 +21,7 @@ import { BandejaEntradaData } from '../models/mail.model';
 import { BandejaEntradaService } from '../services/bandeja-entrada.service';
 import { ExternosService } from '../../Externos/services/externos.service';
 import { InternosService } from '../services/internos.service';
+import { LoaderService } from 'src/app/auth/services/loader.service';
 
 @Component({
   selector: 'app-bandeja-entrada',
@@ -57,6 +58,7 @@ export class BandejaEntradaComponent implements OnInit {
     { value: 'externo', viewValue: 'EXTERNO' },
   ];
   Mails = this.bandejaService.Mails
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     public bandejaService: BandejaEntradaService,
@@ -64,7 +66,8 @@ export class BandejaEntradaComponent implements OnInit {
     public authService: AuthService,
     private toastr: ToastrService,
     private internoService: InternosService,
-    private externoService: ExternosService
+    private externoService: ExternosService,
+    public loaderService: LoaderService
   ) { }
 
   ngOnInit(): void {
@@ -198,10 +201,11 @@ export class BandejaEntradaComponent implements OnInit {
   }
 
   applyFilter(event: Event) {
-    // this.paginator.firstPage();
+    this.paginator.firstPage();
     const filterValue = (event.target as HTMLInputElement).value;
-    this.bandejaService.textSearch = filterValue.toLowerCase();
+    this.bandejaService.textSearch = filterValue;
     if (this.bandejaService.textSearch !== '') {
+      console.log('buscando')
       this.bandejaService.Search().subscribe()
     }
 

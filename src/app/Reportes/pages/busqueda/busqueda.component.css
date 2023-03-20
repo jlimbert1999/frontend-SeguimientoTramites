@@ -29,7 +29,8 @@
 .example-table-container {
   position: relative;
   overflow: auto;
-  max-height: 50vh;
+  max-height: 600px; 
+ 
 }
 
 
@@ -46,4 +47,13 @@
 
 .example-margin {
   margin: 0 10px;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.mat-mdc-cell {
+  font-size: 12px;
+  padding-right: 20px
 }

@@ -1,9 +1,9 @@
-<app-toolbar title="Bandeja entrada"></app-toolbar>
+<app-toolbar title="BANDEJA ENTRADA"></app-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
 
     <div class="row">
         <div class="col-sm-2">
-            <mat-form-field appearance="fill">
+            <mat-form-field class="example-full-width">
                 <mat-label>Tipos busqueda</mat-label>
                 <mat-select [(ngModel)]="bandejaService.type">
                     <mat-option [value]="'EXTERNO'">
@@ -18,43 +18,13 @@
         <div class="col-sm-10">
             <mat-form-field class="example-full-width">
                 <mat-label></mat-label>
-                <mat-label *ngIf="bandejaService.type=='EXTERNO'">Alterno / Solicitante / Descripcion</mat-label>
+                <mat-label *ngIf="bandejaService.type=='EXTERNO'">Alterno / Descripcion / Proveido / Nº
+                    Interno</mat-label>
                 <mat-label *ngIf="bandejaService.type=='INTERNO'">Alterno / Destinatario / Cite</mat-label>
-                <input  [(ngModel)]="bandejaService.textSearch" (keyup)="applyFilter($event)" [disabled]="bandejaService.type===''" matInput>
+                <input [(ngModel)]="bandejaService.textSearch" (keyup)="applyFilter($event)" matInput>
             </mat-form-field>
         </div>
-
-
     </div>
-    <!-- <div [@expandOnEnter] [@collapseOnLeave] *ngIf="bandejaService.searchOptionsIn.active">
-        <mat-card appearance="outlined" class="example-card">
-            <mat-card-content>
-                <div class="row">
-                    <div class="col-sm-2">
-                        <mat-form-field appearance="fill" class="example-full-width">
-                            <mat-label>Tipo de busqueda</mat-label>
-                            <mat-select [(ngModel)]="bandejaService.searchOptionsIn.type">
-                                <mat-option *ngFor="let option of filterOptions" [value]="option.value">
-                                    {{option.viewValue}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-sm-10">
-                        <mat-form-field appearance="fill" class="example-full-width">
-                            <mat-label>Ingrese el alterno del tramite</mat-label>
-                            <input [(ngModel)]="bandejaService.searchOptionsIn.text" (keyup)="search($event)" matInput>
-                        </mat-form-field>
-                    </div>
-                </div>
-                <mat-divider></mat-divider>
-            </mat-card-content>
-            <mat-card-actions>
-                <button mat-stroked-button color="warn" (click)="changeSearchMode(false)">Cancelar</button>
-            </mat-card-actions>
-        </mat-card>
-        <br>
-    </div> -->
 
     <div class="example-container mat-elevation-z8">
         <div class="example-table-container">
@@ -167,6 +137,5 @@
         <mat-paginator (page)="paginacion($event)" [pageSizeOptions]="[50, 60, 70, 80]" showFirstLastButtons>
         </mat-paginator>
     </div>
-
-
+    
 </div>

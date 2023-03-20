@@ -1,8 +1,9 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { fadeInOnEnterAnimation } from 'angular-animations';
+import * as moment from 'moment';
 import { ExternosService } from 'src/app/Externos/services/externos.service';
 import { InternosService } from 'src/app/Internos/services/internos.service';
 import Swal from 'sweetalert2';
@@ -30,7 +31,8 @@ export class BusquedaComponent implements OnInit {
     cite: null,
     start: null,
     end: null,
-    tipo_tramite: null
+    tipo_tramite: null,
+    detalle: null
   });
 
   hasUnitNumber = false;
@@ -43,20 +45,35 @@ export class BusquedaComponent implements OnInit {
   ]
   displayedColumns: string[] = [];
   dataSource: any[] = []
-  lengthData: number = 0
 
   constructor(
     private fb: FormBuilder,
     private externoService: ExternosService,
     private internoService: InternosService,
-    public reporteService: ReporteService) {
-
-
-
+    public reporteService: ReporteService
+  ) {
+    if (this.reporteService.grupo === 'EXTERNO') {
+      this.displayedColumns = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
+      this.externoService.getGroups().subscribe(data => {
+        this.segmentos = data
+      })
+    }
+    else {
+      this.displayedColumns = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'opciones']
+      this.internoService.getTypes().subscribe(data => {
+        this.tipos = data
+      })
+    }
   }
   ngOnInit(): void {
 
-    // if(this.reporteService.)
+    if (Object.keys(this.reporteService.searchParams).length > 0) {
+      this.searchForm.patchValue(this.reporteService.searchParams)
+      this.reporteService.getReporteSearch().subscribe(data => {
+        this.dataSource = data
+      })
+    }
+
   }
 
 
@@ -88,46 +105,50 @@ export class BusquedaComponent implements OnInit {
   searchExternos() {
     this.campos = []
     this.reporteService.params = new HttpParams()
+    this.reporteService.searchParams = {}
     for (const [key, value] of Object.entries(this.searchForm.value)) {
       if (value !== null && value != "") {
-        this.reporteService.params = this.reporteService.params.append(key, value);
-        if (key === 'tipo_tramite') {
-          const type_tramite = this.tipos.find(tipo => tipo.id_tipoTramite == value)
-          this.campos.push(['Tipo de tramite', type_tramite.nombre])
-        }
-        else {
-          this.campos.push([key, value])
+        Object.assign(this.reporteService.searchParams, { [key]: value })
+        switch (key) {
+          case 'tipo_tramite':
+            const type_tramite = this.tipos.find(tipo => tipo.id_tipoTramite == value)
+            this.campos.push(['Tipo de tramite', type_tramite.nombre])
+            break;
+          case 'end':
+            this.campos.push(['Fecha fin', moment(value).format('DD-MM-YYYY')])
+            break;
+          case 'start':
+            this.campos.push(['Fecha inicio', moment(value).format('DD-MM-YYYY')])
+            break;
+          default:
+            this.campos.push([key, value])
+            break;
         }
       }
     }
-    if (this.reporteService.grupo && this.reporteService.params.keys().length > 0) {
+    if (this.reporteService.grupo) {
       this.reporteService.getReporteSearch().subscribe(data => {
-        this.dataSource = data.tramites
-        this.lengthData = data.length
+        this.dataSource = data
       })
     }
   }
-  get Group() {
-    return this.reporteService.grupo
-  }
-  set fva(valor: 'INTERNO' | 'EXTERNO') {
-    this.reporteService.grupo = valor
-  }
+
+
   reset() {
     this.dataSource = []
-    this.lengthData = 0
+    this.reporteService.length = 0
     this.searchForm.reset()
   }
   generatePDF() {
     if (this.campos.length > 0) {
       Swal.fire({
         title: 'Generando reporte....',
-        text: `Numero de registros: ${this.lengthData}. Por favor espere`,
+        text: `Numero de registros: ${this.reporteService.length}. Por favor espere`,
         allowOutsideClick: false,
       });
       Swal.showLoading();
-      this.reporteService.getReporteSearchNotPaginated(this.reporteService.grupo, this.lengthData).subscribe(tramites => {
-        PDF_busqueda('jose limbert', this.reporteService.grupo, this.campos, tramites, this.lengthData)
+      this.reporteService.getReporteSearchNotPaginated(this.reporteService.grupo, this.reporteService.length).subscribe(tramites => {
+        PDF_busqueda('jose limbert', this.reporteService.grupo, this.campos, tramites, this.reporteService.length)
         Swal.close()
       })
     }
@@ -137,8 +158,9 @@ export class BusquedaComponent implements OnInit {
     this.reporteService.offset = page.pageIndex
     this.reporteService.limit = page.pageSize
     this.reporteService.getReporteSearch().subscribe(data => {
-      this.dataSource = data.tramites
-      this.lengthData = data.length
+      this.dataSource = data
     })
   }
+
+
 }
