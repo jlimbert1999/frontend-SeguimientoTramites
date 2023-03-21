@@ -1,4 +1,4 @@
 .panel-requerimientos {
     overflow: auto;
-    height: 600px;
+    max-height: 500px;
 }

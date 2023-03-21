@@ -80,14 +80,14 @@ export class ExternosService {
   }
 
   addObservacion(descripcion: string, id_tramite: string, funcionario: string) {
-    return this.http.put<{ ok: boolean, observacion: any }>(`${base_url}/externos/observacion/${id_tramite}`, { descripcion, funcionario }).pipe(
+    return this.http.put<{ ok: boolean, observaciones: any }>(`${base_url}/tramites/externos/observacion/${id_tramite}`, { descripcion, funcionario }).pipe(
       map(resp => {
-        return resp.observacion
+        return resp.observaciones
       })
     )
   }
   putObservacion(id_tramite: string) {
-    return this.http.put<{ ok: boolean, estado: string }>(`${base_url}/externos/observacion/corregir/${id_tramite}`, {}).pipe(
+    return this.http.put<{ ok: boolean, estado: string }>(`${base_url}/tramites/externos/observacion/corregir/${id_tramite}`, {}).pipe(
       map(resp => {
         return resp.estado
       })

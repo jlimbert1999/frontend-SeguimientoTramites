@@ -9,7 +9,6 @@ import { FichaExternoComponent } from './pages/ficha-externo/ficha-externo.compo
 import { ExternosComponent } from './externos.component';
 import { SolicitantePipe } from './pipes/solicitante.pipe';
 import { DialogExternoComponent } from './dialog-externo/dialog-externo.component';
-import { MailFichaExternoComponent } from './mail-ficha-externo/mail-ficha-externo.component';
 
 
 
@@ -19,7 +18,6 @@ import { MailFichaExternoComponent } from './mail-ficha-externo/mail-ficha-exter
     ExternosComponent,
     SolicitantePipe,
     DialogExternoComponent,
-    MailFichaExternoComponent
   ],
   imports: [
     CommonModule,

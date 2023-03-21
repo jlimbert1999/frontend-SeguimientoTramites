@@ -10,7 +10,7 @@ import { Externo } from 'src/app/Externos/models/Externo.interface';
   styleUrls: ['./info-tramite-externo.component.css']
 })
 export class InfoTramiteExternoComponent implements OnInit , OnDestroy{
-  @Input() Tramite: Externo
+  @Input() Tramite: Externo 
   timer: any;
   count: any
 
@@ -21,9 +21,6 @@ export class InfoTramiteExternoComponent implements OnInit , OnDestroy{
     this.createTimer(this.Tramite.fecha_registro, this.Tramite.fecha_finalizacion, this.Tramite.estado)
   }
 
-  regresar() {
-    this._location.back();
-  }
 
   
   ngOnDestroy(): void {

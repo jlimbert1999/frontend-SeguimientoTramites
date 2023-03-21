@@ -1,17 +1,17 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { AuthService } from '../auth/services/auth.service';
-import { BandejaService } from '../Tramites/services/bandeja.service';
-import { SocketService } from '../Tramites/services/socket.service';
 import { ToastrService } from 'ngx-toastr';
 import { LoaderService } from '../auth/services/loader.service';
 import { Router } from '@angular/router';
-import { NotificationsService } from '../Tramites/services/notifications.service';
+
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { PanelNotificationComponent } from '../shared/panel-notification/panel-notification.component';
-import { BandejaEntradaService } from '../Tramites/services/bandeja-entrada.service';
+import { BandejaEntradaService } from '../Bandejas/services/bandeja-entrada.service';
 import { SidenavService } from '../shared/services/sidenav.service';
 import { MatSidenav } from '@angular/material/sidenav';
+import { SocketService } from './services/socket.service';
+import { NotificationService } from './services/notification.service';
 
 @Component({
   selector: 'app-home',
@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     private toastr: ToastrService,
     public loader: LoaderService,
     private router: Router,
-    private notificationService: NotificationsService,
+    private notificationService: NotificationService,
     private bottomSheet: MatBottomSheet,
     private sidenavService: SidenavService
   ) {
@@ -72,9 +72,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       // this.notificationService.addNotificationNewMail(mail.emisor.funcionario, this.bandejaService.PaginationMailsIn.total)
     })
-    this.socketService.listenNotifications().subscribe((data: any) => {
-      this.notificationService.addNotificationEvent(data.message, data.fullname)
-    })
+
 
 
 

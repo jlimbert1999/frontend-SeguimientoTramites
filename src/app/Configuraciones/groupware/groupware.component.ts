@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SocketService } from 'src/app/Tramites/services/socket.service';
+import { SocketService } from 'src/app/home/services/socket.service';
 
 @Component({
   selector: 'app-groupware',

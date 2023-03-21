@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { Observacion } from 'src/app/Bandejas/models/mail.model';
 import { ExternosService } from 'src/app/Externos/services/externos.service';
-import { Observacion } from 'src/app/Tramites/models/mail.model';
-import { InternosService } from 'src/app/Tramites/services/internos.service';
+import { InternosService } from 'src/app/Internos/services/internos.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -73,10 +73,10 @@ export class ObservacionesComponent implements OnInit {
 
           }
           else if (this.type === 'tramites_internos') {
-            this.internoService.addObservacion(result.value, this.id_tramite, `${this.authService.Account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observacion => {
-              this.Me = observacion
-              this.NewState.emit('OBSERVADO');
-            })
+            // this.internoService.addObservacion(result.value, this.id_tramite, `${this.authService.Account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observacion => {
+            //   this.Me = observacion
+            //   this.NewState.emit('OBSERVADO');
+            // })
           }
         }
       }
@@ -91,10 +91,10 @@ export class ObservacionesComponent implements OnInit {
 
     }
     else if (this.type === 'tramites_internos') {
-      this.internoService.putObservacion(this.id_tramite).subscribe(state => {
-        this.Me.corregido = true
-        this.NewState.emit(state)
-      })
+      // this.internoService.putObservacion(this.id_tramite).subscribe(state => {
+      //   this.Me.corregido = true
+      //   this.NewState.emit(state)
+      // })
     }
   }
 

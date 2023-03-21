@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import { Externo, WorkflowData } from '../../models/Externo.interface';
 import { ExternosService } from '../../services/externos.service';
+import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha';
 
 @Component({
   selector: 'app-ficha-externo',
@@ -23,17 +24,19 @@ export class FichaExternoComponent implements OnInit {
     private activateRoute: ActivatedRoute,
     private externoService: ExternosService
   ) { }
-  
+
   ngOnInit(): void {
     this.activateRoute.params.subscribe(params => {
-      if(params['id']){
+      if (params['id']) {
         this.externoService.getOne(params['id']).subscribe(data => {
           this.Tramite = data.tramite
           this.Workflow = data.workflow
         })
       }
-     
     })
+  }
+  generar() {
+    PDF_FichaExterno(this.Tramite, this.Workflow, 'Jose')
   }
 
   regresar() {

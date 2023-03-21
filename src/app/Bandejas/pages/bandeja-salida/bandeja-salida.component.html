@@ -1,0 +1,151 @@
+<app-toolbar title="BANDEJA SALIDA"></app-toolbar>
+
+<div class="container-fluid" [@fadeInOnEnter]>
+    <div class="example-container mat-elevation-z8">
+        <div class="example-table-container">
+            <table mat-table [dataSource]="dataSource" class="example-table" multiTemplateDataRows>
+                <ng-container matColumnDef="grupo">
+                    <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                    <td mat-cell *matCellDef="let row">
+                        <div [ngSwitch]="row.tipo">
+                            <div *ngSwitchCase="'tramites_externos'">Externo</div>
+                            <div *ngSwitchCase="'tramites_internos'">Interno</div>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="alterno">
+                    <th mat-header-cell *matHeaderCellDef>Alterno</th>
+                    <td mat-cell *matCellDef="let row">
+                        <div [ngSwitch]="row.tipo">
+                            <div *ngSwitchCase="'tramites_externos'">
+                                <a [routerLink]="['ficha-externo', row.tramite._id]">
+                                    {{row.tramite.alterno}}
+                                </a>
+                            </div>
+                            <div *ngSwitchCase="'tramites_internos'">
+                                <a [routerLink]="['ficha-interno', row.tramite._id]">
+                                    {{row.tramite.alterno}}
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="tipo">
+                    <th mat-header-cell *matHeaderCellDef>Tipo de tramite</th>
+                    <td mat-cell *matCellDef="let row">{{row.tramite.tipo_tramite.nombre}}</td>
+                </ng-container>
+                <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef>Estado</th>
+                    <td mat-cell *matCellDef="let row">
+                        <span class="badge" [ngClass]="[
+                            row.tramite.estado=='INSCRITO'?'text-bg-primary':'',
+                            row.tramite.estado=='EN REVISION'?'text-bg-secondary':'',
+                            row.tramite.estado=='OBSERVADO'?'text-bg-warning':'',
+                            row.tramite.estado=='CONCLUIDO'?'text-bg-dark':'',
+                        ]">
+                            {{row.tramite.estado|uppercase}}
+                        </span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="receptor">
+                    <th mat-header-cell *matHeaderCellDef>Remitido a</th>
+                    <td mat-cell *matCellDef="let row">
+                        {{row.receptor.cuenta.dependencia.nombre}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="fecha_envio">
+                    <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                    <td mat-cell *matCellDef="let row">
+                        {{row.fecha_envio | date:'short'}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="situacion">
+                    <th mat-header-cell *matHeaderCellDef>Situacion</th>
+                    <td mat-cell *matCellDef="let row">
+                        <div [ngSwitch]="row.recibido">
+                            <div *ngSwitchCase="null">
+                                <span class="c-pill c-pill--warning">ENVIADO</span>
+                            </div>
+                            <div *ngSwitchCase="true">
+                                <span class="c-pill c-pill--success">ACEPTADO</span>
+                            </div>
+                            <div *ngSwitchCase="false">
+                                <span class="c-pill c-pill--danger">RECHAZADO</span>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="opciones">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let row">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button (click)="generar_hoja_ruta(row.tramite._id, row.tipo)" mat-menu-item>
+                                <mat-icon>print</mat-icon>
+                                <span>Generar hoja de ruta</span>
+                            </button>
+                            <button (click)="cancel(row)" mat-menu-item [disabled]="row.recibido!==undefined">
+                                <mat-icon>cancel_schedule_send</mat-icon>
+                                <span>Cancelar envio</span>
+                            </button>
+                        </mat-menu>
+
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="expand">
+                    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button aria-label="expand row"
+                            (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                            <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+                            <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                        <div class="example-element-detail"
+                            [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                            <div class="card w-100">
+                                <div class="card-body">
+                                    <h3 class="card-title">ENVIADO A:
+                                        {{element.receptor.funcionario|fullname}}
+                                        ({{element.receptor.funcionario.cargo|uppercase}}) -
+                                        {{element.receptor.cuenta.dependencia.institucion.sigla}} /
+                                        {{element.receptor.cuenta.dependencia.nombre}}</h3>
+                                    <p class="card-text">MOTIVO: {{element.motivo}}</p>
+                                    <div class="row">
+                                        <div class="col">
+                                            <p class="card-text">ENVIADO: {{element.fecha_envio|date:'d/M/yy, h:mm a'}}
+                                            </p>
+                                        </div>
+                                        <div *ngIf="element.fecha_recibido" class="col">
+                                            <p class="card-text">RECIBIDO: {{element.fecha_recibido|date:'d/M/yy, h:mma'}}</p>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div *ngIf="element.recibido===false" class="alert alert-danger" role="alert">
+                                        MOTIVO RECHAZO: <strong>{{element.motivo_rechazo|uppercase}}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
+                    [class.example-expanded-row]="expandedElement === row"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+            </table>
+        </div>
+
+        <mat-paginator (page)="pagination($event)" [length]="resulstLenght" [pageSizeOptions]="[1, 2, 3, 80]" 
+            showFirstLastButtons>
+        </mat-paginator>
+    </div>
+</div>

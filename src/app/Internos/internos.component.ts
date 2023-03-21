@@ -4,7 +4,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
-import { DialogRemisionComponent } from '../Tramites/dialog-remision/dialog-remision.component';
+import { DialogRemisionComponent } from '../Bandejas/dialogs/dialog-remision/dialog-remision.component';
 import { DialogInternosComponent } from './dialog-internos/dialog-internos.component';
 import { HojaRutaInterna } from './pdfs/hora-ruta';
 import { InternosService } from './services/internos.service';

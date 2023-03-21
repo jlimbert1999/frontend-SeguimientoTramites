@@ -1,4 +1,4 @@
-<div [ngSwitch]="Options">
+<!-- <div [ngSwitch]="Options">
     <div *ngSwitchCase="true">
         <div class="card">
             <div class="card-header text-center">
@@ -98,4 +98,23 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
+
+<cdk-accordion class="example-accordion">
+    <cdk-accordion-item *ngFor="let item of Observaciones; let index = index;" #accordionItem="cdkAccordionItem"
+        class="example-accordion-item" role="button" tabindex="0" [attr.id]="'accordion-header-' + index"
+        [attr.aria-expanded]="accordionItem.expanded" [attr.aria-controls]="'accordion-body-' + index">
+        <div class="example-accordion-item-header" (click)="accordionItem.toggle()">
+            {{ item.funcionario }}
+            <span class="example-accordion-item-description">
+                Click to {{ accordionItem.expanded ? 'close' : 'open' }}
+            </span>
+        </div>
+        <div class="example-accordion-item-body" role="region" [style.display]="accordionItem.expanded ? '' : 'none'"
+            [attr.id]="'accordion-body-' + index" [attr.aria-labelledby]="'accordion-header-' + index">
+
+            <p>{{item.descripcion}}</p>
+            <p>Fecha: {{item.fecha|date:'short'}}</p>
+        </div>
+    </cdk-accordion-item>
+</cdk-accordion>

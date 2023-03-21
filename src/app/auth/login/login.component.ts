@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NotificationsService } from 'src/app/Tramites/services/notifications.service';
+import { NotificationService } from 'src/app/home/services/notification.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private fb: FormBuilder,
-    private notificationService: NotificationsService) { }
+    private notificationService: NotificationService) { }
 
   ngOnInit(): void {
     if (localStorage.getItem('token')) {

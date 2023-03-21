@@ -1,0 +1,136 @@
+<app-toolbar title="BANDEJA ENTRADA"></app-toolbar>
+<div class="container-fluid" [@fadeInOnEnter]>
+
+    <div class="row">
+        <div class="col-sm-2">
+            <mat-form-field class="example-full-width">
+                <mat-label>Tipos busqueda</mat-label>
+                <mat-select (selectionChange)="selectTypeSearch()" [(ngModel)]="bandejaService.type">
+                    <mat-option [value]="'EXTERNO'">
+                        Tramite Externo
+                    </mat-option>
+                    <mat-option [value]="'INTERNO'">
+                        Tramite Interno
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-sm-10">
+            <mat-form-field class="example-full-width">
+                <mat-label>Alterno / Referencia / Proveido / Nº Interno</mat-label>
+                <input [(ngModel)]="bandejaService.textSearch" (keyup)="applyFilter($event)" matInput>
+                <button *ngIf="bandejaService.textSearch" matSuffix mat-icon-button aria-label="Clear"
+                    (click)="resetSearch()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="example-container mat-elevation-z8">
+        <div class="example-table-container">
+            <table mat-table [dataSource]="bandejaService.Mails" class="example-table" multiTemplateDataRows>
+                <ng-container matColumnDef="tipo_correspondencia">
+                    <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                    <td mat-cell *matCellDef="let row">
+                        <div [ngSwitch]="row.tipo">
+                            <div *ngSwitchCase="'tramites_internos'">INTERNO</div>
+                            <div *ngSwitchCase="'tramites_externos'">EXTERNO</div>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="alterno">
+                    <th mat-header-cell *matHeaderCellDef>Alterno</th>
+                    <td mat-cell *matCellDef="let row">
+                        <div [ngSwitch]="row.tipo">
+                            <a [routerLink]="['mail', row._id]">
+                                {{row.tramite.alterno}}
+                            </a>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="descripcion">
+                    <th mat-header-cell *matHeaderCellDef>Referencia</th>
+                    <td mat-cell *matCellDef="let row">{{row.tramite.detalle}}</td>
+                </ng-container>
+                <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef>Estado</th>
+                    <td mat-cell *matCellDef="let row">
+                        <span class="badge" [ngClass]="row.tramite.estado|state">
+                            {{row.tramite.estado}}
+                        </span>
+                    </td>
+                </ng-container>
+
+
+
+                <ng-container matColumnDef="fecha_envio">
+                    <th mat-header-cell *matHeaderCellDef>Recibido</th>
+                    <td mat-cell *matCellDef="let row">
+                        {{row.fecha_envio | date:'short'}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="opciones">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let row">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <div [ngSwitch]="row.recibido">
+                                <div *ngSwitchCase="false">
+                                    <button (click)="aceptar_tramite(row)" mat-menu-item>
+                                        <mat-icon>done</mat-icon>
+                                        <span>Aceptar tramite</span>
+                                    </button>
+                                    <button (click)="rechazar_tramite(row)" mat-menu-item>
+                                        <mat-icon>block</mat-icon>
+                                        <span>Rechazar tramite</span>
+                                    </button>
+                                </div>
+                                <div *ngSwitchCase="true">
+                                    <button (click)="send(row)" mat-menu-item>
+                                        <mat-icon>send</mat-icon>
+                                        <span>Remitir tramite</span>
+                                    </button>
+                                    <button (click)="concluir(row)" mat-menu-item>
+                                        <mat-icon>domain_verification</mat-icon>
+                                        <span>Concluir tramite</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="expand">
+                    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button aria-label="expand row"
+                            (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                            <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+                            <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                        <div class="example-element-detail"
+                            [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                            <app-mail-header [Data]="element"></app-mail-header>
+                        </div>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
+                    [ngClass]="{'mail_recibido': row.recibido==false }"
+                    [class.example-expanded-row]="expandedElement === row"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+            </table>
+        </div>
+
+        <mat-paginator (page)="paginacion($event)" [length]="bandejaService.length"
+            [pageSizeOptions]="[ 10, 20, 40, 50]" showFirstLastButtons>
+        </mat-paginator>
+    </div>
+
+</div>

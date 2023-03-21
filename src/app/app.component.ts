@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { SocketService } from './Tramites/services/socket.service';
+
 
 @Component({
   selector: 'app-root',
@@ -8,10 +8,10 @@ import { SocketService } from './Tramites/services/socket.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'frontend_contrataciones';
-  constructor(private socketService: SocketService) { }
+  constructor() { }
   ngOnInit() {
   }
   ngOnDestroy() {
-    this.socketService.disconnect();
+    // this.socketService.disconnect();
   }
 }

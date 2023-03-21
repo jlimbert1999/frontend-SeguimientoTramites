@@ -7,7 +7,6 @@ import { MaterialModule } from '../angular-material/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
-import { MailFichaInternoComponent } from './mail-ficha-interno/mail-ficha-interno.component';
 
 
 
@@ -16,7 +15,6 @@ import { MailFichaInternoComponent } from './mail-ficha-interno/mail-ficha-inter
     InternosComponent,
     DialogInternosComponent,
     FichaInternoComponent,
-    MailFichaInternoComponent
   ],
   imports: [
     CommonModule,

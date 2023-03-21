@@ -123,4 +123,5 @@ mat-card-subtitle {
 
 .active {
     background-color: #3A86FF;
+    color: white;
 }

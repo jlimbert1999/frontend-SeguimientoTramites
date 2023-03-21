@@ -2,17 +2,17 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { DialogExternoComponent } from './dialog-externo/dialog-externo.component';
-import { DialogRemisionComponent } from '../Tramites/dialog-remision/dialog-remision.component';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { ExternosService } from './services/externos.service';
 import Swal from 'sweetalert2';
 import { Ficha } from './pdf/ficha';
 import { HojaRuta } from './pdf/hoja-ruta';
-import { EnvioModel } from '../Tramites/models/mail.model';
+import { EnvioModel } from '../Bandejas/models/mail.model';
 import { ExternoDto, RepresentanteDto, SolicitanteDto } from './models/Externo.dto';
 import { Externo, Representante, Solicitante } from './models/Externo.interface';
 import { MatSort } from '@angular/material/sort';
+import { DialogRemisionComponent } from '../Bandejas/dialogs/dialog-remision/dialog-remision.component';
 
 
 @Component({
