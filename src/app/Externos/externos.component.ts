@@ -146,7 +146,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getOne(id_tramite).subscribe(data => {
-      HojaRuta(data.tramite, data.workflow)
+      HojaRuta(data.tramite, data.workflow, this.authService.Account.id_cuenta)
     })
   }
   GenerateFicha(tramite: Externo) {
