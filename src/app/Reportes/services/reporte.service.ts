@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Externo, WorkflowData } from 'src/app/Externos/models/Externo.interface';
+import { Externo } from 'src/app/Externos/models/Externo.interface';
 import { Interno } from 'src/app/Internos/models/Interno.interface';
+import { WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -15,14 +16,6 @@ export class ReporteService {
   length: number = 0
   grupo: 'INTERNO' | 'EXTERNO'
   params: HttpParams
-  // searchParams: {
-  //   alterno?: string
-  //   cite?: string
-  //   estado?: string
-  //   tipo_tramite?: string
-  //   end?: string
-  //   start?: string
-  // } = {}
   searchParams: any = {}
 
   constructor(private http: HttpClient) { }
@@ -53,4 +46,19 @@ export class ReporteService {
     )
   }
 
+
+  getReporteSolicitante(parametros: any) {
+    return this.http.post<{ ok: boolean, tramites: any[] }>(`${base_url}/reportes/solicitante`, parametros).pipe(
+      map(resp => {
+        return resp.tramites
+      })
+    )
+  }
+  getReporteRepresentante(parametros: any) {
+    return this.http.post<{ ok: boolean, tramites: any[] }>(`${base_url}/reportes/representante`, parametros).pipe(
+      map(resp => {
+        return resp.tramites
+      })
+    )
+  }
 }

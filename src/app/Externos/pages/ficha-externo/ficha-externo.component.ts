@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
-import { Externo, WorkflowData } from '../../models/Externo.interface';
+import { Externo } from '../../models/Externo.interface';
 import { ExternosService } from '../../services/externos.service';
 import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha';
+import { WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 
 @Component({
   selector: 'app-ficha-externo',

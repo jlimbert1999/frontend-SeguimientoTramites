@@ -7,12 +7,12 @@ import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimatio
 import { ExternosService } from './services/externos.service';
 import Swal from 'sweetalert2';
 import { Ficha } from './pdf/ficha';
-import { HojaRuta } from './pdf/hoja-ruta';
 import { EnvioModel } from '../Bandejas/models/mail.model';
 import { ExternoDto, RepresentanteDto, SolicitanteDto } from './models/Externo.dto';
 import { Externo, Representante, Solicitante } from './models/Externo.interface';
 import { MatSort } from '@angular/material/sort';
 import { DialogRemisionComponent } from '../Bandejas/dialogs/dialog-remision/dialog-remision.component';
+import { HojaRutaExterna } from './pdf/hoja-ruta-externa';
 
 
 @Component({
@@ -146,7 +146,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getOne(id_tramite).subscribe(data => {
-      HojaRuta(data.tramite, data.workflow, this.authService.Account.id_cuenta)
+      HojaRutaExterna(data.tramite, data.workflow, this.authService.Account.id_cuenta)
     })
   }
   GenerateFicha(tramite: Externo) {

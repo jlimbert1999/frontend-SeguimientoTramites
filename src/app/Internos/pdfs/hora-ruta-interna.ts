@@ -1,21 +1,20 @@
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { Content, ContentImage, Table, TDocumentDefinitions } from "pdfmake/interfaces";
+import { TDocumentDefinitions } from "pdfmake/interfaces";
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
-import { Externo, WorkflowData } from "../models/Externo.interface";
+import { Interno } from "../models/Interno.interface";
+import { WorkflowData } from "src/app/Bandejas/models/workflow.interface";
 const ordinales = require("ordinales-js");
 
-export const HojaRuta = async (tramite: Externo, workflow: WorkflowData[], id_cuenta: string) => {
-    let Iteraciones: any[] = []
+export const HojaRutaInterna = async (tramite: Interno, workflow: WorkflowData[], id_cuenta: string) => {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     let docDefinition: TDocumentDefinitions
     let checkType = ['', '', '']
-    let NameSolicitante: string = tramite.solicitante.tipo === 'NATURAL' ? `${tramite.solicitante.nombre} ${tramite.solicitante.paterno} ${tramite.solicitante.materno}` : `${tramite.solicitante.nombre}`
+
     let cuadrados: any[] = []
 
     if (workflow.length > 0) {
-
         if (id_cuenta === tramite.cuenta) {
             let destinatarios = ''
             for (let index = 0; index < workflow.length; index++) {
@@ -361,7 +360,7 @@ export const HojaRuta = async (tramite: Externo, workflow: WorkflowData[], id_cu
                                             widths: ['*', '*'],
                                             body: [
                                                 [{ text: 'DATOS DE ORIGEN', bold: true }, ''],
-                                                [`${tramite.cite !== '' ? 'CITE: ' + tramite.cite : ''}    |    TEL.: ${tramite.solicitante.telefono}`,
+                                                [`${tramite.cite !== '' ? 'CITE: ' + tramite.cite : '"SIN CITE"'}`,
                                                 {
                                                     table: {
                                                         widths: [85, 100, 40],
@@ -375,8 +374,8 @@ export const HojaRuta = async (tramite: Externo, workflow: WorkflowData[], id_cu
                                                     },
                                                 },
                                                 ],
-                                                [`REMITENTE: ${tramite.solicitante.nombre} ${tramite.solicitante.paterno} ${tramite.solicitante.materno}`, `CARGO: P. ${tramite.solicitante.tipo}`],
-                                                [`DESTINATARIO: `, `CARGO:`],
+                                                [`REMITENTE: ${tramite.remitente.nombre}`, `CARGO: ${tramite.remitente.cargo}`],
+                                                [`DESTINATARIO: ${tramite.destinatario.nombre}`, `CARGO: ${tramite.destinatario.cargo}`],
                                                 [{ text: `REFERENCIA:`, colSpan: 2 }]
                                             ]
                                         },
@@ -737,7 +736,7 @@ export const HojaRuta = async (tramite: Externo, workflow: WorkflowData[], id_cu
                                             widths: ['*', '*'],
                                             body: [
                                                 [{ text: 'DATOS DE ORIGEN', bold: true }, ''],
-                                                [`${tramite.cite !== '' ? 'CITE: ' + tramite.cite : ''}    |    TEL.: ${tramite.solicitante.telefono}`,
+                                                [`${tramite.cite !== '' ? 'CITE: ' + tramite.cite : '"SIN CITE"'}`,
                                                 {
                                                     table: {
                                                         widths: [85, 100, 40],
@@ -751,8 +750,8 @@ export const HojaRuta = async (tramite: Externo, workflow: WorkflowData[], id_cu
                                                     },
                                                 },
                                                 ],
-                                                [`REMITENTE: ${tramite.solicitante.nombre} ${tramite.solicitante.paterno} ${tramite.solicitante.materno}`, `CARGO: P. ${tramite.solicitante.tipo}`],
-                                                [`DESTINATARIO: ${way[0].receptor.funcionario.nombre} ${way[0].receptor.funcionario.paterno} ${way[0].receptor.funcionario.materno}`, `CARGO: ${way[0].receptor.funcionario.cargo}`],
+                                                [`REMITENTE: ${tramite.remitente.nombre}`, `CARGO: ${tramite.remitente.cargo}`],
+                                                [`DESTINATARIO: ${tramite.destinatario.nombre}`, `CARGO: ${tramite.destinatario.cargo}`],
                                                 [{ text: `REFERENCIA: ${way[0].motivo}`, colSpan: 2 }]
                                             ]
                                         },
@@ -1070,7 +1069,7 @@ export const HojaRuta = async (tramite: Externo, workflow: WorkflowData[], id_cu
                                         widths: ['*', '*'],
                                         body: [
                                             [{ text: 'DATOS DE ORIGEN', bold: true }, ''],
-                                            [`${tramite.cite !== '' ? 'CITE: ' + tramite.cite : ''}    |    TEL.: ${tramite.solicitante.telefono}`,
+                                            [`${tramite.cite !== '' ? 'CITE: ' + tramite.cite : '"SIN CITE"'}`,
                                             {
                                                 table: {
                                                     widths: [85, 100, 40],
@@ -1084,9 +1083,9 @@ export const HojaRuta = async (tramite: Externo, workflow: WorkflowData[], id_cu
                                                 },
                                             },
                                             ],
-                                            [`REMITENTE: ${tramite.solicitante.nombre} ${tramite.solicitante.paterno} ${tramite.solicitante.materno}`, `CARGO: P. ${tramite.solicitante.tipo}`],
-                                            [`DESTINATARIO: `, `CARGO:`],
-                                            [{ text: `REFERENCIA:`, colSpan: 2 }]
+                                            [`REMITENTE: ${tramite.remitente.nombre}`, `CARGO: ${tramite.remitente.cargo}`],
+                                            [`DESTINATARIO: ${tramite.destinatario.nombre}`, `CARGO: ${tramite.destinatario.cargo}`],
+                                            [{ text: `REFERENCIA: ${tramite.detalle}`, colSpan: 2 }]
                                         ]
                                     },
                                     layout: 'noBorders'

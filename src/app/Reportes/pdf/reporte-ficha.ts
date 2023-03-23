@@ -4,7 +4,8 @@ import { Content, Table, TableCell, TableLayout, TDocumentDefinitions } from "pd
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
-import { Externo, WorkflowData } from "src/app/Externos/models/Externo.interface";
+import { Externo } from "src/app/Externos/models/Externo.interface";
+import { WorkflowData } from "src/app/Bandejas/models/workflow.interface";
 
 export async function PDF_FichaExterno(tramite: Externo, Workflow: WorkflowData[], funcionario: string) {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')

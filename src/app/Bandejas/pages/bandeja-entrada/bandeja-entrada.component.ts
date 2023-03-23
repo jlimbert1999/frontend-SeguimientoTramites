@@ -22,7 +22,7 @@ import { ExternosService } from 'src/app/Externos/services/externos.service';
 import { BandejaEntradaData } from '../../models/mail.model';
 import { DialogRemisionComponent } from '../../dialogs/dialog-remision/dialog-remision.component';
 import { InternosService } from 'src/app/Internos/services/internos.service';
-import { HojaRuta } from 'src/app/Externos/pdf/hoja-ruta';
+import { HojaRutaExterna } from 'src/app/Externos/pdf/hoja-ruta-externa';
 
 @Component({
   selector: 'app-bandeja-entrada',
@@ -217,7 +217,7 @@ export class BandejaEntradaComponent implements OnInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getOne(id_tramite).subscribe(data => {
-      HojaRuta(data.tramite, data.workflow, this.authService.Account.id_cuenta)
+      HojaRutaExterna(data.tramite, data.workflow, this.authService.Account.id_cuenta)
     })
   }
 

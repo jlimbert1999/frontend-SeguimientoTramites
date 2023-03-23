@@ -6,7 +6,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
 import { DialogRemisionComponent } from '../Bandejas/dialogs/dialog-remision/dialog-remision.component';
 import { DialogInternosComponent } from './dialog-internos/dialog-internos.component';
-import { HojaRutaInterna } from './pdfs/hora-ruta';
+import { HojaRutaInterna } from './pdfs/hora-ruta-interna';
 import { InternosService } from './services/internos.service';
 
 @Component({
@@ -114,16 +114,6 @@ export class InternosComponent implements OnInit {
       }
     });
   }
-  generar_hoja_ruta(id_tramite: string) {
-    // this.internoService.GetOne(id_tramite).subscribe(data => {
-    //   HojaRutaInterna(data.tramite, data.workflow, 'tramites_internos')
-    // })
-  }
-
-
- 
-
-
 
   pagination(page: PageEvent) {
     this.internoService.offset = page.pageIndex
@@ -151,5 +141,11 @@ export class InternosComponent implements OnInit {
       allowOutsideClick: false,
     });
     Swal.showLoading()
+  }
+
+  GenerateHojaRuta(id_tramite: string) {
+    this.internoService.GetOne(id_tramite).subscribe(data => {
+      HojaRutaInterna(data.tramite, data.workflow, this.authService.Account.id_cuenta)
+    })
   }
 }

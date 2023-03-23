@@ -9,7 +9,6 @@ import { GroupwareComponent } from '../Configuraciones/groupware/groupware.compo
 import { InstitucionesComponent } from '../Configuraciones/instituciones/instituciones.component';
 import { TiposTramitesComponent } from '../Configuraciones/tipos-tramites/tipos-tramites.component';
 import { AuthGuard } from '../guards/auth.guard';
-import { ReporteSolicitanteComponent } from '../Reportes/reporte-solicitante/reporte-solicitante.component';
 import { HomeComponent } from './home.component';
 
 const routes: Routes = [

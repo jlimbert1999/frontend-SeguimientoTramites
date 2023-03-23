@@ -5,7 +5,6 @@ import { BandejaSalidaModel_View } from '../../models/mail.model';
 
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ExternosService } from '../../../Externos/services/externos.service';
-import { HojaRutaInterna } from '../../../Internos/pdfs/hora-ruta';
 
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
@@ -59,12 +58,12 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
   generar_hoja_ruta(id_tramite: string, tipo_hoja: 'tramites_externos' | 'tramites_internos') {
     if (tipo_hoja === 'tramites_externos') {
       this.externoService.getOne(id_tramite).subscribe(data => {
-        crear_hoja_ruta(data.tramite, data.workflow, tipo_hoja)
+        // crear_hoja_ruta(data.tramite, data.workflow, tipo_hoja)
       })
     }
     else {
       this.internoService.GetOne(id_tramite).subscribe(data => {
-        HojaRutaInterna(data.tramite, data.workflow, tipo_hoja)
+        // HojaRutaInterna(data.tramite, data.workflow, tipo_hoja)
       })
     }
   }
@@ -103,7 +102,5 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
 }
 
 
-function crear_hoja_ruta(tramite: Externo, workflow: import("src/app/Externos/models/Externo.interface").WorkflowData[], tipo_hoja: string) {
-  throw new Error('Function not implemented.');
-}
+
 

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import { WorkflowData } from 'src/app/Externos/models/Externo.interface';
 import * as shape from 'd3-shape';
+import { WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 
 @Component({
   selector: 'app-graph-workflow',

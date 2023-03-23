@@ -1,10 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, Query, QueryList } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 import { TiposTramitesModel } from 'src/app/Configuraciones/models/tiposTramites.model';
 import { environment } from 'src/environments/environment';
 import { ExternoDto, RepresentanteDto, SolicitanteDto } from '../models/Externo.dto';
-import { Externo, TypeTramiteData, WorkflowData } from '../models/Externo.interface';
+import { Externo, TypeTramiteData } from '../models/Externo.interface';
 
 const base_url = environment.base_url
 @Injectable({

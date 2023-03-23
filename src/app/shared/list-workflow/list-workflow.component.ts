@@ -2,7 +2,7 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import * as moment from 'moment';
-import { WorkflowData } from 'src/app/Externos/models/Externo.interface';
+import { WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 
 interface ListGroupware {
   parentId?: string

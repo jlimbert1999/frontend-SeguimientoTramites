@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
+import { fadeInOnEnterAnimation } from 'angular-animations';
 import Swal from 'sweetalert2';
 import { ArchivoService } from './services/archivo.service';
 
 @Component({
   selector: 'app-archivos',
   templateUrl: './archivos.component.html',
-  styleUrls: ['./archivos.component.css']
+  styleUrls: ['./archivos.component.css'],
+  animations: [
+    fadeInOnEnterAnimation(),
+  ]
+
 })
 export class ArchivosComponent {
   dataSource: any[] = []

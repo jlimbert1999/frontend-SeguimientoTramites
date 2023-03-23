@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Interno } from 'src/app/Internos/models/Interno.interface';
-import { Externo, WorkflowData } from 'src/app/Externos/models/Externo.interface';
+import { Externo  } from 'src/app/Externos/models/Externo.interface';
 import { ActivatedRoute } from '@angular/router';
 import { BandejaEntradaService } from '../../services/bandeja-entrada.service';
 import { ExternosService } from 'src/app/Externos/services/externos.service';
@@ -10,6 +10,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import Swal from 'sweetalert2';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { WorkflowData } from '../../models/workflow.interface';
 
 @Component({
   selector: 'app-mail',
