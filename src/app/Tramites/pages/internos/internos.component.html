@@ -16,7 +16,7 @@
                 <ng-container matColumnDef="alterno">
                     <th mat-header-cell *matHeaderCellDef> Alterno </th>
                     <td mat-cell *matCellDef="let element">
-                        <a [routerLink]="['ficha', element._id]">
+                        <a [routerLink]="['', element._id]">
                             {{element.alterno}}
                         </a>
                     </td>
@@ -93,6 +93,8 @@
         <mat-paginator (page)="pagination($event)" [pageIndex]="internoService.offset"
             [length]="internoService.resultsLength" [pageSizeOptions]="[10, 20, 30, 50]"
             showFirstLastButtons></mat-paginator>
+
+        <app-paginator></app-paginator>
     </div>
 
 </div>

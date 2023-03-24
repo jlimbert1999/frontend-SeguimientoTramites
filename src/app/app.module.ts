@@ -17,10 +17,9 @@ import { ReportesModule } from './Reportes/reportes.module';
 import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
-import { ExternosModule } from './Externos/externos.module';
 import { ArchivosModule } from './Archivos/archivos.module';
-import { InternosModule } from './Internos/internos.module';
 import { BandejasModule } from './Bandejas/bandejas.module';
+import { TramitesModule } from './Tramites/tramites.module';
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
@@ -35,12 +34,11 @@ registerLocaleData(localeEs, 'es');
     ToastrModule.forRoot(), // ToastrModule added
     ConfiguracionesModule,
     AuthModule,
-    ExternosModule,
     ArchivosModule,
     ReportesModule,
     MaterialModule,
-    InternosModule,
-    BandejasModule
+    BandejasModule,
+    TramitesModule
   ],
   providers: [
     {

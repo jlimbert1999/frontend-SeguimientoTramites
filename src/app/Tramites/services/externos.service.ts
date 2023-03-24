@@ -3,6 +3,7 @@ import { Injectable, Query, QueryList } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 import { TiposTramitesModel } from 'src/app/Configuraciones/models/tiposTramites.model';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { environment } from 'src/environments/environment';
 import { ExternoDto, RepresentanteDto, SolicitanteDto } from '../models/Externo.dto';
 import { Externo, TypeTramiteData } from '../models/Externo.interface';
@@ -19,7 +20,7 @@ export class ExternosService {
 
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private paginatorService: PaginatorService) { }
   getTypes(segmento: string) {
     return this.http.get<{ ok: boolean, tipos: TypeTramiteData[] }>(`${base_url}/tramites/externos/tipos/${segmento}`).pipe(
       map(resp => {
@@ -51,6 +52,17 @@ export class ExternosService {
       map(resp => {
         this.resultsLength = resp.total
         return resp.tramites
+      })
+    )
+  }
+  newGet() {
+    let params = new HttpParams()
+      .set('limit', this.paginatorService.limit)
+      .set('offset', this.paginatorService.offset)
+    return this.http.get<{ ok: boolean, tramites: Externo[], total: number }>(`${base_url}/tramites/externos`, { params }).pipe(
+      map(resp => {
+        this.paginatorService.length = resp.total
+        return { tramites: resp.tramites, total: resp.total }
       })
     )
   }

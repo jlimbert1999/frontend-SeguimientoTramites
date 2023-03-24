@@ -4,14 +4,14 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { BandejaSalidaModel_View } from '../../models/mail.model';
 
 import { fadeInOnEnterAnimation } from 'angular-animations';
-import { ExternosService } from '../../../Externos/services/externos.service';
+import { ExternosService } from '../../../Tramites/services/externos.service';
 
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
-import { Externo } from 'src/app/Externos/models/Externo.interface';
 import { BandejaSalidaService } from '../../services/bandeja-salida.service';
-import { InternosService } from 'src/app/Internos/services/internos.service';
+import { InternosService } from 'src/app/Tramites/services/internos.service';
+
 
 @Component({
   selector: 'app-bandeja-salida',

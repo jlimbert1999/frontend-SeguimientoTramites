@@ -2,8 +2,9 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { Externo, Representante, Solicitante, TypeTramiteData } from '../models/Externo.interface';
-import { ExternosService } from '../services/externos.service';
+import { Externo, Representante, Solicitante, TypeTramiteData } from '../../models/Externo.interface';
+import { ExternosService } from '../../services/externos.service';
+
 @Component({
   selector: 'app-dialog-externo',
   templateUrl: './dialog-externo.component.html',

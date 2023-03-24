@@ -1,7 +1,7 @@
 <app-toolbar title="EXTERNOS" [showAdd]="true" (add)="Add()"></app-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
     <mat-form-field>
-        <mat-label>Buscar tramite</mat-label>
+        <!-- <mat-label>Buscar tramite</mat-label> -->
         <input matInput [(ngModel)]="externoService.textSearch" (keyup)="applyFilter($event)"
             placeholder="Alterno / Referencia / Solicitante" #input>
         <button *ngIf="externoService.textSearch!==''" matSuffix mat-icon-button aria-label="Clear"
@@ -15,7 +15,8 @@
                 <ng-container matColumnDef="alterno">
                     <th mat-header-cell *matHeaderCellDef>Alterno</th>
                     <td mat-cell *matCellDef="let row">
-                        <a [routerLink]="['ficha', row._id]">
+                        <a [routerLink]="['../ficha', 'externo', row._id]"
+                            [queryParams]="{limit:paginatorService.limit, offset:paginatorService.offset}">
                             {{row.alterno}}
                         </a>
                     </td>
@@ -86,8 +87,10 @@
             </table>
         </div>
 
-        <mat-paginator (page)="pagination($event)" [pageIndex]="externoService.offset"
+        <!-- <mat-paginator (page)="pagination($event)" [pageIndex]="externoService.offset"
             [length]="externoService.resultsLength" [pageSizeOptions]="[10, 20, 30, 50]"
-            showFirstLastButtons></mat-paginator>
+            showFirstLastButtons></mat-paginator> -->
+
+        <app-paginator *ngIf="Data.length>0" (page)="newGet()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
     </div>
 </div>

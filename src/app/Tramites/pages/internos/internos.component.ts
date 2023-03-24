@@ -3,11 +3,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { DialogRemisionComponent } from 'src/app/Bandejas/dialogs/dialog-remision/dialog-remision.component';
 import Swal from 'sweetalert2';
-import { DialogRemisionComponent } from '../Bandejas/dialogs/dialog-remision/dialog-remision.component';
-import { DialogInternosComponent } from './dialog-internos/dialog-internos.component';
-import { HojaRutaInterna } from './pdfs/hora-ruta-interna';
-import { InternosService } from './services/internos.service';
+import { DialogInternosComponent } from '../../dialogs/dialog-internos/dialog-internos.component';
+import { HojaRutaInterna } from '../../pdfs/hora-ruta-interna';
+import { InternosService } from '../../services/internos.service';
 
 @Component({
   selector: 'app-internos',

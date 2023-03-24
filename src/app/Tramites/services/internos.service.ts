@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { environment } from 'src/environments/environment';
 import { InternoDto } from '../models/interno.dto';
 import { Interno } from '../models/Interno.interface';
@@ -14,7 +15,7 @@ export class InternosService {
   limit: number = 10
   textSearch: string = ""
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private paginatorService: PaginatorService) { }
 
   Add(tramite: InternoDto) {
     return this.http.post<{ ok: boolean, tramite: Interno }>(`${base_url}/tramites/internos`, tramite).pipe(
@@ -38,6 +39,7 @@ export class InternosService {
       .set('offset', this.offset)
     return this.http.get<{ ok: boolean, tramites: Interno[], length: number }>(`${base_url}/tramites/internos`, { params }).pipe(
       map(resp => {
+        this.paginatorService.length = resp.length
         this.resultsLength = resp.length
         return resp.tramites
       })

@@ -1,18 +1,18 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { DialogExternoComponent } from './dialog-externo/dialog-externo.component';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
-import { ExternosService } from './services/externos.service';
 import Swal from 'sweetalert2';
-import { Ficha } from './pdf/ficha';
-import { EnvioModel } from '../Bandejas/models/mail.model';
-import { ExternoDto, RepresentanteDto, SolicitanteDto } from './models/Externo.dto';
-import { Externo, Representante, Solicitante } from './models/Externo.interface';
-import { MatSort } from '@angular/material/sort';
-import { DialogRemisionComponent } from '../Bandejas/dialogs/dialog-remision/dialog-remision.component';
-import { HojaRutaExterna } from './pdf/hoja-ruta-externa';
+import { Externo, Representante, Solicitante } from '../../models/Externo.interface';
+import { ExternosService } from '../../services/externos.service';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
+import { ExternoDto, RepresentanteDto, SolicitanteDto } from '../../models/Externo.dto';
+import { DialogExternoComponent } from '../../dialogs/dialog-externo/dialog-externo.component';
+import { DialogRemisionComponent } from 'src/app/Bandejas/dialogs/dialog-remision/dialog-remision.component';
+import { HojaRutaExterna } from '../../pdfs/hoja-ruta-externa';
+import { Ficha } from '../../pdfs/ficha';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -29,6 +29,7 @@ import { HojaRutaExterna } from './pdf/hoja-ruta-externa';
 export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
 
   Data: Externo[] = []
+  total: number = 0
   displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
   filterOpions = [
     { value: 'solicitante', viewValue: 'SOLICITANTE / DNI' },
@@ -43,16 +44,19 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     public authService: AuthService,
-    public externoService: ExternosService
+    public externoService: ExternosService,
+    public paginatorService: PaginatorService,
+    private router: Router
   ) { }
   ngAfterViewInit(): void {
-    this.paginator.pageSize = this.externoService.limit
+    // this.paginator.pageSize = this.externoService.limit
   }
   ngOnDestroy(): void {
   }
 
   ngOnInit(): void {
     this.Get()
+    this.newGet()
   }
 
   Get() {
@@ -66,6 +70,13 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
         this.Data = tramites
       })
     }
+  }
+
+  newGet() {
+    this.externoService.newGet().subscribe(data => {
+      this.Data = data.tramites
+      this.total = data.total
+    })
   }
 
 
@@ -204,6 +215,8 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     this.externoService.textSearch = "";
     this.Get();
   }
+ 
+
 
 
 }

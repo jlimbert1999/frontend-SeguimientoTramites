@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ExternosRoutingModule } from './Externos/externos-routing.module';
 import { HomeRoutingModule } from './home/home-routing.module';
 
 const routes: Routes = [
@@ -13,8 +12,6 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes),
     HomeRoutingModule,
-  
-   
   ],
   exports: [RouterModule]
 })

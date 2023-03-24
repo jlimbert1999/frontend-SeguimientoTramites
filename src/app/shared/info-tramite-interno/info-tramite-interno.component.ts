@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import { Interno } from 'src/app/Internos/models/Interno.interface';
+import { Interno } from 'src/app/Tramites/models/Interno.interface';
 
 @Component({
   selector: 'app-info-tramite-interno',

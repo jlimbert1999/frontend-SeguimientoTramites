@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Externo } from 'src/app/Externos/models/Externo.interface';
-import { Interno } from 'src/app/Internos/models/Interno.interface';
+import { Externo } from 'src/app/Tramites/models/Externo.interface';
 import { WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
+import { Interno } from 'src/app/Tramites/models/Interno.interface';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -36,7 +36,7 @@ export class ReporteService {
         console.log(resp.tramites)
         return resp.tramites
       })
-    )
+    ) 
   }
   getReporteSearchNotPaginated(grupo: 'INTERNO' | 'EXTERNO', length: number) {
     return this.http.get<{ ok: boolean, tramites: | Externo[] | Interno[] }>(`${base_url}/reportes/busqueda/${grupo}?limit=${length}&offset=0`, { params: this.params }).pipe(

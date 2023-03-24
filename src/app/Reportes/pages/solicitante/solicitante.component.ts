@@ -23,6 +23,13 @@ export class SolicitanteComponent {
     paterno: null,
     materno: null,
   });
+  data: any[] = []
+  displayedColumns = [
+    { key: 'alterno', titulo: 'Alterno' },
+    { key: 'detalle', titulo: 'Detalle' },
+    { key: 'estado', titulo: 'Estado' },
+    { key: 'fecha_registro', titulo: 'Fecha' }
+  ];
   constructor(private fb: FormBuilder, private reporteService: ReporteService) { }
 
   getReporteSolicitante() {
@@ -42,6 +49,7 @@ export class SolicitanteComponent {
       this.reporteService.getReporteSolicitante(parametros).subscribe(data => {
         PDF_Solicitante('JOSE', parametros, data)
         Swal.close()
+        this.data = data
       })
     }
   }

@@ -18,11 +18,11 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
 import { LoaderService } from 'src/app/auth/services/loader.service';
 import { BandejaEntradaService } from '../../services/bandeja-entrada.service';
-import { ExternosService } from 'src/app/Externos/services/externos.service';
 import { BandejaEntradaData } from '../../models/mail.model';
 import { DialogRemisionComponent } from '../../dialogs/dialog-remision/dialog-remision.component';
-import { InternosService } from 'src/app/Internos/services/internos.service';
-import { HojaRutaExterna } from 'src/app/Externos/pdf/hoja-ruta-externa';
+import { InternosService } from 'src/app/Tramites/services/internos.service';
+import { ExternosService } from 'src/app/Tramites/services/externos.service';
+import { HojaRutaExterna } from 'src/app/Tramites/pdfs/hoja-ruta-externa';
 
 @Component({
   selector: 'app-bandeja-entrada',

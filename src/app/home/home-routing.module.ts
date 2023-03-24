@@ -23,15 +23,11 @@ const routes: Routes = [
             { path: 'tipos', component: TiposTramitesComponent },
             { path: 'perfil', component: CuentaComponent },
             {
-                path: 'tramites-externos',
+                path: 'tramites',
                 loadChildren: () =>
-                    import(`../Externos/externos-routing.module`).then((m) => m.ExternosRoutingModule),
+                    import(`../Tramites/tramites-routing.module`).then((m) => m.TramitesRoutingModule),
             },
-            {
-                path: 'tramites-internos',
-                loadChildren: () =>
-                    import(`../Internos/internos-routing.module`).then((m) => m.InternosRoutingModule),
-            },
+
             {
                 path: 'archivos',
                 loadChildren: () =>
@@ -47,8 +43,8 @@ const routes: Routes = [
                 loadChildren: () =>
                     import(`../Bandejas/bandejas-routing.module`).then((m) => m.BandejasRoutingModule),
             },
-          
-    
+
+
         ]
     },
     {

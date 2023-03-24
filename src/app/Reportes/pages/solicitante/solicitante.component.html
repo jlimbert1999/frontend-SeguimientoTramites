@@ -1,6 +1,6 @@
 <app-toolbar title="REPORTE"></app-toolbar>
 <div class="grid-container">
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
       <mat-card>
         <mat-card-header>
@@ -83,5 +83,6 @@
       </mat-card>
     </div>
   </div>
+  <app-tabla [dataTable]="data" *ngIf="data.length>0" [displayedColumns]="displayedColumns"></app-tabla>
 
 </div>

@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import * as moment from 'moment';
-import { Externo } from 'src/app/Externos/models/Externo.interface';
+import { Externo } from 'src/app/Tramites/models/Externo.interface';
 
 
 @Component({

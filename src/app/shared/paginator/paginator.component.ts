@@ -1,27 +1,33 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { PaginatorService } from '../services/paginator.service';
 
 @Component({
   selector: 'app-paginator',
   templateUrl: './paginator.component.html',
   styleUrls: ['./paginator.component.css']
 })
-export class PaginatorComponent implements OnInit {
+export class PaginatorComponent implements OnInit, AfterViewInit, OnDestroy {
+  @Input('pageSizeOptions') pageSizeOptions: number[] = [];
+  @Output('page') page: EventEmitter<undefined> = new EventEmitter();
 
-  @Input('length') length: number;
-  @Input('pageSize') pageSize: number;
-  @Input('pageSizeOptions') pageSizeOptions: number[];
 
-  @Output('page') page: EventEmitter<PageEvent> = new EventEmitter();
+  constructor(public paginatorService: PaginatorService) { }
 
-  constructor() { }
+  ngAfterViewInit(): void {
+
+
+  }
 
   ngOnInit(): void {
-    console.log(this.length)
-    console.log(this.pageSize)
   }
   setPage(event: PageEvent) {
-    this.page.emit(event);
+    this.paginatorService.setPage(event)
+    this.page.emit();
+  }
+
+  ngOnDestroy(): void {
+    this.paginatorService.resetPage()
   }
 
 }
