@@ -2,9 +2,9 @@
 <div class="container-fluid" [@fadeInOnEnter]>
     <mat-form-field>
         <mat-label>Buscar tramite</mat-label>
-        <input matInput [(ngModel)]="internoService.textSearch" (keyup)="applyFilter($event)"
+        <input matInput [(ngModel)]="paginatorService.text" (keyup)="applyFilter($event)"
             placeholder="Alterno / Referencia / Cite" #input>
-        <button *ngIf="internoService.textSearch!==''" matSuffix mat-icon-button aria-label="Clear"
+        <button *ngIf="paginatorService.text!==''" matSuffix mat-icon-button aria-label="Clear"
             (click)="cancelSearch()">
             <mat-icon>close</mat-icon>
         </button>
@@ -90,11 +90,11 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </div>
-        <mat-paginator (page)="pagination($event)" [pageIndex]="internoService.offset"
+        <!-- <mat-paginator (page)="pagination($event)" [pageIndex]="internoService.offset"
             [length]="internoService.resultsLength" [pageSizeOptions]="[10, 20, 30, 50]"
-            showFirstLastButtons></mat-paginator>
+            showFirstLastButtons></mat-paginator> -->
 
-        <app-paginator></app-paginator>
+        <app-paginator (page)="Get()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
     </div>
 
 </div>

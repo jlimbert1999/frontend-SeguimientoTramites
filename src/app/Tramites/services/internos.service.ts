@@ -10,17 +10,12 @@ const base_url = environment.base_url
   providedIn: 'root'
 })
 export class InternosService {
-  resultsLength: number = 0
-  offset: number = 0
-  limit: number = 10
-  textSearch: string = ""
 
-  constructor(private http: HttpClient, private paginatorService: PaginatorService) { }
+  constructor(private http: HttpClient) { }
 
   Add(tramite: InternoDto) {
     return this.http.post<{ ok: boolean, tramite: Interno }>(`${base_url}/tramites/internos`, tramite).pipe(
       map(resp => {
-        this.resultsLength += 1
         return resp.tramite
       })
     )
@@ -33,26 +28,23 @@ export class InternosService {
     )
   }
 
-  Get() {
+  Get(limit: number, offset: number) {
     let params = new HttpParams()
-      .set('limit', this.limit)
-      .set('offset', this.offset)
+      .set('limit', limit)
+      .set('offset', offset)
     return this.http.get<{ ok: boolean, tramites: Interno[], length: number }>(`${base_url}/tramites/internos`, { params }).pipe(
       map(resp => {
-        this.paginatorService.length = resp.length
-        this.resultsLength = resp.length
-        return resp.tramites
+        return { tramites: resp.tramites, length: resp.length }
       })
     )
   }
-  GetSearch() {
+  GetSearch(limit: number, offset: number, text: string) {
     let params = new HttpParams()
-      .set('limit', this.limit)
-      .set('offset', this.offset)
-    return this.http.get<{ ok: boolean, tramites: Interno[], length: number }>(`${base_url}/tramites/internos/search/${this.textSearch}`, { params }).pipe(
+      .set('limit', limit)
+      .set('offset', offset)
+    return this.http.get<{ ok: boolean, tramites: Interno[], length: number }>(`${base_url}/tramites/internos/search/${text}`, { params }).pipe(
       map(resp => {
-        this.resultsLength = resp.length
-        return resp.tramites
+        return { tramites: resp.tramites, length: resp.length }
       })
     )
   }

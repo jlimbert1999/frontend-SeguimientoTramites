@@ -15,8 +15,8 @@ import { slideInLeftOnEnterAnimation } from 'angular-animations';
     slideInLeftOnEnterAnimation({ duration: 500 })
   ]
 })
-export class FichaComponent implements OnInit, OnDestroy {
-  tipo: 'externo' | 'interno'
+export class FichaComponent implements OnInit {
+  tipo: 'ficha-externa' | 'ficha-interna'
   Tramite: any
   Workflow: any[] = []
   constructor(
@@ -28,18 +28,17 @@ export class FichaComponent implements OnInit, OnDestroy {
   ) {
 
   }
- 
+
   ngOnInit(): void {
-    
     this.activateRoute.params.subscribe(params => {
       this.tipo = params['tipo']
-      if (this.tipo == 'externo') {
+      if (this.tipo == 'ficha-externa') {
         this.externoService.getOne(params['id']).subscribe(data => {
           this.Tramite = data.tramite
           this.Workflow = data.workflow
         })
       }
-      else if (this.tipo == 'interno') {
+      else if (this.tipo == 'ficha-interna') {
         this.internoService.GetOne(params['id']).subscribe(data => {
           this.Tramite = data.tramite
           this.Workflow = data.workflow
@@ -48,17 +47,16 @@ export class FichaComponent implements OnInit, OnDestroy {
       else {
         console.log('no validos')
       }
-
-
     })
   }
+
   back() {
-    this._location.back();
-  }
-  ngOnDestroy(): void {
     this.activateRoute.queryParams.subscribe(data => {
       this.paginatorService.limit = data['limit']
       this.paginatorService.offset = data['offset']
+      this.paginatorService.text = data['text'] ? data['text'] : ''
+      this._location.back();
     })
   }
+
 }

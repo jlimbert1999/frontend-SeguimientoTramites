@@ -1,12 +1,9 @@
 <mat-toolbar color="primary">
-    <button (click)="back()" mat-icon-button>
+    <button (click)="back()" mat-icon-button matTooltip="Regresar">
         <mat-icon>arrow_back</mat-icon>
     </button>
     <span *ngIf="Tramite">{{Tramite.alterno}}</span>
     <span class="example-spacer"></span>
-    <!-- <button (click)="generar()" matTooltip="Generar PDF" mat-icon-button>
-        <mat-icon>picture_as_pdf</mat-icon>
-    </button> -->
 </mat-toolbar>
 <div [@slideInLeftOnEnter]>
     <mat-tab-group *ngIf="Tramite" mat-align-tabs="center">
@@ -15,9 +12,9 @@
                 <mat-icon class="example-tab-icon">info</mat-icon>
                 Informacion
             </ng-template>
-            <app-info-tramite-externo *ngIf="tipo==='externo' && Tramite"
+            <app-info-tramite-externo *ngIf="tipo==='ficha-externa' && Tramite"
                 [Tramite]="Tramite"></app-info-tramite-externo>
-            <app-info-tramite-interno *ngIf="tipo==='interno'&& Tramite"
+            <app-info-tramite-interno *ngIf="tipo==='ficha-interna'&& Tramite"
                 [Tramite]="Tramite"></app-info-tramite-interno>
         </mat-tab>
         <mat-tab>

@@ -2,87 +2,108 @@
 <div class="grid-container">
   <div class="container-fluid">
     <div class="row">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>SOLICITANTE</mat-card-title>
-          <mat-card-subtitle>Ingrese al menos un campo para buscar</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="searchFormSolicitante">
-            <div class="row">
-              <div class="col-sm-3">
-                <mat-form-field class="full-width">
-                  <input matInput placeholder="DNI" formControlName="dni">
-                </mat-form-field>
-              </div>
-              <div class="col-sm-3">
-                <mat-form-field class="full-width">
-                  <input matInput placeholder="Nombre" formControlName="nombre">
-                </mat-form-field>
-              </div>
-              <div class="col-sm-3">
-                <mat-form-field class="full-width">
-                  <input matInput placeholder="Apellido paterno" formControlName="paterno">
-                </mat-form-field>
-              </div>
-              <div class="col-sm-3">
-                <mat-form-field class="full-width">
-                  <input matInput placeholder="Apellido materno" formControlName="paterno">
-                </mat-form-field>
-              </div>
-            </div>
-          </form>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button (click)="getReporteSolicitante()">
-            <mat-icon>picture_as_pdf</mat-icon>
-            GENERAR
-          </button>
-        </mat-card-actions>
-      </mat-card>
-      <mat-divider></mat-divider>
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>REPRESENTANTE</mat-card-title>
-          <mat-card-subtitle>Ingrese al menos un campo para buscar</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="searchFormRepresentante">
-            <div class="row">
-              <div class="col-sm-3">
-                <mat-form-field class="full-width">
-                  <input matInput placeholder="dni" formControlName="dni">
-                </mat-form-field>
-              </div>
-              <div class="col-sm-3">
-                <mat-form-field class="full-width">
-                  <input matInput placeholder="nombre" formControlName="nombre">
-                </mat-form-field>
-              </div>
-              <div class="col-sm-3">
-                <mat-form-field class="full-width">
-                  <input matInput placeholder="paterno" formControlName="paterno">
-                </mat-form-field>
-              </div>
-              <div class="col-sm-3">
-                <mat-form-field class="full-width">
-                  <input matInput placeholder="materno" formControlName="materno">
-                </mat-form-field>
-              </div>
+      <div class="col-sm-3">
+        <div class="row">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>SOLICITANTE</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <form [formGroup]="searchFormSolicitante">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="DNI" formControlName="dni">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-12">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Nombre" formControlName="nombre">
+                      <mat-error *ngIf="searchFormSolicitante.get('nombre')?.invalid">Ingrese al menos 3 caracteres</mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-12">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Apellido paterno" formControlName="paterno">
+                      <mat-error *ngIf="searchFormSolicitante.get('paterno')?.invalid">Ingrese al menos 3 caracteres</mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-12">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Apellido materno" formControlName="paterno">
+                      <mat-error *ngIf="searchFormSolicitante.get('materno')?.invalid">Ingrese al menos 3 caracteres</mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </form>
 
-            </div>
-          </form>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button (click)="getReporteRepresentante()">
-            <mat-icon>picture_as_pdf</mat-icon>
-            GENERAR
-          </button>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button (click)="getReporteSolicitante()">
+                <mat-icon>picture_as_pdf</mat-icon>
+                GENERAR
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="row">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>REPRESENTANTE</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <form [formGroup]="searchFormRepresentante">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="dni" formControlName="dni">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-12">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="nombre" formControlName="nombre">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-12">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="paterno" formControlName="paterno">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-12">
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="materno" formControlName="materno">
+                    </mat-form-field>
+                  </div>
 
-        </mat-card-actions>
-      </mat-card>
+                </div>
+              </form>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button (click)="getReporteRepresentante()">
+                <mat-icon>picture_as_pdf</mat-icon>
+                GENERAR
+              </button>
+
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+      <div class="col-sm-9">
+        <mat-toolbar>
+          <span>Resultados</span>
+          <span class="example-spacer"></span>
+          <button (click)="generateReporte()" mat-icon-button>
+            <mat-icon>picture_as_pdf</mat-icon>
+          </button>
+        </mat-toolbar>
+        <app-table [data]="data" [colums]="displayedColumns" (print)="generateFicha($event)"></app-table>
+
+      </div>
     </div>
+
+
   </div>
-  <app-tabla [dataTable]="data" *ngIf="data.length>0" [displayedColumns]="displayedColumns"></app-tabla>
+
 
 </div>

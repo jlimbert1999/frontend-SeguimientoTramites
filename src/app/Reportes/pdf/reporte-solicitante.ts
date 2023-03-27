@@ -1,6 +1,6 @@
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import {  TDocumentDefinitions } from "pdfmake/interfaces";
+import { TDocumentDefinitions } from "pdfmake/interfaces";
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
@@ -21,15 +21,21 @@ export async function PDF_Solicitante(funcionario: string, parametros: any, tram
             [{ text: key.toUpperCase(), bold: true }, { text: parametros[key].toUpperCase() }]
         )
     });
-    tramites.forEach(tramite => {
-        tableData.push([
-            tramite.alterno,
-            tramite.detalle,
-            tramite.estado,
-            `${tramite.solicitante.nombre} ${tramite.solicitante.paterno} ${tramite.solicitante.paterno}`,
-            moment(tramite.fecha_registro).format('DD-MM-YYYY HH:mm:ss')
-        ])
-    })
+    if (tramites.length > 0) {
+        tramites.forEach(tramite => {
+            tableData.push([
+                tramite.alterno,
+                tramite.detalle,
+                tramite.estado,
+                `${tramite.solicitante.nombre} ${tramite.solicitante.paterno} ${tramite.solicitante.paterno}`,
+                moment(tramite.fecha_registro).format('DD-MM-YYYY HH:mm:ss')
+            ])
+        })
+    }
+    else {
+        tableData.push([{ text: 'No existen tramites con los parametros del solicitante ingresados', colSpan: 5, fontSize: 18 }])
+    }
+
     docDefinition = {
         pageOrientation: 'landscape',
         footer: [

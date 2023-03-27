@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
-import Swal from 'sweetalert2';
 import { Externo, Representante, Solicitante } from '../../models/Externo.interface';
 import { ExternosService } from '../../services/externos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
@@ -12,7 +12,6 @@ import { DialogExternoComponent } from '../../dialogs/dialog-externo/dialog-exte
 import { DialogRemisionComponent } from 'src/app/Bandejas/dialogs/dialog-remision/dialog-remision.component';
 import { HojaRutaExterna } from '../../pdfs/hoja-ruta-externa';
 import { Ficha } from '../../pdfs/ficha';
-import { Router } from '@angular/router';
 
 
 @Component({
@@ -29,18 +28,12 @@ import { Router } from '@angular/router';
 export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
 
   Data: Externo[] = []
-  total: number = 0
+
   displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
   filterOpions = [
     { value: 'solicitante', viewValue: 'SOLICITANTE / DNI' },
     { value: 'alterno', viewValue: 'ALTERNO' }
   ]
-
-
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
-
   constructor(
     public dialog: MatDialog,
     public authService: AuthService,
@@ -48,35 +41,30 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     public paginatorService: PaginatorService,
     private router: Router
   ) { }
+
   ngAfterViewInit(): void {
-    // this.paginator.pageSize = this.externoService.limit
+
   }
   ngOnDestroy(): void {
   }
 
   ngOnInit(): void {
     this.Get()
-    this.newGet()
   }
 
   Get() {
-    if (this.externoService.textSearch !== '') {
-      this.externoService.GetSearch().subscribe(tramites => {
-        this.Data = tramites
+    if (this.paginatorService.text !== '') {
+      this.externoService.GetSearch(this.paginatorService.limit, this.paginatorService.offset, this.paginatorService.text).subscribe(data => {
+        this.paginatorService.length = data.length
+        this.Data = data.tramites
       })
     }
     else {
-      this.externoService.Get().subscribe(tramites => {
-        this.Data = tramites
+      this.externoService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+        this.paginatorService.length = data.length
+        this.Data = data.tramites
       })
     }
-  }
-
-  newGet() {
-    this.externoService.newGet().subscribe(data => {
-      this.Data = data.tramites
-      this.total = data.total
-    })
   }
 
 
@@ -90,10 +78,11 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
       if (result) {
         this.showLoadingRequest()
         this.externoService.Add(result.tramite, result.solicitante, result.representante).subscribe(tramite => {
-          if (this.Data.length === this.externoService.limit) {
+          if (this.Data.length === this.paginatorService.limit) {
             this.Data.pop()
           }
           this.Data = [tramite, ...this.Data]
+          this.paginatorService.length++
           Swal.close();
           this.Send(tramite)
         })
@@ -142,11 +131,6 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  pagination(page: PageEvent) {
-    this.externoService.offset = page.pageIndex
-    this.externoService.limit = page.pageSize
-    this.Get()
-  }
 
   denied_options(estado: string, responsable: string) {
     if (estado !== 'INSCRITO' || responsable !== this.authService.Account.id_cuenta) {
@@ -204,18 +188,29 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   applyFilter(event: Event) {
-    this.paginator.firstPage();
+    this.paginatorService.offset = 0
     const filterValue = (event.target as HTMLInputElement).value;
-    this.externoService.textSearch = filterValue.toLowerCase();
+    this.paginatorService.text = filterValue.toLowerCase();
     this.Get()
   }
 
   cancelSearch() {
-    this.paginator.firstPage();
-    this.externoService.textSearch = "";
+    this.paginatorService.offset = 0;
+    this.paginatorService.text = "";
     this.Get();
   }
- 
+
+  View(id: string) {
+    let params = {
+      limit: this.paginatorService.limit,
+      offset: this.paginatorService.offset
+    }
+    if (this.paginatorService.text !== '') {
+      Object.assign(params, { text: this.paginatorService.text })
+    }
+    this.router.navigate(['home/tramites/externos/ficha-externa', id], { queryParams: params })
+  }
+
 
 
 

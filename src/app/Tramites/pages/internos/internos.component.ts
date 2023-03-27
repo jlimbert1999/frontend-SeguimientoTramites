@@ -4,6 +4,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { DialogRemisionComponent } from 'src/app/Bandejas/dialogs/dialog-remision/dialog-remision.component';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import Swal from 'sweetalert2';
 import { DialogInternosComponent } from '../../dialogs/dialog-internos/dialog-internos.component';
 import { HojaRutaInterna } from '../../pdfs/hora-ruta-interna';
@@ -36,21 +37,24 @@ export class InternosComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     public internoService: InternosService,
-    private authService: AuthService
+    private authService: AuthService,
+    public paginatorService: PaginatorService
   ) { }
 
   ngOnInit(): void {
     this.Get()
   }
   Get() {
-    if (this.internoService.textSearch !== '') {
-      this.internoService.GetSearch().subscribe(tramites => {
-        this.dataSource = tramites
+    if (this.paginatorService.text !== '') {
+      this.internoService.GetSearch(this.paginatorService.limit, this.paginatorService.offset, this.paginatorService.text).subscribe(data => {
+        this.dataSource = data.tramites
+        this.paginatorService.length = data.length
       })
     }
     else {
-      this.internoService.Get().subscribe(tramites => {
-        this.dataSource = tramites
+      this.internoService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+        this.dataSource = data.tramites,
+          this.paginatorService.length = data.length
       })
     }
   }
@@ -65,10 +69,11 @@ export class InternosComponent implements OnInit {
       if (result) {
         this.showLoadingRequest()
         this.internoService.Add(result).subscribe(tramite => {
-          if (this.dataSource.length === this.internoService.limit) {
+          if (this.dataSource.length === this.paginatorService.limit) {
             this.dataSource.pop()
           }
           this.dataSource = [tramite, ...this.dataSource]
+          this.paginatorService.length++
           Swal.close();
           this.Send(tramite)
         })
@@ -115,22 +120,15 @@ export class InternosComponent implements OnInit {
     });
   }
 
-  pagination(page: PageEvent) {
-    this.internoService.offset = page.pageIndex
-    this.internoService.limit = page.pageSize
-    this.Get()
-  }
-
   applyFilter(event: Event) {
-    this.paginator.firstPage();
     const filterValue = (event.target as HTMLInputElement).value;
-    this.internoService.textSearch = filterValue.toLowerCase();
+    this.paginatorService.text = filterValue.toLowerCase();
     this.Get()
   }
 
   cancelSearch() {
-    this.paginator.firstPage();
-    this.internoService.textSearch = "";
+    this.paginatorService.offset = 0;
+    this.paginatorService.text = "";
     this.Get();
   }
 

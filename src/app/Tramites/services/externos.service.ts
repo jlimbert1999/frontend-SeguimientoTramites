@@ -13,12 +13,6 @@ const base_url = environment.base_url
   providedIn: 'root'
 })
 export class ExternosService {
-  resultsLength: number = 0
-  offset: number = 0
-  limit: number = 10
-  textSearch: string = ""
-
-
 
   constructor(private http: HttpClient, private paginatorService: PaginatorService) { }
   getTypes(segmento: string) {
@@ -39,30 +33,18 @@ export class ExternosService {
   Add(tramite: ExternoDto, solicitante: SolicitanteDto, representante: RepresentanteDto | null) {
     return this.http.post<{ ok: boolean, tramite: Externo }>(`${base_url}/tramites/externos`, { tramite, solicitante, representante }).pipe(
       map(resp => {
-        this.resultsLength += 1
         return resp.tramite
       })
     )
   }
-  Get() {
+  Get(limit: number, offset: number) {
     let params = new HttpParams()
-      .set('limit', this.limit)
-      .set('offset', this.offset)
+      .set('limit', limit)
+      .set('offset', offset)
     return this.http.get<{ ok: boolean, tramites: Externo[], total: number }>(`${base_url}/tramites/externos`, { params }).pipe(
       map(resp => {
-        this.resultsLength = resp.total
-        return resp.tramites
-      })
-    )
-  }
-  newGet() {
-    let params = new HttpParams()
-      .set('limit', this.paginatorService.limit)
-      .set('offset', this.paginatorService.offset)
-    return this.http.get<{ ok: boolean, tramites: Externo[], total: number }>(`${base_url}/tramites/externos`, { params }).pipe(
-      map(resp => {
-        this.paginatorService.length = resp.total
-        return { tramites: resp.tramites, total: resp.total }
+
+        return { tramites: resp.tramites, length: resp.total }
       })
     )
   }
@@ -73,14 +55,13 @@ export class ExternosService {
       })
     )
   }
-  GetSearch() {
+  GetSearch(limit: number, offset: number, text: string) {
     let params = new HttpParams()
-      .set('limit', this.limit)
-      .set('offset', this.offset)
-    return this.http.get<{ ok: boolean, tramites: Externo[], total: number }>(`${base_url}/tramites/externos/search/${this.textSearch}`, { params }).pipe(
+      .set('limit', limit)
+      .set('offset', offset)
+    return this.http.get<{ ok: boolean, tramites: Externo[], total: number }>(`${base_url}/tramites/externos/search/${text}`, { params }).pipe(
       map(resp => {
-        this.resultsLength = resp.total
-        return resp.tramites
+        return { tramites: resp.tramites, length: resp.total }
       })
     )
   }

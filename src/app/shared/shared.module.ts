@@ -18,6 +18,7 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SolicitantePipe } from './pipes/solicitante.pipe';
+import { TableComponent } from './table/table.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { SolicitantePipe } from './pipes/solicitante.pipe';
     InfoTramiteExternoComponent,
     StatePipe,
     ToolbarComponent,
-    SolicitantePipe
+    SolicitantePipe,
+    TableComponent
 
   ],
   imports: [
@@ -58,7 +60,8 @@ import { SolicitantePipe } from './pipes/solicitante.pipe';
     MailHeaderComponent,
     InfoTramiteExternoComponent,
     InfoTramiteInternoComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    TableComponent
   ]
 })
 export class SharedModule { }

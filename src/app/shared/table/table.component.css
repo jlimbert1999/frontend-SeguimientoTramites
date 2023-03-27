@@ -1,0 +1,20 @@
+table {
+    width: 100%;
+}
+
+.example-table-container {
+    position: relative;
+    overflow: auto;
+    max-height: 80vh;
+}
+
+.mat-mdc-cell {
+    font-size: 12px;
+    padding-right: 20px
+}
+
+td.mat-column-opciones {
+    width: 32px;
+    border-left: 1px solid;
+    text-align: center;
+}
