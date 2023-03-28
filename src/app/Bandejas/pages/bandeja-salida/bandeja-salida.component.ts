@@ -11,6 +11,9 @@ import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 import { BandejaSalidaService } from '../../services/bandeja-salida.service';
 import { InternosService } from 'src/app/Tramites/services/internos.service';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
+import { Salida } from '../../models/salida.interface';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -27,32 +30,43 @@ import { InternosService } from 'src/app/Tramites/services/internos.service';
   ],
 })
 export class BandejaSalidaComponent implements OnInit, AfterViewInit {
-  dataSource: any[] = []
-  displayedColumns = ['grupo', 'alterno', 'tipo', 'estado', 'fecha_envio', 'situacion', 'opciones', 'expand']
+  dataSource: Salida[] = []
+  displayedColumns = ['tipo_correspondencia', 'alterno', 'descripcion', 'estado', 'fecha_envio', 'situacion', 'opciones', 'expand']
   isLoadingResults = true;
   expandedElement: BandejaSalidaModel_View | null;
   resulstLenght: number = 0
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     public dialog: MatDialog,
     private authService: AuthService,
     private externoService: ExternosService,
     private internoService: InternosService,
-    private bandejaService: BandejaSalidaService
+    private bandejaService: BandejaSalidaService,
+    public paginatorService: PaginatorService,
+    private router: Router
   ) { }
   ngAfterViewInit(): void {
-    this.paginator.pageIndex = this.bandejaService.offset
-    this.paginator.pageSize = this.bandejaService.limit
+
   }
 
   ngOnInit(): void {
-    this.bandejaService.Get().subscribe(data => {
-      this.resulstLenght = data.total
-      this.dataSource = data.tramites
-    })
+    this.Get()
 
+  }
+  Get() {
+    if (this.paginatorService.type) {
+      this.bandejaService.Search(this.paginatorService.limit, this.paginatorService.offset, this.paginatorService.type, this.paginatorService.text).subscribe(data => {
+        this.dataSource = data.mails
+        this.paginatorService.length = data.length
+      })
+    }
+    else {
+      this.bandejaService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+        this.dataSource = data.mails
+        this.paginatorService.length = data.length
+      })
+    }
   }
 
   generar_hoja_ruta(id_tramite: string, tipo_hoja: 'tramites_externos' | 'tramites_internos') {
@@ -67,14 +81,7 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
       })
     }
   }
-  pagination(event: PageEvent) {
-    this.bandejaService.offset = event.pageIndex
-    this.bandejaService.limit = event.pageSize
-    this.bandejaService.Get().subscribe(data => {
-      this.resulstLenght = data.total
-      this.dataSource = data.tramites
-    })
-  }
+
   cancel(mail: any) {
     console.log(mail)
     Swal.fire({
@@ -97,6 +104,51 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
     })
 
   }
+
+  View(mail: Salida) {
+    let params = {
+      limit: this.paginatorService.limit,
+      offset: this.paginatorService.offset
+    }
+    if (this.paginatorService.text !== '') {
+      Object.assign(params, { type: this.paginatorService.type })
+      Object.assign(params, { text: this.paginatorService.text })
+    }
+    if (mail.tipo === 'tramites_externos') {
+      this.router.navigate(['home/bandejas/salida/mail/ficha-externa', mail.tramite._id], { queryParams: params })
+    }
+    else {
+      this.router.navigate(['home/bandejas/salida/mail/ficha-interna', mail.tramite._id], { queryParams: params })
+    }
+
+  }
+
+
+  applyFilter(event: Event) {
+    if (this.paginatorService.type) {
+      this.paginatorService.offset = 0
+      const filterValue = (event.target as HTMLInputElement).value;
+      this.paginatorService.text = filterValue.toLowerCase();
+      this.Get()
+    }
+  }
+
+  selectTypeSearch() {
+    if (this.paginatorService.type === undefined) {
+      this.paginatorService.text = ''
+    }
+    this.paginatorService.offset = 0
+    this.Get()
+  }
+
+  cancelSearch() {
+    this.paginatorService.offset = 0;
+    this.paginatorService.text = "";
+    this.paginatorService.type = undefined
+    this.Get();
+  }
+
+
 
 
 }

@@ -3,6 +3,7 @@ import { BehaviorSubject, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BandejaSalidaModel_View } from '../models/mail.model';
+import { Salida } from '../models/salida.interface';
 
 const base_url = environment.base_url
 
@@ -11,19 +12,28 @@ const base_url = environment.base_url
 })
 export class BandejaSalidaService {
   constructor(private http: HttpClient) { }
-  offset: number = 0
-  limit: number = 10
 
-  Get() {
+  Get(limit: number, offset: number) {
     const params = new HttpParams()
-      .set('offset', this.offset)
-      .set('limit', this.limit)
-    return this.http.get<{ ok: boolean, mails: any[], length: number }>(
+      .set('offset', offset)
+      .set('limit', limit)
+    return this.http.get<{ ok: boolean, mails: Salida[], length: number }>(
       `${base_url}/bandejas/salida`, { params }).pipe(
         map(resp => {
-          return { tramites: resp.mails, total: resp.length }
+          return { mails: resp.mails, length: resp.length }
         })
       )
+  }
+  Search(limit: number, offset: number, type: 'INTERNO' | 'EXTERNO', text: string) {
+    let params = new HttpParams()
+      .set('offset', offset)
+      .set('limit', limit)
+      .set('text', text)
+    return this.http.get<{ ok: boolean, mails: Salida[], length: number }>(`${base_url}/bandejas/salida/search/${type}`, { params }).pipe(
+      map(resp => {
+        return { mails: resp.mails, length: resp.length }
+      })
+    )
   }
 
   cancel(id_bandeja: string) {

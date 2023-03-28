@@ -45,6 +45,7 @@ td.mat-column-expand {
 td.mat-column-alterno {
     width: 150px;
 }
+
 td.mat-column-tipo_correspondencia {
     width: 100px;
 }
@@ -61,6 +62,7 @@ td.mat-column-descripcion {
 td.mat-column-estado {
     width: 100px;
 }
+
 td.mat-column-fecha_envio {
     width: 100px;
 }
@@ -131,7 +133,7 @@ td.mat-column-fecha_envio {
         padding: 0 48px 0 16px;
         color: rgba(0, 0, 0, 0.54);
         font-size: 18px;
-        
+
     }
 
     .mat-mdc-table .has_label_on_mobile:before {
@@ -165,4 +167,3 @@ td.mat-column-fecha_envio {
         display: none;
     }
 }
-

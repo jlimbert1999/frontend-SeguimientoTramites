@@ -21,6 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { LayoutModule } from '@angular/cdk/layout';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { SolicitanteComponent } from './pages/solicitante/solicitante.component';
+import { UnidadComponent } from './pages/unidad/unidad.component';
 
 
 
@@ -34,6 +35,7 @@ import { SolicitanteComponent } from './pages/solicitante/solicitante.component'
     BusquedaComponent,
     EstadisticoComponent,
     SolicitanteComponent,
+    UnidadComponent,
   ],
   imports: [
     CommonModule,

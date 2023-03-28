@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client'
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { Entrada } from 'src/app/Bandejas/models/entrada.interface';
 import { BandejaEntradaData } from 'src/app/Bandejas/models/mail.model';
 import { environment } from 'src/environments/environment';
 @Injectable({
@@ -26,7 +27,7 @@ export class SocketService {
       })
     })
   }
- 
+
   listenNotifications() {
     return new Observable((observable) => {
       this.socket.on('notify', (data: any) => {
@@ -34,9 +35,9 @@ export class SocketService {
       })
     })
   }
-  listenMails() {
-    return new Observable<BandejaEntradaData>((observable) => {
-      this.socket.on('newmail', (data: BandejaEntradaData) => {
+  listenMails(): Observable<Entrada> {
+    return new Observable<Entrada>((observable) => {
+      this.socket.on('newmail', (data: Entrada) => {
         observable.next(data)
       })
     })

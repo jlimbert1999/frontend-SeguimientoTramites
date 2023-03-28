@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { BandejaEntradaService } from '../../services/bandeja-entrada.service';
@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { WorkflowData } from '../../models/workflow.interface';
 import { ExternosService } from 'src/app/Tramites/services/externos.service';
 import { InternosService } from 'src/app/Tramites/services/internos.service';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
 
 @Component({
   selector: 'app-mail',
@@ -39,10 +40,12 @@ export class MailComponent implements OnInit {
     private entradaService: BandejaEntradaService,
     private externoService: ExternosService,
     private internoService: InternosService,
-    private authService: AuthService
+    private authService: AuthService,
+    private paginatorService: PaginatorService
   ) {
 
   }
+
   ngOnInit(): void {
     this.activateRoute.params.subscribe(params => {
       if (params['id']) {
@@ -67,8 +70,14 @@ export class MailComponent implements OnInit {
       }
     })
   }
-  regresar() {
-    this._location.back();
+  back() {
+    this.activateRoute.queryParams.subscribe(data => {
+      this.paginatorService.limit = data['limit']
+      this.paginatorService.offset = data['offset']
+      this.paginatorService.text = data['text'] ? data['text'] : ''
+      this.paginatorService.type = data['type']
+      this._location.back();
+    })
   }
 
   generar() {

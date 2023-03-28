@@ -8,12 +8,17 @@ export class PaginatorService {
   limit: number = 10
   offset: number = 0
   length: number = 0
+
+  // for search
   text: string = ''
+
+  // for mails
+  type: 'EXTERNO' | 'INTERNO' | undefined
 
   constructor(
   ) {
   }
-  
+
   setPage(event: PageEvent) {
     this.limit = event.pageSize
     this.offset = event.pageIndex
@@ -24,8 +29,9 @@ export class PaginatorService {
     this.offset = 0
     this.length = 0
     this.text = ''
+    this.type = undefined
   }
 
-  
-  
+
+
 }

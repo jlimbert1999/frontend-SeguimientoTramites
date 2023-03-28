@@ -1,10 +1,33 @@
 <app-toolbar title="BANDEJA SALIDA"></app-toolbar>
 
 <div class="container-fluid" [@fadeInOnEnter]>
+    <div class="row">
+        <div class="col-sm-3">
+            <mat-radio-group [(ngModel)]="paginatorService.type" (change)="selectTypeSearch()"
+                aria-label="Select an option">
+                <mat-radio-button class="default-radio-button" [value]="undefined" color="primary">TODOS</mat-radio-button>
+                <mat-radio-button value="EXTERNO" color="accent">EXTERNOS</mat-radio-button>
+                <mat-radio-button value="INTERNO" color="warn">INTERNOS</mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <div class="col-sm-9">
+            <mat-form-field class="example-full-width">
+                <mat-label>Buscar tramite</mat-label>
+                <input [(ngModel)]="paginatorService.text" (keyup)="applyFilter($event)" matInput
+                    placeholder="Alterno / Referencia / Proveido / Nº Interno"
+                    [disabled]="paginatorService.type===undefined">
+                <button *ngIf="paginatorService.text" matSuffix mat-icon-button aria-label="Clear"
+                    (click)="cancelSearch()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+    </div>
+    
     <div class="example-container mat-elevation-z8">
         <div class="example-table-container">
             <table mat-table [dataSource]="dataSource" class="example-table" multiTemplateDataRows>
-                <ng-container matColumnDef="grupo">
+                <ng-container matColumnDef="tipo_correspondencia">
                     <th mat-header-cell *matHeaderCellDef>Tipo</th>
                     <td mat-cell *matCellDef="let row">
                         <div [ngSwitch]="row.tipo">
@@ -18,22 +41,15 @@
                     <th mat-header-cell *matHeaderCellDef>Alterno</th>
                     <td mat-cell *matCellDef="let row">
                         <div [ngSwitch]="row.tipo">
-                            <div *ngSwitchCase="'tramites_externos'">
-                                <a [routerLink]="['ficha-externo', row.tramite._id]">
-                                    {{row.tramite.alterno}}
-                                </a>
-                            </div>
-                            <div *ngSwitchCase="'tramites_internos'">
-                                <a [routerLink]="['ficha-interno', row.tramite._id]">
-                                    {{row.tramite.alterno}}
-                                </a>
-                            </div>
+                            <a (click)="View(row)">
+                                {{row.tramite.alterno}}
+                            </a>
                         </div>
                     </td>
                 </ng-container>
-                <ng-container matColumnDef="tipo">
+                <ng-container matColumnDef="descripcion">
                     <th mat-header-cell *matHeaderCellDef>Tipo de tramite</th>
-                    <td mat-cell *matCellDef="let row">{{row.tramite.tipo_tramite.nombre}}</td>
+                    <td mat-cell *matCellDef="let row">{{row.tramite.detalle}}</td>
                 </ng-container>
                 <ng-container matColumnDef="estado">
                     <th mat-header-cell *matHeaderCellDef>Estado</th>
@@ -55,7 +71,7 @@
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="fecha_envio">
-                    <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                    <th mat-header-cell *matHeaderCellDef>Fecha envio</th>
                     <td mat-cell *matCellDef="let row">
                         {{row.fecha_envio | date:'short'}}
                     </td>
@@ -144,8 +160,6 @@
             </table>
         </div>
 
-        <mat-paginator (page)="pagination($event)" [length]="resulstLenght" [pageSizeOptions]="[1, 2, 3, 80]" 
-            showFirstLastButtons>
-        </mat-paginator>
+        <app-paginator (page)="Get()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
     </div>
 </div>

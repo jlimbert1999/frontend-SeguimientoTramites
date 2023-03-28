@@ -38,7 +38,7 @@ registerLocaleData(localeEs, 'es');
     ReportesModule,
     MaterialModule,
     BandejasModule,
-    TramitesModule
+    TramitesModule,
   ],
   providers: [
     {

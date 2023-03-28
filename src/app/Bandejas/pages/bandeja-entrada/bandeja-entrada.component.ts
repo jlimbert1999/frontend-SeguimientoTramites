@@ -23,6 +23,11 @@ import { DialogRemisionComponent } from '../../dialogs/dialog-remision/dialog-re
 import { InternosService } from 'src/app/Tramites/services/internos.service';
 import { ExternosService } from 'src/app/Tramites/services/externos.service';
 import { HojaRutaExterna } from 'src/app/Tramites/pdfs/hoja-ruta-externa';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
+import { Router } from '@angular/router';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { SignatureComponent } from 'src/app/shared/signature/signature.component';
+
 
 @Component({
   selector: 'app-bandeja-entrada',
@@ -68,7 +73,10 @@ export class BandejaEntradaComponent implements OnInit {
     private toastr: ToastrService,
     private internoService: InternosService,
     private externoService: ExternosService,
-    public loaderService: LoaderService
+    public loaderService: LoaderService,
+    public paginatorService: PaginatorService,
+    private router: Router,
+    private _bottomSheet: MatBottomSheet
   ) { }
 
   ngOnInit(): void {
@@ -76,11 +84,15 @@ export class BandejaEntradaComponent implements OnInit {
 
   }
   Get() {
-    if (this.bandejaService.textSearch !== '') {
-      this.bandejaService.Search().subscribe()
+    if (this.paginatorService.type) {
+      this.bandejaService.Search(this.paginatorService.limit, this.paginatorService.offset, this.paginatorService.type, this.paginatorService.text).subscribe(length => {
+        this.paginatorService.length = length
+      })
     }
     else {
-      this.bandejaService.Get().subscribe()
+      this.bandejaService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(length => {
+        this.paginatorService.length = length
+      })
     }
   }
 
@@ -104,34 +116,44 @@ export class BandejaEntradaComponent implements OnInit {
       });
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          this.bandejaService.Get().subscribe()
+          // this.bandejaService.Get().subscribe()
         }
       });
     }
   }
   aceptar_tramite(elemento: BandejaEntradaData) {
-    Swal.fire({
-      title: `Aceptar tramite ${elemento.tramite.alterno}?`,
-      text: `El tramite sera marcado como aceptado`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.bandejaService.aceptar_tramite(elemento._id).subscribe(message => {
-          const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
-          this.bandejaService.Mails[indexFound].recibido = true
-          this.bandejaService.Mails = [...this.bandejaService.Mails]
-          this.toastr.success(undefined, message, {
-            positionClass: 'toast-bottom-right',
-            timeOut: 3000,
-          })
+    // Swal.fire({
+    //   title: `Aceptar tramite ${elemento.tramite.alterno}?`,
+    //   text: `El tramite sera marcado como aceptado`,
+    //   icon: 'question',
+    //   showCancelButton: true,
+    //   confirmButtonColor: '#3085d6',
+    //   cancelButtonColor: '#d33',
+    //   confirmButtonText: 'Aceptar',
+    //   cancelButtonText: 'Cancelar',
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     this.bandejaService.aceptar_tramite(elemento._id).subscribe(message => {
+    //       const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
+    //       this.bandejaService.Mails[indexFound].recibido = true
+    //       this.bandejaService.Mails = [...this.bandejaService.Mails]
+    //       this.toastr.success(undefined, message, {
+    //         positionClass: 'toast-bottom-right',
+    //         timeOut: 3000,
+    //       })
+    //     })
+    //   }
+    // })
+    const bottomSheetRef = this._bottomSheet.open(SignatureComponent);
+    bottomSheetRef.afterDismissed().subscribe((img) => {
+      if (img) {
+        this.bandejaService.aceptar_tramite(elemento._id, img).subscribe(message => {
+          console.log(message)
         })
       }
-    })
+
+    });
+
   }
   rechazar_tramite(elemento: BandejaEntradaData) {
     Swal.fire({
@@ -187,31 +209,31 @@ export class BandejaEntradaComponent implements OnInit {
       }
     })
   }
-  paginacion(page: PageEvent) {
-    this.bandejaService.limit = page.pageSize
-    this.bandejaService.offset = page.pageIndex
-    this.Get()
-  }
 
 
 
   applyFilter(event: Event) {
-    this.paginator.firstPage();
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.bandejaService.textSearch = filterValue;
-    if (this.bandejaService.type !== '') {
+    if (this.paginatorService.type) {
+      this.paginatorService.offset = 0
+      const filterValue = (event.target as HTMLInputElement).value;
+      this.paginatorService.text = filterValue.toLowerCase();
       this.Get()
     }
   }
 
   selectTypeSearch() {
+    if (this.paginatorService.type === undefined) {
+      this.paginatorService.text = ''
+    }
+    this.paginatorService.offset = 0
     this.Get()
   }
 
-  resetSearch() {
-    this.bandejaService.textSearch = ''
-    this.bandejaService.type = ''
-    this.Get()
+  cancelSearch() {
+    this.paginatorService.offset = 0;
+    this.paginatorService.text = "";
+    this.paginatorService.type = undefined
+    this.Get();
   }
 
 
@@ -219,6 +241,17 @@ export class BandejaEntradaComponent implements OnInit {
     this.externoService.getOne(id_tramite).subscribe(data => {
       HojaRutaExterna(data.tramite, data.workflow, this.authService.Account.id_cuenta)
     })
+  }
+  View(id_bandeja: string) {
+    let params = {
+      limit: this.paginatorService.limit,
+      offset: this.paginatorService.offset
+    }
+    if (this.paginatorService.text !== '') {
+      Object.assign(params, { type: this.paginatorService.type })
+      Object.assign(params, { text: this.paginatorService.text })
+    }
+    this.router.navigate(['home/bandejas/entrada/mail', id_bandeja], { queryParams: params })
   }
 
 

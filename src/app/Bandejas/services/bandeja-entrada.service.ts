@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { Entrada } from '../models/entrada.interface';
 import { UsersMails } from '../models/mail.model';
 
 const base_url = environment.base_url;
@@ -10,30 +11,33 @@ const base_url = environment.base_url;
   providedIn: 'root',
 })
 export class BandejaEntradaService {
-  offset: number = 0;
-  limit: number = 2;
-  length: number = 0;
-  type: string = ''
-  textSearch: string = ''
-  Mails: any[] = [];
+  Mails: Entrada[] = [];
   constructor(private http: HttpClient) { }
 
-  Get() {
+  Get(limit: number, offset: number) {
     const params = new HttpParams()
-      .set('offset', this.offset)
-      .set('limit', this.limit);
-    return this.http
-      .get<{ ok: boolean; mails: any[]; length: number }>(
-        `${base_url}/bandejas/entrada`,
-        { params }
-      )
-      .pipe(
-        map((resp) => {
-          console.log(resp.mails)
-          this.length = resp.length;
-          this.Mails = resp.mails;
-        })
-      );
+      .set('offset', offset)
+      .set('limit', limit);
+    return this.http.get<{ ok: boolean; mails: Entrada[]; length: number }>(
+      `${base_url}/bandejas/entrada`,
+      { params }
+    ).pipe(map((resp) => {
+      this.Mails = resp.mails;
+      return resp.length
+    })
+    );
+  }
+  Search(limit: number, offset: number, type: 'INTERNO' | 'EXTERNO', text: string) {
+    let params = new HttpParams()
+      .set('offset', offset)
+      .set('limit', limit)
+      .set('text', text)
+    return this.http.get<{ ok: boolean, mails: Entrada[], length: number }>(`${base_url}/bandejas/entrada/search/${type}`, { params }).pipe(
+      map(resp => {
+        this.Mails = resp.mails
+        return resp.length
+      })
+    )
   }
 
 
@@ -44,8 +48,8 @@ export class BandejaEntradaService {
       })
     )
   }
-  aceptar_tramite(id_bandeja: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/bandejas/aceptar/${id_bandeja}`, {}).pipe(
+  aceptar_tramite(id_bandeja: string, image: string) {
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/bandejas/aceptar/${id_bandeja}`, {image}).pipe(
       map(resp => {
         return resp.message
       })
@@ -73,19 +77,7 @@ export class BandejaEntradaService {
       })
     )
   }
-  Search() {
-    const params = new HttpParams()
-      .set('offset', this.offset)
-      .set('limit', this.limit)
-      .set('type', this.type);
-    return this.http.get<{ ok: boolean, mails: any[], length: number }>(`${base_url}/bandejas/search/${this.textSearch}`, { params }).pipe(
-      map(resp => {
-        console.log(resp.mails)
-        this.length = resp.length
-        this.Mails = resp.mails
-      })
-    )
-  }
+
   GetDetailsMail(id_bandeja: string) {
     return this.http.get<{ ok: boolean, details: any }>(`${base_url}/bandejas/entrada/detalles/${id_bandeja}`).pipe(
       map(resp => {

@@ -19,6 +19,8 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SolicitantePipe } from './pipes/solicitante.pipe';
 import { TableComponent } from './table/table.component';
+import { SignatureComponent } from './signature/signature.component';
+import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
 
 @NgModule({
   declarations: [
@@ -37,14 +39,16 @@ import { TableComponent } from './table/table.component';
     StatePipe,
     ToolbarComponent,
     SolicitantePipe,
-    TableComponent
+    TableComponent,
+    SignatureComponent
 
   ],
   imports: [
     CommonModule,
     MaterialModule,
     NgxGraphModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AngularSignaturePadModule
   ],
   exports: [
     TablaComponent,

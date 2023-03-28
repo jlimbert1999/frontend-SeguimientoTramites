@@ -55,6 +55,7 @@ export class FichaComponent implements OnInit {
       this.paginatorService.limit = data['limit']
       this.paginatorService.offset = data['offset']
       this.paginatorService.text = data['text'] ? data['text'] : ''
+      this.paginatorService.type = data['type']
       this._location.back();
     })
   }
