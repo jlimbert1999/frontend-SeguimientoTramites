@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { Dependencia } from '../models/dependencia.interface';
 import { DependenciaModel } from '../models/dependencia.model';
-import { PaginationService } from './pagination.service';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -15,50 +15,47 @@ export class DependenciasService {
 
 
 
-  constructor(private http: HttpClient, private paginationService: PaginationService) { }
-  agregar_dependencia(dependencia: DependenciaModel) {
-    return this.http.post<{ ok: boolean, dependencia: DependenciaModel }>(`${base_url}/dependencias`, dependencia).pipe(
+  constructor(private http: HttpClient) { }
+  add(dependencia: Dependencia) {
+    return this.http.post<{ ok: boolean, dependencia: Dependencia }>(`${base_url}/configuraciones/dependencias`, dependencia).pipe(
       map(resp => {
-        this.paginationService.dataSize += 1
         return resp.dependencia
       })
     )
   }
-  obtener_instituciones_habilitadas() {
-    return this.http.get<{ ok: boolean, instituciones: { id_institucion: string, nombre: string, sigla: string }[] }>(`${base_url}/dependencias/instituciones/registro`).pipe(
+  getInstituciones() {
+    return this.http.get<{ ok: boolean, instituciones: { id_institucion: string, nombre: string, sigla: string }[] }>(`${base_url}/configuraciones/dependencias/instituciones`).pipe(
       map(resp => resp.instituciones)
     )
   }
-  obtener_dependencias() {
-    return this.http.get<{ ok: boolean, dependencias: DependenciaModel[], total: number }>(`${base_url}/dependencias?pageIndex=${this.paginationService.pageIndex}&rows=${this.paginationService.rows}`).pipe(
+  get(limit: number, offset: number) {
+    const params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset)
+    return this.http.get<{ ok: boolean, dependencias: Dependencia[], length: number }>(`${base_url}/configuraciones/dependencias`, { params }).pipe(
       map(resp => {
-        this.paginationService.dataSize = resp.total
-        return resp.dependencias
+        return { dependencias: resp.dependencias, length: resp.length }
       })
     )
   }
-  actualizar_dependencia(id_dependencia: string, dependencia: { nombre: string, sigla: string }) {
-    return this.http.put<{ ok: boolean, dependencia: DependenciaModel }>(`${base_url}/dependencias/${id_dependencia}`, dependencia).pipe(
+  edit(id_dependencia: string, dependencia: { nombre: string, sigla: string }) {
+    return this.http.put<{ ok: boolean, dependencia: DependenciaModel }>(`${base_url}/configuraciones/dependencias/${id_dependencia}`, dependencia).pipe(
       map(resp => resp.dependencia)
     )
   }
-  cambiar_situacion_dependencia(id_dependencia: string, activo: boolean) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/dependencias/situacion/${id_dependencia}`, { activo }).pipe(
-      map(resp => resp.message)
+  delete(id_dependencia: string) {
+    return this.http.delete<{ ok: boolean, dependencia: Dependencia }>(`${base_url}/configuraciones/dependencias/${id_dependencia}`).pipe(
+      map(resp => resp.dependencia)
     )
   }
-
-  buscar_dependencia(termino: string) {
-    return this.http.get<{ ok: boolean, dependencias: DependenciaModel[], total: number }>(`${base_url}/dependencias/${termino}?pageIndex=${this.paginationService.pageIndex}&rows=${this.paginationService.rows}`).pipe(
+  search(limit: number, offset: number, termino: string) {
+    const params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset)
+    return this.http.get<{ ok: boolean, dependencias: Dependencia[], length: number }>(`${base_url}/configuraciones/dependencias/search/${termino}`, { params }).pipe(
       map(resp => {
-        this.paginationService.dataSize = resp.total
-        return resp.dependencias
+        return { dependencias: resp.dependencias, length: resp.length }
       })
     )
-  }
-  modo_busqueda(activar: boolean) {
-    this.busqueda = activar
-    this.paginationService.pageIndex = 0
-    this.termino_busqueda = ""
   }
 }

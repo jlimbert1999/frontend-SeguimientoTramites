@@ -24,16 +24,22 @@ export class InterceptorService {
     return next.handle(reqClone).pipe(
       catchError((Error: HttpErrorResponse) => {
         this.manejoErrores(Error)
-        if (Error.status === 403) {
-          this.router.navigate(['/home'])
-        }
         return throwError(() => Error);
       }),
       finalize(() => this.loadingService.hide())
     )
   }
+  
   manejoErrores(error: HttpErrorResponse) {
-    if (error.status >= 500) Swal.fire("Error en el sevidor", error.error.message, 'error')
+    if (error.status === 401) {
+      this.router.navigate(['/login'])
+    }
+    else if (error.status === 403) {
+      this.router.navigate(['/home'])
+    }
+    else if (error.status >= 500) {
+      Swal.fire("Error en el sevidor", error.error.message, 'error')
+    }
     else if (error.status < 500 && error.status >= 400 && error.status !== 401 && error.status !== 404) {
       Swal.fire("Solicitud incorrecta", error.error.message, 'warning')
     }

@@ -1,0 +1,30 @@
+table {
+  width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.mat-column-opciones,
+.mat-column-situacion {
+  width: 150px;
+}
+.mat-column-nombre {
+  padding-inline: 5px;
+}
+
+.options {
+  display: flex;
+  align-items: flex-start;
+}
+
+button {
+  margin-top: 0.3em;
+  padding: 1.55em 0;
+  line-height: 1.125;
+}

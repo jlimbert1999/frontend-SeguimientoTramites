@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { TiposTramitesModel } from '../models/tiposTramites.model';
-import { RequerimientoModel } from '../models/requerimientos';
 import { PaginationService } from './pagination.service';
+import { TipoTramiteDto } from '../models/tipoTramite.dto';
+import { Requerimiento } from '../models/requerimiento.dto';
+import { TipoTramite } from '../models/tipoTramite.interface';
 
 const base_url = environment.base_url
 @Injectable({
@@ -16,8 +17,8 @@ export class TiposTramitesService {
   termino_busqueda: string = ""
   busqueda: boolean = false
   constructor(private http: HttpClient, private paginationService: PaginationService) { }
-  agregar_tipoTramite(tipoTramite: TiposTramitesModel, requerimientos: RequerimientoModel[]) {
-    return this.http.post<{ ok: boolean, tipoTramite: TiposTramitesModel }>(`${base_url}/tipos-tramites`, { ...tipoTramite, requerimientos }).pipe(
+  agregar_tipoTramite(tipoTramite: TipoTramiteDto, requerimientos: Requerimiento[]) {
+    return this.http.post<{ ok: boolean, tipoTramite: TipoTramiteDto }>(`${base_url}/tipos-tramites`, { ...tipoTramite, requerimientos }).pipe(
       map(resp => {
         this.paginationService.dataSize = this.paginationService.dataSize + 1
         return resp.tipoTramite
@@ -25,35 +26,39 @@ export class TiposTramitesService {
     )
   }
 
-  obtener_tiposTramites() {
-    return this.http.get<{ ok: boolean, tiposTramites: TiposTramitesModel[], total: number }>(`${base_url}/tipos-tramites?pageIndex=${this.paginationService.pageIndex}&rows=${this.paginationService.rows}`).pipe(
+  get(limit: number, offset: number) {
+    const params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset)
+    return this.http.get<{ ok: boolean, tipos: TipoTramite[], length: number }>(`${base_url}/configuraciones/tipos`, { params }).pipe(
       map(resp => {
-        this.paginationService.dataSize = resp.total
-        return resp.tiposTramites
+        return { tipos: resp.tipos, length: resp.length }
       })
     )
   }
-  editar_tiposTramites(id_tipoTramite: string, tipoTramite: TiposTramitesModel) {
-    return this.http.put<{ ok: boolean, tipoTramite: TiposTramitesModel }>(`${base_url}/tipos-tramites/${id_tipoTramite}`, tipoTramite).pipe(
-      map(resp => resp.tipoTramite)
+  edit(id_tipoTramite: string, tipoTramite: TipoTramite) {
+    return this.http.put<{ ok: boolean, tipo: TipoTramite }>(`${base_url}/configuraciones/tipos/${id_tipoTramite}`, tipoTramite).pipe(
+      map(resp => resp.tipo)
     )
   }
-  cambiar_situacion_tipoTramite(id_tipoTramite: string, activo: boolean) {
-    return this.http.put<{ ok: boolean, tipoTramite: TiposTramitesModel }>(`${base_url}/tipos-tramites/${id_tipoTramite}`, { activo }).pipe(
-      map(resp => resp.tipoTramite)
+  delete(id_tipoTramite: string) {
+    return this.http.delete<{ ok: boolean, tipo: TipoTramite }>(`${base_url}/configuraciones/tipos/${id_tipoTramite}`).pipe(
+      map(resp => resp.tipo)
     )
   }
-  buscar_tipoTramite() {
-    return this.http.get<{ ok: boolean, tiposTramites: TiposTramitesModel[], total: number }>(`${base_url}/tipos-tramites/${this.termino_busqueda}`).pipe(
+  search(limit: number, offset: number, text: string) {
+    const params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset)
+    return this.http.get<{ ok: boolean, tipos: TipoTramite[], length: number }>(`${base_url}/configuraciones/tipos/search/${text}`, { params }).pipe(
       map(resp => {
-        this.paginationService.dataSize = resp.total
-        return resp.tiposTramites
+        return { tipos: resp.tipos, length: resp.length }
       })
     )
   }
 
-  editar_requirimiento(id_tipoTramite: string, id_requerimiento: string, nombre: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/tipos-tramites/requerimientos/${id_tipoTramite}/${id_requerimiento}`, { nombre }).pipe(map(resp => resp.message))
+  editRequirement(id_tipo: string, id_requisito: string, nombre: string) {
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/configuraciones/tipos/requerimientos/${id_tipo}/${id_requisito}`, { nombre }).pipe(map(resp => resp.message))
   }
   cambiar_situacion_requerimiento(id_tipoTramite: string, id_requerimiento: string, activo: boolean) {
     return this.http.put<{ ok: boolean, message: string }>(`${base_url}/tipos-tramites/requerimientos/${id_tipoTramite}/${id_requerimiento}`, { activo }).pipe(map(resp => resp.message))

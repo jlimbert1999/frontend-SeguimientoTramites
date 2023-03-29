@@ -1,13 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from '../auth/login/login.component';
-import { CuentaComponent } from '../Configuraciones/cuenta/cuenta.component';
-import { CuentasComponent } from '../Configuraciones/cuentas/cuentas.component';
-import { DependenciasComponent } from '../Configuraciones/dependencias/dependencias.component';
-import { FuncionariosComponent } from '../Configuraciones/funcionarios/funcionarios.component';
-import { GroupwareComponent } from '../Configuraciones/groupware/groupware.component';
-import { InstitucionesComponent } from '../Configuraciones/instituciones/instituciones.component';
-import { TiposTramitesComponent } from '../Configuraciones/tipos-tramites/tipos-tramites.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { HomeComponent } from './home.component';
 
@@ -15,13 +8,11 @@ const routes: Routes = [
     {
         path: 'home', component: HomeComponent, canActivate: [AuthGuard],
         children: [
-            { path: 'dependencias', component: DependenciasComponent },
-            { path: 'instituciones', component: InstitucionesComponent },
-            { path: 'cuentas', component: CuentasComponent },
-            { path: 'funcionarios', component: FuncionariosComponent },
-            { path: 'groupware', component: GroupwareComponent },
-            { path: 'tipos', component: TiposTramitesComponent },
-            { path: 'perfil', component: CuentaComponent },
+            {
+                path: 'configuraciones',
+                loadChildren: () =>
+                    import(`../Configuraciones/configuraciones-routing.module`).then((m) => m.ConfiguracionesRoutingModule),
+            },
             {
                 path: 'tramites',
                 loadChildren: () =>
@@ -43,13 +34,10 @@ const routes: Routes = [
                 loadChildren: () =>
                     import(`../Bandejas/bandejas-routing.module`).then((m) => m.BandejasRoutingModule),
             },
-
-
         ]
     },
     {
         path: 'login', component: LoginComponent,
-
     },
 
 ];

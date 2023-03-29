@@ -2,7 +2,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, Query, QueryList } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
-import { TiposTramitesModel } from 'src/app/Configuraciones/models/tiposTramites.model';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { environment } from 'src/environments/environment';
 import { ExternoDto, RepresentanteDto, SolicitanteDto } from '../models/Externo.dto';

@@ -4,7 +4,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { fadeInOnEnterAnimation } from 'angular-animations';
-import { DetallesMovilidadComponent } from 'src/app/Configuraciones/funcionarios/detalles-movilidad/detalles-movilidad.component';
+import { DetallesMovilidadComponent } from 'src/app/Configuraciones/pages/funcionarios/detalles-movilidad/detalles-movilidad.component';
 import { PaginationService } from 'src/app/Configuraciones/services/pagination.service';
 
 @Component({

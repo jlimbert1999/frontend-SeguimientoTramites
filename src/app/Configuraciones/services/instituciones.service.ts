@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { InstitucionModel } from '../models/institucion.model';
+import { Institucion } from '../models/institucion.model';
 import { PaginationService } from './pagination.service';
 const base_url = environment.base_url
 
@@ -16,46 +16,41 @@ export class InstitucionesService {
 
   constructor(private http: HttpClient, private paginationService: PaginationService) { }
 
-  agregar_institucion(institucion: InstitucionModel) {
-    return this.http.post<{ ok: boolean, institucion: InstitucionModel }>(`${base_url}/instituciones`, institucion).pipe(
+  add(institucion: Institucion) {
+    return this.http.post<{ ok: boolean, institucion: Institucion }>(`${base_url}/configuraciones/instituciones`, institucion).pipe(
       map(resp => {
-        this.paginationService.dataSize += 1
         return resp.institucion
       })
     )
   }
-  obtener_instituciones() {
-    return this.http.get<{ ok: boolean, instituciones: InstitucionModel[], total: number }>(`${base_url}/instituciones?pageIndex=${this.paginationService.pageIndex}&rows=${this.paginationService.rows}`).pipe(
+  get(limit: number, offset: number) {
+    const params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset)
+    return this.http.get<{ ok: boolean, instituciones: Institucion[], length: number }>(`${base_url}/configuraciones/instituciones`, { params }).pipe(
       map(resp => {
-        this.paginationService.dataSize = resp.total
-        this.paginationService.pageIndex = 0
-        return resp.instituciones
+        return { instituciones: resp.instituciones, length: resp.length }
       })
     )
   }
-  actualizar_institucion(id_institucion: string, institucion: InstitucionModel) {
-    return this.http.put<{ ok: boolean, institucion: InstitucionModel }>(`${base_url}/instituciones/${id_institucion}`, institucion).pipe(
+  edit(id_institucion: string, institucion: Institucion) {
+    return this.http.put<{ ok: boolean, institucion: Institucion }>(`${base_url}/configuraciones/instituciones/${id_institucion}`, institucion).pipe(
       map(resp => resp.institucion)
     )
   }
-  cambiar_situacion_institucion(id_institucion: string, activo: boolean) {
-    let newSituacion: boolean
-    if (activo === false) {
-      newSituacion = true
-    }
-    else {
-      newSituacion = false
-    }
-    return this.http.put<{ ok: boolean, institucion: InstitucionModel }>(`${base_url}/instituciones/${id_institucion}`, { activo: newSituacion }).pipe(
+  delete(id_institucion: string) {
+    return this.http.delete<{ ok: boolean, institucion: Institucion }>(`${base_url}/configuraciones/instituciones/${id_institucion}`).pipe(
       map(resp => resp.institucion)
     )
   }
 
-  buscar_instituciones(termino: string) {
-    return this.http.get<{ ok: boolean, instituciones: InstitucionModel[], total: number }>(`${base_url}/instituciones/${termino}`).pipe(
+  search(limit: number, offset: number, termino: string) {
+    const params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset)
+    return this.http.get<{ ok: boolean, instituciones: Institucion[], length: number }>(`${base_url}/configuraciones/instituciones/search/${termino}`, { params }).pipe(
       map(resp => {
-        this.paginationService.dataSize = resp.total
-        return resp.instituciones
+        return { instituciones: resp.instituciones, length: resp.length }
       })
     )
   }

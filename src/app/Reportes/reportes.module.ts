@@ -22,6 +22,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { SolicitanteComponent } from './pages/solicitante/solicitante.component';
 import { UnidadComponent } from './pages/unidad/unidad.component';
+import { ConfiguracionesModule } from '../Configuraciones/configuraciones.module';
 
 
 
@@ -54,7 +55,8 @@ import { UnidadComponent } from './pages/unidad/unidad.component';
     MatMenuModule,
     MatIconModule,
     LayoutModule,
-    NgxChartsModule
+    NgxChartsModule,
+    ConfiguracionesModule
   ]
 })
 export class ReportesModule { }
