@@ -4,64 +4,83 @@ import { UsuarioDialogComponent } from '../cuentas/usuario-dialog/usuario-dialog
 import { read, utils } from "xlsx";
 import Swal from 'sweetalert2';
 import { UsuariosService } from '../../services/usuarios.service';
-import { UsuarioModel } from '../../models/usuario.model';
+import { Funcionario, FuncionarioDto } from '../../models/funcionario.interface';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
+import { fadeInOnEnterAnimation } from 'angular-animations';
 
 @Component({
   selector: 'app-funcionarios',
   templateUrl: './funcionarios.component.html',
-  styleUrls: ['./funcionarios.component.css']
+  styleUrls: ['./funcionarios.component.css'],
+  animations: [
+    fadeInOnEnterAnimation(),
+  ]
 })
 export class FuncionariosComponent implements OnInit, OnDestroy {
-  Funcionarios: any[] = []
-  displayedColumns = [
-    { key: 'nombre', titulo: 'Nombre' },
-    { key: 'paterno', titulo: 'Paterno' },
-    { key: 'materno', titulo: 'Materno' },
-    { key: 'dni', titulo: 'Dni' },
-    { key: 'cargo', titulo: 'Cargo' },
-    { key: 'telefono', titulo: 'Telefono' },
-    { key: 'activo', titulo: 'Situacion' },
-    { key: 'movilidad', titulo: 'Movilidad' },
-  ]
-  constructor(private funcionariosService: UsuariosService, public dialog: MatDialog,) {
+  dataSource: Funcionario[] = []
+  displayedColumns = ['cuenta', 'nombre', 'dni', 'cargo', 'telefono', 'activo', 'opciones']
+  text: string = ''
+
+  constructor(
+    private funcionariosService: UsuariosService,
+    private paginatorService: PaginatorService,
+    public dialog: MatDialog,) {
   }
   ngOnDestroy(): void {
   }
 
   ngOnInit(): void {
-    this.mostrar_funcionarios()
+    this.Get()
   }
-  sgregar_funcionario() {
+  Add() {
     const dialogRef = this.dialog.open(UsuarioDialogComponent, {
       width: '900px'
     });
-    dialogRef.afterClosed().subscribe((result: any) => {
+    dialogRef.afterClosed().subscribe((result: Funcionario) => {
       if (result) {
-        this.mostrar_funcionarios()
+        if (this.dataSource.length === this.paginatorService.limit) {
+          this.dataSource.pop()
+        }
+        this.paginatorService.length++
+        this.dataSource = [result, ...this.dataSource]
       }
     });
 
   }
-  mostrar_funcionarios() {
-    this.funcionariosService.obtener_funcionarios().subscribe(users => {
-      this.Funcionarios = users
-    })
+  Get() {
+    if (this.text !== '') {
+      this.funcionariosService.search(this.paginatorService.limit, this.paginatorService.offset, this.text).subscribe(data => {
+        this.dataSource = data.funcionarios
+        this.paginatorService.length = data.length
+      })
+    }
+    else {
+      this.funcionariosService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+        this.dataSource = data.funcionarios
+        this.paginatorService.length = data.length
+      })
+    }
+
   }
-  editar_funcionario(data: any) {
+  Edit(data: Funcionario) {
     const dialogRef = this.dialog.open(UsuarioDialogComponent, {
       width: '900px',
       data
     });
-    dialogRef.afterClosed().subscribe((result: any) => {
+    dialogRef.afterClosed().subscribe((result: Funcionario) => {
       if (result) {
-        this.mostrar_funcionarios()
+        const indexFound = this.dataSource.findIndex(funcionario => funcionario._id === data._id)
+        this.dataSource[indexFound] = result
+        this.dataSource = [...this.dataSource]
       }
     });
   }
 
-  cambiar_situacion(data: any) {
-    this.funcionariosService.cambiar_situacion(data._id, data.activo).subscribe(funcionario => {
-      this.mostrar_funcionarios()
+  Delete(data: Funcionario) {
+    this.funcionariosService.delete(data._id).subscribe(funcionario => {
+      const indexFound = this.dataSource.findIndex(funcionario => funcionario._id === data._id)
+      this.dataSource[indexFound] = funcionario
+      this.dataSource = [...this.dataSource]
     })
   }
 
@@ -80,8 +99,8 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
     }
   }
   ReadExcel(File: File) {
-    let usersDB: UsuarioModel[] = []
-    let user: UsuarioModel
+    let usersDB: FuncionarioDto[] = []
+    let user: FuncionarioDto
     let fileReader = new FileReader()
     fileReader.readAsBinaryString(File)
     fileReader.onload = (e) => {
@@ -98,7 +117,6 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
             materno: data[keysData[3]],
             cargo: data[keysData[0]],
             dni: data[keysData[4]],
-            expedido: data[keysData[5]],
             telefono: data[keysData[6]],
             direccion: data[keysData[7]]
           }
@@ -110,9 +128,19 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
           icon: 'error'
         })
       }
-      this.funcionariosService.agregar_multiples_funcionarios(usersDB).subscribe(funcionarios => {
-        this.mostrar_funcionarios()
-      })
+      // this.funcionariosService.agregar_multiples_funcionarios(usersDB).subscribe(funcionarios => {
+      //   this.mostrar_funcionarios()
+      // })
     }
+  }
+  applyFilter(event: Event) {
+    this.paginatorService.offset = 0
+    this.text = (event.target as HTMLInputElement).value;
+    this.Get()
+  }
+  cancelSearch() {
+    this.paginatorService.offset = 0
+    this.text = ''
+    this.Get()
   }
 }

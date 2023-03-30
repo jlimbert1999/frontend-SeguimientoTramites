@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { fadeInDownOnEnterAnimation } from 'angular-animations';
 import { NotificationService } from 'src/app/home/services/notification.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  animations:[
+    fadeInDownOnEnterAnimation(),
+  ]
 })
 export class LoginComponent implements OnInit {
   hide = true;
@@ -43,18 +47,15 @@ export class LoginComponent implements OnInit {
       if (data.number_mails > 0) {
         this.notificationService.addNotificationEvent('Debe revisar su bandeja de entrada', `USTED TIENE ${data.number_mails} TRAMITES PENDIENTES`)
       }
-      switch (data.rol) {
-        case 'admin':
-          this.router.navigateByUrl('/home')
-          break;
-        case 'RECEPCION':
-          this.router.navigateByUrl('/home/tramites-externos')
-          break;
-        case 'EVALUACION':
-          this.router.navigateByUrl('/home/tramites-internos')
-          break;
+      if (data.rol.includes('admin')) {
+        this.router.navigateByUrl('/home')
       }
-
+      else if (data.rol.includes('RECEPCION')) {
+        this.router.navigateByUrl('/home/tramites-externos')
+      }
+      else if (data.rol.includes('EVALUACION')) {
+        this.router.navigateByUrl('/home/tramites-internos')
+      }
     })
   }
 

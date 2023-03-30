@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UsuarioModel } from 'src/app/Configuraciones/models/usuario.model';
+import { Funcionario } from 'src/app/Configuraciones/models/funcionario.interface';
 import { UsuariosService } from 'src/app/Configuraciones/services/usuarios.service';
 
 @Component({
@@ -16,7 +16,6 @@ export class UsuarioDialogComponent implements OnInit {
     paterno: ['', Validators.required],
     materno: [''],
     dni: ['', Validators.required],
-    expedido: ['', Validators.required],
     telefono: ['', [Validators.required, Validators.maxLength(8)]],
     cargo: ['', Validators.required],
     direccion: ['', Validators.required]
@@ -35,7 +34,7 @@ export class UsuarioDialogComponent implements OnInit {
   ]
   constructor(
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: UsuarioModel,
+    @Inject(MAT_DIALOG_DATA) public data: Funcionario,
     public dialogRef: MatDialogRef<UsuarioDialogComponent>,
     private usuariosService: UsuariosService
   ) { }
@@ -53,12 +52,12 @@ export class UsuarioDialogComponent implements OnInit {
   guardar() {
     if (this.Form_Funcionario.valid) {
       if (this.data) {
-        this.usuariosService.editar_funcionario(this.data._id!, this.Form_Funcionario.value).subscribe(user => {
+        this.usuariosService.edit(this.data._id!, this.Form_Funcionario.value).subscribe(user => {
           this.dialogRef.close(user)
         })
       }
       else {
-        this.usuariosService.agregar_funcionario(this.Form_Funcionario.value).subscribe(user => {
+        this.usuariosService.add(this.Form_Funcionario.value).subscribe(user => {
           this.dialogRef.close(user)
         })
       }

@@ -1,4 +1,4 @@
-import { Requerimiento } from "./requerimiento.dto";
+
 
 export interface TipoTramiteDto {
   id_tipoTramite?: string
@@ -6,6 +6,5 @@ export interface TipoTramiteDto {
   segmento: string
   activo: boolean
   tipo: string
-  requerimientos: Requerimiento[]
+  requerimientos: string[]
 }
-

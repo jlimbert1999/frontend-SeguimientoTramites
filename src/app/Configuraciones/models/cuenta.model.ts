@@ -1,4 +1,4 @@
-import { UsuarioModel } from "./usuario.model"
+import { Funcionario } from "./funcionario.interface"
 
 export interface CuentaModel {
     _id?: string
@@ -12,7 +12,7 @@ export interface CuentaData {
     _id: string
     login: string
     rol: string
-    funcionario?: UsuarioModel,
+    funcionario?: Funcionario,
     dependencia: {
         nombre: string, institucion: { sigla: string }
     }

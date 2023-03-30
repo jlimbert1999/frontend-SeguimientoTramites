@@ -22,9 +22,21 @@
                         <mat-icon>voicemail</mat-icon>
                         <span>Expulsar usuario</span>
                     </button>
-                </mat-menu> 
+                </mat-menu>
             </div>
             <mat-divider></mat-divider>
+        </mat-list-item>
+    </mat-list>
+
+
+    <mat-list>
+        <mat-list-item *ngFor="let user of socketService.OnlineUsers">
+            <img matListItemAvatar src="../../../assets/img/account.png" alt="...">
+            <h3 class="fw-bold" matListItemTitle>{{user.fullname}}</h3>
+
+            <span matListItemLine>{{user.jobtitle|uppercase}}</span>
+            <span matListItemLine>Third line</span>
+            
         </mat-list-item>
     </mat-list>
 

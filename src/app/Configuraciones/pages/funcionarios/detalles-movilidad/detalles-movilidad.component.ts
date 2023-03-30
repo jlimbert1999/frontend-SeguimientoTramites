@@ -36,9 +36,7 @@ export class DetallesMovilidadComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: string, private userService: UsuariosService) { }
 
   ngOnInit(): void {
-    this.userService.obtener_detalles_movilidad(this.data).subscribe(detalles => {
-      this.Detalles = detalles
-    })
+   
 
   }
 

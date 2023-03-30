@@ -33,7 +33,6 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
     nombre: ['', Validators.required],
     paterno: ['', Validators.required],
     materno: [''],
-    expedido: ['', Validators.required],
     dni: ['', Validators.required],
     telefono: ['', [Validators.required, Validators.maxLength(8)]],
     cargo: ['', Validators.required],

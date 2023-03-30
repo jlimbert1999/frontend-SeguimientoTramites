@@ -5,8 +5,7 @@ import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { PaginationService } from './pagination.service';
 import { TipoTramiteDto } from '../models/tipoTramite.dto';
-import { Requerimiento } from '../models/requerimiento.dto';
-import { TipoTramite } from '../models/tipoTramite.interface';
+import { Requerimiento, TipoTramite } from '../models/tipoTramite.interface';
 
 const base_url = environment.base_url
 @Injectable({
@@ -58,10 +57,12 @@ export class TiposTramitesService {
   }
 
   editRequirement(id_tipo: string, id_requisito: string, nombre: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/configuraciones/tipos/requerimientos/${id_tipo}/${id_requisito}`, { nombre }).pipe(map(resp => resp.message))
+    return this.http.put<{ ok: boolean, requisito: Requerimiento }>(`${base_url}/configuraciones/tipos/requerimientos/${id_tipo}/${id_requisito}`, { nombre })
+      .pipe(map(resp => resp.requisito))
   }
-  cambiar_situacion_requerimiento(id_tipoTramite: string, id_requerimiento: string, activo: boolean) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/tipos-tramites/requerimientos/${id_tipoTramite}/${id_requerimiento}`, { activo }).pipe(map(resp => resp.message))
+  deleteRequirement(id_tipoTramite: string, id_requerimiento: string) {
+    return this.http.delete<{ ok: boolean, requisito: Requerimiento }>(`${base_url}/configuraciones/tipos/requerimientos/${id_tipoTramite}/${id_requerimiento}`)
+      .pipe(map(resp => resp.requisito))
   }
 
   modo_busqueda(activar: boolean) {

@@ -39,16 +39,6 @@
                                 <input formControlName="dni" matInput>
                             </mat-form-field>
                         </div>
-                        <div class="col-4">
-                            <mat-form-field appearance="fill">
-                                <mat-label>Expedido</mat-label>
-                                <mat-select formControlName="expedido">
-                                    <mat-option *ngFor="let depa of departamentos" [value]="depa">
-                                        {{depa}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
                     </div>
                     <div class="row">
                         <div class="col-6">

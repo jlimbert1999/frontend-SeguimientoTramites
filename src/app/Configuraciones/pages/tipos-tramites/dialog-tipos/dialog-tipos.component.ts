@@ -6,10 +6,10 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import Swal from 'sweetalert2';
 import { read, writeFileXLSX, utils } from "xlsx";
-import { map, Observable, startWith } from 'rxjs';
+import { elementAt, map, Observable, startWith } from 'rxjs';
 import { TiposTramitesService } from 'src/app/Configuraciones/services/tipos-tramites.service';
-import { Requerimiento } from 'src/app/Configuraciones/models/requerimiento.dto';
 import { TipoTramiteDto } from 'src/app/Configuraciones/models/tipoTramite.dto';
+import { Requerimiento, TipoTramite } from 'src/app/Configuraciones/models/tipoTramite.interface';
 
 @Component({
   selector: 'app-dialog-tipos',
@@ -23,7 +23,7 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
     segmento: ['', Validators.required],
     tipo: ['', Validators.required]
   });
-  Requerimientos: any[] = [];
+
 
   displayedColumns = ['nombre', 'situacion', 'opciones'];
   dataSource: MatTableDataSource<Requerimiento> = new MatTableDataSource()
@@ -33,7 +33,7 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: TipoTramiteDto,
+    @Inject(MAT_DIALOG_DATA) public data: TipoTramite,
     public dialogRef: MatDialogRef<DialogTiposComponent>,
     private tiposTramitesService: TiposTramitesService
   ) { }
@@ -48,8 +48,7 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
     if (this.data) {
       this.titulo = 'Edicion';
       this.Form_TipoTramite.patchValue(this.data);
-      this.Requerimientos = this.data.requerimientos
-      this.dataSource.data = this.Requerimientos
+      this.dataSource = new MatTableDataSource(this.data.requerimientos)
     } else {
       this.titulo = 'Registro';
     }
@@ -60,13 +59,13 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
     if (this.Form_TipoTramite.valid) {
       if (this.data) {
         let data = this.Form_TipoTramite.value
-        data['requerimientos'] = this.Requerimientos
+        data['requerimientos'] = this.dataSource.data
         this.tiposTramitesService.edit(this.data.id_tipoTramite!, data).subscribe(tipoTramite => {
           this.dialogRef.close(tipoTramite)
         })
       } else {
         this.tiposTramitesService
-          .agregar_tipoTramite(this.Form_TipoTramite.value, this.Requerimientos)
+          .agregar_tipoTramite(this.Form_TipoTramite.value, this.dataSource.data)
           .subscribe((tipo) => {
             this.dialogRef.close(tipo);
           });
@@ -99,16 +98,10 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
             '<i class="fa fa-info-circle"></i> Debe ingresar el requerimiento'
           )
         }
-
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        const requisito = {
-          nombre: result.value,
-          activo: true,
-        };
-        this.Requerimientos.unshift(requisito)
-        this.dataSource.data = this.Requerimientos
+        this.dataSource.data = [{ nombre: result.value!, activo: true }, ...this.dataSource.data]
         this.dataSource.paginator = this.paginator
       }
     })
@@ -132,21 +125,17 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
   }
   quitar_requerimiento(requerimiento: Requerimiento, pos: number) {
     if (requerimiento._id) {
-      let nuevaSituacion: boolean
-      if (requerimiento.activo) {
-        nuevaSituacion = false
-      }
-      else {
-        nuevaSituacion = true
-      }
-      this.tiposTramitesService.cambiar_situacion_requerimiento(this.data!.id_tipoTramite!, requerimiento._id!, nuevaSituacion).subscribe(message => {
-        const indexFound = this.Requerimientos.findIndex(requeri => requerimiento._id === requeri._id)
-        this.Requerimientos[indexFound].activo = nuevaSituacion
+      this.tiposTramitesService.deleteRequirement(this.data.id_tipoTramite, requerimiento._id!).subscribe(data => {
+        const indexFound = this.dataSource.data.findIndex(element => requerimiento._id === element._id)
+        this.dataSource.data[indexFound] = data
+        this.dataSource = new MatTableDataSource(this.dataSource.data)
+        this.dataSource.paginator = this.paginator
       })
     }
     else {
-      this.Requerimientos.splice(pos, 1)
-      this.dataSource.data = this.Requerimientos
+      this.dataSource.data.splice(pos, 1)
+      this.dataSource = new MatTableDataSource(this.dataSource.data)
+      this.dataSource.paginator = this.paginator
     }
   }
   editar_requerimiento(requerimiento: Requerimiento) {
@@ -168,37 +157,17 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
             '<i class="fa fa-info-circle"></i> Debe ingresar el requerimiento'
           )
         }
-
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        this.tiposTramitesService.editRequirement(this.data!.id_tipoTramite!, requerimiento._id!, result.value!).subscribe(message => {
-          const indexFound = this.Requerimientos.findIndex(requeri => requerimiento._id === requeri._id)
-          this.Requerimientos[indexFound].nombre = result.value
+        this.tiposTramitesService.editRequirement(this.data.id_tipoTramite, requerimiento._id!, result.value!).subscribe(data => {
+          const indexFound = this.dataSource.data.findIndex(element => requerimiento._id === element._id)
+          this.dataSource.data[indexFound] = data
+          this.dataSource = new MatTableDataSource(this.dataSource.data)
+          this.dataSource.paginator = this.paginator
         })
       }
     })
-
-
-    // Swal.fire({
-    //   title: 'Ingrese la descripcion del requerimiento',
-    //   input: 'text',
-    //   inputValue: requerimiento.nombre,
-    //   inputAttributes: {
-    //     autocapitalize: 'off',
-    //   },
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Aceptar',
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     if (result.value) {
-    //       this.tiposTramitesService.editRequirement(this.data!.id_tipoTramite!, requerimiento._id!, result.value).subscribe(message => {
-    //         const indexFound = this.Requerimientos.findIndex(requeri => requerimiento._id === requeri._id)
-    //         this.Requerimientos[indexFound].nombre = result.value
-    //       })
-    //     }
-    //   }
-    // });
   }
 
 
@@ -213,9 +182,9 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
       let keysData
       ExcelData.forEach((data: any) => {
         keysData = Object.keys(data)
-        this.Requerimientos.push({ nombre: data[keysData[0]], activo: true })
+        this.dataSource.data.push({ nombre: data[keysData[0]], activo: true })
       });
-      this.dataSource = new MatTableDataSource(this.Requerimientos)
+      this.dataSource = new MatTableDataSource(this.dataSource.data)
       this.dataSource.paginator = this.paginator;
     }
 

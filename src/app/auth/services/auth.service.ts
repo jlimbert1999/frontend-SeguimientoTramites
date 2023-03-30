@@ -47,10 +47,12 @@ export class AuthService {
       }
     ))
   }
+
   logout() {
     localStorage.removeItem('token')
     this.router.navigate(['/login'])
   }
+  
   validar_token(): Observable<boolean> {
     return this.http.get(`${base_url}/login/verify`).pipe(
       map((resp: any) => {

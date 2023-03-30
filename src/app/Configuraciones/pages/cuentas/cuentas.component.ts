@@ -7,10 +7,12 @@ import { MatSelect } from '@angular/material/select';
 import { MatTableDataSource } from '@angular/material/table';
 import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { map, Observable, ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import Swal from 'sweetalert2';
 import { CuentaData } from '../../models/cuenta.model';
-import { UsuarioModel } from '../../models/usuario.model';
+import { Funcionario } from '../../models/funcionario.interface';
 import { CuentaService } from '../../services/cuenta.service';
+import { DependenciasService } from '../../services/dependencias.service';
 import { CreacionAsignacionComponent } from './creacion-asignacion/creacion-asignacion.component';
 import { CuentaDialogComponent } from './cuenta-dialog/cuenta-dialog.component';
 import { EdicionCuentaComponent } from './edicion-cuenta/edicion-cuenta.component';
@@ -54,20 +56,36 @@ export class CuentasComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(public dialog: MatDialog, public accountService: CuentaService) { }
+  constructor(
+    public dialog: MatDialog,
+    public accountService: CuentaService,
+    public paginatorService: PaginatorService,
+    private dependenciaService: DependenciasService
+  ) {
+    this.dependenciaService.getInstituciones().subscribe(data => {
+      this.instituciones = data
+    })
+  }
 
   ngOnInit(): void {
-
+    this.Get()
 
   }
   ngAfterViewInit() {
-    this.Get()
+
   }
   Get() {
-    this.accountService.Get(this.paginator.pageSize, this.paginator.pageIndex).subscribe(data => {
-      this.Total = data.total
-      this.Cuentas = data.cuentas
-    })
+    if (this.text !== '') {
+
+    }
+    else {
+      this.accountService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+        this.paginatorService.length = data.length
+        this.Cuentas = data.cuentas
+      })
+
+    }
+
   }
 
   Add() {
@@ -122,7 +140,7 @@ export class CuentasComponent implements OnInit {
     const dialogRef = this.dialog.open(UsuarioDialogComponent, {
       data: account.funcionario
     });
-    dialogRef.afterClosed().subscribe((result: UsuarioModel) => {
+    dialogRef.afterClosed().subscribe((result: Funcionario) => {
       if (result) {
         let indexFound = this.Cuentas.findIndex(account => account._id === result._id)
         this.Cuentas[indexFound] = Object.assign(account, { funcionario: result })
@@ -165,6 +183,7 @@ export class CuentasComponent implements OnInit {
   getDependencias(id_institucion: string) {
     this.dependencias = []
     this.accountService.getDependencias(id_institucion).subscribe(deps => {
+      console.log(deps);
       this.dependencias = deps
       this.bankCtrl.setValue(this.dependencias);
       this.filteredBanks.next(this.dependencias.slice());
@@ -191,11 +210,7 @@ export class CuentasComponent implements OnInit {
       this.dependencias.filter(bank => bank.nombre.toLowerCase().indexOf(search) > -1)
     );
   }
-
-
-
   applyFilterbyText(event: Event) {
-    this.paginator.firstPage()
     this.text = (event.target as HTMLInputElement).value;
     this.search()
   }
@@ -221,15 +236,4 @@ export class CuentasComponent implements OnInit {
       this.Get()
     }
   }
-
-
-
-
-
-
-
-
-
-
-
 }

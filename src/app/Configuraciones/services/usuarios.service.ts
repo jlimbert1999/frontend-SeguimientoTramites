@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { CuentaData } from '../models/cuenta.model';
-import { UsuarioModel } from '../models/usuario.model';
+import { Funcionario } from '../models/funcionario.interface';
 import { CuentaService } from './cuenta.service';
 import { PaginationService } from './pagination.service';
 
@@ -16,62 +16,54 @@ export class UsuariosService {
 
   termino_busqueda: string = ""
   busqueda: boolean = false
-  constructor(private http: HttpClient, private paginationService: PaginationService, private cuentaService: CuentaService) { }
-  agregar_funcionario(funcionario: UsuarioModel) {
-    return this.http.post<{ ok: boolean, funcionario: UsuarioModel }>(`${base_url}/usuarios`, funcionario).pipe(
+  constructor(private http: HttpClient) { }
+  add(funcionario: Funcionario) {
+    return this.http.post<{ ok: boolean, funcionario: Funcionario }>(`${base_url}/configuraciones/funcionarios`, funcionario).pipe(
       map(resp => {
         return resp.funcionario
       })
     )
   }
-  agregar_multiples_funcionarios(funcionarios: UsuarioModel[]) {
-    return this.http.post<{ ok: boolean, funcionarios: UsuarioModel }>(`${base_url}/usuarios/cargar`, { funcionarios }).pipe(
+  agregar_multiples_funcionarios(funcionarios: Funcionario[]) {
+    return this.http.post<{ ok: boolean, funcionarios: Funcionario }>(`${base_url}/usuarios/cargar`, { funcionarios }).pipe(
       map(resp => {
         return resp.funcionarios
       })
     )
   }
 
-  obtener_funcionarios() {
-    return this.http.get<{ ok: boolean, funcionarios: UsuarioModel[], total: number }>(`${base_url}/usuarios`).pipe(
+  get(limit: number, offset: number) {
+    const params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset)
+    return this.http.get<{ ok: boolean, funcionarios: Funcionario[], length: number }>(`${base_url}/configuraciones/funcionarios`, { params }).pipe(
       map(resp => {
-        this.paginationService.dataSize = resp.total
-        return resp.funcionarios
+        return { funcionarios: resp.funcionarios, length: resp.length }
       })
     )
   }
-  editar_funcionario(id_funcionario: string, funcionario: UsuarioModel) {
-    return this.http.put<{ ok: boolean, funcionario: CuentaData }>(`${base_url}/usuarios/${id_funcionario}`, funcionario).pipe(
+  edit(id_funcionario: string, funcionario: Funcionario) {
+    return this.http.put<{ ok: boolean, funcionario: Funcionario }>(`${base_url}/configuraciones/funcionarios/${id_funcionario}`, funcionario).pipe(
       map(resp => resp.funcionario)
     )
   }
-  buscar_usuarios() {
-    this.termino_busqueda.trim().toLowerCase()
-    return this.http.get<{ ok: boolean, funcionarios: UsuarioModel[], total: number }>(`${base_url}/usuarios/${this.termino_busqueda}`).pipe(
+  search(limit: number, offset: number, text: string) {
+    const params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset)
+    return this.http.get<{ ok: boolean, funcionarios: Funcionario[], length: number }>(`${base_url}/configuraciones/funcionarios/search/${text}`, { params }).pipe(
       map(resp => {
-        this.paginationService.dataSize = resp.total
-        return resp.funcionarios
+        return { funcionarios: resp.funcionarios, length: resp.length }
       })
     )
   }
 
-  cambiar_situacion(id_funcionario: string, activo: boolean) {
-    activo = !activo
-    return this.http.put<{ ok: boolean, funcionario: UsuarioModel }>(`${base_url}/usuarios/situacion/${id_funcionario}`, { activo }).pipe(
+  delete(id_funcionario: string) {
+    return this.http.delete<{ ok: boolean, funcionario: Funcionario }>(`${base_url}/configuraciones/funcionarios/${id_funcionario}`).pipe(
       map(resp => resp.funcionario)
     )
   }
 
-  modo_busqueda(activar: boolean) {
-    this.busqueda = activar
-    this.paginationService.pageIndex = 0
-    this.termino_busqueda = ""
-  }
 
-  obtener_detalles_movilidad(id_funcionario: string) {
-    return this.http.get<{ ok: boolean, detalles: any }>(`${base_url}/usuarios/movilidad/${id_funcionario}`).pipe(
-      map(resp => resp.detalles)
-    )
-  }
 
 }

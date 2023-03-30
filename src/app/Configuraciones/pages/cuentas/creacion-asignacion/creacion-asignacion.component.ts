@@ -5,7 +5,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSelect } from '@angular/material/select';
 import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin, ReplaySubject, Subject, takeUntil } from 'rxjs';
-import { UsuarioModel } from 'src/app/Configuraciones/models/usuario.model';
+import { Funcionario } from 'src/app/Configuraciones/models/funcionario.interface';
 import { HojaUsuarios } from 'src/app/Configuraciones/pdfs/usuarios';
 import { CuentaService } from 'src/app/Configuraciones/services/cuenta.service';
 import Swal from 'sweetalert2';
@@ -106,7 +106,7 @@ export class CreacionAsignacionComponent implements OnInit {
     })
   }
 
-  selectUserAssign(value: UsuarioModel) {
+  selectUserAssign(value: Funcionario) {
     Swal.fire({
       title: `Crear cuenta con funcionario existente?`,
       text: `${value.nombre} ${value.paterno} ${value.materno} (${value.cargo}) sera asignado a la cuenta creaada`,

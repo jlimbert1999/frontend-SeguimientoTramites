@@ -11,6 +11,8 @@ export class GroupwareComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.socketService.OnlineUsers);
+    // console.log()
     // this.socketService.getSocketUsers()
   }
   sendNotificacion(user: any) {

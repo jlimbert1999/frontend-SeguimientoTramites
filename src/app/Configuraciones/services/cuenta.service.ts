@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { CuentaModel, CuentaData } from '../models/cuenta.model';
-import { UsuarioModel } from '../models/usuario.model';
+import { Funcionario } from '../models/funcionario.interface';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ export class CuentaService {
     )
   }
   getDependencias(id_institucion: string) {
-    return this.http.get<{ ok: boolean, dependencias: { id_dependencia: string, nombre: string }[] }>(`${base_url}/cuentas/dependencias/${id_institucion}`).pipe(
+    return this.http.get<{ ok: boolean, dependencias: { id_dependencia: string, nombre: string }[] }>(`${base_url}/configuraciones/cuentas/dependencias/${id_institucion}`).pipe(
       map(resp => {
         return resp.dependencias
       })
@@ -35,7 +35,7 @@ export class CuentaService {
     )
   }
 
-  agregar_cuenta(cuenta: CuentaModel, funcionario: UsuarioModel) {
+  agregar_cuenta(cuenta: CuentaModel, funcionario: Funcionario) {
     return this.http.post<{ ok: boolean, cuenta: CuentaData }>(`${base_url}/cuentas`, { cuenta, funcionario }).pipe(
       map(resp => {
         return resp.cuenta
@@ -49,12 +49,12 @@ export class CuentaService {
   }
 
   Get(limit: number, offset: number) {
-    let params = new HttpParams()
-      .append('limit', limit)
-      .append('offset', offset)
-    return this.http.get<{ ok: boolean, cuentas: CuentaData[], total: number }>(`${base_url}/cuentas`, { params }).pipe(
+    const params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset)
+    return this.http.get<{ ok: boolean, cuentas: CuentaData[], length: number }>(`${base_url}/configuraciones/cuentas`, { params }).pipe(
       map(resp => {
-        return { cuentas: resp.cuentas, total: resp.total }
+        return { cuentas: resp.cuentas, length: resp.length }
       })
     )
   }
