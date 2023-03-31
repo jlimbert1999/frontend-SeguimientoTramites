@@ -10,7 +10,7 @@
 }
 
 td.mat-column-login {
-    width: 200px;
+    width: 150px;
 }
 
 td.mat-column-nombre {
@@ -47,3 +47,4 @@ td.mat-column-opciones {
     overflow: auto;
     max-height: 50vh;
 }
+

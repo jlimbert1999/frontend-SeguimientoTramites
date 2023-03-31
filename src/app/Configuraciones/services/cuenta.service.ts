@@ -14,12 +14,11 @@ export class CuentaService {
 
   constructor(private http: HttpClient) { }
   getInstituciones() {
-    return this.http.get<{ ok: boolean, instituciones: { id_institucion: string, nombre: string }[] }>(`${base_url}/cuentas/instituciones`).pipe(
-      map(resp => {
-        return resp.instituciones
-      })
+    return this.http.get<{ ok: boolean, instituciones: { id_institucion: string, nombre: string, sigla: string }[] }>(`${base_url}/configuraciones/dependencias/instituciones`).pipe(
+      map(resp => resp.instituciones)
     )
   }
+
   getDependencias(id_institucion: string) {
     return this.http.get<{ ok: boolean, dependencias: { id_dependencia: string, nombre: string }[] }>(`${base_url}/configuraciones/cuentas/dependencias/${id_institucion}`).pipe(
       map(resp => {
@@ -86,15 +85,22 @@ export class CuentaService {
       map(resp => resp.activo)
     )
   }
-  search(type: string, text: string, limit: number, offset: number) {
+  search(limit: number, offset: number, text: string, id_institucion: string | null, id_dependencia: string | null) {
     let params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-      .set('type', type)
-      .set('text', text)
-    return this.http.get<{ ok: boolean, cuentas: CuentaData[], total: number }>(`${base_url}/cuentas/search/${text}`, { params }).pipe(
+    if (id_institucion) {
+      params = params.set('institucion', id_institucion)
+      if (id_dependencia) {
+        params = params.set('dependencia', id_dependencia)
+      }
+    }
+    if (text !== '') {
+      params = params.set('text', text)
+    }
+    return this.http.get<{ ok: boolean, cuentas: CuentaData[], length: number }>(`${base_url}/configuraciones/cuentas/search`, { params }).pipe(
       map(resp => {
-        return { cuentas: resp.cuentas, total: resp.total }
+        return { cuentas: resp.cuentas, length: resp.length }
       })
     )
   }

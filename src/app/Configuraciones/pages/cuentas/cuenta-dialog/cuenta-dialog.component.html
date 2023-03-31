@@ -1,62 +1,57 @@
 <h2 mat-dialog-title>Registro cuenta</h2>
 <mat-dialog-content>
     <ng-container *ngIf="!data">
-        <mat-stepper (selectionChange)="generar_credenciales()" orientation="vertical" [linear]="false" #stepper>
+        <mat-stepper headerPosition="bottom" (selectionChange)="generar_credenciales()" [linear]="false" #stepper>
             <mat-step [stepControl]="Form_Funcionario">
                 <form [formGroup]="Form_Funcionario">
                     <ng-template matStepLabel>Datos funcionario</ng-template>
                     <div class="row">
-                        <div class="col-4">
-                            <mat-form-field appearance="fill">
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-label>Nombres</mat-label>
                                 <input class="uppercase" formControlName="nombre" matInput>
                             </mat-form-field>
                         </div>
-                        <div class="col-4">
-                            <mat-form-field appearance="fill">
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-label>Apellido paterno</mat-label>
                                 <input class="uppercase" formControlName="paterno" matInput>
                             </mat-form-field>
                         </div>
-                        <div class="col-4">
-                            <mat-form-field appearance="fill">
+                        <div class="col-sm-4">
+                            <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-label>Apellido materno</mat-label>
                                 <input class="uppercase" formControlName="materno" matInput>
                             </mat-form-field>
                         </div>
-
                     </div>
                     <div class="row">
-                        <div class="col-4">
-                            <mat-form-field appearance="fill">
+                        <div class="col-sm-2">
+                            <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-label>Telefono</mat-label>
                                 <input formControlName="telefono" matInput>
                             </mat-form-field>
                         </div>
-                        <div class="col-4">
-                            <mat-form-field appearance="fill">
+                        <div class="col-sm-2">
+                            <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-label>Dni</mat-label>
                                 <input formControlName="dni" matInput>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-8">
+                            <mat-form-field appearance="fill" class="example-full-width">
+                                <mat-label>Cargo</mat-label>
+                                <input class="uppercase" formControlName="cargo" matInput>
                             </mat-form-field>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            <mat-form-field appearance="fill">
-                                <mat-label>Cargo</mat-label>
-                                <input class="uppercase" formControlName="cargo" matInput>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-6">
-                            <mat-form-field appearance="fill">
+                            <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-label>Direccion</mat-label>
                                 <input formControlName="direccion" matInput>
                             </mat-form-field>
                         </div>
-                       
-                    </div>
-                    <div>
-                        <button mat-button matStepperNext>Siguiente</button>
                     </div>
                 </form>
             </mat-step>
@@ -65,7 +60,7 @@
                     <ng-template matStepLabel>Datos cuenta</ng-template>
                     <div class="row">
                         <div class="col-sm-4">
-                            <mat-form-field appearance="fill">
+                            <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-label>Seleccione la institucion</mat-label>
                                 <mat-select (selectionChange)="seleccionar_institucion($event.value)">
                                     <mat-option *ngFor="let inst of Instituciones" [value]="inst.id_institucion">
@@ -75,7 +70,7 @@
                             </mat-form-field>
                         </div>
                         <div class="col-sm-8">
-                            <mat-form-field appearance="fill">
+                            <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-select (selectionChange)="Form_Cuenta.get('dependencia')?.setValue($event.value)"
                                     [formControl]="bankCtrl" placeholder="Buscar la dependencia" #singleSelect>
                                     <mat-option>
@@ -91,13 +86,13 @@
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            <mat-form-field appearance="fill">
+                            <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-label>Login</mat-label>
                                 <input formControlName="login" matInput>
                             </mat-form-field>
                         </div>
                         <div class="col-6">
-                            <mat-form-field appearance="fill">
+                            <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-label>Password</mat-label>
                                 <input formControlName="password" matInput>
                             </mat-form-field>
@@ -105,7 +100,7 @@
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            <mat-form-field appearance="fill">
+                            <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-label>Permisos</mat-label>
                                 <mat-select formControlName="rol">
                                     <mat-option *ngFor="let rol of Roles" [value]="rol.value">
@@ -114,11 +109,16 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
+                        <div class="col-6">
+                            <section class="example-section">
+                                <h4>Select your toppings:</h4>
+                                <p *ngFor="let rol of Roles"><mat-checkbox [value]="rol.value">{{rol.viewValue}}</mat-checkbox>
+                                </p>
+                            </section>
+                        </div>
+
                     </div>
-                    <div>
-                        <button mat-button matStepperPrevious>Atras</button>
-                        <button mat-button (click)="stepper.reset()">Restablecer</button>
-                    </div>
+
                 </form>
             </mat-step>
         </mat-stepper>
@@ -180,7 +180,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button  mat-raised-button color="warn" mat-button mat-dialog-close>Cancelar</button>
-    <button  mat-raised-button color="primary" mat-button [disabled]="Form_Funcionario.invalid || Form_Cuenta.invalid"
-    (click)="guardar()">Guardar</button>
+    <button mat-raised-button color="warn" mat-button mat-dialog-close>Cancelar</button>
+    <button mat-raised-button color="primary" mat-button [disabled]="Form_Funcionario.invalid || Form_Cuenta.invalid"
+        (click)="guardar()">Guardar</button>
 </mat-dialog-actions>

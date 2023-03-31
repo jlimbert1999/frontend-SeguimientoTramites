@@ -1,39 +1,39 @@
-<p *ngIf="!search_mode">
-    <mat-toolbar>
+<p>
+    <mat-toolbar color="primary">
         <ng-container>
-            <span>Cuentas
+            <span>CUENTAS
             </span>
             <span class="example-spacer"></span>
-            <button (click)="changeSearchMode(true)" mat-icon-button>
-                <mat-icon>search</mat-icon>
-            </button>
             <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                 <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
                 <button (click)="Add()" mat-menu-item>
                     <mat-icon>account_circle</mat-icon>
-                    <span>Crear cuenta</span>
+                    <span>CREAR CUENTA</span>
                 </button>
                 <button (click)="AddUser()" mat-menu-item>
                     <mat-icon>person_add</mat-icon>
-                    <span>Crear funcionario</span>
+                    <span>CREAR FUNCIONARIO</span>
                 </button>
                 <button (click)="AddAccountLink()" mat-menu-item>
                     <mat-icon>contacts</mat-icon>
-                    <span>Asignar cuenta</span>
+                    <span>ASIGNAR CUENTA</span>
                 </button>
             </mat-menu>
         </ng-container>
     </mat-toolbar>
 </p>
 
-<div class="container-fluid">
+<div class="container-fluid" [@fadeInOnEnter]>
     <div class="row">
         <div class="col-sm-3">
             <mat-form-field appearance="fill" class="example-full-width">
                 <mat-label>Institucion</mat-label>
-                <mat-select (selectionChange)="getDependencias($event.value)">
+                <mat-select [(ngModel)]="id_institucion" (selectionChange)="getDependencias($event.value)">
+                    <mat-option [value]="null">
+                        -
+                    </mat-option>
                     <mat-option *ngFor="let institucion of instituciones" [value]="institucion.id_institucion">
                         {{institucion.nombre}}
                     </mat-option>
@@ -42,10 +42,13 @@
         </div>
         <div class="col-sm-5">
             <mat-form-field appearance="fill" class="example-full-width">
-                <mat-select (selectionChange)="applyFilterbySelect()" [formControl]="bankCtrl"
-                    placeholder="Buscar dependencia" #singleSelect>
+                <mat-select (selectionChange)="applyFilterbySelect()" [formControl]="bankCtrl" placeholder="Dependencia"
+                    #singleSelect>
                     <mat-option>
                         <ngx-mat-select-search [formControl]="bankFilterCtrl"></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option [value]="null">
+                        -
                     </mat-option>
                     <mat-option *ngFor="let bank of filteredBanks | async" [value]="bank.id_dependencia">
                         {{bank.nombre}}
@@ -54,14 +57,17 @@
             </mat-form-field>
         </div>
         <div class="col-sm-4">
-            <mat-form-field appearance="fill" class="example-full-width">
-                <mat-label>Termino a buscar</mat-label>
-                <input (keyup)="applyFilterbyText($event)" matInput>
+            <mat-form-field class="example-full-width">
+                <mat-label>Buscar funcionario</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Nombre / Cargo / DNI" #input>
+                <button *ngIf="text!==''" matSuffix mat-icon-button aria-label="Clear" (click)="cancelSearch()">
+                    <mat-icon>close</mat-icon>
+                </button>
             </mat-form-field>
         </div>
     </div>
-    <div [@fadeInOnEnter] class="example-container mat-elevation-z8">
-        <div class="example-table-container" [ngClass]="search_mode?'search':''">
+    <div class="example-container mat-elevation-z8">
+        <div class="example-table-container">
             <table mat-table [dataSource]="Cuentas">
                 <ng-container matColumnDef="login">
                     <th mat-header-cell *matHeaderCellDef> Login </th>
@@ -137,6 +143,6 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </div>
-        <app-paginator (page)="Get()"></app-paginator>
+        <app-paginator (page)="Get()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
     </div>
 </div>

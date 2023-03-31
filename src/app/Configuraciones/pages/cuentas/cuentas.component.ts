@@ -26,43 +26,35 @@ import { UsuarioDialogComponent } from './usuario-dialog/usuario-dialog.componen
   templateUrl: './cuentas.component.html',
   styleUrls: ['./cuentas.component.css'],
   animations: [
-    fadeInOnEnterAnimation({ duration: 500 }),
+    fadeInOnEnterAnimation(),
     expandOnEnterAnimation(),
     collapseOnLeaveAnimation(),
   ]
 })
 export class CuentasComponent implements OnInit {
   Cuentas: CuentaData[] = []
-  Total: number = 0
   displayedColumns = ['login', 'rol', 'nombre', 'dependencia', 'institucion', 'activo', 'opciones']
-
-  searchOpions = [
-    { value: 'funcionario', viewValue: 'FUNCIONARIO' },
-    { value: 'dependencia', viewValue: 'DEPENDENCIA' },
-  ]
 
   public bankCtrl: UntypedFormControl = new UntypedFormControl();
   public bankFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredBanks: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
   protected _onDestroy = new Subject<void>();
 
-  // Options for search
-  typeSearch: string = ""
-  text: string = ""
-  search_mode: boolean = false
-  dependencias: any[] = []
   instituciones: any[] = []
+  dependencias: any[] = []
+  text: string = ""
 
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  id_institucion: string
+  id_dependencia: string
 
   constructor(
     public dialog: MatDialog,
     public accountService: CuentaService,
     public paginatorService: PaginatorService,
-    private dependenciaService: DependenciasService
   ) {
-    this.dependenciaService.getInstituciones().subscribe(data => {
+    this.accountService.getInstituciones().subscribe(data => {
       this.instituciones = data
     })
   }
@@ -75,8 +67,16 @@ export class CuentasComponent implements OnInit {
 
   }
   Get() {
-    if (this.text !== '') {
-
+    if (this.text !== '' || this.id_institucion) {
+      this.accountService.search(
+        this.paginatorService.limit,
+        this.paginatorService.offset,
+        this.text,
+        this.id_institucion,
+        this.id_dependencia).subscribe(data => {
+          this.paginatorService.length = data.length
+          this.Cuentas = data.cuentas
+        })
     }
     else {
       this.accountService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
@@ -94,11 +94,7 @@ export class CuentasComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.Total += 1
-        if (this.Cuentas.length === this.paginator.pageSize) {
-          this.Cuentas.pop()
-        }
-        this.Cuentas = [result, ...this.Cuentas]
+
       }
     });
   }
@@ -121,11 +117,7 @@ export class CuentasComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.Total += 1
-        if (this.Cuentas.length === this.paginator.pageSize) {
-          this.Cuentas.pop()
-        }
-        this.Cuentas = [result, ...this.Cuentas]
+
       }
     });
   }
@@ -158,41 +150,25 @@ export class CuentasComponent implements OnInit {
     })
   }
 
-  changeSearchMode(option: boolean) {
-    this.search_mode = option
-    if (!option) {
-      this.typeSearch = ""
-      this.paginator.firstPage()
-      this.Get()
-    }
-  }
 
 
-  selectTypeSearch(option: string) {
-    this.typeSearch = option
-    this.instituciones = []
-    this.filteredBanks.next([])
-    this.text = ""
-    if (this.typeSearch === 'dependencia') {
-      this.accountService.getInstituciones().subscribe(inst => {
-        this.instituciones = inst
-      })
-    }
-  }
 
   getDependencias(id_institucion: string) {
-    this.dependencias = []
-    this.accountService.getDependencias(id_institucion).subscribe(deps => {
-      console.log(deps);
-      this.dependencias = deps
-      this.bankCtrl.setValue(this.dependencias);
-      this.filteredBanks.next(this.dependencias.slice());
-      this.bankFilterCtrl.valueChanges
-        .pipe(takeUntil(this._onDestroy))
-        .subscribe(() => {
-          this.filterBanks();
-        });
-    })
+    this.paginatorService.offset = 0
+    this.bankCtrl.setValue(null)
+    this.filteredBanks.next([])
+    if (this.id_institucion) {
+      this.accountService.getDependencias(id_institucion).subscribe(deps => {
+        this.dependencias = deps
+        this.filteredBanks.next(this.dependencias.slice());
+        this.bankFilterCtrl.valueChanges
+          .pipe(takeUntil(this._onDestroy))
+          .subscribe(() => {
+            this.filterBanks();
+          });
+      })
+    }
+    this.Get()
   }
 
   protected filterBanks() {
@@ -212,28 +188,24 @@ export class CuentasComponent implements OnInit {
   }
   applyFilterbyText(event: Event) {
     this.text = (event.target as HTMLInputElement).value;
-    this.search()
+    this.Get()
   }
   applyFilterbySelect() {
-    this.paginator.firstPage()
-    this.text = this.bankCtrl.value
-    this.search()
-  }
-  search() {
-    if (this.typeSearch !== '' && this.text !== '') {
-      this.accountService.search(this.typeSearch, this.text, this.paginator.pageSize, this.paginator.pageIndex).subscribe(data => {
-        this.Cuentas = data.cuentas
-        this.Total = data.total
-      })
-    }
+    this.paginatorService.offset = 0
+    this.id_dependencia = this.bankCtrl.value
+    this.Get()
   }
 
-  onPaginationChange() {
-    if (this.search_mode) {
-      this.search()
-    }
-    else {
-      this.Get()
-    }
+  applyFilter(event: Event) {
+    this.paginatorService.offset = 0
+    this.text = (event.target as HTMLInputElement).value;
+    this.Get()
   }
+  cancelSearch() {
+    this.paginatorService.offset = 0
+    this.text = ''
+    this.Get()
+  }
+
+
 }

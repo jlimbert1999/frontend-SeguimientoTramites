@@ -17,6 +17,7 @@ import { MatSelect } from '@angular/material/select';
 import { CuentaData } from 'src/app/Configuraciones/models/cuenta.model';
 import { CuentaService } from 'src/app/Configuraciones/services/cuenta.service';
 import { HojaUsuarios } from 'src/app/Configuraciones/pdfs/usuarios';
+import { DependenciasService } from 'src/app/Configuraciones/services/dependencias.service';
 
 
 
@@ -46,46 +47,35 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
     dependencia: ['', Validators.required],
   });
 
-  displayedColumns = ['nombre', 'cargo', 'dni', 'opciones'];
-  dataSource: MatTableDataSource<any>;
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
 
 
   public bankCtrl: FormControl = new FormControl();
   public bankFilterCtrl: FormControl = new FormControl();
   public filteredBanks: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-  @ViewChild('singleSelect') singleSelect: MatSelect;
+
   protected _onDestroy = new Subject<void>();
 
   Roles = [
-    { value: 'RECEPCION', viewValue: 'Recepcion' },
-    { value: 'EVALUACION', viewValue: 'Evaluacion' }
+    { value: 'EXTERNOS', viewValue: 'Tramites externos' },
+    { value: 'INTERNOS', viewValue: 'Tramites internos' },
+    { value: 'BANDEJAS', viewValue: 'Bandejas' },
+    { value: 'REPORTES', viewValue: 'Reportes' },
+    { value: 'BUSQUEDAS', viewValue: 'Busquedas' }
   ]
-  departamentos = [
-    'COCHABAMBA',
-    'SANTA CRUZ',
-    'LA PAZ',
-    'ORURO',
-    'PANDO',
-    'BENI',
-    'CHUQUISACA',
-    'TARIJA',
-    'POTOSI'
-  ]
+
+
 
 
   constructor(
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: CuentaData,
     public dialogRef: MatDialogRef<CuentaDialogComponent>,
-    private cuentasService: CuentaService
+    private cuentasService: CuentaService,
+    private dependenciaService: DependenciasService
   ) { }
 
   ngOnInit(): void {
- 
-    this.cuentasService.getInstituciones().subscribe(inst => {
+    this.dependenciaService.getInstituciones().subscribe(inst => {
       this.Instituciones = inst
     })
   }
@@ -96,20 +86,22 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   guardar() {
-    this.cuentasService.agregar_cuenta(this.Form_Cuenta.value, this.Form_Funcionario.value).subscribe(cuenta => {
-      this.dialogRef.close(cuenta);
-      HojaUsuarios(
-        cuenta.funcionario!.nombre,
-        cuenta.funcionario!.paterno,
-        cuenta.funcionario!.materno,
-        cuenta.funcionario!.cargo,
-        cuenta.dependencia.nombre,
-        cuenta.funcionario!.dni,
-        cuenta.dependencia.institucion.sigla,
-        cuenta.login,
-        this.Form_Cuenta.get('password')?.value
-      )
-    });
+    let roles = [this.Form_Cuenta.get('rol')?.value,]
+    console.log(roles);
+    // this.cuentasService.agregar_cuenta(this.Form_Cuenta.value, this.Form_Funcionario.value).subscribe(cuenta => {
+    //   this.dialogRef.close(cuenta);
+    //   HojaUsuarios(
+    //     cuenta.funcionario!.nombre,
+    //     cuenta.funcionario!.paterno,
+    //     cuenta.funcionario!.materno,
+    //     cuenta.funcionario!.cargo,
+    //     cuenta.dependencia.nombre,
+    //     cuenta.funcionario!.dni,
+    //     cuenta.dependencia.institucion.sigla,
+    //     cuenta.login,
+    //     this.Form_Cuenta.get('password')?.value
+    //   )
+    // });
   }
 
   cambiar_formulario(value: boolean) {
@@ -127,13 +119,7 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
   }
-  obtener_funcionarios() {
-    this.cuentasService.obtener_funcionarios_asignacion().subscribe((users) => {
-      this.dataSource = new MatTableDataSource(users);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    });
-  }
+
 
   seleccionar_institucion(id_institucion: string) {
     this.cuentasService.getDependencias(id_institucion).subscribe(dep => {
@@ -174,13 +160,7 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
       this.dependencias.filter(bank => bank.nombre.toLowerCase().indexOf(search) > -1)
     );
   }
-  protected setInitialValue() {
-    this.filteredBanks
-      .pipe(take(1), takeUntil(this._onDestroy))
-      .subscribe(() => {
-        this.singleSelect.compareWith = (a: any, b: any) => a && b && a.id_dependencia === b.id_dependencia;
-      });
-  }
+
 
 
 
