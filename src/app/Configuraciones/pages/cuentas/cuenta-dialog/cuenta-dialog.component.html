@@ -99,7 +99,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6">
+                        <!-- <div class="col-6">
                             <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-label>Permisos</mat-label>
                                 <mat-select formControlName="rol">
@@ -108,18 +108,55 @@
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-                        </div>
-                        <div class="col-6">
-                            <section class="example-section">
+                        </div> -->
+                        <!-- <div class="col-6">
+                            <section class="example-section" formControlName>
                                 <h4>Select your toppings:</h4>
                                 <p *ngFor="let rol of Roles"><mat-checkbox [value]="rol.value">{{rol.viewValue}}</mat-checkbox>
                                 </p>
                             </section>
-                        </div>
+                        </div> -->
 
                     </div>
 
                 </form>
+            </mat-step>
+            <mat-step [stepControl]="Form_Roles">
+                <ng-template matStepLabel>Datos rol</ng-template>
+                <section class="example-section" [formGroup]="Form_Roles">
+                    <div class="container">
+                        <div class="row">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Selecconar rol</mat-label>
+                                <mat-select (selectionChange)="selectRol($event.value)">
+                                    <mat-option *ngFor="let rol of Roles" [value]="rol.value">
+                                        {{rol.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h4>Administracion de tramites</h4>
+                                <p><mat-checkbox formControlName="EXTERNOS">Administracion externos</mat-checkbox></p>
+                                <p><mat-checkbox formControlName="INTERNOS">Administracion internos</mat-checkbox></p>
+                                <p><mat-checkbox formControlName="BANDEJAS">Administracion bandejas</mat-checkbox></p>
+                                <p><mat-checkbox formControlName="REPORTES">Generacion de reportes</mat-checkbox></p>
+                                <p><mat-checkbox formControlName="BUSQUEDAS">Busquedas avanzadas</mat-checkbox></p>
+                            </div>
+                            <div class="col-sm-6">
+                                <h4>Select your toppings:</h4>
+                                <p><mat-checkbox formControlName="USUARIOS">Administracion de usuarios</mat-checkbox></p>
+                                <p><mat-checkbox formControlName="CUENTAS">Administracion de cuentas</mat-checkbox></p>
+                                <p><mat-checkbox formControlName="INSTITUCIONES">Administracion de instituciones</mat-checkbox></p>
+                                <p><mat-checkbox formControlName="DEPENDENCIAS">Administracion de DEPENDENCIAS</mat-checkbox></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
             </mat-step>
         </mat-stepper>
     </ng-container>

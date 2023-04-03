@@ -57,12 +57,20 @@ export class UsuariosService {
       })
     )
   }
+  searchOne(text: string) {
+    return this.http.get<{ ok: boolean, funcionarios: Funcionario[] }>(`${base_url}/configuraciones/funcionarios/search-one/${text}`).pipe(
+      map(resp => {
+        return resp.funcionarios
+      })
+    )
+  }
 
   delete(id_funcionario: string) {
     return this.http.delete<{ ok: boolean, funcionario: Funcionario }>(`${base_url}/configuraciones/funcionarios/${id_funcionario}`).pipe(
       map(resp => resp.funcionario)
     )
   }
+
 
 
 

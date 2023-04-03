@@ -1,7 +1,20 @@
 <h2 mat-dialog-title>{{titulo}} funcionario</h2>
 <mat-dialog-content class="mat-typography">
     <form [formGroup]="Form_Funcionario">
-
+        <div class="row">
+            <mat-form-field>
+                <mat-select formControlName="superior" placeholder="Buscar inmediato superior">
+                    <mat-option>
+                        <ngx-mat-select-search [formControl]="funcionarioServerSideFilteringCtrl"
+                            [searching]="searching" noEntriesFoundLabel="Sin resultados"
+                            placeholderLabel="Nombre o Cargo"></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let funcionario of filteredServerSideBanks | async" [value]="funcionario._id">
+                        {{funcionario|fullname|titlecase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
         <div class="row">
             <div class="col-sm-4">
                 <mat-form-field appearance="fill">
@@ -53,6 +66,7 @@
     </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button  mat-raised-button color="warn" mat-button mat-dialog-close>Cancelar</button>
-    <button  mat-raised-button color="primary" mat-button [disabled]="Form_Funcionario.invalid" (click)="guardar()">Guardar</button>
+    <button mat-raised-button color="warn" mat-button mat-dialog-close>Cancelar</button>
+    <button mat-raised-button color="primary" mat-button [disabled]="Form_Funcionario.invalid"
+        (click)="guardar()">Guardar</button>
 </mat-dialog-actions>

@@ -46,6 +46,17 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
     rol: ['', Validators.required],
     dependencia: ['', Validators.required],
   });
+  Form_Roles = this.fb.group({
+    EXTERNOS: false,
+    INTERNOS: false,
+    BANDEJAS: false,
+    REPORTES: false,
+    BUSQUEDAS: false,
+    USUARIOS: false,
+    CUENTAS: false,
+    DEPENDENCIAS: false,
+    INSTITUCIONES: false
+  });
 
 
 
@@ -56,11 +67,10 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   protected _onDestroy = new Subject<void>();
 
   Roles = [
-    { value: 'EXTERNOS', viewValue: 'Tramites externos' },
-    { value: 'INTERNOS', viewValue: 'Tramites internos' },
-    { value: 'BANDEJAS', viewValue: 'Bandejas' },
-    { value: 'REPORTES', viewValue: 'Reportes' },
-    { value: 'BUSQUEDAS', viewValue: 'Busquedas' }
+    { value: 'RECEPCION', viewValue: 'Encargado de recepcion' },
+    { value: 'EVALUACION', viewValue: 'Encargado de evaluacion' },
+    { value: 'RRHH', viewValue: 'Encargado de recursos humanos' },
+    { value: 'JEFE', viewValue: 'Jefe de unidad' },
   ]
 
 
@@ -71,7 +81,7 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: CuentaData,
     public dialogRef: MatDialogRef<CuentaDialogComponent>,
     private cuentasService: CuentaService,
-    private dependenciaService: DependenciasService
+    private dependenciaService: DependenciasService,
   ) { }
 
   ngOnInit(): void {
@@ -159,6 +169,66 @@ export class CuentaDialogComponent implements OnInit, AfterViewInit, OnDestroy {
     this.filteredBanks.next(
       this.dependencias.filter(bank => bank.nombre.toLowerCase().indexOf(search) > -1)
     );
+  }
+
+  selectRol(rol: string) {
+    switch (rol) {
+      case 'RECEPCION':
+        this.Form_Roles.setValue({
+          'EXTERNOS': true,
+          'INTERNOS': true,
+          'BANDEJAS': true,
+          'REPORTES': true,
+          'BUSQUEDAS': false,
+          'USUARIOS': false,
+          'CUENTAS': false,
+          'DEPENDENCIAS': false,
+          'INSTITUCIONES': false,
+        })
+        break;
+      case 'EVALUACION':
+        this.Form_Roles.patchValue({
+          'EXTERNOS': false,
+          'INTERNOS': true,
+          'BANDEJAS': true,
+          'REPORTES': true,
+          'BUSQUEDAS': false,
+          'USUARIOS': false,
+          'CUENTAS': false,
+          'DEPENDENCIAS': false,
+          'INSTITUCIONES': false,
+        })
+        break;
+      case 'JEFE':
+        this.Form_Roles.patchValue({
+          'EXTERNOS': false,
+          'INTERNOS': true,
+          'BANDEJAS': true,
+          'REPORTES': true,
+          'BUSQUEDAS': true,
+          'USUARIOS': false,
+          'CUENTAS': false,
+          'DEPENDENCIAS': false,
+          'INSTITUCIONES': false,
+        })
+        break;
+      case 'RRHH':
+        this.Form_Roles.patchValue({
+          'EXTERNOS': false,
+          'INTERNOS': false,
+          'BANDEJAS': false,
+          'REPORTES': false,
+          'BUSQUEDAS': false,
+          'USUARIOS': true,
+          'CUENTAS': false,
+          'DEPENDENCIAS': false,
+          'INSTITUCIONES': false,
+        })
+        break;
+
+      default:
+        break;
+    }
   }
 
 

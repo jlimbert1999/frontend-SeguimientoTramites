@@ -9,6 +9,7 @@ export interface Funcionario {
     cargo: string
     activo: boolean
     cuenta: boolean
+    superior: string
 }
 export interface FuncionarioDto {
     nombre: string

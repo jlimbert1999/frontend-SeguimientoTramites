@@ -99,6 +99,7 @@ export class CuentasComponent implements OnInit {
     });
   }
   Edit(data: CuentaData) {
+    console.log(data);
     const dialogRef = this.dialog.open(EdicionCuentaComponent, {
       width: '1200px',
       data: data

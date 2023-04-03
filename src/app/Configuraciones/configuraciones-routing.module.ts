@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { OrganizationChartComponent } from '../shared/organization-chart/organization-chart.component';
 import { CuentaComponent } from './pages/cuenta/cuenta.component';
 import { CuentasComponent } from './pages/cuentas/cuentas.component';
 import { DependenciasComponent } from './pages/dependencias/dependencias.component';
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'groupware', component: GroupwareComponent },
   { path: 'tipos', component: TiposTramitesComponent },
   { path: 'perfil', component: CuentaComponent },
+  { path: 'organigrama', component: OrganizationChartComponent },
 ];
 
 

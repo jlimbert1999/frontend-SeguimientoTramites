@@ -47,9 +47,10 @@ export class EdicionCuentaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.perfilService.getDedailsWork(this.data._id, this.data.rol).subscribe(data => {
-      this.work = data
-    })
+    // this.perfilService.getDedailsWork(this.data._id, this.data.rol).subscribe(data => {
+    //   this.work = data
+    // })
+    console.log(this.data);
     this.Form_Cuenta.patchValue(this.data)
   }
 

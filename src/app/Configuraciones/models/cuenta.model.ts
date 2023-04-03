@@ -11,7 +11,7 @@ export interface CuentaModel {
 export interface CuentaData {
     _id: string
     login: string
-    rol: string
+    rol: string[]
     funcionario?: Funcionario,
     dependencia: {
         nombre: string, institucion: { sigla: string }

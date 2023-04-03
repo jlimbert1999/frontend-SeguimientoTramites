@@ -1,0 +1,13 @@
+.example-header-image {
+    background-image: url('../../../assets/img/account.png');
+    background-size: cover;
+}
+
+.mat-card-header {
+    font-size: 2px;
+}
+
+.mat-card-title {
+    font-size: 2px;
+    color: red;
+}

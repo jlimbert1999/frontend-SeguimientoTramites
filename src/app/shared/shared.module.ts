@@ -21,6 +21,7 @@ import { SolicitantePipe } from './pipes/solicitante.pipe';
 import { TableComponent } from './table/table.component';
 import { SignatureComponent } from './signature/signature.component';
 import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
+import { OrganizationChartComponent } from './organization-chart/organization-chart.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
     ToolbarComponent,
     SolicitantePipe,
     TableComponent,
-    SignatureComponent
+    SignatureComponent,
+    OrganizationChartComponent
 
   ],
   imports: [
