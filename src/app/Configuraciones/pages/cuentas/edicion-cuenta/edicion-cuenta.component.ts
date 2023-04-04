@@ -2,10 +2,9 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ReplaySubject, Subject, takeUntil } from 'rxjs';
-import { CuentaData } from 'src/app/Configuraciones/models/cuenta.model';
+import { Cuenta } from 'src/app/Configuraciones/models/cuenta.interface';
 import { HojaUsuarios } from 'src/app/Configuraciones/pdfs/usuarios';
 import { CuentaService } from 'src/app/Configuraciones/services/cuenta.service';
-import { PerfilService } from 'src/app/Configuraciones/services/perfil.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -14,17 +13,22 @@ import Swal from 'sweetalert2';
   styleUrls: ['./edicion-cuenta.component.css']
 })
 export class EdicionCuentaComponent implements OnInit {
-  work: any
   Form_Cuenta: FormGroup = this.fb.group({
-    login: ['', Validators.required],
-    rol: ['', Validators.required],
+    login: ['']
   });
-
-  Roles = [
-    { value: 'RECEPCION', viewValue: 'Recepcion de tramites' },
-    { value: 'EVALUACION', viewValue: 'Evaluacion de tramites' }
-  ]
   cambiar_password: boolean = false;
+
+  Form_Roles = this.fb.group({
+    EXTERNOS: false,
+    INTERNOS: false,
+    BANDEJAS: false,
+    REPORTES: false,
+    BUSQUEDAS: false,
+    USUARIOS: false,
+    CUENTAS: false,
+    DEPENDENCIAS: false,
+    INSTITUCIONES: false
+  });
 
 
   protected users: any[] = [];
@@ -38,36 +42,35 @@ export class EdicionCuentaComponent implements OnInit {
   // if user is assign or unlink, button save is required
   lock_cancel: boolean = false
 
+  Operations: any
+
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: CuentaData,
-    private perfilService: PerfilService,
+    @Inject(MAT_DIALOG_DATA) public data: Cuenta,
     private fb: FormBuilder,
     private cuentaService: CuentaService,
     public dialogRef: MatDialogRef<EdicionCuentaComponent>,
   ) { }
 
   ngOnInit(): void {
-    // this.perfilService.getDedailsWork(this.data._id, this.data.rol).subscribe(data => {
-    //   this.work = data
-    // })
-    console.log(this.data);
+    this.data.rol.forEach(nombre => {
+      this.Form_Roles.patchValue({ [nombre]: true })
+    })
     this.Form_Cuenta.patchValue(this.data)
+    this.cuentaService.getDetails(this.data._id).subscribe(data => {
+      this.Operations = data
+    })
   }
 
-  cambiar_formulario(value: boolean) {
+  changeForm(value: boolean) {
     this.cambiar_password = value;
-    let password
     if (value) {
-      password = this.data.funcionario ? this.data.funcionario.dni : ''
       this.Form_Cuenta = this.fb.group({
         login: [this.data.login, Validators.required],
-        password: [password, Validators.required],
-        rol: [this.data.rol, Validators.required],
+        password: [this.data.funcionario ? this.data.funcionario.dni : '0000', Validators.required],
       });
     } else {
       this.Form_Cuenta = this.fb.group({
-        login: [this.data.login, Validators.required],
-        rol: [this.data.rol, Validators.required]
+        login: [this.data.login, Validators.required]
       });
     }
   }
@@ -77,9 +80,9 @@ export class EdicionCuentaComponent implements OnInit {
     this.filteredUsers.next(this.users);
     this.userFilterCtrl.valueChanges
       .pipe(takeUntil(this._onDestroy))
-      .subscribe((value) => {
-        if (value !== '') {
-          this.cuentaService.getUsersForAssign(value).subscribe(users => {
+      .subscribe((text) => {
+        if (text !== '') {
+          this.cuentaService.getUsersForAssign(text).subscribe(users => {
             this.filteredUsers.next(users)
           })
         }
@@ -144,21 +147,35 @@ export class EdicionCuentaComponent implements OnInit {
   }
 
   save() {
-    this.cuentaService.Edit(this.data._id, this.Form_Cuenta.value).subscribe(newAccount => {
-      if (this.cambiar_password && this.data.funcionario) {
-        HojaUsuarios(
-          this.data.funcionario.nombre,
-          this.data.funcionario.paterno,
-          this.data.funcionario.materno,
-          this.data.funcionario.cargo,
-          this.data.dependencia.nombre,
-          this.data.funcionario.dni,
-          this.data.dependencia.nombre,
-          this.Form_Cuenta.get('login')?.value,
-          this.Form_Cuenta.get('password')?.value
-        )
+    let rol: string[] = []
+    for (const [key, value] of Object.entries(this.Form_Roles.value)) {
+      if (value) {
+        rol.push(key)
       }
-      this.dialogRef.close(newAccount)
+    }
+    if (rol.length === 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'No se ha seleccionado ningun rol',
+        text: 'La cuenta no tiene acceso a ningun modulo'
+      })
+    }
+    this.cuentaService.edit(this.data._id, this.Form_Cuenta.get('login')?.value, rol, this.Form_Cuenta.get('password')?.value).subscribe(cuenta => {
+      // if (this.cambiar_password && this.data.funcionario) {
+      //   HojaUsuarios(
+      //     this.data.funcionario.nombre,
+      //     this.data.funcionario.paterno,
+      //     this.data.funcionario.materno,
+      //     this.data.funcionario.cargo,
+      //     this.data.dependencia.nombre,
+      //     this.data.funcionario.dni,
+      //     this.data.dependencia.nombre,
+      //     this.Form_Cuenta.get('login')?.value,
+      //     this.Form_Cuenta.get('password')?.value
+      //   )
+      // }
+      // this.dialogRef.close(newAccount)
+      console.log(cuenta);
     })
   }
 

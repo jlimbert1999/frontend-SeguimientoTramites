@@ -2,7 +2,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { CuentaData } from '../models/cuenta.model';
 import { Funcionario } from '../models/funcionario.interface';
 import { CuentaService } from './cuenta.service';
 import { PaginationService } from './pagination.service';

@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
       if (data.number_mails > 0) {
         this.notificationService.addNotificationEvent('Debe revisar su bandeja de entrada', `USTED TIENE ${data.number_mails} TRAMITES PENDIENTES`)
       }
-      if (data.rol.includes('admin')) {
+      if (data.rol.includes('ADMINISTRADOR')) {
         this.router.navigateByUrl('/home')
       }
       else if (data.rol.includes('RECEPCION')) {

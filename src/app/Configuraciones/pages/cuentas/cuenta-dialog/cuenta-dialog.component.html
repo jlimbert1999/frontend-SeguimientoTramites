@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>Registro cuenta</h2>
 <mat-dialog-content>
-    <ng-container *ngIf="!data">
+    <ng-container>
         <mat-stepper headerPosition="bottom" (selectionChange)="generar_credenciales()" [linear]="false" #stepper>
             <mat-step [stepControl]="Form_Funcionario">
                 <form [formGroup]="Form_Funcionario">
@@ -62,8 +62,8 @@
                         <div class="col-sm-4">
                             <mat-form-field appearance="fill" class="example-full-width">
                                 <mat-label>Seleccione la institucion</mat-label>
-                                <mat-select (selectionChange)="seleccionar_institucion($event.value)">
-                                    <mat-option *ngFor="let inst of Instituciones" [value]="inst.id_institucion">
+                                <mat-select (selectionChange)="selectInstitucion($event.value)">
+                                    <mat-option *ngFor="let inst of instituciones" [value]="inst.id_institucion">
                                         {{inst.nombre}}
                                     </mat-option>
                                 </mat-select>
@@ -98,27 +98,6 @@
                             </mat-form-field>
                         </div>
                     </div>
-                    <div class="row">
-                        <!-- <div class="col-6">
-                            <mat-form-field appearance="fill" class="example-full-width">
-                                <mat-label>Permisos</mat-label>
-                                <mat-select formControlName="rol">
-                                    <mat-option *ngFor="let rol of Roles" [value]="rol.value">
-                                        {{rol.viewValue | uppercase}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div> -->
-                        <!-- <div class="col-6">
-                            <section class="example-section" formControlName>
-                                <h4>Select your toppings:</h4>
-                                <p *ngFor="let rol of Roles"><mat-checkbox [value]="rol.value">{{rol.viewValue}}</mat-checkbox>
-                                </p>
-                            </section>
-                        </div> -->
-
-                    </div>
-
                 </form>
             </mat-step>
             <mat-step [stepControl]="Form_Roles">
@@ -127,8 +106,8 @@
                     <div class="container">
                         <div class="row">
                             <mat-form-field appearance="fill">
-                                <mat-label>Selecconar rol</mat-label>
-                                <mat-select (selectionChange)="selectRol($event.value)">
+                                <mat-label>Seleccionar rol</mat-label>
+                                <mat-select (selectionChange)="selectRole($event.value)">
                                     <mat-option *ngFor="let rol of Roles" [value]="rol.value">
                                         {{rol.viewValue}}
                                     </mat-option>
@@ -147,10 +126,13 @@
                             </div>
                             <div class="col-sm-6">
                                 <h4>Select your toppings:</h4>
-                                <p><mat-checkbox formControlName="USUARIOS">Administracion de usuarios</mat-checkbox></p>
+                                <p><mat-checkbox formControlName="USUARIOS">Administracion de usuarios</mat-checkbox>
+                                </p>
                                 <p><mat-checkbox formControlName="CUENTAS">Administracion de cuentas</mat-checkbox></p>
-                                <p><mat-checkbox formControlName="INSTITUCIONES">Administracion de instituciones</mat-checkbox></p>
-                                <p><mat-checkbox formControlName="DEPENDENCIAS">Administracion de DEPENDENCIAS</mat-checkbox></p>
+                                <p><mat-checkbox formControlName="INSTITUCIONES">Administracion de
+                                        instituciones</mat-checkbox></p>
+                                <p><mat-checkbox formControlName="DEPENDENCIAS">Administracion de
+                                        DEPENDENCIAS</mat-checkbox></p>
                             </div>
                         </div>
 
@@ -160,60 +142,7 @@
             </mat-step>
         </mat-stepper>
     </ng-container>
-    <ng-container *ngIf="data">
-        <div class="container">
-            <div class="main-body">
-                <div class="row">
-                    <div class="col-lg-5">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex flex-column align-items-center text-center">
-                                    <img src="../../../../assets/img/account.png" alt="Admin" class="rounded-circle"
-                                        width="110">
-                                    <div class="mt-3">
-                                        <h4>{{data.funcionario!.nombre|titlecase}} - {{data.funcionario!.dni}}</h4>
-                                        <p class="text-secondary mb-1">{{data.funcionario!.cargo|uppercase}}</p>
-                                        <p class="text-muted font-size-sm">
-                                            {{data.dependencia.nombre}}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-7">
-                        <form [formGroup]="Form_Cuenta">
-                            <div class="card">
-                                <div class="card-body">
-                                    <mat-form-field>
-                                        <mat-label>Login</mat-label>
-                                        <input formControlName="login" matInput>
-                                    </mat-form-field>
-                                    <mat-form-field appearance="fill">
-                                        <mat-label>Permisos</mat-label>
-                                        <mat-select formControlName="rol">
-                                            <mat-option *ngFor="let rol of Roles" [value]="rol.value">
-                                                {{rol.viewValue | uppercase}}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
 
-                                    <mat-form-field *ngIf="cambiar_password">
-                                        <mat-label>Password</mat-label>
-                                        <input formControlName="password" matInput>
-                                    </mat-form-field>
-                                    <hr>
-                                    <mat-checkbox [checked]="cambiar_password"
-                                        (change)='cambiar_formulario($event.checked)' class="example-margin">
-                                        Actualizar password
-                                    </mat-checkbox>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </ng-container>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

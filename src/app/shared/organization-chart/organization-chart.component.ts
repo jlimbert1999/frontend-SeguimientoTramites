@@ -32,7 +32,6 @@ export class OrganizationChartComponent implements OnInit {
             office: employee.cargo,
           }
         };
-
         this.nodes.push(node);
       }
 

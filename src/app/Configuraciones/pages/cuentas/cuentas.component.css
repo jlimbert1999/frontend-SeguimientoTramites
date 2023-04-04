@@ -17,9 +17,10 @@ td.mat-column-nombre {
     width: 240px;
 }
 
-td.mat-column-rol {
-    width: 100px;
+td.mat-column-dni {
+    width: 50px;
 }
+
 
 td.mat-column-dependencia {
     width: 500px;

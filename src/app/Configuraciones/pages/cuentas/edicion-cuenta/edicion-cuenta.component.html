@@ -6,22 +6,19 @@
                 <div class="card">
                     <div class="card-header">Detalles funcionario</div>
                     <div class="card-body">
-                        <div class="account-settings">
-                            <div class="user-profile">
-                                <div class="user-avatar">
-                                    <img src="../../../../assets/img/account.png">
-                                </div>
-                                <div *ngIf="data.funcionario">
-                                    <h3 class="fw-bold">{{data.funcionario|fullname|titlecase}} -
-                                        {{data.funcionario.dni}} </h3>
-                                    <h4>{{data.funcionario.cargo|uppercase}}</h4>
-                                </div>
-                                <div *ngIf="!data.funcionario">
-                                    <h2 style="color: red;">SIN ASIGNAR</h2>
-                                </div>
-                            </div>
-                        </div>
+                        <h3 class="card-title fw-bold">{{data.funcionario!|fullname|titlecase}} -
+                            {{data.funcionario!.dni}}</h3>
+                        <h5 class="card-subtitle mb-2 text-body-secondary">{{data.funcionario!.cargo|uppercase}}</h5>
                     </div>
+                    <ul *ngIf="Operations" class="list-group list-group-flush">
+                        <li class="list-group-item">TOTAL EXTERNOS: {{Operations.externos}}
+                        </li>
+                        <li class="list-group-item">TOTAL INTERNOS: {{Operations.internos}}
+                        </li>
+                        <li  class="list-group-item">TOTAL ENTRADA: {{Operations.entrada}}
+                        </li>
+                        <li class="list-group-item">TOTAL SALIDA: {{Operations.salida}}</li>
+                    </ul>
                     <div class="card-footer example-button-row" align="center">
                         <button mat-stroked-button color="warn" (click)="kickUser()"
                             [disabled]="!data.funcionario">Quitar</button>
@@ -51,33 +48,38 @@
             <div class="col-xl-7">
                 <div class="card mb-4">
                     <div class="card-header">Detalles cuenta</div>
-                    <div class="card-body" *ngIf="work">
-
+                    <div class="card-body">
                         <div class="row gx-3 mb-3">
-                            <div class="mb-3">
-                                <label class="form-label">Dependencia</label>
-                                <input type="text" [value]="data.dependencia.nombre" disabled class="form-control">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="small mb-1" for="inputFirstName">Tramites externos</label>
-                                <input class="form-control" id="inputFirstName" type="text" disabled
-                                    [value]="work.total_externos">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="small mb-1" for="inputFirstName">Tramites intenos</label>
-                                <input class="form-control" id="inputFirstName" type="text" disabled
-                                    [value]="work.total_internos">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="small mb-1" for="inputFirstName">Bandeja entrada</label>
-                                <input class="form-control" id="inputFirstName" type="text" disabled
-                                    [value]="work.total_entrada">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="small mb-1" for="inputFirstName">Bandeja salida</label>
-                                <input class="form-control" id="inputFirstName" type="text" disabled
-                                    [value]="work.total_salida">
-                            </div>
+                            <form [formGroup]="Form_Roles">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h4>Administracion de tramites</h4>
+                                        <p><mat-checkbox formControlName="EXTERNOS">Administracion
+                                                externos</mat-checkbox></p>
+                                        <p><mat-checkbox formControlName="INTERNOS">Administracion
+                                                internos</mat-checkbox></p>
+                                        <p><mat-checkbox formControlName="BANDEJAS">Administracion
+                                                bandejas</mat-checkbox></p>
+                                        <p><mat-checkbox formControlName="REPORTES">Generacion de
+                                                reportes</mat-checkbox></p>
+                                        <p><mat-checkbox formControlName="BUSQUEDAS">Busquedas avanzadas</mat-checkbox>
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h4>Administracion de procedimientos</h4>
+                                        <p><mat-checkbox formControlName="USUARIOS">Administracion de
+                                                usuarios</mat-checkbox>
+                                        </p>
+                                        <p><mat-checkbox formControlName="CUENTAS">Administracion de
+                                                cuentas</mat-checkbox></p>
+                                        <p><mat-checkbox formControlName="INSTITUCIONES">Administracion de
+                                                instituciones</mat-checkbox></p>
+                                        <p><mat-checkbox formControlName="DEPENDENCIAS">Administracion de
+                                                dependencias</mat-checkbox></p>
+                                    </div>
+                                </div>
+
+                            </form>
                         </div>
                         <form [formGroup]="Form_Cuenta">
                             <div class="row gx-3 mb-3">
@@ -95,19 +97,12 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-md-6">
-                                    <mat-form-field class="example-full-width" appearance="fill">
-                                        <mat-label>Permisos</mat-label>
-                                        <mat-select formControlName="rol">
-                                            <mat-option *ngFor="let rol of Roles" [value]="rol.value">
-                                                {{rol.viewValue | uppercase}}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
+                                   
                                 </div>
                             </div>
                         </form>
                         <hr>
-                        <mat-checkbox [checked]="cambiar_password" (change)='cambiar_formulario($event.checked)'
+                        <mat-checkbox [checked]="cambiar_password" (change)='changeForm($event.checked)'
                             class="example-margin">
                             Actualizar password
                         </mat-checkbox>

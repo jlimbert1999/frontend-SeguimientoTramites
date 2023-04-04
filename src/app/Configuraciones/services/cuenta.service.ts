@@ -2,8 +2,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { CuentaModel, CuentaData } from '../models/cuenta.model';
-import { Funcionario } from '../models/funcionario.interface';
+import { CuentaDto } from '../models/cuenta.dto';
+import { Cuenta } from '../models/cuenta.interface';
+import { Funcionario, FuncionarioDto } from '../models/funcionario.interface';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -34,15 +35,15 @@ export class CuentaService {
     )
   }
 
-  agregar_cuenta(cuenta: CuentaModel, funcionario: Funcionario) {
-    return this.http.post<{ ok: boolean, cuenta: CuentaData }>(`${base_url}/cuentas`, { cuenta, funcionario }).pipe(
+  add(cuenta: CuentaDto, funcionario: FuncionarioDto) {
+    return this.http.post<{ ok: boolean, cuenta: Cuenta }>(`${base_url}/configuraciones/cuentas`, { cuenta, funcionario }).pipe(
       map(resp => {
         return resp.cuenta
       })
     )
   }
-  Edit(id_cuenta: string, cuenta: CuentaModel) {
-    return this.http.put<{ ok: boolean, cuenta: CuentaModel }>(`${base_url}/cuentas/${id_cuenta}`, cuenta).pipe(
+  edit(id_cuenta: string, login: string, rol: string[], password?: string) {
+    return this.http.put<{ ok: boolean, cuenta: Cuenta }>(`${base_url}/configuraciones/cuentas/${id_cuenta}`, { login, rol, password }).pipe(
       map(resp => resp.cuenta)
     )
   }
@@ -51,22 +52,22 @@ export class CuentaService {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, cuentas: CuentaData[], length: number }>(`${base_url}/configuraciones/cuentas`, { params }).pipe(
+    return this.http.get<{ ok: boolean, cuentas: Cuenta[], length: number }>(`${base_url}/configuraciones/cuentas`, { params }).pipe(
       map(resp => {
         return { cuentas: resp.cuentas, length: resp.length }
       })
     )
   }
 
-  AddAccountLink(cuenta: CuentaModel) {
-    return this.http.post<{ ok: boolean, cuenta: CuentaData }>(`${base_url}/cuentas/assign`, cuenta).pipe(
+  AddAccountLink(cuenta: Cuenta) {
+    return this.http.post<{ ok: boolean, cuenta: Cuenta }>(`${base_url}/cuentas/assign`, cuenta).pipe(
       map(resp => resp.cuenta)
     )
   }
 
   getUsersForAssign(text: string) {
-    return this.http.get<{ ok: boolean, users: any[] }>(`${base_url}/cuentas/assign/${text}`).pipe(
-      map(resp => resp.users)
+    return this.http.get<{ ok: boolean, funcionarios: any[] }>(`${base_url}/configuraciones/cuentas/funcionarios/${text}`).pipe(
+      map(resp => resp.funcionarios)
     )
   }
 
@@ -98,9 +99,16 @@ export class CuentaService {
     if (text !== '') {
       params = params.set('text', text)
     }
-    return this.http.get<{ ok: boolean, cuentas: CuentaData[], length: number }>(`${base_url}/configuraciones/cuentas/search`, { params }).pipe(
+    return this.http.get<{ ok: boolean, cuentas: Cuenta[], length: number }>(`${base_url}/configuraciones/cuentas/search`, { params }).pipe(
       map(resp => {
         return { cuentas: resp.cuentas, length: resp.length }
+      })
+    )
+  }
+  getDetails(id_cuenta: string) {
+    return this.http.get<{ ok: boolean, internos: number, externos: number, entrada: number, salida: number }>(`${base_url}/configuraciones/cuentas/details/${id_cuenta}`).pipe(
+      map(resp => {
+        return { internos: resp.internos, externos: resp.externos, entrada: resp.entrada, salida: resp.salida }
       })
     )
   }

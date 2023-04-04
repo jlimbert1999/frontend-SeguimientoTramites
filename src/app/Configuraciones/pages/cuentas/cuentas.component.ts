@@ -9,7 +9,7 @@ import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimatio
 import { map, Observable, ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import Swal from 'sweetalert2';
-import { CuentaData } from '../../models/cuenta.model';
+import { Cuenta } from '../../models/cuenta.interface';
 import { Funcionario } from '../../models/funcionario.interface';
 import { CuentaService } from '../../services/cuenta.service';
 import { DependenciasService } from '../../services/dependencias.service';
@@ -17,8 +17,6 @@ import { CreacionAsignacionComponent } from './creacion-asignacion/creacion-asig
 import { CuentaDialogComponent } from './cuenta-dialog/cuenta-dialog.component';
 import { EdicionCuentaComponent } from './edicion-cuenta/edicion-cuenta.component';
 import { UsuarioDialogComponent } from './usuario-dialog/usuario-dialog.component';
-
-
 
 
 @Component({
@@ -32,8 +30,8 @@ import { UsuarioDialogComponent } from './usuario-dialog/usuario-dialog.componen
   ]
 })
 export class CuentasComponent implements OnInit {
-  Cuentas: CuentaData[] = []
-  displayedColumns = ['login', 'rol', 'nombre', 'dependencia', 'institucion', 'activo', 'opciones']
+  Cuentas: Cuenta[] = []
+  displayedColumns = ['login', 'dni', 'nombre', 'dependencia', 'institucion', 'activo', 'opciones']
 
   public bankCtrl: UntypedFormControl = new UntypedFormControl();
   public bankFilterCtrl: UntypedFormControl = new UntypedFormControl();
@@ -98,13 +96,12 @@ export class CuentasComponent implements OnInit {
       }
     });
   }
-  Edit(data: CuentaData) {
-    console.log(data);
+  Edit(data: Cuenta) {
     const dialogRef = this.dialog.open(EdicionCuentaComponent, {
-      width: '1200px',
+      width: '1600px',
       data: data
     });
-    dialogRef.afterClosed().subscribe((result: CuentaData) => {
+    dialogRef.afterClosed().subscribe((result: Cuenta) => {
       if (result) {
         const indexFound = this.Cuentas.findIndex(cuenta => cuenta._id === result._id)
         this.Cuentas[indexFound] = result
@@ -129,7 +126,7 @@ export class CuentasComponent implements OnInit {
       width: '900px'
     });
   }
-  EditUser(account: CuentaData) {
+  EditUser(account: Cuenta) {
     const dialogRef = this.dialog.open(UsuarioDialogComponent, {
       data: account.funcionario
     });

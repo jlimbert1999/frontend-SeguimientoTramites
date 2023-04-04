@@ -1,14 +1,6 @@
 import { Funcionario } from "./funcionario.interface"
 
-export interface CuentaModel {
-    _id?: string
-    dependencia: string
-    login: string
-    password: string
-    rol: string
-}
-
-export interface CuentaData {
+export interface Cuenta {
     _id: string
     login: string
     rol: string[]
