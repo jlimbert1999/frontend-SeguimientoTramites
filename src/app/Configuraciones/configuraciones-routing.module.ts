@@ -8,6 +8,7 @@ import { FuncionariosComponent } from './pages/funcionarios/funcionarios.compone
 import { GroupwareComponent } from './pages/groupware/groupware.component';
 import { InstitucionesComponent } from './pages/instituciones/instituciones.component';
 import { TiposTramitesComponent } from './pages/tipos-tramites/tipos-tramites.component';
+import { RolesComponent } from './pages/roles/roles.component';
 
 
 const routes: Routes = [
@@ -20,6 +21,7 @@ const routes: Routes = [
   { path: 'tipos', component: TiposTramitesComponent },
   { path: 'perfil', component: CuentaComponent },
   { path: 'organigrama', component: OrganizationChartComponent },
+  { path: 'roles', component: RolesComponent },
 ];
 
 

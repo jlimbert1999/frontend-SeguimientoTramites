@@ -20,6 +20,8 @@ import { DetallesMovilidadComponent } from './pages/funcionarios/detalles-movili
 import { EdicionCuentaComponent } from './pages/cuentas/edicion-cuenta/edicion-cuenta.component';
 import { TiposTramitesComponent } from './pages/tipos-tramites/tipos-tramites.component';
 import { DialogTiposComponent } from './pages/tipos-tramites/dialog-tipos/dialog-tipos.component';
+import { RolesComponent } from './pages/roles/roles.component';
+import { RolDialogComponent } from './dialogs/rol-dialog/rol-dialog.component';
 
 
 
@@ -39,7 +41,9 @@ import { DialogTiposComponent } from './pages/tipos-tramites/dialog-tipos/dialog
     CreacionAsignacionComponent,
     DetallesMovilidadComponent,
     CuentaComponent,
-    EdicionCuentaComponent
+    EdicionCuentaComponent,
+    RolesComponent,
+    RolDialogComponent
   ],
   imports: [
     CommonModule,

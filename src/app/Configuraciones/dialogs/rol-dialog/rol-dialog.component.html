@@ -1,0 +1,53 @@
+<h1 mat-dialog-title>REGISTRO DE ROL</h1>
+<div mat-dialog-content>
+    <form [formGroup]="Form_Role">
+        <div class="row">
+            <div class="col-sm-10">
+                <mat-form-field appearance="fill" class="example-full-width">
+                    <input matInput formControlName="role" placeholder="Nombre del rol">
+                </mat-form-field>
+            </div>
+            <div class="col-sm-2">
+                <button mat-mini-fab (click)="addPrivilege()">
+                    <mat-icon class="add-course-btn">add</mat-icon>
+                </button>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col" class="w-60">Modulo</th>
+                    <th scope="col" class="w-10">Leer</th>
+                    <th scope="col" class="w-10">Crear</th>
+                    <th scope="col" class="w-10">Editar</th>
+                    <th scope="col" class="w-10">Eliminar</th>
+                    <th scope="col" class="w-10"></th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                <ng-container formArrayName="privileges" *ngFor="let privilege of privileges.controls; let i = index">
+                    <tr [formGroupName]="i">
+                        <td>
+                            <mat-form-field appearance="fill" class="example-full-width">
+                                <mat-select formControlName="resource" placeholder="Lesson level">
+                                    <mat-option *ngFor="let resource of resources"
+                                        [value]="resource.value">{{resource.viewValue}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                        <td> <mat-checkbox formControlName="create"></mat-checkbox></td>
+                        <td> <mat-checkbox formControlName="read"> </mat-checkbox></td>
+                        <td> <mat-checkbox formControlName="update"></mat-checkbox></td>
+                        <td> <mat-checkbox formControlName="delete"></mat-checkbox></td>
+                        <td> <mat-checkbox formControlName="delete"></mat-checkbox></td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<div mat-dialog-actions align="end">
+    <button mat-button>CANCELAR</button>
+    <button mat-button [mat-dialog-close]="" cdkFocusInitial>ACEPTAR</button>
+</div>

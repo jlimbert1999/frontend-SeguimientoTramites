@@ -50,11 +50,11 @@ export class LoginComponent implements OnInit {
       if (data.rol.includes('ADMINISTRADOR')) {
         this.router.navigateByUrl('/home')
       }
-      else if (data.rol.includes('RECEPCION')) {
-        this.router.navigateByUrl('/home/tramites-externos')
+      else if (data.rol.includes('EXTERNOS')) {
+        this.router.navigateByUrl('/home/tramites/externos')
       }
-      else if (data.rol.includes('EVALUACION')) {
-        this.router.navigateByUrl('/home/tramites-internos')
+      else if (data.rol.includes('INTERNOS')) {
+        this.router.navigateByUrl('/home/tramites/internos')
       }
     })
   }

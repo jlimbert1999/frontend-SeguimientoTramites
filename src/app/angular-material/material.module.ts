@@ -31,6 +31,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatRadioModule } from '@angular/material/radio';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {CdkTableModule} from '@angular/cdk/table';
 
 @NgModule({
   declarations: [],
@@ -68,7 +69,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     MatBadgeModule,
     MatRadioModule,
     MatChipsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    CdkTableModule
   ]
 })
 export class MaterialModule { }
