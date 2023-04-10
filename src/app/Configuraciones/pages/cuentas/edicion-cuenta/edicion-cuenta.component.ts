@@ -18,17 +18,7 @@ export class EdicionCuentaComponent implements OnInit {
   });
   cambiar_password: boolean = false;
 
-  Form_Roles = this.fb.group({
-    EXTERNOS: false,
-    INTERNOS: false,
-    BANDEJAS: false,
-    REPORTES: false,
-    BUSQUEDAS: false,
-    USUARIOS: false,
-    CUENTAS: false,
-    DEPENDENCIAS: false,
-    INSTITUCIONES: false
-  });
+
 
 
   protected users: any[] = [];
@@ -42,7 +32,7 @@ export class EdicionCuentaComponent implements OnInit {
   // if user is assign or unlink, button save is required
   lock_cancel: boolean = false
 
-  Operations: any
+  details: { externos?: number, internos?: number, entrada?: number, salida?: number }
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Cuenta,
@@ -52,12 +42,9 @@ export class EdicionCuentaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.data.rol.forEach(nombre => {
-      this.Form_Roles.patchValue({ [nombre]: true })
-    })
     this.Form_Cuenta.patchValue(this.data)
-    this.cuentaService.getDetails(this.data._id).subscribe(data => {
-      this.Operations = data
+    this.cuentaService.getDetails(this.data._id).subscribe(details => {
+      this.details = details
     })
   }
 
@@ -148,11 +135,7 @@ export class EdicionCuentaComponent implements OnInit {
 
   save() {
     let rol: string[] = []
-    for (const [key, value] of Object.entries(this.Form_Roles.value)) {
-      if (value) {
-        rol.push(key)
-      }
-    }
+
     if (rol.length === 0) {
       Swal.fire({
         icon: 'warning',

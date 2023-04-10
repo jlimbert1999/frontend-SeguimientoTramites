@@ -1,9 +1,10 @@
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { TDocumentDefinitions } from "pdfmake/interfaces";
+import { Cuenta } from "../models/cuenta.interface";
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
-export const HojaUsuarios = async (nombre: string, paterno: string, materno: string, cargo: string, dependencia: string, dni: string, institucion: string, login: string, password: string) => {
+export const HojaUsuarios = async (cuenta: Cuenta, login: string, password: string) => {
     const imagePath = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia.png')
     let docDefinition: TDocumentDefinitions = {
         pageSize: 'LETTER',
@@ -28,9 +29,9 @@ export const HojaUsuarios = async (nombre: string, paterno: string, materno: str
             },
             {
                 text: [
-                    'NOMBRE: ', { text: `${nombre} ${paterno} ${materno}\n\n`.toUpperCase(), bold: false },
-                    'CARGO: ', { text: `${cargo}\n\n`.toUpperCase(), bold: false },
-                    'UNIDAD: ', { text: `${dependencia} - ${institucion}`.toUpperCase(), bold: false },
+                    'NOMBRE: ', { text: `${cuenta.funcionario?.nombre} ${cuenta.funcionario?.paterno} ${cuenta.funcionario?.materno}\n\n`.toUpperCase(), bold: false },
+                    'CARGO: ', { text: `${cuenta.funcionario?.cargo}\n\n`.toUpperCase(), bold: false },
+                    'UNIDAD: ', { text: `${cuenta.dependencia.nombre} - ${cuenta.dependencia.institucion.sigla}`.toUpperCase(), bold: false },
                 ],
 
                 style: 'header',
@@ -65,7 +66,7 @@ export const HojaUsuarios = async (nombre: string, paterno: string, materno: str
                 fontSize: 10
             },
 
-            { qr: `${nombre} ${paterno} ${materno} Dni: ${dni}`, alignment: 'right', fit: 100 },
+            { qr: `${cuenta.funcionario?.nombre} ${cuenta.funcionario?.paterno} ${cuenta.funcionario?.materno} Dni: ${cuenta.funcionario?.dni}`, alignment: 'right', fit: 100 },
             {
                 columns: [
                     {

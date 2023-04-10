@@ -11,7 +11,7 @@ import { InstitucionDialogComponent } from './pages/instituciones/institucion-di
 import { DependenciaDialogComponent } from './pages/dependencias/dependencia-dialog/dependencia-dialog.component';
 import { UsuarioDialogComponent } from './pages/cuentas/usuario-dialog/usuario-dialog.component';
 import { CuentasComponent } from './pages/cuentas/cuentas.component';
-import { CuentaDialogComponent } from './pages/cuentas/cuenta-dialog/cuenta-dialog.component';
+import { CuentaDialogComponent } from './dialogs/cuenta-dialog/cuenta-dialog.component';
 import { FuncionariosComponent } from './pages/funcionarios/funcionarios.component';
 import { GroupwareComponent } from './pages/groupware/groupware.component';
 import { CuentaComponent } from './pages/cuenta/cuenta.component';

@@ -1,37 +1,82 @@
-import { Component, Inject } from '@angular/core';
-import { FormArray, FormBuilder, Validators } from '@angular/forms';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { RolService } from '../../services/rol.service';
+import { Rol, RolDto } from '../../models/rol.model';
 
 @Component({
   selector: 'app-rol-dialog',
   templateUrl: './rol-dialog.component.html',
   styleUrls: ['./rol-dialog.component.css']
 })
-export class RolDialogComponent {
-  Form_Role = this.fb.group({
+export class RolDialogComponent implements OnInit {
+  Form_Role: FormGroup = this.fb.group({
     role: ['', Validators.required],
     privileges: this.fb.array([])
   });
-  resources = [
-    { value: 'externos', viewValue: 'Tramites externos' },
-    { value: 'internos', viewValue: 'Tramites internos' },
-    { value: 'entradas', viewValue: 'Bandeja de entrada' },
-    { value: 'salidas', viewValue: 'Bandeja de salida' },
-    { value: 'tipos', viewValue: 'Tipos de tramites' },
-    { value: 'usuarios', viewValue: 'Administracion funcionarios' },
-    { value: 'cuentas', viewValue: 'Administracion cuentas' },
-    { value: 'instituciones', viewValue: 'Administracion instituciones' },
-    { value: 'dependencias', viewValue: 'Administracion dependencias' },
-    { value: 'reportes', viewValue: 'Reportes' },
-    { value: 'busquedas', viewValue: 'Busquedas' },
-    { value: 'roles', viewValue: 'Administracion de roles' },
+  modules = [
+    {
+      group: 'Administracion tramites',
+      resources: [
+        { value: 'externos', viewValue: 'Externos', disabled: false },
+        { value: 'internos', viewValue: 'Internos', disabled: false },
+      ],
+    },
+    {
+      group: 'Administracion envios',
+
+      resources: [
+        { value: 'entradas', viewValue: 'Entrada', disabled: false },
+        { value: 'salidas', viewValue: 'Salida', disabled: false },
+      ],
+    },
+    {
+      group: 'Reportes',
+      resources: [
+        { value: 'reportes', viewValue: 'Reportes', disabled: false },
+        { value: 'busquedas', viewValue: 'Busquedas', disabled: false },
+      ],
+    },
+    {
+      group: 'Configuraciones',
+      resources: [
+        { value: 'tipos', viewValue: 'Tipos de Tramites', disabled: false },
+        { value: 'usuarios', viewValue: 'Funcionarios', disabled: false },
+        { value: 'roles', viewValue: 'Roles', disabled: false },
+        { value: 'cuentas', viewValue: 'Cuentas', disabled: false },
+        { value: 'instituciones', viewValue: 'Instituciones', disabled: false },
+        { value: 'dependencias', viewValue: 'Dependencias', disabled: false },
+      ],
+    }
   ]
+
 
 
   constructor(
     public dialogRef: MatDialogRef<RolDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder) {
+    @Inject(MAT_DIALOG_DATA) public data: Rol,
+    private fb: FormBuilder,
+    private rolService: RolService
+  ) {
+
+
+  }
+  ngOnInit(): void {
+    if (this.data) {
+      // create form for charge data
+      for (let index = 0; index < this.data.privileges.length; index++) {
+        const priviligeForm = this.fb.group({
+          resource: ['', Validators.required],
+          create: false,
+          update: false,
+          read: false,
+          delete: false
+        });
+        this.privileges.push(priviligeForm);
+        this.disableModule(this.data.privileges[index].resource, true)
+      }
+      this.Form_Role.patchValue(this.data)
+    }
   }
   get privileges() {
     return this.Form_Role.controls["privileges"] as FormArray;
@@ -45,7 +90,38 @@ export class RolDialogComponent {
       read: false,
       delete: false
     });
-
     this.privileges.push(priviligeForm);
+  }
+
+  removePrivilege(lessonIndex: number) {
+    const value = this.privileges.at(lessonIndex).value
+    this.disableModule(value.resource, false)
+    this.privileges.removeAt(lessonIndex);
+  }
+
+
+  disableModule(value: string, disable: boolean) {
+    // disable or enable modules if selected
+    this.modules.map(module => {
+      const pos = module.resources.findIndex(resource => resource.value === value)
+      if (pos !== -1) module.resources[pos].disabled = disable
+      return module
+    })
+  }
+
+
+
+  Save() {
+    if (this.data) {
+      this.rolService.edit(this.data._id, this.Form_Role.value).subscribe(Rol => {
+        this.dialogRef.close(Rol)
+      })
+    }
+    else {
+      this.rolService.add(this.Form_Role.value).subscribe(Rol => {
+        this.dialogRef.close(Rol)
+      })
+    }
+
   }
 }

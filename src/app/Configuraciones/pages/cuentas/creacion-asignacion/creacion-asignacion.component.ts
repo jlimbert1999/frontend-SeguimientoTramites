@@ -90,20 +90,20 @@ export class CreacionAsignacionComponent implements OnInit {
 
 
   guardar() {
-    this.cuentaService.AddAccountLink(this.Form_Cuenta.value).subscribe(cuenta => {
-      HojaUsuarios(
-        cuenta.funcionario!.nombre,
-        cuenta.funcionario!.paterno,
-        cuenta.funcionario!.materno,
-        cuenta.funcionario!.cargo,
-        cuenta.dependencia.nombre,
-        cuenta.funcionario!.dni,
-        cuenta.dependencia.institucion.sigla,
-        this.Form_Cuenta.get('login')?.value,
-        this.Form_Cuenta.get('password')?.value
-      )
-      this.dialogRef.close(cuenta)
-    })
+    // this.cuentaService.AddAccountLink(this.Form_Cuenta.value).subscribe(cuenta => {
+    //   HojaUsuarios(
+    //     cuenta.funcionario!.nombre,
+    //     cuenta.funcionario!.paterno,
+    //     cuenta.funcionario!.materno,
+    //     cuenta.funcionario!.cargo,
+    //     cuenta.dependencia.nombre,
+    //     cuenta.funcionario!.dni,
+    //     cuenta.dependencia.institucion.sigla,
+    //     this.Form_Cuenta.get('login')?.value,
+    //     this.Form_Cuenta.get('password')?.value
+    //   )
+    //   this.dialogRef.close(cuenta)
+    // })
   }
 
   selectUserAssign(value: Funcionario) {

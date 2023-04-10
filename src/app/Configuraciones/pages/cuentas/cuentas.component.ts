@@ -14,7 +14,7 @@ import { Funcionario } from '../../models/funcionario.interface';
 import { CuentaService } from '../../services/cuenta.service';
 import { DependenciasService } from '../../services/dependencias.service';
 import { CreacionAsignacionComponent } from './creacion-asignacion/creacion-asignacion.component';
-import { CuentaDialogComponent } from './cuenta-dialog/cuenta-dialog.component';
+import { CuentaDialogComponent } from '../../dialogs/cuenta-dialog/cuenta-dialog.component';
 import { EdicionCuentaComponent } from './edicion-cuenta/edicion-cuenta.component';
 import { UsuarioDialogComponent } from './usuario-dialog/usuario-dialog.component';
 
@@ -92,14 +92,17 @@ export class CuentasComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-
+        if (this.paginatorService.limit === this.Cuentas.length) {
+          this.Cuentas.pop()
+        }
+        this.Cuentas = [...result, this.Cuentas]
       }
     });
   }
-  Edit(data: Cuenta) {
+  Edit(cuenta: Cuenta) {
     const dialogRef = this.dialog.open(EdicionCuentaComponent, {
       width: '1600px',
-      data: data
+      data: cuenta
     });
     dialogRef.afterClosed().subscribe((result: Cuenta) => {
       if (result) {

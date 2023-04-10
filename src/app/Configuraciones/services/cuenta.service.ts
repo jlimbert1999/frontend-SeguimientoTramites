@@ -27,6 +27,13 @@ export class CuentaService {
       })
     )
   }
+  getRoles() {
+    return this.http.get<{ ok: boolean, roles: { role: string, _id: string }[] }>(`${base_url}/configuraciones/cuentas/roles`).pipe(
+      map(resp => {
+        return resp.roles
+      })
+    )
+  }
   obtener_funcionarios_asignacion() {
     return this.http.get<{ ok: boolean, funcionarios: { _id: string, nombre: string, cargo: string, dni: string }[] }>(`${base_url}/cuentas/usuarios`).pipe(
       map(resp => {
@@ -106,9 +113,9 @@ export class CuentaService {
     )
   }
   getDetails(id_cuenta: string) {
-    return this.http.get<{ ok: boolean, internos: number, externos: number, entrada: number, salida: number }>(`${base_url}/configuraciones/cuentas/details/${id_cuenta}`).pipe(
+    return this.http.get<{ ok: boolean, details: { externos?: number, internos?: number, entrada?: number, salida?: number } }>(`${base_url}/configuraciones/cuentas/details/${id_cuenta}`).pipe(
       map(resp => {
-        return { internos: resp.internos, externos: resp.externos, entrada: resp.entrada, salida: resp.salida }
+        return resp.details
       })
     )
   }

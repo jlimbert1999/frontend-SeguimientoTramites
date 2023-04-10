@@ -8,11 +8,12 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { ReplaySubject, Subject, forkJoin, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { CuentaService } from 'src/app/Configuraciones/services/cuenta.service';
 import { Cuenta } from 'src/app/Configuraciones/models/cuenta.interface';
 import { HojaUsuarios } from 'src/app/Configuraciones/pdfs/usuarios';
+import { RolService } from '../../services/rol.service';
 
 
 
@@ -24,6 +25,7 @@ import { HojaUsuarios } from 'src/app/Configuraciones/pdfs/usuarios';
 export class CuentaDialogComponent implements OnInit, OnDestroy {
   dependencias: any[] = [];
   instituciones: any[] = [];
+  roles: any[] = []
 
   Form_Funcionario: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
@@ -38,20 +40,11 @@ export class CuentaDialogComponent implements OnInit, OnDestroy {
   Form_Cuenta: FormGroup = this.fb.group({
     login: ['', Validators.required],
     password: ['', Validators.required],
+    rol: ['', Validators.required],
     dependencia: ['', Validators.required],
   });
 
-  Form_Roles = this.fb.group({
-    EXTERNOS: false,
-    INTERNOS: false,
-    BANDEJAS: false,
-    REPORTES: false,
-    BUSQUEDAS: false,
-    USUARIOS: false,
-    CUENTAS: false,
-    DEPENDENCIAS: false,
-    INSTITUCIONES: false
-  });
+
 
 
 
@@ -60,27 +53,23 @@ export class CuentaDialogComponent implements OnInit, OnDestroy {
   public filteredBanks: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
   protected _onDestroy = new Subject<void>();
 
-  Roles = [
-    { value: 'RECEPCION', viewValue: 'Encargado de recepcion' },
-    { value: 'EVALUACION', viewValue: 'Encargado de evaluacion' },
-    { value: 'RRHH', viewValue: 'Encargado de recursos humanos' },
-    { value: 'JEFE', viewValue: 'Jefe de unidad' },
-  ]
-
-
-
 
   constructor(
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: Cuenta,
     public dialogRef: MatDialogRef<CuentaDialogComponent>,
     private cuentasService: CuentaService,
+    private rolService: RolService
   ) { }
 
   ngOnInit(): void {
-    this.cuentasService.getInstituciones().subscribe(inst => {
-      this.instituciones = inst
-    })
+    forkJoin([this.cuentasService.getInstituciones(), this.rolService.get()]).subscribe(
+      data => {
+        this.instituciones = data[0]
+        this.roles = data[1]
+      }
+    )
+
   }
   ngOnDestroy() {
     this._onDestroy.next();
@@ -89,35 +78,14 @@ export class CuentaDialogComponent implements OnInit, OnDestroy {
 
 
   guardar() {
-    let rol: string[] = []
-    for (const [key, value] of Object.entries(this.Form_Roles.value)) {
-      if (value) {
-        rol.push(key)
-      }
-    }
-    if (rol.length === 0) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'No se ha seleccionado ningun rol',
-        text: 'La cuenta no tiene acceso a ningun modulo'
-      })
-    }
-    else {
-      this.cuentasService.add({ rol, ...this.Form_Cuenta.value }, this.Form_Funcionario.value).subscribe(cuenta => {
-        HojaUsuarios(
-          cuenta.funcionario!.nombre,
-          cuenta.funcionario!.paterno,
-          cuenta.funcionario!.materno,
-          cuenta.funcionario!.cargo,
-          cuenta.dependencia.nombre,
-          cuenta.funcionario!.dni,
-          cuenta.dependencia.institucion.sigla,
-          cuenta.login,
-          this.Form_Cuenta.get('password')?.value
-        )
-        this.dialogRef.close(cuenta)
-      })
-    }
+    this.cuentasService.add(this.Form_Cuenta.value, this.Form_Funcionario.value).subscribe(cuenta => {
+      HojaUsuarios(
+        cuenta,
+        this.Form_Cuenta.get('login')?.value,
+        this.Form_Cuenta.get('password')?.value
+      )
+      this.dialogRef.close(cuenta)
+    })
   }
 
 
@@ -158,64 +126,8 @@ export class CuentaDialogComponent implements OnInit, OnDestroy {
     );
   }
 
-  selectRole(rol: string) {
-    switch (rol) {
-      case 'RECEPCION':
-        this.Form_Roles.setValue({
-          'EXTERNOS': true,
-          'INTERNOS': true,
-          'BANDEJAS': true,
-          'REPORTES': true,
-          'BUSQUEDAS': false,
-          'USUARIOS': false,
-          'CUENTAS': false,
-          'DEPENDENCIAS': false,
-          'INSTITUCIONES': false,
-        })
-        break;
-      case 'EVALUACION':
-        this.Form_Roles.patchValue({
-          'EXTERNOS': false,
-          'INTERNOS': true,
-          'BANDEJAS': true,
-          'REPORTES': true,
-          'BUSQUEDAS': false,
-          'USUARIOS': false,
-          'CUENTAS': false,
-          'DEPENDENCIAS': false,
-          'INSTITUCIONES': false,
-        })
-        break;
-      case 'JEFE':
-        this.Form_Roles.patchValue({
-          'EXTERNOS': false,
-          'INTERNOS': true,
-          'BANDEJAS': true,
-          'REPORTES': true,
-          'BUSQUEDAS': true,
-          'USUARIOS': false,
-          'CUENTAS': false,
-          'DEPENDENCIAS': false,
-          'INSTITUCIONES': false,
-        })
-        break;
-      case 'RRHH':
-        this.Form_Roles.patchValue({
-          'EXTERNOS': false,
-          'INTERNOS': false,
-          'BANDEJAS': false,
-          'REPORTES': false,
-          'BUSQUEDAS': false,
-          'USUARIOS': true,
-          'CUENTAS': false,
-          'DEPENDENCIAS': false,
-          'INSTITUCIONES': false,
-        })
-        break;
-      default:
-        break;
-    }
-  }
+
+
 
 
 

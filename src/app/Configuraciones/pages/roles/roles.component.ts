@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { RolDialogComponent } from '../../dialogs/rol-dialog/rol-dialog.component';
+import { RolService } from '../../services/rol.service';
+import { Rol } from '../../models/rol.model';
 
 @Component({
   selector: 'app-roles',
@@ -8,17 +10,38 @@ import { RolDialogComponent } from '../../dialogs/rol-dialog/rol-dialog.componen
   styleUrls: ['./roles.component.css']
 })
 export class RolesComponent {
-  displayedColumns: string[] = ['position', 'nombre', 'privilegios', 'opciones'];
-  dataSource: any[] = [];
-  constructor(public dialog: MatDialog) {
+  displayedColumns: string[] = ['position', 'rol', 'privilegios', 'opciones'];
+  dataSource: Rol[] = [];
 
+  constructor(public dialog: MatDialog, private rolService: RolService) {
+    this.rolService.get().subscribe(data => {
+      this.dataSource = data
+    })
   }
   Add(): void {
     const dialogRef = this.dialog.open(RolDialogComponent, {
-      width:'1000px'
+      width: '1000px'
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      if (result) {
+        this.dataSource = [result, ...this.dataSource]
+      }
+    });
+  }
+  Edit(Rol: Rol) {
+    const dialogRef = this.dialog.open(RolDialogComponent, {
+      width: '1000px',
+      data: Rol
+    });
+    dialogRef.afterClosed().subscribe((result: Rol) => {
+      if (result) {
+        this.dataSource = this.dataSource.map(element => {
+          if (element._id === result._id) {
+            element = result
+          }
+          return element
+        })
+      }
     });
   }
 }
