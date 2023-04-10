@@ -10,3 +10,10 @@ export interface Cuenta {
     }
     activo: boolean
 }
+export interface CuentaDto {
+    dependencia: string
+    login: string
+    password: string
+    rol: string
+}
+

@@ -1,6 +1,6 @@
 <app-toolbar [title]="'ROLES'" [showAdd]="true" (add)="Add()"></app-toolbar>
 <div class="container-fluid">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" [@fadeInOnEnter]>
 
         <ng-container matColumnDef="position">
             <th mat-header-cell *matHeaderCellDef> No. </th>

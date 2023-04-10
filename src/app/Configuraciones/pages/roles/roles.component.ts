@@ -3,11 +3,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { RolDialogComponent } from '../../dialogs/rol-dialog/rol-dialog.component';
 import { RolService } from '../../services/rol.service';
 import { Rol } from '../../models/rol.model';
+import { fadeInOnEnterAnimation } from 'angular-animations';
 
 @Component({
   selector: 'app-roles',
   templateUrl: './roles.component.html',
-  styleUrls: ['./roles.component.css']
+  styleUrls: ['./roles.component.css'],
+  animations:[
+    fadeInOnEnterAnimation(),
+  ]
 })
 export class RolesComponent {
   displayedColumns: string[] = ['position', 'rol', 'privilegios', 'opciones'];

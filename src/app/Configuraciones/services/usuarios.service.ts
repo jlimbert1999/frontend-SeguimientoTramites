@@ -12,12 +12,9 @@ const base_url = environment.base_url
   providedIn: 'root'
 })
 export class UsuariosService {
-
-  termino_busqueda: string = ""
-  busqueda: boolean = false
   constructor(private http: HttpClient) { }
   add(funcionario: Funcionario) {
-    return this.http.post<{ ok: boolean, funcionario: Funcionario }>(`${base_url}/configuraciones/funcionarios`, funcionario).pipe(
+    return this.http.post<{ ok: boolean, funcionario: Funcionario }>(`${base_url}/funcionarios`, funcionario).pipe(
       map(resp => {
         return resp.funcionario
       })
@@ -35,14 +32,14 @@ export class UsuariosService {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, funcionarios: Funcionario[], length: number }>(`${base_url}/configuraciones/funcionarios`, { params }).pipe(
+    return this.http.get<{ ok: boolean, funcionarios: Funcionario[], length: number }>(`${base_url}/funcionarios`, { params }).pipe(
       map(resp => {
         return { funcionarios: resp.funcionarios, length: resp.length }
       })
     )
   }
   edit(id_funcionario: string, funcionario: Funcionario) {
-    return this.http.put<{ ok: boolean, funcionario: Funcionario }>(`${base_url}/configuraciones/funcionarios/${id_funcionario}`, funcionario).pipe(
+    return this.http.put<{ ok: boolean, funcionario: Funcionario }>(`${base_url}/funcionarios/${id_funcionario}`, funcionario).pipe(
       map(resp => resp.funcionario)
     )
   }
@@ -50,22 +47,14 @@ export class UsuariosService {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, funcionarios: Funcionario[], length: number }>(`${base_url}/configuraciones/funcionarios/search/${text}`, { params }).pipe(
+    return this.http.get<{ ok: boolean, funcionarios: Funcionario[], length: number }>(`${base_url}/funcionarios/search/${text}`, { params }).pipe(
       map(resp => {
         return { funcionarios: resp.funcionarios, length: resp.length }
       })
     )
   }
-  searchOne(text: string) {
-    return this.http.get<{ ok: boolean, funcionarios: Funcionario[] }>(`${base_url}/configuraciones/funcionarios/search-one/${text}`).pipe(
-      map(resp => {
-        return resp.funcionarios
-      })
-    )
-  }
-
   delete(id_funcionario: string) {
-    return this.http.delete<{ ok: boolean, funcionario: Funcionario }>(`${base_url}/configuraciones/funcionarios/${id_funcionario}`).pipe(
+    return this.http.delete<{ ok: boolean, funcionario: Funcionario }>(`${base_url}/funcionarios/${id_funcionario}`).pipe(
       map(resp => resp.funcionario)
     )
   }

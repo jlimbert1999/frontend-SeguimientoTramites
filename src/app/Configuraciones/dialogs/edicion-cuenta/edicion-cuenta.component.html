@@ -6,21 +6,24 @@
                 <div class="card">
                     <div class="card-header">Detalles funcionario</div>
                     <div class="card-body">
-                        <h3 class="card-title fw-bold">{{data.funcionario!|fullname|titlecase}} -
-                            {{data.funcionario!.dni}}</h3>
-                        <h5 class="card-subtitle mb-2 text-body-secondary">{{data.funcionario!.cargo|uppercase}}</h5>
+                        <div class="account-settings">
+                            <div class="user-profile">
+                                <div class="user-avatar">
+                                    <img src="../../../../assets/img/account.png">
+                                </div>
+                                <div *ngIf="data.funcionario">
+                                    <h3 class="fw-bold">{{data.funcionario|fullname|titlecase}} -
+                                        {{data.funcionario.dni}} </h3>
+                                    <h4>{{data.funcionario.cargo|uppercase}}</h4>
+                                </div>
+                                <div *ngIf="!data.funcionario">
+                                    <h2 style="color: red;">SIN ASIGNAR</h2>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <ul *ngIf="details" class="list-group list-group-flush">
-                        <li class="list-group-item">TOTAL EXTERNOS: {{details.externos}}
-                        </li>
-                        <li class="list-group-item">TOTAL INTERNOS: {{details.internos}}
-                        </li>
-                        <li  class="list-group-item">TOTAL ENTRADA: {{details.entrada}}
-                        </li>
-                        <li class="list-group-item">TOTAL SALIDA: {{details.salida}}</li>
-                    </ul>
                     <div class="card-footer example-button-row" align="center">
-                        <button mat-stroked-button color="warn" (click)="kickUser()"
+                        <button mat-stroked-button color="warn" (click)="unlinkUser()"
                             [disabled]="!data.funcionario">Quitar</button>
                         <button mat-stroked-button color="primary" (click)="changeUser()">Cambiar</button>
                     </div>
@@ -48,9 +51,33 @@
             <div class="col-xl-7">
                 <div class="card mb-4">
                     <div class="card-header">Detalles cuenta</div>
-                    <div class="card-body">
+                    <div class="card-body" *ngIf="details">
                         <div class="row gx-3 mb-3">
-                          
+                            <div class="mb-3">
+                                <label class="form-label">Dependencia</label>
+                                <input type="text" [value]="data.dependencia.nombre"
+                                    disabled class="form-control">
+                            </div>
+                            <div class="col-md-3" *ngIf="details.externos">
+                                <label class="small mb-1" for="inputFirstName">Tramites externos</label>
+                                <input class="form-control" id="inputFirstName" type="text" disabled
+                                    [value]="details.externos">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="small mb-1" for="inputFirstName">Tramites intenos</label>
+                                <input class="form-control" id="inputFirstName" type="text" disabled
+                                    [value]="details.internos">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="small mb-1" for="inputFirstName">Bandeja entrada</label>
+                                <input class="form-control" id="inputFirstName" type="text" disabled
+                                    [value]="details.entradas">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="small mb-1" for="inputFirstName">Bandeja salida</label>
+                                <input class="form-control" id="inputFirstName" type="text" disabled
+                                    [value]="details.salidas">
+                            </div>
                         </div>
                         <form [formGroup]="Form_Cuenta">
                             <div class="row gx-3 mb-3">
@@ -68,7 +95,14 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-md-6">
-                                   
+                                    <mat-form-field class="example-full-width" appearance="fill">
+                                        <mat-label>Permisos</mat-label>
+                                        <mat-select formControlName="rol">
+                                            <mat-option *ngFor="let rol of roles" [value]="rol._id">
+                                                {{rol.role}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
                                 </div>
                             </div>
                         </form>

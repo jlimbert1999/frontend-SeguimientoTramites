@@ -9,9 +9,7 @@
                     <mat-option>
                         <ngx-mat-select-search [formControl]="userFilterCtrl"></ngx-mat-select-search>
                     </mat-option>
-
                     <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
-                        <img alt="" class="example-option-img" src="../../../assets/img/account.png" height="25">
                         <strong>{{user|fullname|titlecase}}</strong> (<small>{{user.cargo|uppercase}}</small>)
                     </mat-option>
                 </mat-select>
@@ -19,17 +17,17 @@
         </div>
         <div class="row">
             <div class="col">
-                <mat-form-field appearance="fill">
+                <mat-form-field class="example-full-width">
                     <mat-label>Seleccione la institucion</mat-label>
                     <mat-select (selectionChange)="seleccionar_institucion($event.value)">
-                        <mat-option *ngFor="let inst of Instituciones" [value]="inst.id_institucion">
+                        <mat-option *ngFor="let inst of instituciones" [value]="inst.id_institucion">
                             {{inst.nombre}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
             <div class="col">
-                <mat-form-field>
+                <mat-form-field class="example-full-width">
                     <mat-select (selectionChange)="Form_Cuenta.get('dependencia')?.setValue($event.value)"
                         [formControl]="bankCtrl" placeholder="Buscar la dependencia" #singleSelect>
                         <mat-option>
@@ -44,13 +42,13 @@
         </div>
         <div class="row">
             <div class="col-6">
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="fill" class="example-full-width">
                     <mat-label>Login</mat-label>
                     <input formControlName="login" matInput>
                 </mat-form-field>
             </div>
             <div class="col-6">
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="fill" class="example-full-width">
                     <mat-label>Password</mat-label>
                     <input formControlName="password" matInput>
                 </mat-form-field>
@@ -58,11 +56,11 @@
         </div>
         <div class="row">
             <div class="col-6">
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="fill" class="example-full-width">
                     <mat-label>Permisos</mat-label>
                     <mat-select formControlName="rol">
-                        <mat-option *ngFor="let rol of Roles" [value]="rol.value">
-                            {{rol.viewValue | uppercase}}
+                        <mat-option *ngFor="let rol of roles" [value]="rol._id">
+                            {{rol.role }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -75,9 +73,10 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button mat-raised-button color="warn"  mat-button mat-dialog-close>Cancelar</button>
+    <button mat-raised-button color="warn" mat-button mat-dialog-close>Cancelar</button>
     <ng-container>
-        <button mat-raised-button color="primary"  mat-button [disabled]="Form_Cuenta.invalid" (click)="guardar()">Guardar</button>
+        <button mat-raised-button color="primary" mat-button [disabled]="Form_Cuenta.invalid || !userCtrl.value"
+            (click)="guardar()">Guardar</button>
     </ng-container>
 
 </mat-dialog-actions>

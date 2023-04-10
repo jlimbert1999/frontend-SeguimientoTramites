@@ -29,13 +29,13 @@ export class InterceptorService {
       finalize(() => this.loadingService.hide())
     )
   }
-  
+
   manejoErrores(error: HttpErrorResponse) {
     if (error.status === 401) {
       this.router.navigate(['/login'])
     }
     else if (error.status === 403) {
-      this.router.navigate(['/home'])
+      Swal.fire("Sin autorizacion", error.error.message, 'warning')
     }
     else if (error.status >= 500) {
       Swal.fire("Error en el sevidor", error.error.message, 'error')

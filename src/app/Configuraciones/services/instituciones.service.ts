@@ -17,7 +17,7 @@ export class InstitucionesService {
   constructor(private http: HttpClient, private paginationService: PaginationService) { }
 
   add(institucion: Institucion) {
-    return this.http.post<{ ok: boolean, institucion: Institucion }>(`${base_url}/configuraciones/instituciones`, institucion).pipe(
+    return this.http.post<{ ok: boolean, institucion: Institucion }>(`${base_url}/instituciones`, institucion).pipe(
       map(resp => {
         return resp.institucion
       })
@@ -27,19 +27,19 @@ export class InstitucionesService {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, instituciones: Institucion[], length: number }>(`${base_url}/configuraciones/instituciones`, { params }).pipe(
+    return this.http.get<{ ok: boolean, instituciones: Institucion[], length: number }>(`${base_url}/instituciones`, { params }).pipe(
       map(resp => {
         return { instituciones: resp.instituciones, length: resp.length }
       })
     )
   }
   edit(id_institucion: string, institucion: Institucion) {
-    return this.http.put<{ ok: boolean, institucion: Institucion }>(`${base_url}/configuraciones/instituciones/${id_institucion}`, institucion).pipe(
+    return this.http.put<{ ok: boolean, institucion: Institucion }>(`${base_url}/instituciones/${id_institucion}`, institucion).pipe(
       map(resp => resp.institucion)
     )
   }
   delete(id_institucion: string) {
-    return this.http.delete<{ ok: boolean, institucion: Institucion }>(`${base_url}/configuraciones/instituciones/${id_institucion}`).pipe(
+    return this.http.delete<{ ok: boolean, institucion: Institucion }>(`${base_url}/instituciones/${id_institucion}`).pipe(
       map(resp => resp.institucion)
     )
   }
@@ -48,7 +48,7 @@ export class InstitucionesService {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, instituciones: Institucion[], length: number }>(`${base_url}/configuraciones/instituciones/search/${termino}`, { params }).pipe(
+    return this.http.get<{ ok: boolean, instituciones: Institucion[], length: number }>(`${base_url}/instituciones/search/${termino}`, { params }).pipe(
       map(resp => {
         return { instituciones: resp.instituciones, length: resp.length }
       })

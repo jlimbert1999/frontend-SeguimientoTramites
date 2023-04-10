@@ -17,14 +17,14 @@ export class DependenciasService {
 
   constructor(private http: HttpClient) { }
   add(dependencia: Dependencia) {
-    return this.http.post<{ ok: boolean, dependencia: Dependencia }>(`${base_url}/configuraciones/dependencias`, dependencia).pipe(
+    return this.http.post<{ ok: boolean, dependencia: Dependencia }>(`${base_url}/dependencias`, dependencia).pipe(
       map(resp => {
         return resp.dependencia
       })
     )
   }
   getInstituciones() {
-    return this.http.get<{ ok: boolean, instituciones: { id_institucion: string, nombre: string, sigla: string }[] }>(`${base_url}/configuraciones/dependencias/instituciones`).pipe(
+    return this.http.get<{ ok: boolean, instituciones: { id_institucion: string, nombre: string, sigla: string }[] }>(`${base_url}/dependencias/instituciones`).pipe(
       map(resp => resp.instituciones)
     )
   }
@@ -32,19 +32,19 @@ export class DependenciasService {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, dependencias: Dependencia[], length: number }>(`${base_url}/configuraciones/dependencias`, { params }).pipe(
+    return this.http.get<{ ok: boolean, dependencias: Dependencia[], length: number }>(`${base_url}/dependencias`, { params }).pipe(
       map(resp => {
         return { dependencias: resp.dependencias, length: resp.length }
       })
     )
   }
   edit(id_dependencia: string, dependencia: { nombre: string, sigla: string }) {
-    return this.http.put<{ ok: boolean, dependencia: DependenciaModel }>(`${base_url}/configuraciones/dependencias/${id_dependencia}`, dependencia).pipe(
+    return this.http.put<{ ok: boolean, dependencia: DependenciaModel }>(`${base_url}/dependencias/${id_dependencia}`, dependencia).pipe(
       map(resp => resp.dependencia)
     )
   }
   delete(id_dependencia: string) {
-    return this.http.delete<{ ok: boolean, dependencia: Dependencia }>(`${base_url}/configuraciones/dependencias/${id_dependencia}`).pipe(
+    return this.http.delete<{ ok: boolean, dependencia: Dependencia }>(`${base_url}/dependencias/${id_dependencia}`).pipe(
       map(resp => resp.dependencia)
     )
   }
@@ -52,7 +52,7 @@ export class DependenciasService {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, dependencias: Dependencia[], length: number }>(`${base_url}/configuraciones/dependencias/search/${termino}`, { params }).pipe(
+    return this.http.get<{ ok: boolean, dependencias: Dependencia[], length: number }>(`${base_url}/dependencias/search/${termino}`, { params }).pipe(
       map(resp => {
         return { dependencias: resp.dependencias, length: resp.length }
       })

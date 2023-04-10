@@ -1,21 +1,15 @@
-import { DataSource } from '@angular/cdk/collections';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormControl, UntypedFormControl } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSelect } from '@angular/material/select';
-import { MatTableDataSource } from '@angular/material/table';
-import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
-import { map, Observable, ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { fadeInOnEnterAnimation } from 'angular-animations';
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import Swal from 'sweetalert2';
 import { Cuenta } from '../../models/cuenta.interface';
 import { Funcionario } from '../../models/funcionario.interface';
 import { CuentaService } from '../../services/cuenta.service';
-import { DependenciasService } from '../../services/dependencias.service';
-import { CreacionAsignacionComponent } from './creacion-asignacion/creacion-asignacion.component';
+import { CreacionAsignacionComponent } from '../../dialogs/creacion-asignacion/creacion-asignacion.component';
 import { CuentaDialogComponent } from '../../dialogs/cuenta-dialog/cuenta-dialog.component';
-import { EdicionCuentaComponent } from './edicion-cuenta/edicion-cuenta.component';
+import { EdicionCuentaComponent } from '../../dialogs/edicion-cuenta/edicion-cuenta.component';
 import { UsuarioDialogComponent } from './usuario-dialog/usuario-dialog.component';
 
 
@@ -25,13 +19,11 @@ import { UsuarioDialogComponent } from './usuario-dialog/usuario-dialog.componen
   styleUrls: ['./cuentas.component.css'],
   animations: [
     fadeInOnEnterAnimation(),
-    expandOnEnterAnimation(),
-    collapseOnLeaveAnimation(),
   ]
 })
 export class CuentasComponent implements OnInit {
   Cuentas: Cuenta[] = []
-  displayedColumns = ['login', 'dni', 'nombre', 'dependencia', 'institucion', 'activo', 'opciones']
+  displayedColumns = ['login', 'nombre', 'dependencia', 'institucion', 'activo', 'opciones']
 
   public bankCtrl: UntypedFormControl = new UntypedFormControl();
   public bankFilterCtrl: UntypedFormControl = new UntypedFormControl();
@@ -59,11 +51,11 @@ export class CuentasComponent implements OnInit {
 
   ngOnInit(): void {
     this.Get()
-
   }
+
   ngAfterViewInit() {
-
   }
+
   Get() {
     if (this.text !== '' || this.id_institucion) {
       this.accountService.search(
@@ -77,7 +69,7 @@ export class CuentasComponent implements OnInit {
         })
     }
     else {
-      this.accountService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+      this.accountService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
         this.paginatorService.length = data.length
         this.Cuentas = data.cuentas
       })
@@ -116,9 +108,13 @@ export class CuentasComponent implements OnInit {
     const dialogRef = this.dialog.open(CreacionAsignacionComponent, {
       width: '1200px'
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: Cuenta) => {
       if (result) {
-
+        console.log(result)
+        if (this.paginatorService.limit === this.Cuentas.length) {
+          this.Cuentas.pop()
+        }
+        this.Cuentas = [result, ...this.Cuentas]
       }
     });
   }
@@ -140,8 +136,6 @@ export class CuentasComponent implements OnInit {
       }
     });
   }
-
-
 
   disable(id_cuenta: string) {
     this.accountService.delete(id_cuenta).subscribe(activo => {

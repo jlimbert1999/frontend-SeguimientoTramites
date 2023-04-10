@@ -2,20 +2,6 @@
 <mat-dialog-content class="mat-typography">
     <form [formGroup]="Form_Funcionario">
         <div class="row">
-            <mat-form-field>
-                <mat-select formControlName="superior" placeholder="Buscar inmediato superior">
-                    <mat-option>
-                        <ngx-mat-select-search [formControl]="funcionarioServerSideFilteringCtrl"
-                            [searching]="searching" noEntriesFoundLabel="Sin resultados"
-                            placeholderLabel="Nombre o Cargo"></ngx-mat-select-search>
-                    </mat-option>
-                    <mat-option *ngFor="let funcionario of filteredServerSideBanks | async" [value]="funcionario._id">
-                        {{funcionario|fullname|titlecase}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div class="row">
             <div class="col-sm-4">
                 <mat-form-field appearance="fill">
                     <mat-label>Nombre</mat-label>

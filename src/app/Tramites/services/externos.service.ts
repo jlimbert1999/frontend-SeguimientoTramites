@@ -15,14 +15,14 @@ export class ExternosService {
 
   constructor(private http: HttpClient, private paginatorService: PaginatorService) { }
   getTypes(segmento: string) {
-    return this.http.get<{ ok: boolean, tipos: TypeTramiteData[] }>(`${base_url}/tramites/externos/tipos/${segmento}`).pipe(
+    return this.http.get<{ ok: boolean, tipos: TypeTramiteData[] }>(`${base_url}/externos/tipos/${segmento}`).pipe(
       map(resp => {
         return resp.tipos
       })
     )
   }
   getGroups() {
-    return this.http.get<{ ok: boolean, groups: string[] }>(`${base_url}/tramites/externos/segmentos`).pipe(
+    return this.http.get<{ ok: boolean, groups: string[] }>(`${base_url}/externos/segmentos`).pipe(
       map(resp => {
         return resp.groups
       })
@@ -30,7 +30,7 @@ export class ExternosService {
   }
 
   Add(tramite: ExternoDto, solicitante: SolicitanteDto, representante: RepresentanteDto | null) {
-    return this.http.post<{ ok: boolean, tramite: Externo }>(`${base_url}/tramites/externos`, { tramite, solicitante, representante }).pipe(
+    return this.http.post<{ ok: boolean, tramite: Externo }>(`${base_url}/externos`, { tramite, solicitante, representante }).pipe(
       map(resp => {
         return resp.tramite
       })
@@ -40,7 +40,7 @@ export class ExternosService {
     let params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, tramites: Externo[], total: number }>(`${base_url}/tramites/externos`, { params }).pipe(
+    return this.http.get<{ ok: boolean, tramites: Externo[], total: number }>(`${base_url}/externos`, { params }).pipe(
       map(resp => {
 
         return { tramites: resp.tramites, length: resp.total }
@@ -48,7 +48,7 @@ export class ExternosService {
     )
   }
   Edit(id_tramite: string, tramite: any, solicitante: any, representante: any | null) {
-    return this.http.put<{ ok: boolean, tramite: Externo }>(`${base_url}/tramites/externos/${id_tramite}`, { tramite, solicitante, representante }).pipe(
+    return this.http.put<{ ok: boolean, tramite: Externo }>(`${base_url}/externos/${id_tramite}`, { tramite, solicitante, representante }).pipe(
       map(resp => {
         return resp.tramite
       })
@@ -58,14 +58,14 @@ export class ExternosService {
     let params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, tramites: Externo[], total: number }>(`${base_url}/tramites/externos/search/${text}`, { params }).pipe(
+    return this.http.get<{ ok: boolean, tramites: Externo[], total: number }>(`${base_url}/externos/search/${text}`, { params }).pipe(
       map(resp => {
         return { tramites: resp.tramites, length: resp.total }
       })
     )
   }
   getOne(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: Externo, workflow: WorkflowData[] }>(`${base_url}/tramites/externos/${id_tramite}`).pipe(
+    return this.http.get<{ ok: boolean, tramite: Externo, workflow: WorkflowData[] }>(`${base_url}/externos/${id_tramite}`).pipe(
       map(resp => {
         return { tramite: resp.tramite, workflow: resp.workflow }
       })
@@ -73,14 +73,14 @@ export class ExternosService {
   }
 
   addObservacion(descripcion: string, id_tramite: string, funcionario: string) {
-    return this.http.put<{ ok: boolean, observaciones: any }>(`${base_url}/tramites/externos/observacion/${id_tramite}`, { descripcion, funcionario }).pipe(
+    return this.http.put<{ ok: boolean, observaciones: any }>(`${base_url}/externos/observacion/${id_tramite}`, { descripcion, funcionario }).pipe(
       map(resp => {
         return resp.observaciones
       })
     )
   }
   putObservacion(id_tramite: string) {
-    return this.http.put<{ ok: boolean, estado: string }>(`${base_url}/tramites/externos/observacion/corregir/${id_tramite}`, {}).pipe(
+    return this.http.put<{ ok: boolean, estado: string }>(`${base_url}/externos/observacion/corregir/${id_tramite}`, {}).pipe(
       map(resp => {
         return resp.estado
       })
@@ -88,7 +88,7 @@ export class ExternosService {
   }
 
   conclude(id_tramite: string, descripcion: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/tramites/externos/concluir/${id_tramite}`, { descripcion }).pipe(
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/externos/concluir/${id_tramite}`, { descripcion }).pipe(
       map(resp => {
         return resp.message
       })

@@ -9,6 +9,7 @@ import { Funcionario } from 'src/app/Configuraciones/models/funcionario.interfac
 import { HojaUsuarios } from 'src/app/Configuraciones/pdfs/usuarios';
 import { CuentaService } from 'src/app/Configuraciones/services/cuenta.service';
 import Swal from 'sweetalert2';
+import { RolService } from '../../services/rol.service';
 @Component({
   selector: 'app-creacion-asignacion',
   templateUrl: './creacion-asignacion.component.html',
@@ -16,20 +17,17 @@ import Swal from 'sweetalert2';
 })
 export class CreacionAsignacionComponent implements OnInit {
   dependencias: { id_dependencia: string, nombre: string }[] = [];
-  Instituciones: { id_institucion: string, nombre: string }[] = [];
+  instituciones: { id_institucion: string, nombre: string }[] = [];
+  roles: any[] = []
   Funcionarios: { _id: string, nombre: string, cargo: string, dni: string }[] = []
-  Funcionario_Asignado: { _id: string, nombre: string, cargo: string, dni: string } | null
-  Roles = [
-    { value: 'RECEPCION', viewValue: 'Recepcion de tramites' },
-    { value: 'EVALUACION', viewValue: 'Evaluacion de tramites' }
-  ]
+
+
 
   Form_Cuenta: FormGroup = this.fb.group({
     login: ['', Validators.required],
     password: ['', Validators.required],
     rol: ['', Validators.required],
-    dependencia: ['', Validators.required],
-    funcionario: ['', Validators.required]
+    dependencia: ['', Validators.required]
   });
 
 
@@ -48,13 +46,18 @@ export class CreacionAsignacionComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<CreacionAsignacionComponent>,
-    private cuentaService: CuentaService
+    private cuentaService: CuentaService,
+    private rolService: RolService
   ) { }
 
   ngOnInit(): void {
-    this.cuentaService.getInstituciones().subscribe(inst => {
-      this.Instituciones = inst
-    })
+    forkJoin([this.cuentaService.getInstituciones(), this.rolService.get()]).subscribe(
+      data => {
+        this.instituciones = data[0]
+        this.roles = data[1]
+      }
+    )
+
     this.userFilterCtrl.valueChanges
       .pipe(takeUntil(this._onDestroy))
       .subscribe((value) => {
@@ -65,7 +68,7 @@ export class CreacionAsignacionComponent implements OnInit {
         }
       });
   }
-  
+
   seleccionar_institucion(id_institucion: string) {
     this.cuentaService.getDependencias(id_institucion).subscribe(dep => {
       this.dependencias = dep
@@ -78,51 +81,24 @@ export class CreacionAsignacionComponent implements OnInit {
         });
     });
   }
-  asignar_funcionario(funcionario: { _id: string, nombre: string, cargo: string, dni: string }) {
-    let newLogin: string[] = `${funcionario.nombre}`.split(' ')
-    if (newLogin.length >= 2) {
-      this.Form_Cuenta.get('login')?.setValue(`${newLogin[0]}${newLogin[1][0]}`)
-      this.Form_Cuenta.get('password')?.setValue(funcionario.dni)
-    }
-    this.Form_Cuenta.get('funcionario')?.setValue(funcionario._id)
-  }
 
 
 
   guardar() {
-    // this.cuentaService.AddAccountLink(this.Form_Cuenta.value).subscribe(cuenta => {
-    //   HojaUsuarios(
-    //     cuenta.funcionario!.nombre,
-    //     cuenta.funcionario!.paterno,
-    //     cuenta.funcionario!.materno,
-    //     cuenta.funcionario!.cargo,
-    //     cuenta.dependencia.nombre,
-    //     cuenta.funcionario!.dni,
-    //     cuenta.dependencia.institucion.sigla,
-    //     this.Form_Cuenta.get('login')?.value,
-    //     this.Form_Cuenta.get('password')?.value
-    //   )
-    //   this.dialogRef.close(cuenta)
-    // })
+    this.cuentaService.addAccountLink(this.Form_Cuenta.value, this.userCtrl.value).subscribe(cuenta => {
+      this.dialogRef.close(cuenta)
+      HojaUsuarios(
+        cuenta,
+        this.Form_Cuenta.get('login')?.value,
+        this.Form_Cuenta.get('password')?.value
+      )
+
+    })
   }
 
   selectUserAssign(value: Funcionario) {
-    Swal.fire({
-      title: `Crear cuenta con funcionario existente?`,
-      text: `${value.nombre} ${value.paterno} ${value.materno} (${value.cargo}) sera asignado a la cuenta creaada`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.Form_Cuenta.get('funcionario')?.setValue(value._id)
-        this.Form_Cuenta.get('login')?.setValue(`${value.nombre}${value.paterno[0]}${value.materno[0]}`.replace(/\s/g, ''))
-        this.Form_Cuenta.get('password')?.setValue(value.dni)
-      }
-    })
+    this.Form_Cuenta.get('login')?.setValue(`${value.nombre}${value.paterno[0]}${value.materno[0]}`.replace(/\s/g, ''))
+    this.Form_Cuenta.get('password')?.setValue(value.dni)
   }
 
 

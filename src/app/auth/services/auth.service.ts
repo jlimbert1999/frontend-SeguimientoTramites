@@ -7,20 +7,22 @@ import jwt_decode from "jwt-decode";
 import { Router } from '@angular/router';
 const base_url = environment.base_url
 
+export interface account {
+  id_cuenta: string
+  funcionario: {
+    nombre_completo: string
+    cargo: string
+  }
+  resources: string[]
+  codigo: string
+  cite: string
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  Account: {
-    id_cuenta: string,
-    funcionario: {
-      nombre_completo: string
-      cargo: string
-    }
-    rol: string,
-    codigo: string,
-    cite: string
-  }
+  Account: account
   Menu: any[] = []
   constructor(
     private http: HttpClient,
@@ -39,11 +41,11 @@ export class AuthService {
     else {
       localStorage.removeItem('login')
     }
-    return this.http.post<{ ok: boolean, token: string, number_mails: number }>(`${base_url}/login`, formData).pipe(map(
-      (res: any) => {
+    return this.http.post<{ ok: boolean, token: string, mails: number }>(`${base_url}/login`, formData).pipe(map(
+      res => {
         localStorage.setItem('token', res.token)
-        let account: any = jwt_decode(res.token)
-        return { rol: account.rol, number_mails: res.number_mails }
+        let account: account = jwt_decode(res.token)
+        return { resources: account.resources, number_mails: res.mails }
       }
     ))
   }
@@ -52,7 +54,7 @@ export class AuthService {
     localStorage.removeItem('token')
     this.router.navigate(['/login'])
   }
-  
+
   validar_token(): Observable<boolean> {
     return this.http.get(`${base_url}/login/verify`).pipe(
       map((resp: any) => {

@@ -116,7 +116,7 @@ export const HojaUsuarios = async (cuenta: Cuenta, login: string, password: stri
         }
 
     };
-    pdfMake.createPdf(docDefinition).print();
+    pdfMake.createPdf(docDefinition).open();
 }
 
 

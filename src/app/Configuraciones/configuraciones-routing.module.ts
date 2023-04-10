@@ -9,19 +9,19 @@ import { GroupwareComponent } from './pages/groupware/groupware.component';
 import { InstitucionesComponent } from './pages/instituciones/instituciones.component';
 import { TiposTramitesComponent } from './pages/tipos-tramites/tipos-tramites.component';
 import { RolesComponent } from './pages/roles/roles.component';
+import { RoleGuard } from '../guards/role.guard';
 
 
 const routes: Routes = [
-  // EXTERNOS
-  { path: 'instituciones', component: InstitucionesComponent },
-  { path: 'funcionarios', component: FuncionariosComponent },
-  { path: 'dependencias', component: DependenciasComponent },
-  { path: 'cuentas', component: CuentasComponent },
+  { path: 'instituciones', component: InstitucionesComponent, canActivate: [RoleGuard], data: { resource: 'instituciones' } },
+  { path: 'funcionarios', component: FuncionariosComponent, canActivate: [RoleGuard], data: { resource: 'usuarios' } },
+  { path: 'dependencias', component: DependenciasComponent, canActivate: [RoleGuard], data: { resource: 'dependencias' } },
+  { path: 'cuentas', component: CuentasComponent, canActivate: [RoleGuard], data: { resource: 'cuentas' } },
+  { path: 'tipos', component: TiposTramitesComponent, canActivate: [RoleGuard], data: { resource: 'tipos' } },
+  { path: 'roles', component: RolesComponent, canActivate: [RoleGuard], data: { resource: 'roles' } },
   { path: 'groupware', component: GroupwareComponent },
-  { path: 'tipos', component: TiposTramitesComponent },
   { path: 'perfil', component: CuentaComponent },
   { path: 'organigrama', component: OrganizationChartComponent },
-  { path: 'roles', component: RolesComponent },
 ];
 
 
