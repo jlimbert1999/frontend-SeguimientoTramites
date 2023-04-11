@@ -59,7 +59,7 @@ export class AuthService {
     return this.http.get(`${base_url}/login/verify`).pipe(
       map((resp: any) => {
         this.Account = jwt_decode(resp.token)
-        this.Menu = resp.Menu
+        this.Menu = resp.menu
         return true
       }), catchError(err => {
         return of(false)

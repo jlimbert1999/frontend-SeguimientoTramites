@@ -26,7 +26,6 @@ import { HojaRutaExterna } from 'src/app/Tramites/pdfs/hoja-ruta-externa';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { SignatureComponent } from 'src/app/shared/signature/signature.component';
 
 
 @Component({
@@ -144,15 +143,7 @@ export class BandejaEntradaComponent implements OnInit {
     //     })
     //   }
     // })
-    const bottomSheetRef = this._bottomSheet.open(SignatureComponent);
-    bottomSheetRef.afterDismissed().subscribe((img) => {
-      if (img) {
-        this.bandejaService.aceptar_tramite(elemento._id, img).subscribe(message => {
-          console.log(message)
-        })
-      }
-
-    });
+   
 
   }
   rechazar_tramite(elemento: BandejaEntradaData) {

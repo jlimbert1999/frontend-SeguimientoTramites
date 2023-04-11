@@ -19,7 +19,6 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SolicitantePipe } from './pipes/solicitante.pipe';
 import { TableComponent } from './table/table.component';
-import { SignatureComponent } from './signature/signature.component';
 import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
 import { OrganizationChartComponent } from './organization-chart/organization-chart.component';
 
@@ -41,7 +40,6 @@ import { OrganizationChartComponent } from './organization-chart/organization-ch
     ToolbarComponent,
     SolicitantePipe,
     TableComponent,
-    SignatureComponent,
     OrganizationChartComponent
 
   ],

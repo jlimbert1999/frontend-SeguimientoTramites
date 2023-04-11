@@ -12,8 +12,6 @@ import { DialogExternoComponent } from './dialogs/dialog-externo/dialog-externo.
 import { SharedModule } from '../shared/shared.module';
 import { MaterialModule } from '../angular-material/material.module';
 
-
-
 @NgModule({
   declarations: [
     FichaComponent,
