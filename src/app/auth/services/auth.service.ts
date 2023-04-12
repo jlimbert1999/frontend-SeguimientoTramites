@@ -5,29 +5,18 @@ import { Observable, tap, throwError, of, BehaviorSubject, Subject, concat } fro
 import { catchError, map } from 'rxjs/operators'
 import jwt_decode from "jwt-decode";
 import { Router } from '@angular/router';
+import { account } from '../models/account.model';
 const base_url = environment.base_url
-
-export interface account {
-  id_cuenta: string
-  funcionario: {
-    nombre_completo: string
-    cargo: string
-  }
-  resources: string[]
-  codigo: string
-  cite: string
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  Account: account
-  Menu: any[] = []
+  account: account
+  menu: any[] = []
   constructor(
     private http: HttpClient,
     private router: Router
-
   ) { }
 
   get token() {
@@ -41,13 +30,12 @@ export class AuthService {
     else {
       localStorage.removeItem('login')
     }
-    return this.http.post<{ ok: boolean, token: string, mails: number }>(`${base_url}/login`, formData).pipe(map(
-      res => {
+    return this.http.post<{ ok: boolean, token: string, imbox: number }>(`${base_url}/login`, formData).pipe(
+      map(res => {
         localStorage.setItem('token', res.token)
-        let account: account = jwt_decode(res.token)
-        return { resources: account.resources, number_mails: res.mails }
-      }
-    ))
+        return { resources: jwt_decode<account>(res.token).resources, imbox: res.imbox }
+      })
+    )
   }
 
   logout() {
@@ -55,11 +43,12 @@ export class AuthService {
     this.router.navigate(['/login'])
   }
 
-  validar_token(): Observable<boolean> {
-    return this.http.get(`${base_url}/login/verify`).pipe(
-      map((resp: any) => {
-        this.Account = jwt_decode(resp.token)
-        this.Menu = resp.menu
+  verifyToken(): Observable<boolean> {
+    return this.http.get<{ ok: boolean, token: string, menu: any[] }>(`${base_url}/login/verify`).pipe(
+      map(resp => {
+        this.account = jwt_decode(resp.token)
+        console.log(this.account)
+        this.menu = resp.menu
         return true
       }), catchError(err => {
         return of(false)

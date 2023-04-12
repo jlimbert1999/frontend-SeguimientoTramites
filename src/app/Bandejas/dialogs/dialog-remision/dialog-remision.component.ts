@@ -61,7 +61,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
           this.bandejaService.GetAccounts(text).subscribe((users) => {
             this.searching = false;
             users.map((user) => {
-              let onlineUser = this.socketService.OnlineUsers.find((userSocket) => userSocket.id_cuenta === user._id
+              let onlineUser = this.socketService.onlineUsers.find((userSocket) => userSocket.id_cuenta === user._id
               );
               user.online = onlineUser ? true : false;
             });

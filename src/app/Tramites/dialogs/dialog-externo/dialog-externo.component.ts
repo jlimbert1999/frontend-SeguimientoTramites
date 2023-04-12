@@ -78,7 +78,7 @@ export class DialogExternoComponent implements OnInit {
     this.SelectedType = null
     this.externoService.getTypes(segmento).subscribe(types => {
       this.Types = types
-      this.TramiteFormGroup.get('alterno')?.setValue(`${segmento}-${this.authService.Account.codigo}`)
+      this.TramiteFormGroup.get('alterno')?.setValue(`${segmento}-${this.authService.account.institutionCode}`)
     })
   }
   selectType(type: TypeTramiteData) {

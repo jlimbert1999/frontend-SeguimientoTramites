@@ -143,7 +143,7 @@ export class InternosComponent implements OnInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.internoService.GetOne(id_tramite).subscribe(data => {
-      HojaRutaInterna(data.tramite, data.workflow, this.authService.Account.id_cuenta)
+      HojaRutaInterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
     })
   }
 }

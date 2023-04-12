@@ -28,7 +28,7 @@ export class InfoTramiteComponent implements OnInit {
 
   ngOnInit(): void {
     this.Tramite.observaciones.forEach((obs: any) => {
-      if (obs.id_cuenta === this.authService.Account.id_cuenta) {
+      if (obs.id_cuenta === this.authService.account.id_cuenta) {
         this.Mis_observaciones = obs
       }
       else {
@@ -60,7 +60,7 @@ export class InfoTramiteComponent implements OnInit {
           })
         }
         else {
-          this.externoService.addObservacion(result.value, this.Tramite._id, `${this.authService.Account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(data => {
+          this.externoService.addObservacion(result.value, this.Tramite._id, `${this.authService.account.funcionario.nombre} (${this.authService.account.funcionario.cargo})`).subscribe(data => {
             this.Tramite.estado = data.estado
             this.Mis_observaciones = data.observacion
           })

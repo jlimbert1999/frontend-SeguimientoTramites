@@ -106,10 +106,10 @@ export class MailComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         if (this.tipo === 'tramites_externos') {
-          this.externoService.addObservacion(result.value!, this.Tramite._id, `${this.authService.Account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observaciones => {
-            console.log(observaciones)
-            this.Observaciones = observaciones
-          })
+          // this.externoService.addObservacion(result.value!, this.Tramite._id, `${this.authService.account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observaciones => {
+          //   console.log(observaciones)
+          //   this.Observaciones = observaciones
+          // })
           // this.externoService.addObservacion(result.value, this.id_tramite, `${this.authService.Account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observacion => {
           //   this.Me = observacion
           //   this.NewState.emit('OBSERVADO');

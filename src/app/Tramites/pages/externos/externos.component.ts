@@ -133,7 +133,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   denied_options(estado: string, responsable: string) {
-    if (estado !== 'INSCRITO' || responsable !== this.authService.Account.id_cuenta) {
+    if (estado !== 'INSCRITO' || responsable !== this.authService.account.id_cuenta) {
       return true
     }
     return false
@@ -141,7 +141,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getOne(id_tramite).subscribe(data => {
-      HojaRutaExterna(data.tramite, data.workflow, this.authService.Account.id_cuenta)
+      HojaRutaExterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
     })
   }
   GenerateFicha(tramite: Externo) {

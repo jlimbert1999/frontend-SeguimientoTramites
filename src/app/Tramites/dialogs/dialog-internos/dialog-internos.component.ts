@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { map, Observable, startWith, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
@@ -17,9 +17,9 @@ export class DialogInternosComponent implements OnInit {
   TramiteFormGroup: FormGroup = this.fb.group({
     tipo_tramite: ['', Validators.required],
     detalle: ['', Validators.required],
-    cite: [this.authService.Account.cite],
-    nombre_remitente: [this.authService.Account.funcionario.nombre_completo, Validators.required],
-    cargo_remitente: [this.authService.Account.funcionario.cargo, Validators.required],
+    cite: [this.authService.account.citeCode],
+    nombre_remitente: ['', Validators.required],
+    cargo_remitente: [this.authService.account.funcionario.cargo, Validators.required],
     nombre_destinatario: ['', Validators.required],
     cargo_destinatario: ['', Validators.required],
     cantidad: ['', Validators.required],
@@ -78,7 +78,7 @@ export class DialogInternosComponent implements OnInit {
 
   selectType(id_type: string) {
     let type = this.tipos_tramites.find(tipo => tipo.id_tipoTramite === id_type)
-    this.TramiteFormGroup.get('alterno')?.setValue(`${type!.segmento}-${this.authService.Account.codigo}`)
+    this.TramiteFormGroup.get('alterno')?.setValue(`${type!.segmento}-por-hacer`)
   }
 
   guardar() {

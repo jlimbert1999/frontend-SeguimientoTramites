@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client'
+import { account, userSocket } from 'src/app/auth/models/account.model';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Entrada } from 'src/app/Bandejas/models/entrada.interface';
 import { BandejaEntradaData } from 'src/app/Bandejas/models/mail.model';
@@ -10,19 +11,19 @@ import { environment } from 'src/environments/environment';
 })
 export class SocketService {
   socket: Socket;
-  OnlineUsers: { id_cuenta: string, fullname: string, jobtitle: string, socketIds: string[] }[] = []
+  onlineUsers: userSocket[] = []
   constructor() { }
-  setupSocketConnection(account: any) {
-    this.socket = io(environment.base_url, { auth: { token: account } });
+  setupSocketConnection({ id_cuenta, funcionario }: account) {
+    this.socket = io(environment.base_url, { auth: { token: { id_cuenta, funcionario } } });
   }
   disconnect() {
     if (this.socket) {
       this.socket.disconnect();
     }
   }
-  listenUserConected() {
+  listenUserConection(): Observable<userSocket[]> {
     return new Observable((observable) => {
-      this.socket.on('listar', (data: any) => {
+      this.socket.on('listar', data => {
         observable.next(data)
       })
     })
@@ -31,6 +32,7 @@ export class SocketService {
   listenNotifications() {
     return new Observable((observable) => {
       this.socket.on('notify', (data: any) => {
+        console.log(data)
         observable.next(data)
       })
     })
@@ -42,12 +44,21 @@ export class SocketService {
       })
     })
   }
-  expelUser() {
+  listenExpel(): Observable<string> {
     return new Observable((observable) => {
-      this.socket.on('kick', (message: any) => {
+      this.socket.on('kick', (message: string | undefined) => {
+        if (!message) {
+          message = ''
+        }
         observable.next(message)
       })
     })
+  }
+  sendNotificationToUser(id_accountReceiver: string, message: string) {
+    this.socket.emit('notification', { id_cuenta: id_accountReceiver, message })
+  }
+  sendNotificacionToExpelUser(id_accountReceiver: string, message: string) {
+    this.socket.emit('expel', { id_cuenta: id_accountReceiver, message })
   }
 
 }

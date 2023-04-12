@@ -32,7 +32,7 @@ export class ReporteFichaComponent implements OnInit {
     if (this.alterno_externo) {
       this.alterno_externo.trim()
       this.reporteService.getReporteFicha(this.alterno_externo).subscribe(data => {
-        HojaFicha(data.tramite, data.workflow, this.authService.Account.funcionario.nombre_completo)
+        // HojaFicha(data.tramite, data.workflow, this.authService.Account.funcionario.nombre_completo)
       })
     }
     else {
@@ -43,7 +43,7 @@ export class ReporteFichaComponent implements OnInit {
     if (this.alterno_interno) {
       this.alterno_interno.trim()
       this.reporteInternoService.getReporteFicha(this.alterno_interno).subscribe(data => {
-        HojaFichaInterna(data.tramite, data.workflow, this.authService.Account.funcionario.nombre_completo)
+        // HojaFichaInterna(data.tramite, data.workflow, this.authService.Account.funcionario.nombre_completo)
       })
     }
     else {
@@ -55,7 +55,7 @@ export class ReporteFichaComponent implements OnInit {
     if (this.alterno_externo) {
       this.alterno_externo.trim()
       this.reporteService.getReporteRuta(this.alterno_externo).subscribe(data => {
-        HojaRutaDetalles(data.tramite, data.workflow, this.authService.Account.funcionario.nombre_completo)
+        // HojaRutaDetalles(data.tramite, data.workflow, this.authService.Account.funcionario.nombre_completo)
       })
     }
     else {
@@ -66,7 +66,7 @@ export class ReporteFichaComponent implements OnInit {
     if (this.alterno_interno) {
       this.alterno_interno.trim()
       this.reporteInternoService.getReporteRuta(this.alterno_interno).subscribe(data => {
-        HojaRutaInternaDetalles(data.tramite, data.workflow, this.authService.Account.funcionario.nombre_completo)
+        // HojaRutaInternaDetalles(data.tramite, data.workflow, this.authService.Account.funcionario.nombre_completo)
       })
     }
     else {

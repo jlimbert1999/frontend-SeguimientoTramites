@@ -17,7 +17,7 @@ export class ReporteContribuyenteComponent implements OnInit {
   }
   generarReporte() {
     this.reporteService.getReporteContribuyente(this.dni).subscribe(tramites => {
-      HojaContribuyentes(tramites, this.authService.Account.funcionario.nombre_completo)
+      // HojaContribuyentes(tramites, this.authService.account.funcionario)
     })
   }
 

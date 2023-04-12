@@ -33,7 +33,7 @@ export class ObservacionesComponent implements OnInit {
   ngOnInit(): void {
     if (this.Options) {
       this.Observaciones.forEach((obs: any) => {
-        if (obs.id_cuenta === this.authService.Account.id_cuenta) {
+        if (obs.id_cuenta === this.authService.account.id_cuenta) {
           this.Me = obs
         }
         else {
@@ -66,7 +66,7 @@ export class ObservacionesComponent implements OnInit {
         }
         else {
           if (this.type === 'tramites_externos') {
-            this.externoService.addObservacion(result.value, this.id_tramite, `${this.authService.Account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observacion => {
+            this.externoService.addObservacion(result.value, this.id_tramite, `${this.authService.account.funcionario.nombre} (${this.authService.account.funcionario.cargo})`).subscribe(observacion => {
               this.Me = observacion
               this.NewState.emit('OBSERVADO');
             })

@@ -12,6 +12,7 @@ import { SidenavService } from '../shared/services/sidenav.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { SocketService } from './services/socket.service';
 import { NotificationService } from './services/notification.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,7 @@ import { NotificationService } from './services/notification.service';
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   mobileQuery: MediaQueryList;
-  Menu: any = this.authService.Menu
+  Menu: any = this.authService.menu
 
   loading$ = this.loader.loading$;
 
@@ -48,22 +49,32 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     private bottomSheet: MatBottomSheet,
     private sidenavService: SidenavService
   ) {
-    this.startConectGroupware()
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
+    this.socketService.setupSocketConnection(this.authService.account)
   }
   ngOnDestroy(): void {
     this.mobileQuery!.removeListener(this._mobileQueryListener);
   }
 
   ngOnInit(): void {
-    this.socketService.listenUserConected().subscribe((users: any) => {
-      this.socketService.OnlineUsers = users
+    this.socketService.listenUserConection().subscribe(users => {
+      this.socketService.onlineUsers = users
     })
-    this.socketService.expelUser().subscribe(message => {
+    this.socketService.listenNotifications().subscribe(data => {
+      this.notificationService.addNotificationEvent('admi', 'dsds')
+    })
+    this.socketService.listenExpel().subscribe(message => {
+      Swal.fire({
+        icon: 'info',
+        title: 'USTED HA SIDO EXPULSADO DEL GRUPO DE TRABAJO',
+        text: message,
+        confirmButtonText: 'Aceptar'
+      })
       this.logout()
     })
+
     this.socketService.listenMails().subscribe(mail => {
       this.bandejaService.Mails = [mail, ...this.bandejaService.Mails]
       let toast = this.toastr.info(`${mail.emisor.funcionario.nombre} ${mail.emisor.funcionario.paterno} ${mail.emisor.funcionario.materno} ha enviado un tramite`, "Nuevo tramite recibido", {
@@ -72,23 +83,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       // this.notificationService.addNotificationNewMail(mail.emisor.funcionario, this.bandejaService.PaginationMailsIn.total)
     })
-
-
-
-
   }
   editAccount() {
     this.router.navigate(['home/perfil'])
   }
 
-  startConectGroupware() {
-    let user = {
-      id_cuenta: this.authService.Account.id_cuenta,
-      fullname: this.authService.Account.funcionario.nombre_completo,
-      jobtitle: this.authService.Account.funcionario.cargo
-    }
-    this.socketService.setupSocketConnection(user);
-  }
 
   logout() {
     this.authService.logout()

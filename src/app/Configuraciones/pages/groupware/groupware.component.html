@@ -1,43 +1,24 @@
+<app-toolbar title="GRUPO DE TRABAJO"></app-toolbar>
 <div class="container-fluid">
     <mat-list>
-        <mat-list-item *ngFor="let user of socketService.OnlineUsers">
-            <img matListAvatar src="../../../assets/img/account.png" alt="...">
-            <p class="fw-bold" matLine>{{user.fullname | titlecase}} </p>
-            <p matLine>
-                <small>{{user.jobtitle|uppercase}}</small>
-            </p>
-            <p matLine>
-                <small>Sesiones abiertas: {{user.socketIds.length}}</small>
-            </p>
-            <div>
-                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                    <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu">
-                    <button (click)="sendNotificacion(user)" mat-menu-item>
-                        <mat-icon>campaign</mat-icon>
-                        <span>Enviar notificacion</span>
-                    </button>
-                    <button (click)="kickUser(user)" mat-menu-item>
-                        <mat-icon>voicemail</mat-icon>
-                        <span>Expulsar usuario</span>
-                    </button>
-                </mat-menu>
-            </div>
-            <mat-divider></mat-divider>
-        </mat-list-item>
-    </mat-list>
-
-
-    <mat-list>
-        <mat-list-item *ngFor="let user of socketService.OnlineUsers">
+        <mat-list-item *ngFor="let user of socketService.onlineUsers">
             <img matListItemAvatar src="../../../assets/img/account.png" alt="...">
-            <h3 class="fw-bold" matListItemTitle>{{user.fullname}}</h3>
-
-            <span matListItemLine>{{user.jobtitle|uppercase}}</span>
-            <span matListItemLine>Third line</span>
-            
+            <h3 class="fw-bold" matListItemTitle>{{user.funcionario.nombre|titlecase}}</h3>
+            <span class="fst-italic" matListItemLine>{{user.funcionario.cargo|uppercase}}</span>
+            <span matListItemLine>Sesiones: {{user.socketIds.length}}</span>
+            <button matListItemMeta mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button (click)="sendNotificacion(user)" mat-menu-item>
+                    <mat-icon>campaign</mat-icon>
+                    <span>Notificar</span>
+                </button>
+                <button (click)="kickUser(user)" mat-menu-item>
+                    <mat-icon>connect_without_contact</mat-icon>
+                    <span>Expulsar</span>
+                </button>
+            </mat-menu>
         </mat-list-item>
     </mat-list>
-
 </div>

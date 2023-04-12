@@ -1,7 +1,7 @@
 <app-toolbar title="EXTERNOS" [showAdd]="true" (add)="Add()"></app-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
     <mat-form-field>
-        <!-- <mat-label>Buscar tramite</mat-label> -->
+        <mat-label>Buscar tramite externo</mat-label>
         <input matInput [(ngModel)]="paginatorService.text" (keyup)="applyFilter($event)"
             placeholder="Alterno / Referencia / Solicitante" #input>
         <button *ngIf="paginatorService.text" matSuffix mat-icon-button aria-label="Clear"
