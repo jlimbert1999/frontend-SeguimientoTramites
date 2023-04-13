@@ -19,10 +19,10 @@ export class ReporteService {
   searchParams: any = {}
 
   constructor(private http: HttpClient) { }
-  getReporteFicha(alterno: string) {
-    return this.http.get<{ ok: boolean, tramite: any, workflow: WorkflowData[], tipo: 'tramites_internos' | 'tramites_externos' }>(`${base_url}/reportes/ficha/${alterno}`).pipe(
+  getReporteFicha(alterno: string, group: 'externo' | 'interno') {
+    return this.http.get<{ ok: boolean, tramites: any }>(`${base_url}/reportes/ficha/${alterno}?group=${group}`).pipe(
       map(resp => {
-        return { tramite: resp.tramite, workflow: resp.workflow, tipo: resp.tipo }
+        return resp.tramites
       })
     )
   }
@@ -36,7 +36,7 @@ export class ReporteService {
         console.log(resp.tramites)
         return resp.tramites
       })
-    ) 
+    )
   }
   getReporteSearchNotPaginated(grupo: 'INTERNO' | 'EXTERNO', length: number) {
     return this.http.get<{ ok: boolean, tramites: | Externo[] | Interno[] }>(`${base_url}/reportes/busqueda/${grupo}?limit=${length}&offset=0`, { params: this.params }).pipe(
@@ -58,6 +58,20 @@ export class ReporteService {
     return this.http.post<{ ok: boolean, tramites: any[] }>(`${base_url}/reportes/representante`, parametros).pipe(
       map(resp => {
         return resp.tramites
+      })
+    )
+  }
+  getInstitucionesForReports() {
+    return this.http.get<{ ok: boolean, instituciones: any[] }>(`${base_url}/reportes/instituciones`).pipe(
+      map(resp => {
+        return resp.instituciones
+      })
+    )
+  }
+  getDependenciasForReports(id_institucion: string) {
+    return this.http.get<{ ok: boolean, dependencias: any[] }>(`${base_url}/reportes/dependencias/${id_institucion}`).pipe(
+      map(resp => {
+        return resp.dependencias
       })
     )
   }

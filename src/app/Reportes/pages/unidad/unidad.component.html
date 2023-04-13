@@ -1,23 +1,50 @@
-<app-toolbar title="REPORTES: Unidad"></app-toolbar>
+<app-toolbar title="REPORTES"></app-toolbar>
+
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm">
-            <mat-card>
-                <mat-card-header>
-                    <mat-card-title>Actions Buttons</mat-card-title>
-                    <mat-card-subtitle>Start</mat-card-subtitle>
-                </mat-card-header>
-                <mat-card-actions>
-                    <button mat-button>LIKE</button>
-                    <button mat-button>SHARE</button>
-                </mat-card-actions>
-            </mat-card>
-        </div>
-        <div class="col-sm">
-            One of three columns
-        </div>
-        <div class="col-sm">
-            One of three columns
-        </div>
-    </div>
-</div>  
+    <mat-drawer-container class="example-container">
+        <mat-drawer #drawer [mode]="'side'" [opened]="true" [position]="'end'">
+            <mat-toolbar class="footer">
+                <span>Opciones</span>
+                <span class="example-spacer"></span>
+                <button mat-icon-button class="example-icon favorite-icon"
+                    aria-label="Example icon-button with heart icon">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-toolbar>
+            <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Seleccione la institucion</mat-label>
+                <mat-select (selectionChange)="getDependenciasOfInstituciones($event.value)">
+                    <mat-option *ngFor="let inst of instituciones" [value]="inst.id_institucion">
+                        {{inst.nombre}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-select [formControl]="bankCtrl" placeholder="Seleccione la dependencia" #singleSelect>
+                    <mat-option>
+                        <ngx-mat-select-search [formControl]="bankFilterCtrl"></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let bank of filteredBanks | async" [value]="bank.id_dependencia">
+                        {{bank.nombre}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </mat-drawer>
+        <mat-drawer-content>
+            <mat-toolbar>
+                <span>Reportes</span>
+                <span class="example-spacer"></span>
+                <button mat-icon-button class="example-icon favorite-icon"
+                    aria-label="Example icon-button with heart icon">
+                    <mat-icon>search</mat-icon>
+                </button>
+                <button (click)="drawer.toggle()" mat-icon-button class="example-icon">
+                    <mat-icon>settings</mat-icon>
+                </button>
+            </mat-toolbar>
+
+        </mat-drawer-content>
+    </mat-drawer-container>
+
+</div>

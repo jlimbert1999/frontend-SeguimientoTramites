@@ -1,64 +1,59 @@
 <app-toolbar title="REPORTES" [showPDF]="true" (pdf)="pdf()"></app-toolbar>
-<div class="container-fluid">
+<div class="container-fluid" [@fadeInOnEnter]>
     <mat-card>
         <mat-card-content>
-            <h2 class="example-h2">Ficha de tramite</h2>
-            <section class="example-section">
-                <mat-form-field class="example-form-field">
-                    <mat-label>Alterno: INTERNO / EXTERNO</mat-label>
-                    <input matInput type="text">
-                    <button (click)="generate()" matSuffix mat-icon-button aria-label="Clear">
-                        <mat-icon>search</mat-icon>
-                    </button>
-                </mat-form-field>
-            </section>
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-button>
-                <mat-icon>print</mat-icon>
-            </button>
-          </mat-card-actions>
-    </mat-card>
-    <div class="row justify-content-md-center">
-        <div class="col col-lg-4">
-            <mat-form-field class="example-full-width">
-                <mat-label>Alterno del tramite</mat-label>
-                <input [(ngModel)]="alterno" matInput>
+            <h2 class="example-h2">FICHA DE TRAMITE</h2>
+            <mat-form-field class="example-full-width   ">
+                <mat-label>Alterno: INTERNO / EXTERNO</mat-label>
+                <input matInput type="text" [(ngModel)]="alterno">
             </mat-form-field>
-        </div>
-        <div class="col col-lg-2">
-            <button (click)="generate()" mat-flat-button color="primary">
-                Buscar
-            </button>
-        </div>
-    </div>
-    <div *ngIf="Tramite" [@fadeInOnEnter]>
+        </mat-card-content>
+        <mat-dialog-actions>
+            <button mat-button (click)="generate()">Generar</button>
+        </mat-dialog-actions>
+    </mat-card>
+    <div *ngIf="showResult" [@fadeInOnEnter]>
         <mat-tab-group mat-align-tabs="center">
             <mat-tab>
                 <ng-template mat-tab-label>
                     <mat-icon class="example-tab-icon">info</mat-icon>
                     Informacion
                 </ng-template>
-                <app-info-tramite-externo *ngIf="tipo==='tramites_externos'"
-                    [Tramite]="Tramite"></app-info-tramite-externo>
-                <app-info-tramite-interno *ngIf="tipo==='tramites_internos'"
-                    [Tramite]="Tramite"></app-info-tramite-interno>
+                <app-info-tramite-externo *ngIf="tramiteExterno" [Tramite]="tramiteExterno"></app-info-tramite-externo>
+                <app-info-tramite-interno *ngIf="tramiteInterno" [Tramite]="tramiteInterno"></app-info-tramite-interno>
             </mat-tab>
-            <mat-tab *ngIf="Workflow.length!==0">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">push_pin</mat-icon>
+                    Observaciones
+                </ng-template>
+                <div class="col-sm-12">
+                    <!-- <div class="card shadow mb-2 bg-body-tertiary rounded">
+                        <div class="card-header fw-bold">
+                            OBSERVACIONES
+                        </div>
+                        <div class="card-body">
+                            <app-observaciones [Options]="false" [Observaciones]="Tramite.observaciones"></app-observaciones>
+                        </div>
+                    </div> -->
+                </div>
+            </mat-tab>
+            <mat-tab *ngIf="workflow.length>0">
                 <ng-template mat-tab-label>
                     <mat-icon class="example-tab-icon">groups</mat-icon>
                     Flujo de trabajo
                 </ng-template>
-                <app-list-workflow [Workflow]="Workflow" [fecha_registro]="Tramite.fecha_registro"></app-list-workflow>
+                <app-list-workflow [Workflow]="workflow"></app-list-workflow>
             </mat-tab>
-            <mat-tab *ngIf="Workflow.length!==0">
+            <mat-tab *ngIf="workflow.length>0">
                 <ng-template mat-tab-label>
                     <mat-icon class="example-tab-icon">account_tree</mat-icon>
                     Flujo de trabajo grafico
                 </ng-template>
-                <app-graph-workflow [Workflow]="Workflow"></app-graph-workflow>
+                <app-graph-workflow [Workflow]="workflow"></app-graph-workflow>
             </mat-tab>
         </mat-tab-group>
+
     </div>
 
 </div>

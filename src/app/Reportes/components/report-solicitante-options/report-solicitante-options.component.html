@@ -1,0 +1,74 @@
+<mat-accordion>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                CONTRIBUYENTE
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <form [formGroup]="searchFormSolicitante">
+            <div class="row">
+                <mat-form-field class="example-full-width">
+                    <input matInput placeholder="DNI" formControlName="dni">
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Nombre" formControlName="nombre">
+                    <mat-error *ngIf="searchFormSolicitante.get('nombre')?.invalid">Ingrese al menos 3
+                        caracteres</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Apellido paterno" formControlName="paterno">
+                    <mat-error *ngIf="searchFormSolicitante.get('paterno')?.invalid">Ingrese al menos 3
+                        caracteres</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Apellido materno" formControlName="paterno">
+                    <mat-error *ngIf="searchFormSolicitante.get('materno')?.invalid">Ingrese al menos 3
+                        caracteres</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <button (click)="getReporteSolicitante()" mat-raised-button color="primary">Primary</button>
+            </div>
+        </form>
+    </mat-expansion-panel>
+    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                REPRESENTANTE
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <form [formGroup]="searchFormRepresentante">
+            <div class="row">
+                <mat-form-field class="full-width">
+                    <input matInput placeholder="dni" formControlName="dni">
+                </mat-form-field>
+                <div class="col-sm-12">
+                </div>
+            </div>
+            <div class="row">
+                <mat-form-field class="full-width">
+                    <input matInput placeholder="nombre" formControlName="nombre">
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field class="full-width">
+                    <input matInput placeholder="paterno" formControlName="paterno">
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field class="full-width">
+                    <input matInput placeholder="materno" formControlName="materno">
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <button  (click)="getReporteRepresentante()" mat-raised-button color="primary">Primary</button>
+            </div>
+        </form>
+    </mat-expansion-panel>
+</mat-accordion>

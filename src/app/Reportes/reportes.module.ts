@@ -23,6 +23,11 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { SolicitanteComponent } from './pages/solicitante/solicitante.component';
 import { UnidadComponent } from './pages/unidad/unidad.component';
 import { ConfiguracionesModule } from '../Configuraciones/configuraciones.module';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { MenuComponent } from './pages/menu/menu.component';
+import { ReportFichaOptionsComponent } from './components/report-ficha-options/report-ficha-options.component';
+import { ReportUnidadOptionsComponent } from './components/report-unidad-options/report-unidad-options.component';
+import { ReportSolicitanteOptionsComponent } from './components/report-solicitante-options/report-solicitante-options.component';
 
 
 
@@ -37,6 +42,10 @@ import { ConfiguracionesModule } from '../Configuraciones/configuraciones.module
     EstadisticoComponent,
     SolicitanteComponent,
     UnidadComponent,
+    MenuComponent,
+    ReportFichaOptionsComponent,
+    ReportUnidadOptionsComponent,
+    ReportSolicitanteOptionsComponent
   ],
   imports: [
     CommonModule,
@@ -56,7 +65,8 @@ import { ConfiguracionesModule } from '../Configuraciones/configuraciones.module
     MatIconModule,
     LayoutModule,
     NgxChartsModule,
-    ConfiguracionesModule
+    ConfiguracionesModule,
+    NgxMatSelectSearchModule
   ]
 })
 export class ReportesModule { }

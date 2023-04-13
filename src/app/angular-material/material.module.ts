@@ -32,6 +32,9 @@ import { MatRadioModule } from '@angular/material/radio';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {CdkTableModule} from '@angular/cdk/table';
+import {PortalModule} from '@angular/cdk/portal';
+import {OverlayModule} from '@angular/cdk/overlay';
+
 
 @NgModule({
   declarations: [],
@@ -70,7 +73,10 @@ import {CdkTableModule} from '@angular/cdk/table';
     MatRadioModule,
     MatChipsModule,
     MatProgressBarModule,
-    CdkTableModule
+    CdkTableModule,
+    PortalModule,
+    OverlayModule
+    
   ]
 })
 export class MaterialModule { }

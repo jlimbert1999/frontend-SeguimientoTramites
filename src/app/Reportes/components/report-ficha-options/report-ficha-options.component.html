@@ -1,0 +1,16 @@
+<div class="row">
+    <mat-radio-group [(ngModel)]="typeTramiteForReport" aria-label="Select an option">
+        <mat-radio-button value="externo">Externo</mat-radio-button>
+        <mat-radio-button value="interno">Interno</mat-radio-button>
+    </mat-radio-group>
+</div>
+<div class="row">
+    <mat-form-field class="example-full-width">
+        <mat-label>Alterno</mat-label>
+        <input type="text" matInput placeholder="Ingrese los caracteres" [formControl]="alterno" required>
+        <mat-error *ngIf="alterno.invalid">{{getErrorMessage()}}</mat-error>
+    </mat-form-field>
+</div>
+
+
+<button (click)="generateReport()" mat-raised-button [disabled]="alterno.invalid">Generar</button>

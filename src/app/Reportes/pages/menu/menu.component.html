@@ -1,0 +1,76 @@
+<app-toolbar title="REPORTES"></app-toolbar>
+<div class="container-fluid">
+    <mat-drawer-container class="example-container" [hasBackdrop]="false">
+        <mat-drawer #drawer [mode]="'over'" [opened]="true" [position]="'end'">
+            <mat-toolbar class="footer">
+                <span>Opciones</span>
+                <span class="example-spacer"></span>
+                <button mat-icon-button class="example-icon favorite-icon"
+                    aria-label="Example icon-button with heart icon">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-toolbar>
+            <div class="options-menu">
+                <mat-form-field appearance="fill" class="example-full-width">
+                    <mat-label>Tipo de reporte</mat-label>
+                    <mat-select (selectionChange)="selectTypeReport($event.value)">
+                        <mat-option *ngFor="let typeReport of typesOfReports" [value]="typeReport">
+                            Reporte por: {{typeReport}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div class="row">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Rango de fecha</mat-label>
+                        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                            <input matStartDate formControlName="start" placeholder="Fecha inicial">
+                            <input matEndDate formControlName="end" placeholder="Fecha final">
+                        </mat-date-range-input>
+                        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-date-range-picker #picker></mat-date-range-picker>
+
+                        <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start
+                            date</mat-error>
+                        <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+                    </mat-form-field>
+                    <mat-radio-group [(ngModel)]="typeTramiteForReport" aria-label="Select an option">
+                        <mat-radio-button value="externo">Externo</mat-radio-button>
+                        <mat-radio-button value="interno">Interno</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+
+                <div [ngSwitch]="reportType">
+                    <div *ngSwitchCase="'ficha'">
+                        <app-report-ficha-options [someInput]="'ds'"
+                            (dataOutput)="recibirData($event)"></app-report-ficha-options>
+                    </div>
+                    <div *ngSwitchCase="'solicitante'">
+                        <app-report-solicitante-options
+                            (dataOutput)="recibirData($event)"></app-report-solicitante-options>
+                    </div>
+                    <div *ngSwitchDefault>output2</div>
+                </div>
+            </div>
+        </mat-drawer>
+        <mat-drawer-content>
+            <mat-toolbar>
+                <span>Reportes</span>
+                <span class="example-spacer"></span>
+                <button mat-icon-button class="example-icon favorite-icon"
+                    aria-label="Example icon-button with heart icon">
+                    <mat-icon>search</mat-icon>
+                </button>
+                <button (click)="drawer.toggle()" mat-icon-button class="example-icon">
+                    <mat-icon>settings</mat-icon>
+                </button>
+            </mat-toolbar>
+
+            <app-table [data]="dataSource" [colums]="displayedColumns"></app-table>
+
+
+        </mat-drawer-content>
+    </mat-drawer-container>
+
+</div>
