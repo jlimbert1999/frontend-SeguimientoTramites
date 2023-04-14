@@ -47,15 +47,23 @@ export class ReporteService {
   }
 
 
-  getReporteSolicitante(parametros: any) {
-    return this.http.post<{ ok: boolean, tramites: any[] }>(`${base_url}/reportes/solicitante`, parametros).pipe(
+  getReporteSolicitante(params: any) {
+    params = new HttpParams({ fromObject: params })
+    return this.http.get<{ ok: boolean, tramites: any[] }>(`${base_url}/reportes/solicitante`, { params }).pipe(
       map(resp => {
         return resp.tramites
       })
     )
   }
-  getReporteRepresentante(parametros: any) {
-    return this.http.post<{ ok: boolean, tramites: any[] }>(`${base_url}/reportes/representante`, parametros).pipe(
+  getReporteRepresentante(params: any, dateInit: Date | null, dateEnd: Date | null) {
+    params = new HttpParams({ fromObject: params })
+    if (dateInit) {
+      params = params.set('dateInit', dateInit.toISOString())
+    }
+    if (dateEnd) {
+      params = params.set('dateEnd', dateEnd.toISOString())
+    }
+    return this.http.get<{ ok: boolean, tramites: any[] }>(`${base_url}/reportes/representante`, { params }).pipe(
       map(resp => {
         return resp.tramites
       })
@@ -72,6 +80,16 @@ export class ReporteService {
     return this.http.get<{ ok: boolean, dependencias: any[] }>(`${base_url}/reportes/dependencias/${id_institucion}`).pipe(
       map(resp => {
         return resp.dependencias
+      })
+    )
+  }
+  getUsersForReports(id_dependencia: string) {
+    return this.http.get<{ ok: boolean, users: any[] }>(`${base_url}/reportes/users/${id_dependencia}`).pipe(
+      map(resp => {
+        resp.users.map(account => {
+          account.funcionario['fullname'] = `${account.funcionario.nombre} ${account.funcionario.paterno} ${account.funcionario.materno}`
+        })
+        return resp.users
       })
     )
   }

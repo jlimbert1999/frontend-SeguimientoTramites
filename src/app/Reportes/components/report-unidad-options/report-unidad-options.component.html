@@ -1,0 +1,41 @@
+<div class="row">
+    <mat-form-field appearance="fill" class="example-full-width">
+        <mat-label>Seleccione la institucion</mat-label>
+        <mat-select (selectionChange)="getDependenciasOfInstituciones($event.value)">
+            <mat-option *ngFor="let inst of instituciones" [value]="inst.id_institucion">
+                {{inst.nombre}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<div class="row">
+    <mat-form-field>
+        <mat-select (selectionChange)="getUsersOfDendencia($event.value)" [formControl]="dependenciaCtrl"
+            placeholder="Dependencias" #singleSelect>
+            <mat-option>
+                <ngx-mat-select-search placeholderLabel="Buscar" noEntriesFoundLabel="Sin resultados"
+                    [formControl]="dependenciaFilterCtrl"></ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let bank of filteredDependencias | async" [value]="bank.id_dependencia">
+                {{bank.nombre}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<div class="row">
+    <mat-form-field>
+        <mat-select [formControl]="accountCtrl" placeholder="Funcionarios" #singleSelect2>
+            <mat-option>
+                <ngx-mat-select-search placeholderLabel="Buscar" noEntriesFoundLabel="Sin resultados"
+                    [formControl]="accountFilterCtrl"></ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let cuenta of filteredAccounts | async" [value]="cuenta._id">
+                {{cuenta.funcionario.fullname|titlecase}} ({{cuenta.funcionario.cargo}})
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<button  mat-raised-button color="primary">Generar</button>
+<div class="row">
+    
+</div>

@@ -33,7 +33,9 @@ export class RolDialogComponent implements OnInit {
     {
       group: 'Reportes',
       resources: [
-        { value: 'reportes', viewValue: 'Reportes', disabled: false },
+        { value: 'reporte-solicitante', viewValue: 'Reporte solicitante', disabled: false },
+        { value: 'reporte-tipo', viewValue: 'Reporte tipo', disabled: false },
+        { value: 'reporte-unidad', viewValue: 'Reporte unidad', disabled: false },
         { value: 'busquedas', viewValue: 'Busquedas', disabled: false },
       ],
     },

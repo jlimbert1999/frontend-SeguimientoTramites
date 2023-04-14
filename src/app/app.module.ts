@@ -20,6 +20,7 @@ import localeEs from '@angular/common/locales/es';
 import { ArchivosModule } from './Archivos/archivos.module';
 import { BandejasModule } from './Bandejas/bandejas.module';
 import { TramitesModule } from './Tramites/tramites.module';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
@@ -46,7 +47,8 @@ registerLocaleData(localeEs, 'es');
       useClass: InterceptorService,
       multi: true
     },
-    { provide: LOCALE_ID, useValue: 'es' }
+    { provide: LOCALE_ID, useValue: 'es' },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
   ],
   bootstrap: [AppComponent]
 })

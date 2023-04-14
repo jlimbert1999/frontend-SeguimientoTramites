@@ -1,17 +1,19 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { map } from 'rxjs';
+import { Observable, Subject, map, takeUntil } from 'rxjs';
+import { AuthService } from 'src/app/auth/services/auth.service';
+import { createPDFSolicitante } from '../../pdf/reporte-solicitante';
 
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css']
 })
-export class MenuComponent {
+export class MenuComponent implements OnDestroy {
+  destroyed = new Subject<void>();
   isMobile: boolean = false
-  typesOfReports: string[] = ['unidad', 'ficha', 'estado', 'solicitante']
-  typeTramiteForReport: 'interno' | 'externo' = 'externo'
+  typesOfReports: string[] = []
   reportType: string
   displayedColumns = [
     { key: 'alterno', titulo: 'Alterno' },
@@ -21,24 +23,49 @@ export class MenuComponent {
   ];
 
   dataSource: any[] = []
-  range = new FormGroup({
-    start: new FormControl<Date | null>(null),
-    end: new FormControl<Date | null>(null),
-  });
+  paramsForSearch: any
 
+  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService) {
+    this.breakpointObserver
+      .observe([
+        Breakpoints.XSmall,
+        Breakpoints.Small,
+      ])
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(({ matches }) => {
+        this.isMobile = matches
+      });
+    this.typesOfReports = this.authService.account.resources.filter(resourse => resourse.includes('reporte'))
+    this.typesOfReports = this.typesOfReports.map(typeReport => {
+      return typeReport.split('-')[1]
+    })
+  }
 
-
-  constructor(private breakpointObserver: BreakpointObserver) {
-   
+  ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   selectTypeReport(typeReport: string) {
     this.reportType = typeReport
   }
-  recibirData(data: any) {
-    this.dataSource = []
-    this.dataSource = [...data]
 
+  receiveData(data: { data: any[], typeTramiteForReport: 'externo' | 'interno', paramsForSearch: Object }) {
+    this.dataSource = []
+    this.dataSource = [...data.data]
+    this.paramsForSearch = data.paramsForSearch
+  }
+
+  generatePDF() {
+    switch (this.reportType) {
+      case 'solicitante':
+        createPDFSolicitante(this.paramsForSearch, this.dataSource)
+
+        break;
+
+      default:
+        break;
+    }
   }
 
 }

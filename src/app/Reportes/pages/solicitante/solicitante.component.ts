@@ -4,7 +4,7 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ExternosService } from 'src/app/Tramites/services/externos.service';
 import Swal from 'sweetalert2';
 import { PDF_FichaExterno } from '../../pdf/reporte-ficha';
-import { PDF_Solicitante } from '../../pdf/reporte-solicitante';
+import { createPDFSolicitante } from '../../pdf/reporte-solicitante';
 import { ReporteService } from '../../services/reporte.service';
 
 @Component({
@@ -56,11 +56,11 @@ export class SolicitanteComponent {
       }
     }
     if (Object.keys(this.params).length > 0) {
-      this.reporteService.getReporteSolicitante(this.params).subscribe(data => {
+      // this.reporteService.getReporteSolicitante(this.params).subscribe(data => {
 
-        Swal.close()
-        this.data = data
-      })
+      //   Swal.close()
+      //   this.data = data
+      // })
     }
   }
   getReporteRepresentante() {
@@ -77,10 +77,10 @@ export class SolicitanteComponent {
       }
     }
     if (Object.keys(parametros).length > 0) {
-      this.reporteService.getReporteRepresentante(parametros).subscribe(data => {
-        PDF_Solicitante('JOSE', parametros, data)
-        Swal.close()
-      })
+      // this.reporteService.getReporteRepresentante(parametros).subscribe(data => {
+      //   PDF_Solicitante('JOSE', parametros, data)
+      //   Swal.close()
+      // })
     }
   }
 
@@ -90,6 +90,6 @@ export class SolicitanteComponent {
     })
   }
   generateReporte() {
-    PDF_Solicitante('JOSE', this.params, this.data)
+    // createPDFSolicitante(this.params, this.data, this.r)
   }
 }

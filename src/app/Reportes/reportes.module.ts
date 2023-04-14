@@ -29,9 +29,6 @@ import { ReportFichaOptionsComponent } from './components/report-ficha-options/r
 import { ReportUnidadOptionsComponent } from './components/report-unidad-options/report-unidad-options.component';
 import { ReportSolicitanteOptionsComponent } from './components/report-solicitante-options/report-solicitante-options.component';
 
-
-
-
 @NgModule({
   declarations: [
     ReporteFichaComponent,
@@ -67,6 +64,9 @@ import { ReportSolicitanteOptionsComponent } from './components/report-solicitan
     NgxChartsModule,
     ConfiguracionesModule,
     NgxMatSelectSearchModule
+  ],
+  providers: [
+    
   ]
 })
 export class ReportesModule { }
