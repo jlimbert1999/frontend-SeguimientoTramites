@@ -31,7 +31,7 @@
                     </div>
 
                     <div *ngSwitchCase="'unidad'">
-                        <app-report-unidad-options></app-report-unidad-options>
+                        <app-report-unidad-options (sendDataEvent)="receiveData($event)"></app-report-unidad-options>
                     </div>
 
                     <div *ngSwitchDefault>output2</div>
@@ -43,15 +43,15 @@
                 <span>Reportes</span>
                 <span class="example-spacer"></span>
                 <button matTooltip="Generar reporte" [disabled]="dataSource.length===0" mat-icon-button
-                    class="example-icon favorite-icon" (click)="generatePDF()">
+                    class="example-icon favorite-icon">
                     <mat-icon>picture_as_pdf</mat-icon>
                 </button>
                 <button matTooltip="Opciones reporte" (click)="drawer.toggle()" mat-icon-button class="example-icon">
                     <mat-icon>settings</mat-icon>
                 </button>
             </mat-toolbar>
-
-            <app-table [data]="dataSource" [colums]="displayedColumns"></app-table>
+            <app-table-report-precedures [data]="dataSource" [colums]="displayedColumns"></app-table-report-precedures>
+           
 
 
         </mat-drawer-content>

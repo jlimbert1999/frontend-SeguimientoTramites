@@ -1,0 +1,11 @@
+<mat-form-field class="example-full-width">
+    <mat-select (selectionChange)="selectOption($event)" [formControl]="bankCtrl" [placeholder]="placehorder"
+        #singleSelect>
+        <mat-option>
+            <ngx-mat-select-search placeholderLabel="Buscar" [formControl]="bankFilterCtrl"></ngx-mat-select-search>
+        </mat-option>
+        <mat-option *ngFor="let bank of filteredBanks | async" [value]="bank">
+            {{accessToPropertyObject(pathPropertyOfObjectDisplay, bank)}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>

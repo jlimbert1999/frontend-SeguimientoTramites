@@ -1,7 +1,16 @@
 <div class="row">
+    <mat-radio-group [(ngModel)]="groupProcedures" (change)="selectGroupProcedure()">
+        <mat-radio-button value="tramites_externos">Externos</mat-radio-button>
+        <mat-radio-button value="tramites_internos">Internos</mat-radio-button>
+    </mat-radio-group>
+</div>
+
+
+
+<div class="row">
     <mat-form-field appearance="fill" class="example-full-width">
         <mat-label>Seleccione la institucion</mat-label>
-        <mat-select (selectionChange)="getDependenciasOfInstituciones($event.value)">
+        <mat-select [(ngModel)]="id_institucion" (selectionChange)="selectInstitution($event.value)">
             <mat-option *ngFor="let inst of instituciones" [value]="inst.id_institucion">
                 {{inst.nombre}}
             </mat-option>
@@ -9,33 +18,46 @@
     </mat-form-field>
 </div>
 <div class="row">
-    <mat-form-field>
-        <mat-select (selectionChange)="getUsersOfDendencia($event.value)" [formControl]="dependenciaCtrl"
-            placeholder="Dependencias" #singleSelect>
-            <mat-option>
-                <ngx-mat-select-search placeholderLabel="Buscar" noEntriesFoundLabel="Sin resultados"
-                    [formControl]="dependenciaFilterCtrl"></ngx-mat-select-search>
-            </mat-option>
-            <mat-option *ngFor="let bank of filteredDependencias | async" [value]="bank.id_dependencia">
-                {{bank.nombre}}
+    <app-simple-mat-select-search [pathPropertyOfObjectDisplay]="'nombre'"
+        (eventSelectedOption)="selectDependencia($event.value)" [placehorder]="'Buscar dependencias'"
+        [data]="dependencias"></app-simple-mat-select-search>
+</div>
+<div class="row">
+    <app-simple-mat-select-search [pathPropertyOfObjectDisplay]="'funcionario.fullname'"
+        [placehorder]="'Buscar dependencias'" [data]="accounts"
+        (eventSelectedOption)="selectUser($event.value)"></app-simple-mat-select-search>
+
+</div>
+
+
+<div class="row">
+    <app-simple-mat-select-search [pathPropertyOfObjectDisplay]="'nombre'"
+        (eventSelectedOption)="selectTypeProcedure($event.value)" [placehorder]="'Buscar tipo'"
+        [data]="typesProcedures"></app-simple-mat-select-search>
+</div>
+
+<div class="row">
+    <mat-form-field appearance="fill">
+        <mat-label>Ingrese el rango</mat-label>
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+            <input matStartDate formControlName="start" placeholder="Fecha inicial">
+            <input matEndDate formControlName="end" placeholder="Fecha final">
+        </mat-date-range-input>
+        <mat-hint>Dia/Mes/Año – Dia/Mes/Año </mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+        <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Fecha inicial invalida</mat-error>
+        <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Fecha final invalida</mat-error>
+    </mat-form-field>
+</div>
+<div class="row">
+    <mat-form-field appearance="fill" class="example-full-width">
+        <mat-label>Seleccione el estado</mat-label>
+        <mat-select>
+            <mat-option *ngFor="let state of states" [value]="state">{{state}}
             </mat-option>
         </mat-select>
     </mat-form-field>
 </div>
-<div class="row">
-    <mat-form-field>
-        <mat-select [formControl]="accountCtrl" placeholder="Funcionarios" #singleSelect2>
-            <mat-option>
-                <ngx-mat-select-search placeholderLabel="Buscar" noEntriesFoundLabel="Sin resultados"
-                    [formControl]="accountFilterCtrl"></ngx-mat-select-search>
-            </mat-option>
-            <mat-option *ngFor="let cuenta of filteredAccounts | async" [value]="cuenta._id">
-                {{cuenta.funcionario.fullname|titlecase}} ({{cuenta.funcionario.cargo}})
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-</div>
-<button  mat-raised-button color="primary">Generar</button>
-<div class="row">
-    
-</div>
+
+<button (click)="generateReport()" [disabled]="!id_institucion" mat-raised-button color="primary">Generar</button>

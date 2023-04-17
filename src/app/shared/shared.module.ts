@@ -21,6 +21,9 @@ import { SolicitantePipe } from './pipes/solicitante.pipe';
 import { TableComponent } from './table/table.component';
 import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
 import { OrganizationChartComponent } from './organization-chart/organization-chart.component';
+import { TableReportPreceduresComponent } from './table-report-precedures/table-report-precedures.component';
+import { SimpleMatSelectSearchComponent } from './simple-mat-select-search/simple-mat-select-search.component';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @NgModule({
   declarations: [
@@ -40,7 +43,9 @@ import { OrganizationChartComponent } from './organization-chart/organization-ch
     ToolbarComponent,
     SolicitantePipe,
     TableComponent,
-    OrganizationChartComponent
+    OrganizationChartComponent,
+    TableReportPreceduresComponent,
+    SimpleMatSelectSearchComponent,
 
   ],
   imports: [
@@ -48,7 +53,8 @@ import { OrganizationChartComponent } from './organization-chart/organization-ch
     MaterialModule,
     NgxGraphModule,
     ReactiveFormsModule,
-    AngularSignaturePadModule
+    AngularSignaturePadModule,
+    NgxMatSelectSearchModule
   ],
   exports: [
     TablaComponent,
@@ -65,7 +71,10 @@ import { OrganizationChartComponent } from './organization-chart/organization-ch
     InfoTramiteExternoComponent,
     InfoTramiteInternoComponent,
     ToolbarComponent,
-    TableComponent
+    TableComponent,
+    TableReportPreceduresComponent,
+    SimpleMatSelectSearchComponent,
+   
   ]
 })
 export class SharedModule { }

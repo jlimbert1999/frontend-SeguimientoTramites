@@ -67,6 +67,7 @@ export class ReportSolicitanteOptionsComponent {
     if (Object.keys(params).length === 0 || this.searchFormRepresentante.invalid) return
     this.reporteService.getReporteRepresentante(params, this.range.get('start')?.value!, this.range.get('end')?.value!).subscribe(data => {
       this.sendDataEvent.emit({ data, typeTramiteForReport: 'externo' })
+      console.log(data)
     })
   }
 }

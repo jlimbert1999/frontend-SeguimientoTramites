@@ -69,6 +69,16 @@ export class ReporteService {
       })
     )
   }
+
+  getReportByUnit(params: any, group: 'tramites_externos' | 'tramites_internos') {
+    params = new HttpParams({ fromObject: params })
+    return this.http.get<{ ok: boolean, tramites: any[] }>(`${base_url}/reportes/unit/${group}`, { params }).pipe(
+      map(resp => {
+        return resp.tramites.map(data => data.tramite)
+      })
+    )
+  }
+
   getInstitucionesForReports() {
     return this.http.get<{ ok: boolean, instituciones: any[] }>(`${base_url}/reportes/instituciones`).pipe(
       map(resp => {
@@ -90,6 +100,14 @@ export class ReporteService {
           account.funcionario['fullname'] = `${account.funcionario.nombre} ${account.funcionario.paterno} ${account.funcionario.materno}`
         })
         return resp.users
+      })
+    )
+  }
+  getTypesProceduresForReports(group: 'tramites_externos' | 'tramites_internos') {
+    let typeGroup = group === 'tramites_externos' ? 'EXTERNO' : 'INTERNO'
+    return this.http.get<{ ok: boolean, types: any[] }>(`${base_url}/reportes/types/${typeGroup}`).pipe(
+      map(resp => {
+        return resp.types
       })
     )
   }

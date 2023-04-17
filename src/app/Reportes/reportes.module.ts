@@ -28,6 +28,7 @@ import { MenuComponent } from './pages/menu/menu.component';
 import { ReportFichaOptionsComponent } from './components/report-ficha-options/report-ficha-options.component';
 import { ReportUnidadOptionsComponent } from './components/report-unidad-options/report-unidad-options.component';
 import { ReportSolicitanteOptionsComponent } from './components/report-solicitante-options/report-solicitante-options.component';
+import { ReportTipoOptionsComponent } from './components/report-tipo-options/report-tipo-options.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,9 @@ import { ReportSolicitanteOptionsComponent } from './components/report-solicitan
     MenuComponent,
     ReportFichaOptionsComponent,
     ReportUnidadOptionsComponent,
-    ReportSolicitanteOptionsComponent
+    ReportSolicitanteOptionsComponent,
+    ReportTipoOptionsComponent,
+
   ],
   imports: [
     CommonModule,
@@ -63,7 +66,7 @@ import { ReportSolicitanteOptionsComponent } from './components/report-solicitan
     LayoutModule,
     NgxChartsModule,
     ConfiguracionesModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
   ],
   providers: [
     

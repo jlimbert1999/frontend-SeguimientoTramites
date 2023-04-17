@@ -4,6 +4,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, Subject, map, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { createPDFSolicitante } from '../../pdf/reporte-solicitante';
+import { SendDataReportEvent } from '../../models/sendData.model';
+import { createPDFUnidad } from '../../pdf/reporte-unidad';
 
 @Component({
   selector: 'app-menu',
@@ -15,15 +17,9 @@ export class MenuComponent implements OnDestroy {
   isMobile: boolean = false
   typesOfReports: string[] = []
   reportType: string
-  displayedColumns = [
-    { key: 'alterno', titulo: 'Alterno' },
-    { key: 'detalle', titulo: 'Detalle' },
-    { key: 'estado', titulo: 'Estado' },
-    { key: 'fecha_registro', titulo: 'Fecha' }
-  ];
-
+  displayedColumns: any[] = []
   dataSource: any[] = []
-  paramsForSearch: any
+
 
   constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService) {
     this.breakpointObserver
@@ -50,22 +46,42 @@ export class MenuComponent implements OnDestroy {
     this.reportType = typeReport
   }
 
-  receiveData(data: { data: any[], typeTramiteForReport: 'externo' | 'interno', paramsForSearch: Object }) {
+  receiveData(data: SendDataReportEvent) {
+
+    if (data.group === 'tramites_externos') {
+      this.displayedColumns = [
+        { key: 'alterno', titulo: 'Alterno' },
+        { key: 'detalle', titulo: 'Detalle' },
+        { key: 'estado', titulo: 'Estado' },
+        { key: 'fecha_registro', titulo: 'Fecha' }
+      ];
+    }
+    else if (data.group === 'tramites_internos') {
+      this.displayedColumns = [
+        { key: 'alterno', titulo: 'Alterno' },
+        { key: 'detalle', titulo: 'Detalle' },
+        { key: 'estado', titulo: 'Estado' },
+        { key: 'remitente', titulo: 'Remitente' },
+        { key: 'destinatario', titulo: 'Remitente' },
+        { key: 'cite', titulo: 'Cite' },
+        { key: 'fecha_registro', titulo: 'Fecha' }
+      ];
+    }
     this.dataSource = []
     this.dataSource = [...data.data]
-    this.paramsForSearch = data.paramsForSearch
-  }
-
-  generatePDF() {
     switch (this.reportType) {
       case 'solicitante':
-        createPDFSolicitante(this.paramsForSearch, this.dataSource)
-
+        // createPDFSolicitante(this.paramsForSearch, this.dataSource)
+        break;
+      case 'unidad':
+        createPDFUnidad(data)
         break;
 
       default:
         break;
     }
+
   }
+
 
 }
