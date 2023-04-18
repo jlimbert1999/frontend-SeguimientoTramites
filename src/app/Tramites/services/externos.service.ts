@@ -5,7 +5,8 @@ import { WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { environment } from 'src/environments/environment';
 import { ExternoDto, RepresentanteDto, SolicitanteDto } from '../models/Externo.dto';
-import { Externo, TypeTramiteData } from '../models/Externo.interface';
+import { Externo } from '../models/Externo.interface';
+import { TipoTramite } from 'src/app/Configuraciones/models/tipoTramite.interface';
 
 const base_url = environment.base_url
 @Injectable({
@@ -14,17 +15,17 @@ const base_url = environment.base_url
 export class ExternosService {
 
   constructor(private http: HttpClient, private paginatorService: PaginatorService) { }
-  getTypes(segmento: string) {
-    return this.http.get<{ ok: boolean, tipos: TypeTramiteData[] }>(`${base_url}/externos/tipos/${segmento}`).pipe(
+
+  getTypesProcedures() {
+    return this.http.get<{ ok: boolean, types: TipoTramite[] }>(`${base_url}/externos/types`).pipe(
       map(resp => {
-        return resp.tipos
-      })
-    )
-  }
-  getGroups() {
-    return this.http.get<{ ok: boolean, groups: string[] }>(`${base_url}/externos/segmentos`).pipe(
-      map(resp => {
-        return resp.groups
+        let segments: string[] = []
+        resp.types.forEach(type => {
+          if (!segments.includes(type.segmento)) {
+            segments.push(type.segmento)
+          }
+        });
+        return { segments, types: resp.types }
       })
     )
   }
@@ -88,7 +89,14 @@ export class ExternosService {
   }
 
   conclude(id_tramite: string, descripcion: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/externos/concluir/${id_tramite}`, { descripcion }).pipe(
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/externos/conclude/${id_tramite}`, { descripcion }).pipe(
+      map(resp => {
+        return resp.message
+      })
+    )
+  }
+  cancelProcedure(id_tramite: string, descripcion: string) {
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/externos/cancel/${id_tramite}`, { descripcion }).pipe(
       map(resp => {
         return resp.message
       })

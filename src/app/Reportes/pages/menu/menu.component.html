@@ -33,6 +33,9 @@
                     <div *ngSwitchCase="'unidad'">
                         <app-report-unidad-options (sendDataEvent)="receiveData($event)"></app-report-unidad-options>
                     </div>
+                    <div *ngSwitchCase="'usuario'">
+                        <app-report-usuario-options></app-report-usuario-options>
+                    </div>
 
                     <div *ngSwitchDefault>output2</div>
                 </div>

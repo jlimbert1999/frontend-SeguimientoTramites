@@ -156,6 +156,47 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     Swal.showLoading()
   }
 
+  cancelProcedure(tramite: Externo) {
+    Swal.fire({
+      icon: 'question',
+      title: `Anular el tramite ${tramite.alterno}?`,
+      text: `Ingrese una referencia para anular`,
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      customClass: {
+        validationMessage: 'my-validation-message'
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
+          )
+        }
+      }
+    }).then((result) => {
+      Swal.fire({
+        title: `Esta seguro de anular ${tramite.alterno}?`,
+        text: `El tramite ya no se mostrara en su listado de tramites`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+      }).then((confirm) => {
+        if (confirm.isConfirmed) {
+          console.log(result.value);
+        }
+      })
+      // if (result.isConfirmed) {
+      //   this.externoService.cancelProcedure(tramite._id, result.value!).subscribe(message => {
+      //     Swal.fire(message, undefined, 'success')
+
+      //   })
+      // }
+    })
+  }
   conclude(tramite: Externo) {
     Swal.fire({
       icon: 'question',
@@ -190,7 +231,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
   applyFilter(event: Event) {
     this.paginatorService.offset = 0
     const filterValue = (event.target as HTMLInputElement).value;
-    this.paginatorService.text = filterValue.toLowerCase();
+    this.paginatorService.text = filterValue;
     this.Get()
   }
 

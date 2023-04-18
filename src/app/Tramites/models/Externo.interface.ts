@@ -1,12 +1,12 @@
 import { RepresentanteDto, SolicitanteDto } from "./Externo.dto"
-export interface TypeTramiteData {
-    id_tipoTramite: string
-    nombre: string
-    segmento: string
-    requerimientos: {
-        nombre: string
-    }[]
-}
+// export interface TypeTramiteData {
+//     id_tipoTramite: string
+//     nombre: string
+//     segmento: string
+//     requerimientos: {
+//         nombre: string
+//     }[]
+// }
 
 export interface Externo {
     _id: string

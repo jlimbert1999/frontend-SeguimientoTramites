@@ -103,11 +103,26 @@ export class ReporteService {
       })
     )
   }
+  getAccountsByText(text: string) {
+    return this.http.get<{ ok: boolean, accounts: any[] }>(`${base_url}/reportes/accounts/${text}`).pipe(
+      map(resp => {
+        return resp.accounts
+      })
+    )
+  }
   getTypesProceduresForReports(group: 'tramites_externos' | 'tramites_internos') {
     let typeGroup = group === 'tramites_externos' ? 'EXTERNO' : 'INTERNO'
     return this.http.get<{ ok: boolean, types: any[] }>(`${base_url}/reportes/types/${typeGroup}`).pipe(
       map(resp => {
         return resp.types
+      })
+    )
+  }
+  getProceduresOfAccount(id_account: string, params: any) {
+    params = new HttpParams({ fromObject: params })
+    return this.http.get<{ ok: boolean, procedures: any[] }>(`${base_url}/reportes/account/procedures/${id_account}`, { params }).pipe(
+      map(resp => {
+        return resp.procedures
       })
     )
   }

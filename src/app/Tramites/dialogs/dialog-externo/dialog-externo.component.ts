@@ -1,9 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { AuthService } from 'src/app/auth/services/auth.service';
-import { Externo, Representante, Solicitante, TypeTramiteData } from '../../models/Externo.interface';
+import { Externo, Representante, Solicitante } from '../../models/Externo.interface';
 import { ExternosService } from '../../services/externos.service';
+import { TipoTramite } from 'src/app/Configuraciones/models/tipoTramite.interface';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Component({
   selector: 'app-dialog-externo',
@@ -12,8 +13,9 @@ import { ExternosService } from '../../services/externos.service';
 })
 export class DialogExternoComponent implements OnInit {
   Segmentos: string[] = []
-  Types: TypeTramiteData[] = []
-  SelectedType: TypeTramiteData | null
+  TypesProcedures: TipoTramite[] = []
+  TypesProceduresSegmented: TipoTramite[] = []
+  SelectedType: TipoTramite | null
   tipos_documento: string[] = [
     'Carnet de identidad',
     'Libreta servicio militar',
@@ -41,16 +43,14 @@ export class DialogExternoComponent implements OnInit {
 
   constructor(
     private externoService: ExternosService,
-    private authService: AuthService,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<DialogExternoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Externo,
-
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
     if (this.data) {
-      this.title = 'EDICION TRAMITE'
       this.TramiteFormGroup = this.fb.group({
         cantidad: ['', Validators.required],
         detalle: ['', Validators.required],
@@ -68,24 +68,26 @@ export class DialogExternoComponent implements OnInit {
       }
     }
     else {
-      this.title = 'REGISTRO TRAMITE'
-      this.externoService.getGroups().subscribe(segmentos => {
-        this.Segmentos = segmentos
+      this.externoService.getTypesProcedures().subscribe(data => {
+        this.Segmentos = data.segments
+        this.TypesProcedures = data.types
       })
     }
   }
-  getTypes(segmento: string) {
-    this.SelectedType = null
-    this.externoService.getTypes(segmento).subscribe(types => {
-      this.Types = types
-      this.TramiteFormGroup.get('alterno')?.setValue(`${segmento}-${this.authService.account.institutionCode}`)
-    })
+  segmentProcedures(segment: string) {
+    this.TypesProceduresSegmented = []
+    this.TypesProceduresSegmented = this.TypesProcedures.filter(type => type.segmento === segment)
   }
-  selectType(type: TypeTramiteData) {
+
+
+  selectTypeProcedure(type: TipoTramite) {
     this.SelectedType = type
     this.TramiteFormGroup.get('tipo_tramite')?.setValue(type.id_tipoTramite)
     this.TramiteFormGroup.get('requerimientos')?.setValue(this.SelectedType?.requerimientos.map(requerimiento => requerimiento.nombre))
+    this.TramiteFormGroup.get('alterno')?.setValue(`${type.segmento}-${this.authService.account.institutionCode}`)
   }
+
+
 
 
   guardar() {

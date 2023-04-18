@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{title}}</h2>
+<h2 mat-dialog-title>{{data?'REGISTRO': 'EDICION'}} TRAMITE</h2>
 <mat-dialog-content>
   <form [formGroup]="TramiteFormGroup" class="example-form">
     <div class="row" *ngIf="!data">

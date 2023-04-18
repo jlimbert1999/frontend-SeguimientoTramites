@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { MatSelect } from '@angular/material/select';
 import { ReplaySubject, Subject, take, takeUntil } from 'rxjs';
 
@@ -8,11 +8,16 @@ import { ReplaySubject, Subject, take, takeUntil } from 'rxjs';
   templateUrl: './simple-mat-select-search.component.html',
   styleUrls: ['./simple-mat-select-search.component.css']
 })
-export class SimpleMatSelectSearchComponent implements OnInit, OnDestroy, OnChanges {
+export class SimpleMatSelectSearchComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
+
+
   @Input() data: any[] = []
   @Input() placehorder: string
   @Input() pathPropertyOfObjectDisplay: string
   @Output() eventSelectedOption: EventEmitter<any> = new EventEmitter();
+  @Input() isRequired: boolean
+
+
 
   ngOnChanges(): void {
     this.filteredBanks.next(this.data.slice());
@@ -20,8 +25,9 @@ export class SimpleMatSelectSearchComponent implements OnInit, OnDestroy, OnChan
 
 
 
+
   /** control for the selected bank */
-  public bankCtrl: FormControl = new FormControl();
+  public bankCtrl: FormControl = new FormControl('');
   /** control for the MatSelect filter keyword */
   public bankFilterCtrl: FormControl = new FormControl();
   /** list of banks filtered by search keyword */
@@ -29,6 +35,11 @@ export class SimpleMatSelectSearchComponent implements OnInit, OnDestroy, OnChan
   @ViewChild('singleSelect') singleSelect: MatSelect;
   /** Subject that emits when the component has been destroyed. */
   protected _onDestroy = new Subject<void>();
+
+  ngAfterViewInit(): void {
+    if (this.isRequired) this.bankCtrl.addValidators(Validators.required)
+    this.bankCtrl.updateValueAndValidity()
+  }
 
 
   ngOnInit(): void {
@@ -71,7 +82,6 @@ export class SimpleMatSelectSearchComponent implements OnInit, OnDestroy, OnChan
   accessToPropertyObject(path: string, object: any) {
     return path.split('.').reduce((o, i) => o[i], object)
   }
-
 
 
 }

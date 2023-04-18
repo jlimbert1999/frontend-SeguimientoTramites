@@ -1,0 +1,1 @@
+export type group = 'tramites_externos' | 'tramites_internos'

@@ -27,7 +27,7 @@ export class DialogInternosComponent implements OnInit {
   });
 
   tipos_tramites: any[] = []
-  title: string
+ 
 
   constructor(
     private authService: AuthService,
@@ -39,7 +39,6 @@ export class DialogInternosComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.data) {
-      this.title = 'EDICION TRAMITE'
       this.TramiteFormGroup = this.fb.group({
         detalle: [this.data.detalle, Validators.required],
         cite: [this.data.cite],
@@ -51,7 +50,6 @@ export class DialogInternosComponent implements OnInit {
       });
     }
     else {
-      this.title = 'REGISTRO TRAMITE'
       this.internoService.getTypes().subscribe(tipos => {
         this.tipos_tramites = tipos
       })

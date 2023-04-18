@@ -47,7 +47,6 @@ export class MenuComponent implements OnDestroy {
   }
 
   receiveData(data: SendDataReportEvent) {
-
     if (data.group === 'tramites_externos') {
       this.displayedColumns = [
         { key: 'alterno', titulo: 'Alterno' },

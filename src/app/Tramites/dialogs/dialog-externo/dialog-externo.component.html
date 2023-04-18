@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{title}}</h2>
+<h2 mat-dialog-title>{{data?'REGISTRO': 'EDICION'}} TRAMITE</h2>
 <mat-dialog-content>
     <mat-stepper headerPosition="bottom" #stepper>
         <mat-step [stepControl]="TramiteFormGroup">
@@ -8,7 +8,7 @@
                     <div class="col-sm-2">
                         <mat-form-field class="example-full-width">
                             <mat-label>Segmento</mat-label>
-                            <mat-select (selectionChange)="getTypes($event.value)">
+                            <mat-select (selectionChange)="segmentProcedures($event.value)">
                                 <mat-option *ngFor="let segmento of Segmentos" [value]="segmento">
                                     {{segmento|uppercase}}
                                 </mat-option>
@@ -16,16 +16,20 @@
                         </mat-form-field>
                     </div>
                     <div class="col-sm-10">
-                        <mat-form-field class="example-full-width">
+                        <app-simple-mat-select-search [data]="TypesProceduresSegmented"
+                            [pathPropertyOfObjectDisplay]="'nombre'" [isRequired]="true"
+                            (eventSelectedOption)="selectTypeProcedure($event.value)"
+                            [placehorder]="'Seleccione el tipo de tramite'"></app-simple-mat-select-search>
+                        <!-- <mat-form-field class="example-full-width">
                             <mat-label>Seleccione el tipo de tramite</mat-label>
-                            <mat-select (selectionChange)="selectType($event.value)">
-                                <mat-option *ngFor="let tipo of Types" [value]="tipo">
+                            <mat-select (selectionChange)="selectTypeProcedure($event.value)">
+                                <mat-option *ngFor="let tipo of TypesProceduresSegmented" [value]="tipo">
                                     {{tipo.nombre| uppercase}}
                                 </mat-option>
                             </mat-select>
                             <mat-error *ngIf="TramiteFormGroup.controls['tipo_tramite'].invalid">Seleccione un tramite
                             </mat-error>
-                        </mat-form-field>
+                        </mat-form-field> -->
                     </div>
                 </div>
                 <div class="row">

@@ -4,11 +4,10 @@
         <mat-label>Buscar tramite externo</mat-label>
         <input matInput [(ngModel)]="paginatorService.text" (keyup)="applyFilter($event)"
             placeholder="Alterno / Referencia / Solicitante" #input>
-        <button *ngIf="paginatorService.text" matSuffix mat-icon-button aria-label="Clear"
-            (click)="cancelSearch()">
+        <button *ngIf="paginatorService.text" matSuffix mat-icon-button aria-label="Clear" (click)="cancelSearch()">
             <mat-icon>close</mat-icon>
         </button>
-      
+
 
     </mat-form-field>
     <div class="example-container mat-elevation-z8">
@@ -72,6 +71,10 @@
                             <button (click)="GenerateHojaRuta(row._id)" mat-menu-item>
                                 <mat-icon>feed</mat-icon>
                                 <span>Hoja de ruta</span>
+                            </button>
+                            <button (click)="cancelProcedure(row)" mat-menu-item>
+                                <mat-icon>disabled_by_default</mat-icon>
+                                <span>Anular tramite</span>
                             </button>
                             <button (click)="conclude(row)" mat-menu-item>
                                 <mat-icon>domain_verification</mat-icon>

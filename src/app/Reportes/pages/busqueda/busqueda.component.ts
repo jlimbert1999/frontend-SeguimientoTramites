@@ -52,18 +52,18 @@ export class BusquedaComponent implements OnInit {
     private internoService: InternosService,
     public reporteService: ReporteService
   ) {
-    if (this.reporteService.grupo === 'EXTERNO') {
-      this.displayedColumns = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
-      this.externoService.getGroups().subscribe(data => {
-        this.segmentos = data
-      })
-    }
-    else {
-      this.displayedColumns = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'opciones']
-      this.internoService.getTypes().subscribe(data => {
-        this.tipos = data
-      })
-    }
+    // if (this.reporteService.grupo === 'EXTERNO') {
+    //   this.displayedColumns = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
+    //   this.externoService.getGroups().subscribe(data => {
+    //     this.segmentos = data
+    //   })
+    // }
+    // else {
+    //   this.displayedColumns = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'opciones']
+    //   this.internoService.getTypes().subscribe(data => {
+    //     this.tipos = data
+    //   })
+    // }
   }
   ngOnInit(): void {
 
@@ -82,10 +82,10 @@ export class BusquedaComponent implements OnInit {
     this.tipos = []
     this.dataSource = []
     if (type === 'EXTERNO') {
-      this.displayedColumns = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
-      this.externoService.getGroups().subscribe(data => {
-        this.segmentos = data
-      })
+      // this.displayedColumns = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
+      // this.externoService.getGroups().subscribe(data => {
+      //   this.segmentos = data
+      // })
     }
     else {
       this.displayedColumns = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'opciones']
@@ -97,9 +97,9 @@ export class BusquedaComponent implements OnInit {
   }
 
   getTypes(segmento: string) {
-    this.externoService.getTypes(segmento).subscribe(data => {
-      this.tipos = data
-    })
+    // this.externoService.getTypes(segmento).subscribe(data => {
+    //   this.tipos = data
+    // })
   }
 
   searchExternos() {

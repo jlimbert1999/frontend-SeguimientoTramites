@@ -1,0 +1,40 @@
+<div class="row">
+    <app-server-mat-select-search
+     [data]="accounts" 
+     [placeholder]="'Nombre / Cargo / Dni'" 
+     [pathPropertyOfObjectDisplay]="'funcionario.fullname'" 
+     (eventSearch)="getAccounts($event)"
+     (eventSelectedOption)="selectAccount($event)"
+     ></app-server-mat-select-search>
+</div>
+<div class="row">
+    <mat-radio-group [(ngModel)]="paramsSearch.group">
+        <mat-radio-button value="tramites_externos">Externos</mat-radio-button>
+        <mat-radio-button value="tramites_internos">Internos</mat-radio-button>
+    </mat-radio-group>
+</div>
+
+<div class="row">
+    <mat-form-field appearance="fill">
+        <mat-label>Ingrese el rango</mat-label>
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+            <input matStartDate formControlName="start" placeholder="Fecha inicial">
+            <input matEndDate formControlName="end" placeholder="Fecha final">
+        </mat-date-range-input>
+        <mat-hint>Dia/Mes/Año – Dia/Mes/Año </mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+        <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Fecha inicial invalida</mat-error>
+        <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Fecha final invalida</mat-error>
+    </mat-form-field>
+</div>
+<div class="row">
+    <mat-form-field appearance="fill" class="example-full-width">
+        <mat-label>Seleccione el estado</mat-label>
+        <mat-select [(ngModel)]="paramsSearch.estado">
+            <mat-option *ngFor="let state of states" [value]="state">{{state}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<button (click)="generateReport()" [disabled]="!id_cuenta"mat-raised-button color="primary">Generar</button>

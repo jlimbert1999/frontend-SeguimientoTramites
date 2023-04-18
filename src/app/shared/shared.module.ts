@@ -24,6 +24,7 @@ import { OrganizationChartComponent } from './organization-chart/organization-ch
 import { TableReportPreceduresComponent } from './table-report-precedures/table-report-precedures.component';
 import { SimpleMatSelectSearchComponent } from './simple-mat-select-search/simple-mat-select-search.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { ServerMatSelectSearchComponent } from './server-mat-select-search/server-mat-select-search.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     OrganizationChartComponent,
     TableReportPreceduresComponent,
     SimpleMatSelectSearchComponent,
+    ServerMatSelectSearchComponent,
 
   ],
   imports: [
@@ -74,6 +76,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     TableComponent,
     TableReportPreceduresComponent,
     SimpleMatSelectSearchComponent,
+    ServerMatSelectSearchComponent
    
   ]
 })
