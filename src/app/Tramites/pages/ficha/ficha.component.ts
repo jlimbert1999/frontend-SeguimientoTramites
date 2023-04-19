@@ -6,6 +6,7 @@ import { ExternosService } from '../../services/externos.service';
 import { InternosService } from '../../services/internos.service';
 import { Location } from '@angular/common';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
+import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
 
 @Component({
   selector: 'app-ficha',
@@ -18,6 +19,7 @@ import { slideInLeftOnEnterAnimation } from 'angular-animations';
 export class FichaComponent implements OnInit {
   tipo: 'ficha-externa' | 'ficha-interna'
   Tramite: any
+  Location: LocationProcedure[] = []
   Workflow: any[] = []
   constructor(
     private activateRoute: ActivatedRoute,
@@ -36,6 +38,7 @@ export class FichaComponent implements OnInit {
         this.externoService.getOne(params['id']).subscribe(data => {
           this.Tramite = data.tramite
           this.Workflow = data.workflow
+          this.Location = data.location
         })
       }
       else if (this.tipo == 'ficha-interna') {

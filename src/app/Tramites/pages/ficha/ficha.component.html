@@ -12,9 +12,8 @@
                 <mat-icon class="example-tab-icon">info</mat-icon>
                 Informacion
             </ng-template>
-     
                 <app-info-tramite-externo *ngIf="tipo==='ficha-externa' && Tramite"
-                [Tramite]="Tramite"></app-info-tramite-externo>
+                [Tramite]="Tramite" [Location]="Location"></app-info-tramite-externo>
             <app-info-tramite-interno *ngIf="tipo==='ficha-interna'&& Tramite"
                 [Tramite]="Tramite"></app-info-tramite-interno>
        

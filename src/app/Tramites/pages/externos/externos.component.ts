@@ -250,6 +250,8 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate(['home/tramites/externos/ficha-externa', id], { queryParams: params })
   }
 
+  
+
 
 
 

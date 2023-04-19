@@ -13,10 +13,10 @@ export const HojaRutaExterna = async (tramite: Externo, workflow: WorkflowData[]
     let checkType = ['', '', '']
     let solicitante: string = tramite.solicitante.tipo === 'NATURAL' ? `${tramite.solicitante.nombre} ${tramite.solicitante.paterno} ${tramite.solicitante.materno}` : `${tramite.solicitante.nombre}`
     let cuadrados: any[] = []
-
+    console.log(workflow);
     if (workflow.length > 0) {
 
-        if (id_cuenta === tramite.cuenta) {
+        if (id_cuenta === tramite.cuenta._id) {
             let destinatarios = ''
             for (let index = 0; index < workflow.length; index++) {
                 if (id_cuenta == workflow[index].emisor.cuenta._id) {

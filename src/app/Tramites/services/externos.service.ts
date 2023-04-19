@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, Query, QueryList } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
+import { LocationProcedure, WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { environment } from 'src/environments/environment';
 import { ExternoDto, RepresentanteDto, SolicitanteDto } from '../models/Externo.dto';
@@ -66,9 +66,9 @@ export class ExternosService {
     )
   }
   getOne(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: Externo, workflow: WorkflowData[] }>(`${base_url}/externos/${id_tramite}`).pipe(
+    return this.http.get<{ ok: boolean, tramite: Externo, workflow: WorkflowData[], location: LocationProcedure[] }>(`${base_url}/externos/${id_tramite}`).pipe(
       map(resp => {
-        return { tramite: resp.tramite, workflow: resp.workflow }
+        return { tramite: resp.tramite, workflow: resp.workflow, location: resp.location }
       })
     )
   }

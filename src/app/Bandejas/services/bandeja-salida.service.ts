@@ -20,6 +20,7 @@ export class BandejaSalidaService {
     return this.http.get<{ ok: boolean, mails: Salida[], length: number }>(
       `${base_url}/bandejas/salida`, { params }).pipe(
         map(resp => {
+          console.log(resp);
           return { mails: resp.mails, length: resp.length }
         })
       )

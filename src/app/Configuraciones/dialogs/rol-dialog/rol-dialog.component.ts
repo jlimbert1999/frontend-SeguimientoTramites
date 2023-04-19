@@ -20,6 +20,7 @@ export class RolDialogComponent implements OnInit {
       resources: [
         { value: 'externos', viewValue: 'Externos', disabled: false },
         { value: 'internos', viewValue: 'Internos', disabled: false },
+        { value: 'archivos', viewValue: 'Archivos', disabled: false }
       ],
     },
     {
@@ -50,7 +51,7 @@ export class RolDialogComponent implements OnInit {
         { value: 'instituciones', viewValue: 'Instituciones', disabled: false },
         { value: 'dependencias', viewValue: 'Dependencias', disabled: false },
       ],
-    }
+    },
   ]
 
 

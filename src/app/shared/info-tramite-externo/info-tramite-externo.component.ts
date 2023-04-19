@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import * as moment from 'moment';
 import { Externo } from 'src/app/Tramites/models/Externo.interface';
+import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
 
 
 @Component({
@@ -9,8 +10,9 @@ import { Externo } from 'src/app/Tramites/models/Externo.interface';
   templateUrl: './info-tramite-externo.component.html',
   styleUrls: ['./info-tramite-externo.component.css']
 })
-export class InfoTramiteExternoComponent implements OnInit , OnDestroy{
-  @Input() Tramite: Externo 
+export class InfoTramiteExternoComponent implements OnInit, OnDestroy {
+  @Input() Tramite: Externo
+  @Input() Location: LocationProcedure[] = []
   timer: any;
   count: any
 
@@ -19,10 +21,11 @@ export class InfoTramiteExternoComponent implements OnInit , OnDestroy{
   }
   ngOnInit(): void {
     this.createTimer(this.Tramite.fecha_registro, this.Tramite.fecha_finalizacion, this.Tramite.estado)
+    console.log(this.Tramite);
   }
 
 
-  
+
   ngOnDestroy(): void {
     clearInterval(this.timer);
   }

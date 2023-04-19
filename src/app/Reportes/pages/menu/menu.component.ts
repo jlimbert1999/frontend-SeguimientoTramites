@@ -46,8 +46,9 @@ export class MenuComponent implements OnDestroy {
     this.reportType = typeReport
   }
 
-  receiveData(data: SendDataReportEvent) {
-    if (data.group === 'tramites_externos') {
+  receiveData(data: any) {
+    console.log(data);
+    if (data.typeTramiteForReport === 'externo') {
       this.displayedColumns = [
         { key: 'alterno', titulo: 'Alterno' },
         { key: 'detalle', titulo: 'Detalle' },
@@ -70,7 +71,7 @@ export class MenuComponent implements OnDestroy {
     this.dataSource = [...data.data]
     switch (this.reportType) {
       case 'solicitante':
-        // createPDFSolicitante(this.paramsForSearch, this.dataSource)
+        createPDFSolicitante(data.paramsForSearch, this.dataSource)
         break;
       case 'unidad':
         createPDFUnidad(data)

@@ -121,29 +121,29 @@ export class BandejaEntradaComponent implements OnInit {
     }
   }
   aceptar_tramite(elemento: BandejaEntradaData) {
-    // Swal.fire({
-    //   title: `Aceptar tramite ${elemento.tramite.alterno}?`,
-    //   text: `El tramite sera marcado como aceptado`,
-    //   icon: 'question',
-    //   showCancelButton: true,
-    //   confirmButtonColor: '#3085d6',
-    //   cancelButtonColor: '#d33',
-    //   confirmButtonText: 'Aceptar',
-    //   cancelButtonText: 'Cancelar',
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     this.bandejaService.aceptar_tramite(elemento._id).subscribe(message => {
-    //       const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
-    //       this.bandejaService.Mails[indexFound].recibido = true
-    //       this.bandejaService.Mails = [...this.bandejaService.Mails]
-    //       this.toastr.success(undefined, message, {
-    //         positionClass: 'toast-bottom-right',
-    //         timeOut: 3000,
-    //       })
-    //     })
-    //   }
-    // })
-   
+    Swal.fire({
+      title: `Aceptar tramite ${elemento.tramite.alterno}?`,
+      text: `El tramite sera marcado como aceptado`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.bandejaService.aceptar_tramite(elemento._id).subscribe(message => {
+          const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
+          this.bandejaService.Mails[indexFound].recibido = true
+          this.bandejaService.Mails = [...this.bandejaService.Mails]
+          this.toastr.success(undefined, message, {
+            positionClass: 'toast-bottom-right',
+            timeOut: 3000,
+          })
+        })
+      }
+    })
+
 
   }
   rechazar_tramite(elemento: BandejaEntradaData) {
@@ -162,7 +162,7 @@ export class BandejaEntradaComponent implements OnInit {
               positionClass: 'toast-bottom-right',
               timeOut: 3000,
             })
-            // this.bandejaService.getmMailsIn().subscribe()
+            this.Get()
           })
         } else {
           Swal.fire({
@@ -195,7 +195,8 @@ export class BandejaEntradaComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.bandejaService.Conclude(mail._id, result.value!).subscribe(message => {
-          console.log(message)
+          this.Get()
+      
         })
       }
     })

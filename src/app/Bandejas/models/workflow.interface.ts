@@ -45,3 +45,16 @@ export interface WorkflowData {
     recibido?: boolean
 
 }
+export interface LocationProcedure {
+    cuenta: {
+        dependencia: {
+            nombre: string
+        },
+        funcionario: {
+            nombre: string
+            paterno: string
+            materno: string
+            cargo: string
+        }
+    }
+}

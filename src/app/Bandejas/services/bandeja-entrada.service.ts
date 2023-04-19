@@ -48,8 +48,8 @@ export class BandejaEntradaService {
       })
     )
   }
-  aceptar_tramite(id_bandeja: string, image: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/bandejas/aceptar/${id_bandeja}`, {image}).pipe(
+  aceptar_tramite(id_bandeja: string) {
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/bandejas/aceptar/${id_bandeja}`, {}).pipe(
       map(resp => {
         return resp.message
       })

@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { DialogInternosComponent } from '../../dialogs/dialog-internos/dialog-internos.component';
 import { HojaRutaInterna } from '../../pdfs/hora-ruta-interna';
 import { InternosService } from '../../services/internos.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-internos',
@@ -38,7 +39,8 @@ export class InternosComponent implements OnInit {
     public dialog: MatDialog,
     public internoService: InternosService,
     private authService: AuthService,
-    public paginatorService: PaginatorService
+    public paginatorService: PaginatorService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -146,4 +148,15 @@ export class InternosComponent implements OnInit {
       HojaRutaInterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
     })
   }
+  View(id: string) {
+    let params = {
+      limit: this.paginatorService.limit,
+      offset: this.paginatorService.offset
+    }
+    if (this.paginatorService.text !== '') {
+      Object.assign(params, { text: this.paginatorService.text })
+    }
+    this.router.navigate(['home/tramites/internos/ficha-interna', id], { queryParams: params })
+  }
+
 }

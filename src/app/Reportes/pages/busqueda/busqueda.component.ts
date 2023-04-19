@@ -9,6 +9,7 @@ import { InternosService } from 'src/app/Tramites/services/internos.service';
 import Swal from 'sweetalert2';
 import { PDF_busqueda } from '../../pdf/reporte-busqueda';
 import { ReporteService } from '../../services/reporte.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-busqueda',
@@ -50,20 +51,21 @@ export class BusquedaComponent implements OnInit {
     private fb: FormBuilder,
     private externoService: ExternosService,
     private internoService: InternosService,
-    public reporteService: ReporteService
+    public reporteService: ReporteService,
+    private router: Router
   ) {
-    // if (this.reporteService.grupo === 'EXTERNO') {
-    //   this.displayedColumns = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
-    //   this.externoService.getGroups().subscribe(data => {
-    //     this.segmentos = data
-    //   })
-    // }
-    // else {
-    //   this.displayedColumns = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'opciones']
-    //   this.internoService.getTypes().subscribe(data => {
-    //     this.tipos = data
-    //   })
-    // }
+    if (this.reporteService.grupo === 'EXTERNO') {
+      this.displayedColumns = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
+      this.externoService.getTypesProcedures().subscribe(data => {
+        this.tipos = data.types
+      })
+    }
+    else {
+      this.displayedColumns = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'opciones']
+      this.internoService.getTypes().subscribe(data => {
+        this.tipos = data
+      })
+    }
   }
   ngOnInit(): void {
 
@@ -82,10 +84,10 @@ export class BusquedaComponent implements OnInit {
     this.tipos = []
     this.dataSource = []
     if (type === 'EXTERNO') {
-      // this.displayedColumns = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
-      // this.externoService.getGroups().subscribe(data => {
-      //   this.segmentos = data
-      // })
+      this.displayedColumns = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
+      this.externoService.getTypesProcedures().subscribe(data => {
+        this.tipos = data.types
+      })
     }
     else {
       this.displayedColumns = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'opciones']
@@ -160,6 +162,10 @@ export class BusquedaComponent implements OnInit {
     this.reporteService.getReporteSearch().subscribe(data => {
       this.dataSource = data
     })
+  }
+
+  View(id: string) {
+    this.router.navigate(['home/reportes/busquedas/ficha-externa', id])
   }
 
 

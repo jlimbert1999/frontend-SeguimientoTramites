@@ -12,7 +12,15 @@ export interface Externo {
     _id: string
     alterno: string
     cantidad: string
-    cuenta: string
+    cuenta: {
+        _id: string
+        funcionario: {
+            nombre: string
+            paterno: string
+            materno: string
+            cargo: string
+        }
+    }
     detalle: string
     estado: string
     fecha_registro: string
@@ -22,11 +30,11 @@ export interface Externo {
     solicitante: SolicitanteDto
     representante?: RepresentanteDto
     cite: string
-    observaciones:any[]
+    observaciones: any[]
     tipo_tramite: {
         nombre: string
     },
-    eventos?:any[]
+    eventos?: any[]
 }
 
 export interface Solicitante {
