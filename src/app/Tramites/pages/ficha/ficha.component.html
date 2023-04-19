@@ -5,17 +5,20 @@
     <span *ngIf="Tramite">{{Tramite.alterno}}</span>
     <span class="example-spacer"></span>
 </mat-toolbar>
-<div [@slideInLeftOnEnter]>
-    <mat-tab-group *ngIf="Tramite" mat-align-tabs="center">
+<div [@slideInLeftOnEnter]> 
+    <mat-tab-group mat-align-tabs="center" *ngIf="Tramite">
         <mat-tab>
             <ng-template mat-tab-label>
                 <mat-icon class="example-tab-icon">info</mat-icon>
                 Informacion
             </ng-template>
-            <app-info-tramite-externo *ngIf="tipo==='ficha-externa' && Tramite"
+     
+                <app-info-tramite-externo *ngIf="tipo==='ficha-externa' && Tramite"
                 [Tramite]="Tramite"></app-info-tramite-externo>
             <app-info-tramite-interno *ngIf="tipo==='ficha-interna'&& Tramite"
                 [Tramite]="Tramite"></app-info-tramite-interno>
+       
+          
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>

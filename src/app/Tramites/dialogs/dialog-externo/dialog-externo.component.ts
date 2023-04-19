@@ -6,6 +6,7 @@ import { ExternosService } from '../../services/externos.service';
 import { TipoTramite } from 'src/app/Configuraciones/models/tipoTramite.interface';
 import { AuthService } from 'src/app/auth/services/auth.service';
 
+
 @Component({
   selector: 'app-dialog-externo',
   templateUrl: './dialog-externo.component.html',

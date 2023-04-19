@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
+import { fadeInOnEnterAnimation } from 'angular-animations';
 import { Externo, Representante, Solicitante } from '../../models/Externo.interface';
 import { ExternosService } from '../../services/externos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
@@ -20,8 +20,6 @@ import { Ficha } from '../../pdfs/ficha';
   styleUrls: ['./externos.component.css'],
   animations: [
     fadeInOnEnterAnimation(),
-    expandOnEnterAnimation(),
-    collapseOnLeaveAnimation(),
   ]
 
 })
@@ -164,6 +162,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
       input: 'textarea',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
       customClass: {
         validationMessage: 'my-validation-message'
       },
@@ -175,26 +174,25 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }).then((result) => {
-      Swal.fire({
-        title: `Esta seguro de anular ${tramite.alterno}?`,
-        text: `El tramite ya no se mostrara en su listado de tramites`,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Aceptar',
-        cancelButtonText: 'Cancelar',
-      }).then((confirm) => {
-        if (confirm.isConfirmed) {
-          console.log(result.value);
-        }
-      })
-      // if (result.isConfirmed) {
-      //   this.externoService.cancelProcedure(tramite._id, result.value!).subscribe(message => {
-      //     Swal.fire(message, undefined, 'success')
-
-      //   })
-      // }
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: `Esta seguro en anular el tramite ${tramite.alterno}?`,
+          text: `El tramite ya no se mostrara en su listado de tramites`,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Aceptar',
+          cancelButtonText: 'Cancelar',
+        }).then((confirm) => {
+          if (confirm.isConfirmed) {
+            this.externoService.cancelProcedure(tramite._id, result.value!).subscribe(message => {
+              Swal.fire(message, undefined, 'success')
+              this.Get()
+            })
+          }
+        })
+      }
     })
   }
   conclude(tramite: Externo) {
