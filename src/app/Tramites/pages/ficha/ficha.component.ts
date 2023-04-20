@@ -7,6 +7,7 @@ import { InternosService } from '../../services/internos.service';
 import { Location } from '@angular/common';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
+import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha';
 
 @Component({
   selector: 'app-ficha',
@@ -62,5 +63,10 @@ export class FichaComponent implements OnInit {
       this._location.back();
     })
   }
+
+  generateFicha(){
+    // PDF_FichaExterno(this.Tramite)
+  }
+
 
 }

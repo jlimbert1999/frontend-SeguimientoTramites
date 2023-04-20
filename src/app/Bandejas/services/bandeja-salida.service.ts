@@ -3,7 +3,7 @@ import { BehaviorSubject, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BandejaSalidaModel_View } from '../models/mail.model';
-import { Salida } from '../models/salida.interface';
+import { Salida, GroupedMails } from '../models/salida.interface';
 
 const base_url = environment.base_url
 
@@ -17,10 +17,10 @@ export class BandejaSalidaService {
     const params = new HttpParams()
       .set('offset', offset)
       .set('limit', limit)
-    return this.http.get<{ ok: boolean, mails: Salida[], length: number }>(
-      `${base_url}/bandejas/salida`, { params }).pipe(
+    return this.http.get<{ ok: boolean, mails: GroupedMails[], length: number }>(
+      `${base_url}/salidas`, { params }).pipe(
         map(resp => {
-          console.log(resp);
+          console.log(resp.mails);
           return { mails: resp.mails, length: resp.length }
         })
       )
@@ -30,16 +30,24 @@ export class BandejaSalidaService {
       .set('offset', offset)
       .set('limit', limit)
       .set('text', text)
-    return this.http.get<{ ok: boolean, mails: Salida[], length: number }>(`${base_url}/bandejas/salida/search/${type}`, { params }).pipe(
+    return this.http.get<{ ok: boolean, mails: GroupedMails[], length: number }>(`${base_url}/salidas/search/${type}`, { params }).pipe(
       map(resp => {
         return { mails: resp.mails, length: resp.length }
       })
     )
   }
 
-  cancel(id_bandeja: string) {
+  cancelOneSend(id_bandeja: string) {
     return this.http.delete<{ ok: boolean, message: string }>(
-      `${base_url}/bandejas/salida/${id_bandeja}`).pipe(
+      `${base_url}/salidas/${id_bandeja}`).pipe(
+        map(resp => {
+          return resp.message
+        })
+      )
+  }
+  cancelAllSend(id_tramite: string, fecha_envio: Date) {
+    return this.http.put<{ ok: boolean, message: string }>(
+      `${base_url}/salidas/all/${id_tramite}`, { fecha_envio }).pipe(
         map(resp => {
           return resp.message
         })

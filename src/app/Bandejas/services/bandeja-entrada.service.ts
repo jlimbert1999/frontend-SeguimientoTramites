@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
+import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Entrada } from '../models/entrada.interface';
 import { UsersMails } from '../models/mail.model';
@@ -19,7 +19,7 @@ export class BandejaEntradaService {
       .set('offset', offset)
       .set('limit', limit);
     return this.http.get<{ ok: boolean; mails: Entrada[]; length: number }>(
-      `${base_url}/bandejas/entrada`,
+      `${base_url}/entradas`,
       { params }
     ).pipe(map((resp) => {
       this.Mails = resp.mails;
@@ -32,7 +32,7 @@ export class BandejaEntradaService {
       .set('offset', offset)
       .set('limit', limit)
       .set('text', text)
-    return this.http.get<{ ok: boolean, mails: Entrada[], length: number }>(`${base_url}/bandejas/entrada/search/${type}`, { params }).pipe(
+    return this.http.get<{ ok: boolean, mails: Entrada[], length: number }>(`${base_url}/entradas/search/${type}`, { params }).pipe(
       map(resp => {
         this.Mails = resp.mails
         return resp.length
@@ -40,30 +40,29 @@ export class BandejaEntradaService {
     )
   }
 
-
   rechazar_tramite(id_bandeja: string, motivo_rechazo: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/bandejas/rechazar/${id_bandeja}`, { motivo_rechazo }).pipe(
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/rechazar/${id_bandeja}`, { motivo_rechazo }).pipe(
       map(resp => {
         return resp.message
       })
     )
   }
   aceptar_tramite(id_bandeja: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/bandejas/aceptar/${id_bandeja}`, {}).pipe(
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/aceptar/${id_bandeja}`, {}).pipe(
       map(resp => {
         return resp.message
       })
     )
   }
   Add(data: any) {
-    return this.http.post<{ ok: boolean, mails: any[] }>(`${base_url}/bandejas/entrada`, data).pipe(
+    return this.http.post<{ ok: boolean, mails: any[] }>(`${base_url}/entradas`, data).pipe(
       map(resp => {
         return resp.mails
       })
     )
   }
   GetAccounts(text: string) {
-    return this.http.get<{ ok: boolean, cuentas: UsersMails[] }>(`${base_url}/bandejas/entrada/users/${text}`).pipe(
+    return this.http.get<{ ok: boolean, cuentas: UsersMails[] }>(`${base_url}/entradas/users/${text}`).pipe(
       map(resp => {
         return resp.cuentas
       })
@@ -71,7 +70,7 @@ export class BandejaEntradaService {
   }
 
   Conclude(id_bandeja: string, descripcion: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/bandejas/concluir/${id_bandeja}`, { descripcion }).pipe(
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/concluir/${id_bandeja}`, { descripcion }).pipe(
       map(resp => {
         return resp.message
       })
@@ -79,7 +78,7 @@ export class BandejaEntradaService {
   }
 
   GetDetailsMail(id_bandeja: string) {
-    return this.http.get<{ ok: boolean, details: any }>(`${base_url}/bandejas/entrada/detalles/${id_bandeja}`).pipe(
+    return this.http.get<{ ok: boolean, details: any }>(`${base_url}/entradas/detalles/${id_bandeja}`).pipe(
       map(resp => {
         return resp.details
       })

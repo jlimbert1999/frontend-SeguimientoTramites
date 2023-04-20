@@ -151,11 +151,11 @@ td.mat-column-fecha_envio {
         margin-top: 24px;
     }
 
-    .mat-mdc-table .mat-column-expandedDetail {
+    /* .mat-mdc-table .mat-column-expandedDetail {
         display: none;
-    }
+    } */
 
-    .mat-mdc-table .mat-column-expand {
+    /* .mat-mdc-table .mat-column-expand {
         display: none;
-    }
+    } */
 }
