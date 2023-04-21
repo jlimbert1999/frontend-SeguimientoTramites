@@ -25,7 +25,6 @@ export class RolDialogComponent implements OnInit {
     },
     {
       group: 'Administracion envios',
-
       resources: [
         { value: 'entradas', viewValue: 'Entrada', disabled: false },
         { value: 'salidas', viewValue: 'Salida', disabled: false },

@@ -42,15 +42,15 @@ export class BandejaEntradaService {
     )
   }
 
-  rechazar_tramite(id_bandeja: string, motivo_rechazo: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/rechazar/${id_bandeja}`, { motivo_rechazo }).pipe(
+  declineProcedure(id_bandeja: string, motivo_rechazo: string) {
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/entradas/rechazar/${id_bandeja}`, { motivo_rechazo }).pipe(
       map(resp => {
         return resp.message
       })
     )
   }
-  aceptar_tramite(id_bandeja: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/aceptar/${id_bandeja}`, {}).pipe(
+  aceptProcedure(id_bandeja: string) {
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/entradas/aceptar/${id_bandeja}`, {}).pipe(
       map(resp => {
         return resp.message
       })

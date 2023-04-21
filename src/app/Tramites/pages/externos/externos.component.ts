@@ -199,7 +199,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     Swal.fire({
       icon: 'question',
       title: `Concluir el tramite ${tramite.alterno}?`,
-      text: `Ingrese una referencia para concluir `,
+      text: `Ingrese una referencia para concluir`,
       input: 'textarea',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
@@ -250,7 +250,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate(['home/tramites/externos/ficha-externa', id], { queryParams: params })
   }
 
-  
+
 
 
 

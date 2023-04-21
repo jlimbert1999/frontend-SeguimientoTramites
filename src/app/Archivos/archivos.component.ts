@@ -28,12 +28,11 @@ export class ArchivosComponent {
     })
   }
 
-  unarchive(archivo: any) {
-
+  unarchive(archive: any) {
     Swal.fire({
       icon: 'question',
-      title: `Desarchivar el tramite: ${archivo.tramite.alterno}?`,
-      text: `El tramite volvera a estar en la bandeja para su remision`,
+      title: `Desarchivar el tramite: ${archive.procedure.alterno}?`,
+      text: `Ingrese el motivo para el desarchivo`,
       input: 'textarea',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -59,8 +58,9 @@ export class ArchivosComponent {
           allowOutsideClick: false,
         });
         Swal.showLoading();
-        this.archivoService.Unarchive(archivo._id, result.value!).subscribe(message => {
+        this.archivoService.unarchive(archive._id, result.value!).subscribe(message => {
           Swal.fire({ title: message, icon: 'success' })
+          this.dataSource = [...this.dataSource.filter(element => element._id !== archive._id)]
         })
       }
     })

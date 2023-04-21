@@ -79,7 +79,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       this.bandejaService.Mails = [mail, ...this.bandejaService.Mails]
       let toast = this.toastr.info(`${mail.emisor.funcionario.nombre} ${mail.emisor.funcionario.paterno} ${mail.emisor.funcionario.materno} ha enviado un tramite`, "Nuevo tramite recibido", {
         positionClass: 'toast-bottom-right',
-        timeOut: 7000,
+        timeOut: 8000,
       })
       // this.notificationService.addNotificationNewMail(mail.emisor.funcionario, this.bandejaService.PaginationMailsIn.total)
     })

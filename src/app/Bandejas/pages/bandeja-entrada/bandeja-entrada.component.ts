@@ -132,7 +132,7 @@ export class BandejaEntradaComponent implements OnInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService.aceptar_tramite(elemento._id).subscribe(message => {
+        this.bandejaService.aceptProcedure(elemento._id).subscribe(message => {
           const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
           this.bandejaService.Mails[indexFound].recibido = true
           this.bandejaService.Mails = [...this.bandejaService.Mails]
@@ -157,7 +157,7 @@ export class BandejaEntradaComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         if (result.value) {
-          this.bandejaService.rechazar_tramite(elemento._id, result.value).subscribe(message => {
+          this.bandejaService.declineProcedure(elemento._id, result.value).subscribe(message => {
             this.toastr.info(undefined, message, {
               positionClass: 'toast-bottom-right',
               timeOut: 3000,
@@ -181,6 +181,7 @@ export class BandejaEntradaComponent implements OnInit {
       input: 'textarea',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
       customClass: {
         validationMessage: 'my-validation-message'
       },
@@ -190,13 +191,11 @@ export class BandejaEntradaComponent implements OnInit {
             '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
           )
         }
-
       }
     }).then((result) => {
       if (result.isConfirmed) {
         this.bandejaService.Conclude(mail._id, result.value!).subscribe(message => {
           this.Get()
-      
         })
       }
     })

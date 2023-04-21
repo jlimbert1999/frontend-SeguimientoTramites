@@ -16,21 +16,20 @@ export class ArchivoService {
     // const params = new HttpParams()
     //   .set('offset', this.offset)
     //   .set('limit', this.limit);
-    return this.http.get<{ ok: boolean, tramites: any[] }>(`${base_url}/archivos`)
+    return this.http.get<{ ok: boolean, archives: any[] }>(`${base_url}/archivos`)
       .pipe(
         map((resp) => {
-          console.log(resp)
-          return resp.tramites
+          console.log(resp.archives);
+          return resp.archives
         })
       );
   }
 
-  Unarchive(id_archivo: string, descripcion: string) {
-    return this.http.put<{ ok: boolean, message: any }>(`${base_url}/archivos/${id_archivo}`, { descripcion })
-      .pipe(
-        map((resp) => {
-          return resp.message
-        })
+  unarchive(id_archive: string, description: string) {
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/archivos/${id_archive}`, { description })
+      .pipe(map((resp) => {
+        return resp.message
+      })
       );
   }
 

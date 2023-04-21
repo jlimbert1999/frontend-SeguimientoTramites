@@ -89,14 +89,15 @@
                                         <mat-icon>send</mat-icon>
                                         <span>Remitir tramite</span>
                                     </button>
+                                    <button (click)="GenerateHojaRuta(row.tramite._id)" mat-menu-item>
+                                        <mat-icon>print</mat-icon>
+                                        <span>Hoja de ruta</span>
+                                    </button>
                                     <button (click)="concluir(row)" mat-menu-item>
                                         <mat-icon>domain_verification</mat-icon>
                                         <span>Concluir tramite</span>
                                     </button>
-                                    <button (click)="GenerateHojaRuta(row.tramite._id)" mat-menu-item>
-                                        <mat-icon>domain_verification</mat-icon>
-                                        <span>Hoja de ruta</span>
-                                    </button>
+                                    
                                 </div>
                             </div>
                         </mat-menu>

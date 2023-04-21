@@ -5,22 +5,22 @@
 
             <ng-container matColumnDef="alterno">
                 <th mat-header-cell *matHeaderCellDef> Alterno </th>
-                <td mat-cell *matCellDef="let element"> {{element.tramite.alterno}} </td>
+                <td mat-cell *matCellDef="let element"> {{element.procedure.alterno}} </td>
             </ng-container>
 
             <ng-container matColumnDef="estado">
                 <th mat-header-cell *matHeaderCellDef> Estado </th>
-                <td mat-cell *matCellDef="let element"> {{element.tramite.estado}} </td>
+                <td mat-cell *matCellDef="let element"> {{element.procedure.estado}} </td>
             </ng-container>
 
             <ng-container matColumnDef="funcionario">
                 <th mat-header-cell *matHeaderCellDef> Funcionario </th>
-                <td mat-cell *matCellDef="let element"> {{element.funcionario|fullname}} </td>
+                <td mat-cell *matCellDef="let element"> {{element.officer|fullname}} </td>
             </ng-container>
 
             <ng-container matColumnDef="descripcion">
                 <th mat-header-cell *matHeaderCellDef> Detalle </th>
-                <td mat-cell *matCellDef="let element"> {{element.descripcion}} </td>
+                <td mat-cell *matCellDef="let element"> {{element.description}} </td>
             </ng-container>
 
             <ng-container matColumnDef="opciones">

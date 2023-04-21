@@ -80,13 +80,14 @@ export class ReportUnidadOptionsComponent implements OnInit {
 
 
   generateReport() {
-   
+
     // const institucion = this.instituciones.find(inst => inst.id_institucion === this.id_institucion)
     // let searchParams = [{ field: 'institucion', value: institucion.nombre }]
+    // let s = {}
     // if (this.id_dependecia) {
     //   const dependencia = this.dependencias.find(dep => dep.id_dependencia == this.id_dependecia)
     //   searchParams.push({ field: 'dependencia', value: `${dependencia.nombre}` })
-
+     
     // }
     // if (this.id_account) {
     //   const account = this.accounts.find(account => account._id == this.id_account)
