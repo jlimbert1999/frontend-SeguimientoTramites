@@ -33,13 +33,11 @@ export class MailComponent implements OnInit {
   Tramite: any
   Workflow: WorkflowData[]
   Observaciones: any
-  Mail: any
+  imbox: any
   constructor(
     private _location: Location,
     private activateRoute: ActivatedRoute,
     private entradaService: BandejaEntradaService,
-    private externoService: ExternosService,
-    private internoService: InternosService,
     private authService: AuthService,
     private paginatorService: PaginatorService
   ) {
@@ -49,23 +47,11 @@ export class MailComponent implements OnInit {
   ngOnInit(): void {
     this.activateRoute.params.subscribe(params => {
       if (params['id']) {
-        this.entradaService.GetDetailsMail(params['id']).subscribe(data => {
-          this.Mail = data
-          this.tipo = data.tipo
-          if (this.tipo === 'tramites_externos') {
-            this.externoService.getOne(data.tramite).subscribe(data => {
-              this.Tramite = data.tramite
-              this.Workflow = data.workflow
-              this.Observaciones = data.tramite.observaciones
-              console.log(this.Observaciones)
-            })
-          }
-          else {
-            this.internoService.GetOne(data.tramite).subscribe(data => {
-              this.Tramite = data.tramite
-              this.Workflow = data.workflow
-            })
-          }
+        this.entradaService.getDetailsMail(params['id']).subscribe(data => {
+          console.log(data)
+          this.imbox = data.imbox
+          this.Tramite = data.tramite
+          this.Workflow = data.workflow
         })
       }
     })

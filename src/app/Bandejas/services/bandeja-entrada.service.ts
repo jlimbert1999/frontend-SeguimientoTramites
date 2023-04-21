@@ -4,6 +4,8 @@ import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Entrada } from '../models/entrada.interface';
 import { UsersMails } from '../models/mail.model';
+import { Externo } from 'src/app/Tramites/models/Externo.interface';
+import { Interno } from 'src/app/Tramites/models/Interno.interface';
 
 const base_url = environment.base_url;
 
@@ -77,10 +79,15 @@ export class BandejaEntradaService {
     )
   }
 
-  GetDetailsMail(id_bandeja: string) {
-    return this.http.get<{ ok: boolean, details: any }>(`${base_url}/entradas/detalles/${id_bandeja}`).pipe(
+  getDetailsMail(id_bandeja: string) {
+    return this.http.get<{ ok: boolean, imbox: any, allDataProcedure: { tramite: any, workflow: any[], location: any[] } }>(`${base_url}/entradas/${id_bandeja}`).pipe(
       map(resp => {
-        return resp.details
+        return {
+          imbox: resp.imbox,
+          tramite: resp.allDataProcedure.tramite,
+          workflow: resp.allDataProcedure.workflow,
+          location: resp.allDataProcedure.location
+        }
       })
     )
   }

@@ -33,7 +33,7 @@
             <p>Fecha: {{Detalles.fecha_envio|date:'short'}}</p>
         </mat-card-content>
     </mat-card> -->
-    <app-mail-header *ngIf="Mail" [Data]="Mail"></app-mail-header>
+    <app-mail-header *ngIf="imbox" [Data]="imbox"></app-mail-header>
 
     <mat-tab-group mat-align-tabs="center">
         <mat-tab>

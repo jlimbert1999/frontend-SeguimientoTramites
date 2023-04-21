@@ -74,7 +74,7 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
       })
     }
     else {
-      this.internoService.GetOne(id_tramite).subscribe(data => {
+      this.internoService.getOne(id_tramite).subscribe(data => {
         // HojaRutaInterna(data.tramite, data.workflow, tipo_hoja)
       })
     }

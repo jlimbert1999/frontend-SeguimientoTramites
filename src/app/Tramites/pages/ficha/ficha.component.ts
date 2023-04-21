@@ -43,9 +43,10 @@ export class FichaComponent implements OnInit {
         })
       }
       else if (this.tipo == 'ficha-interna') {
-        this.internoService.GetOne(params['id']).subscribe(data => {
+        this.internoService.getOne(params['id']).subscribe(data => {
           this.Tramite = data.tramite
           this.Workflow = data.workflow
+          this.Location = data.location
         })
       }
       else {
@@ -64,9 +65,11 @@ export class FichaComponent implements OnInit {
     })
   }
 
-  generateFicha(){
-    // PDF_FichaExterno(this.Tramite)
+  generateFicha() {
+    PDF_FichaExterno(this.Tramite, this.Workflow, this.Location)
   }
+
+
 
 
 }

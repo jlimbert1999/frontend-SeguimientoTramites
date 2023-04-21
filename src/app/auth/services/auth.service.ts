@@ -55,4 +55,7 @@ export class AuthService {
       })
     )
   }
+  get fullnameAccount(){
+    return `${this.account.funcionario.nombre} ${this.account.funcionario.paterno} ${this.account.funcionario.materno}`
+  }
 }

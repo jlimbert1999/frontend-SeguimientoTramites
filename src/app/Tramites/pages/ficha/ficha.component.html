@@ -4,9 +4,13 @@
     </button>
     <span *ngIf="Tramite">{{Tramite.alterno}}</span>
     <span class="example-spacer"></span>
-    <button mat-icon-button>
+    <button matTooltip="Agregar observacion" mat-icon-button>
+        <mat-icon>push_pin</mat-icon>
+    </button>
+    <button (click)="generateFicha()" matTooltip="Generar ficha de tramite" mat-icon-button>
         <mat-icon>print</mat-icon>
     </button>
+
 </mat-toolbar>
 <div [@slideInLeftOnEnter]>
     <mat-tab-group mat-align-tabs="center" *ngIf="Tramite">

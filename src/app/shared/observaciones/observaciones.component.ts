@@ -22,7 +22,7 @@ export class ObservacionesComponent implements OnInit {
   Me: Observacion
   Others: Observacion[] = []
 
-  @ViewChild(MatAccordion) accordion: MatAccordion;
+ 
 
   constructor(
     private authService: AuthService,

@@ -4,7 +4,7 @@
     <div class="row" *ngIf="!data">
       <mat-form-field>
         <mat-label>Seleccione el tipo de tramite</mat-label>
-        <mat-select (selectionChange)="selectType($event.value)" formControlName="tipo_tramite">
+        <mat-select (selectionChange)="selectTypeProcedure($event.value)" formControlName="tipo_tramite">
           <mat-option *ngFor="let tipo of tipos_tramites" [value]="tipo.id_tipoTramite">
             {{tipo.nombre}}
           </mat-option>
@@ -16,7 +16,7 @@
         <mat-label>Referencia del tramite</mat-label>
         <textarea formControlName="detalle" matInput></textarea>
       </mat-form-field>
-     
+
     </div>
     <div class="row">
       <div class="col-sm-6">
@@ -42,12 +42,11 @@
       <div class="col-sm-6">
         <mat-form-field class="example-full-width">
           <mat-label>Nombre del destinatario</mat-label>
-          <input class="uppercase" type="text" matInput formControlName="nombre_destinatario" matAutocompletePosition="below"
-            [matAutocomplete]="auto1">
+          <input class="uppercase" type="text" matInput formControlName="nombre_destinatario"
+            matAutocompletePosition="below" [matAutocomplete]="auto1">
           <mat-autocomplete matau #auto1="matAutocomplete">
             <mat-option (onSelectionChange)="seleccionar_destinatario(option)"
-              *ngFor="let option of filteredDestiny | async"
-              [value]="option|fullname">
+              *ngFor="let option of filteredDestiny | async" [value]="option|fullname">
               {{option|fullname|titlecase}}
             </mat-option>
           </mat-autocomplete>

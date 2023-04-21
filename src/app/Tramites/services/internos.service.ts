@@ -5,6 +5,8 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { environment } from 'src/environments/environment';
 import { InternoDto } from '../models/interno.dto';
 import { Interno } from '../models/Interno.interface';
+import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
+import { TypesProceduresGrouped } from 'src/app/Configuraciones/models/tipoTramite.interface';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -48,10 +50,10 @@ export class InternosService {
       })
     )
   }
-  GetOne(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: any, workflow: any[] }>(`${base_url}/internos/${id_tramite}`).pipe(
+  getOne(id_tramite: string) {
+    return this.http.get<{ ok: boolean, tramite: any, workflow: any[], location: LocationProcedure[] }>(`${base_url}/internos/${id_tramite}`).pipe(
       map(resp => {
-        return { tramite: resp.tramite, workflow: resp.workflow }
+        return { tramite: resp.tramite, workflow: resp.workflow, location: resp.location }
       })
     )
   }
@@ -60,9 +62,9 @@ export class InternosService {
     return this.http.get<{ ok: boolean, users: any[] }>(`${base_url}/internos/usuarios/${text}`)
   }
   getTypes() {
-    return this.http.get<{ ok: boolean, tipos: any[] }>(`${base_url}/internos/tipos`).pipe(
+    return this.http.get<{ ok: boolean, typesProcedures: TypesProceduresGrouped[] }>(`${base_url}/internos/tipos`).pipe(
       map(resp => {
-        return resp.tipos
+        return resp.typesProcedures
       })
     )
   }

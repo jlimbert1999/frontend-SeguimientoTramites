@@ -5,6 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map, Observable, startWith, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { InternosService } from '../../services/internos.service';
+import { TypesProceduresGrouped } from 'src/app/Configuraciones/models/tipoTramite.interface';
 @Component({
   selector: 'app-dialog-internos',
   templateUrl: './dialog-internos.component.html',
@@ -18,7 +19,7 @@ export class DialogInternosComponent implements OnInit {
     tipo_tramite: ['', Validators.required],
     detalle: ['', Validators.required],
     cite: [this.authService.account.citeCode],
-    nombre_remitente: ['', Validators.required],
+    nombre_remitente: [this.authService.fullnameAccount, Validators.required],
     cargo_remitente: [this.authService.account.funcionario.cargo, Validators.required],
     nombre_destinatario: ['', Validators.required],
     cargo_destinatario: ['', Validators.required],
@@ -26,8 +27,10 @@ export class DialogInternosComponent implements OnInit {
     alterno: ['']
   });
 
-  tipos_tramites: any[] = []
- 
+
+
+  tipos_tramites: TypesProceduresGrouped[] = []
+
 
   constructor(
     private authService: AuthService,
@@ -74,10 +77,11 @@ export class DialogInternosComponent implements OnInit {
     )
   }
 
-  selectType(id_type: string) {
-    let type = this.tipos_tramites.find(tipo => tipo.id_tipoTramite === id_type)
-    this.TramiteFormGroup.get('alterno')?.setValue(`${type!.segmento}-por-hacer`)
+  selectTypeProcedure(id_tipoTramite: string) {
+    const typeProcedure = this.tipos_tramites.find(type => type.id_tipoTramite === id_tipoTramite)
+    this.TramiteFormGroup.get('alterno')?.setValue(`${typeProcedure?.segmento}-${this.authService.account.institutionCode}`)
   }
+
 
   guardar() {
     const {
