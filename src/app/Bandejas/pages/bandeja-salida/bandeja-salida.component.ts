@@ -133,20 +133,20 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
 
 
   View(mail: GroupedMails) {
-    // let params = {
-    //   limit: this.paginatorService.limit,
-    //   offset: this.paginatorService.offset
-    // }
-    // if (this.paginatorService.text !== '') {
-    //   Object.assign(params, { type: this.paginatorService.type })
-    //   Object.assign(params, { text: this.paginatorService.text })
-    // }
-    // if (mail.tipo === 'tramites_externos') {
-    //   this.router.navigate(['home/bandejas/salida/mail/ficha-externa', mail.tramite._id], { queryParams: params })
-    // }
-    // else {
-    //   this.router.navigate(['home/bandejas/salida/mail/ficha-interna', mail.tramite._id], { queryParams: params })
-    // }
+    let params = {
+      limit: this.paginatorService.limit,
+      offset: this.paginatorService.offset
+    }
+    if (this.paginatorService.text !== '') {
+      Object.assign(params, { type: this.paginatorService.type })
+      Object.assign(params, { text: this.paginatorService.text })
+    }
+    if (mail._id.tipo === 'tramites_externos') {
+      this.router.navigate(['home/bandejas/salida/mail/ficha-externa', mail._id.tramite._id], { queryParams: params })
+    }
+    else {
+      this.router.navigate(['home/bandejas/salida/mail/ficha-interna', mail._id.tramite._id], { queryParams: params })
+    }
 
   }
 

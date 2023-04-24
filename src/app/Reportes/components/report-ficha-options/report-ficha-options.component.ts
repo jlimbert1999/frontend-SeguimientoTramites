@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ReporteService } from '../../services/reporte.service';
-import { FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { groupProcedure, statesProcedures } from 'src/app/Tramites/models/ProceduresProperties';
 
 @Component({
   selector: 'app-report-ficha-options',
@@ -15,10 +16,20 @@ export class ReportFichaOptionsComponent implements OnInit {
   @Output()
   dataOutput = new EventEmitter<string>();
 
-  typeTramiteForReport: 'interno' | 'externo' = 'externo'
+  typeTramiteForReport: groupProcedure = 'tramites_externos'
   alterno = new FormControl('', [Validators.required, Validators.minLength(4)]);
 
-  constructor(private reporteService: ReporteService) {
+  options = this._formBuilder.group({
+    alterno: null,
+    estado: null,
+    detalle: null,
+    cite: null,
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null),
+  });
+  states = statesProcedures
+
+  constructor(private reporteService: ReporteService, private _formBuilder: FormBuilder) {
 
   }
 
@@ -28,7 +39,7 @@ export class ReportFichaOptionsComponent implements OnInit {
 
 
   generateReport() {
-    this.reporteService.getReporteFicha(this.alterno.value!, this.typeTramiteForReport).subscribe(data => {
+    this.reporteService.getReporteFicha(this.typeTramiteForReport, this.options.value).subscribe(data => {
       this.dataOutput.emit(data)
     })
   }

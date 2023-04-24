@@ -1,7 +1,7 @@
 <mat-card appearance="outlined" class="example-card">
     <mat-card-header *ngIf="Data.emisor.funcionario">
         <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title> <strong>Recibido de:</strong> {{Data.emisor.funcionario|fullname}}</mat-card-title>
+        <mat-card-title> <strong>Recibido de:</strong> {{Data.emisor.funcionario|fullname|titlecase}}</mat-card-title>
         <mat-card-subtitle>{{Data.emisor.funcionario.cargo|uppercase}}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-header *ngIf="!Data.emisor.funcionario" style="color: red;">

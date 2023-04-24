@@ -47,28 +47,34 @@ export class MenuComponent implements OnDestroy {
   }
 
   receiveData(data: any) {
-    console.log(data);
-    if (data.typeTramiteForReport === 'externo') {
-      this.displayedColumns = [
-        { key: 'alterno', titulo: 'Alterno' },
-        { key: 'detalle', titulo: 'Detalle' },
-        { key: 'estado', titulo: 'Estado' },
-        { key: 'fecha_registro', titulo: 'Fecha' }
-      ];
-    }
-    else if (data.group === 'tramites_internos') {
-      this.displayedColumns = [
-        { key: 'alterno', titulo: 'Alterno' },
-        { key: 'detalle', titulo: 'Detalle' },
-        { key: 'estado', titulo: 'Estado' },
-        { key: 'remitente', titulo: 'Remitente' },
-        { key: 'destinatario', titulo: 'Remitente' },
-        { key: 'cite', titulo: 'Cite' },
-        { key: 'fecha_registro', titulo: 'Fecha' }
-      ];
-    }
+    console.log(data)
+    this.displayedColumns = [
+      { key: 'alterno', titulo: 'Alterno' },
+      { key: 'detalle', titulo: 'Detalle' },
+      { key: 'estado', titulo: 'Estado' },
+      { key: 'fecha_registro', titulo: 'Fecha' }
+    ];
+    // if (data.typeTramiteForReport === 'externo') {
+    //   this.displayedColumns = [
+    //     { key: 'alterno', titulo: 'Alterno' },
+    //     { key: 'detalle', titulo: 'Detalle' },
+    //     { key: 'estado', titulo: 'Estado' },
+    //     { key: 'fecha_registro', titulo: 'Fecha' }
+    //   ];
+    // }
+    // else if (data.group === 'tramites_internos') {
+    //   this.displayedColumns = [
+    //     { key: 'alterno', titulo: 'Alterno' },
+    //     { key: 'detalle', titulo: 'Detalle' },
+    //     { key: 'estado', titulo: 'Estado' },
+    //     { key: 'remitente', titulo: 'Remitente' },
+    //     { key: 'destinatario', titulo: 'Remitente' },
+    //     { key: 'cite', titulo: 'Cite' },
+    //     { key: 'fecha_registro', titulo: 'Fecha' }
+    //   ];
+    // }
     this.dataSource = []
-    this.dataSource = [...data.data]
+    this.dataSource = [...data]
     switch (this.reportType) {
       case 'solicitante':
         createPDFSolicitante(data.paramsForSearch, this.dataSource)

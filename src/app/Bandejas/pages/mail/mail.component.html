@@ -1,38 +1,21 @@
-<mat-toolbar color="primary">
-    <button (click)="back()" mat-icon-button>
-        <mat-icon>arrow_back</mat-icon>
-    </button>
-    <span style="font-size: 16px;" *ngIf="Tramite">{{Tramite.alterno}}</span>
-    <span class="example-spacer"></span>
-    <button (click)="observar()" matTooltip="Agregar observacion" mat-icon-button>
-        <mat-icon>attach_file</mat-icon>
-    </button>
-    <button (click)="generar()" matTooltip="Generar PDF" mat-icon-button>
-        <mat-icon>picture_as_pdf</mat-icon>
-    </button>
-</mat-toolbar>
+<p>
+    <mat-toolbar color="primary">
+        <button (click)="back()" mat-icon-button>
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span *ngIf="Tramite">{{Tramite.alterno}}</span>
+        <span class="example-spacer"></span>
+        <button (click)="observar()" matTooltip="Agregar observacion" mat-icon-button>
+            <mat-icon>push_pin</mat-icon>
+        </button>
+        <button (click)="generar()" matTooltip="Generar PDF" mat-icon-button>
+            <mat-icon>picture_as_pdf</mat-icon>
+        </button>
+    </mat-toolbar>
+</p>
 
 
 <div class="container-fluid" *ngIf="Tramite" [@slideInLeftOnEnter]>
-    <!-- <mat-card *ngIf="Detalles">
-        <mat-card-header *ngIf="Detalles.emisor.funcionario">
-            <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>{{Detalles.emisor.funcionario|fullname}}</mat-card-title>
-            <mat-card-subtitle>{{Detalles.emisor.funcionario.cargo | uppercase}}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-header style="color: red;" *ngIf="!Detalles.emisor.funcionario">
-            <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>SIN ASIGNAR</mat-card-title>
-            <mat-card-subtitle>-</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-            <p>Dependencia: {{Detalles.emisor.dependencia.nombre}} / {{Detalles.emisor.dependencia.institucion.sigla}}
-            </p>
-            <p>Motivo: {{Detalles.motivo}}</p>
-            <p>Cantidad: {{Detalles.cantidad}}</p>
-            <p>Fecha: {{Detalles.fecha_envio|date:'short'}}</p>
-        </mat-card-content>
-    </mat-card> -->
     <app-mail-header *ngIf="imbox" [Data]="imbox"></app-mail-header>
 
     <mat-tab-group mat-align-tabs="center">
@@ -51,17 +34,7 @@
                 <mat-icon class="tab-icon">push_pin</mat-icon>
                 Observaciones
             </ng-template>
-            <div class="col-sm-12">
-                <div class="card shadow mb-2 bg-body-tertiary rounded">
-                    <div class="card-header fw-bold">
-                        OBSERVACIONES
-                    </div>
-                    <div class="card-body">
-                        <app-observaciones [Options]="true"
-                            [Observaciones]="Observaciones"></app-observaciones>
-                    </div>
-                </div>
-            </div>
+            <app-observaciones [Options]="true" [Observaciones]="Observaciones"></app-observaciones>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>

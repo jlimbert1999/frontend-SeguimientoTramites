@@ -25,6 +25,7 @@ import { TableReportPreceduresComponent } from './table-report-precedures/table-
 import { SimpleMatSelectSearchComponent } from './simple-mat-select-search/simple-mat-select-search.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ServerMatSelectSearchComponent } from './server-mat-select-search/server-mat-select-search.component';
+import { EventsProcedureComponent } from './events-procedure/events-procedure.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { ServerMatSelectSearchComponent } from './server-mat-select-search/serve
     TableReportPreceduresComponent,
     SimpleMatSelectSearchComponent,
     ServerMatSelectSearchComponent,
+    EventsProcedureComponent,
 
   ],
   imports: [
@@ -76,8 +78,9 @@ import { ServerMatSelectSearchComponent } from './server-mat-select-search/serve
     TableComponent,
     TableReportPreceduresComponent,
     SimpleMatSelectSearchComponent,
-    ServerMatSelectSearchComponent
-   
+    ServerMatSelectSearchComponent,
+    EventsProcedureComponent
+
   ]
 })
 export class SharedModule { }

@@ -5,6 +5,8 @@ import { Externo, Representante, Solicitante } from '../../models/Externo.interf
 import { ExternosService } from '../../services/externos.service';
 import { TipoTramite } from 'src/app/Configuraciones/models/tipoTramite.interface';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { Observable } from 'rxjs';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -40,7 +42,7 @@ export class DialogExternoComponent implements OnInit {
     documento: ['', Validators.required],
   });
   RepresentanteFormGroup: FormGroup | null = null;
-  title: string
+
 
   constructor(
     private externoService: ExternosService,
@@ -92,45 +94,24 @@ export class DialogExternoComponent implements OnInit {
 
 
   guardar() {
+    this.showLoadingRequest()
     if (this.data) {
-      let Tramite: { tramite: any, solicitante: any, representante: any | null }
-      switch (this.RepresentanteFormGroup) {
-        case null:
-          Tramite = {
-            tramite: this.TramiteFormGroup.value,
-            solicitante: this.SolicitanteFormGroup.value,
-            representante: null
-          }
-          break;
-        default:
-          Tramite = {
-            tramite: this.TramiteFormGroup.value,
-            solicitante: this.SolicitanteFormGroup.value,
-            representante: this.RepresentanteFormGroup.value
-          }
-          break;
-      }
-      this.dialogRef.close(Tramite)
+      let obeservable: Observable<Externo> = this.RepresentanteFormGroup
+        ? this.externoService.Edit(this.data._id, this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup.value)
+        : this.externoService.Edit(this.data._id, this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, null)
+      obeservable.subscribe(externo => {
+        Swal.close();
+        this.dialogRef.close(externo)
+      })
     }
     else {
-      let Tramite: { tramite: Externo, solicitante: Solicitante, representante: Representante | null }
-      switch (this.RepresentanteFormGroup) {
-        case null:
-          Tramite = {
-            tramite: this.TramiteFormGroup.value,
-            solicitante: this.SolicitanteFormGroup.value,
-            representante: null
-          }
-          break;
-        default:
-          Tramite = {
-            tramite: this.TramiteFormGroup.value,
-            solicitante: this.SolicitanteFormGroup.value,
-            representante: this.RepresentanteFormGroup.value
-          }
-          break;
-      }
-      this.dialogRef.close(Tramite)
+      let obeservable: Observable<Externo> = this.RepresentanteFormGroup
+        ? this.externoService.Add(this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup.value)
+        : this.externoService.Add(this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, null)
+      obeservable.subscribe(externo => {
+        Swal.close();
+        this.dialogRef.close(externo)
+      })
     }
   }
 
@@ -157,22 +138,16 @@ export class DialogExternoComponent implements OnInit {
     }
   }
   changeFormRepresentante(register: boolean) {
-    switch (register) {
-      case true:
-        this.RepresentanteFormGroup = this.fb.group({
-          nombre: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
-          paterno: ['', Validators.required],
-          materno: [''],
-          documento: ['', Validators.required],
-          dni: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-          telefono: ['', [Validators.required, Validators.pattern('^[0-9]*$')]]
-        });
-        break;
-      case false:
-        this.RepresentanteFormGroup = null
-        break;
-
-    }
+    register
+      ? this.RepresentanteFormGroup = this.fb.group({
+        nombre: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
+        paterno: ['', Validators.required],
+        materno: [''],
+        documento: ['', Validators.required],
+        dni: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+        telefono: ['', [Validators.required, Validators.pattern('^[0-9]*$')]]
+      })
+      : this.RepresentanteFormGroup = null
   }
 
   ValidForms() {
@@ -190,5 +165,14 @@ export class DialogExternoComponent implements OnInit {
         break;
     }
     return disabled
+  }
+
+  showLoadingRequest() {
+    Swal.fire({
+      title: 'Guardando....',
+      text: 'Por favor espere',
+      allowOutsideClick: false,
+    });
+    Swal.showLoading()
   }
 }

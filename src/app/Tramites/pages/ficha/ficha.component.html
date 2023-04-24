@@ -4,13 +4,9 @@
     </button>
     <span *ngIf="Tramite">{{Tramite.alterno}}</span>
     <span class="example-spacer"></span>
-    <button matTooltip="Agregar observacion" mat-icon-button>
-        <mat-icon>push_pin</mat-icon>
-    </button>
     <button (click)="generateFicha()" matTooltip="Generar ficha de tramite" mat-icon-button>
         <mat-icon>print</mat-icon>
     </button>
-
 </mat-toolbar>
 <div [@slideInLeftOnEnter]>
     <mat-tab-group mat-align-tabs="center" *ngIf="Tramite">
@@ -23,25 +19,23 @@
                 [Location]="Location"></app-info-tramite-externo>
             <app-info-tramite-interno *ngIf="tipo==='ficha-interna'&& Tramite"
                 [Tramite]="Tramite"></app-info-tramite-interno>
-
-
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>
                 <mat-icon class="example-tab-icon">push_pin</mat-icon>
                 Observaciones
             </ng-template>
-            <div class="col-sm-12">
-                <!-- <div class="card shadow mb-2 bg-body-tertiary rounded">
-                    <div class="card-header fw-bold">
-                        OBSERVACIONES
-                    </div>
-                    <div class="card-body">
-                        <app-observaciones [Options]="false" [Observaciones]="Tramite.observaciones"></app-observaciones>
-                    </div>
-                </div> -->
-            </div>
+            <app-observaciones [Options]="false" [Observaciones]="Tramite.observaciones"></app-observaciones>
         </mat-tab>
+        <mat-tab *ngIf="Tramite.eventos">
+            <ng-template mat-tab-label>
+                <mat-icon class="example-tab-icon">list_alt</mat-icon>
+                Eventos
+            </ng-template>
+          <app-events-procedure [events]="Tramite.eventos"></app-events-procedure>
+        </mat-tab>
+
+        
         <mat-tab *ngIf="Workflow.length!==0">
             <ng-template mat-tab-label>
                 <mat-icon class="example-tab-icon">groups</mat-icon>

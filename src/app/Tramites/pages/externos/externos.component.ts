@@ -72,18 +72,14 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
       width: '1000px',
       disableClose: true
     });
-    dialogRef.afterClosed().subscribe((result: { tramite: ExternoDto, solicitante: SolicitanteDto, representante: RepresentanteDto | null }) => {
+    dialogRef.afterClosed().subscribe((result: Externo) => {
       if (result) {
-        this.showLoadingRequest()
-        this.externoService.Add(result.tramite, result.solicitante, result.representante).subscribe(tramite => {
-          if (this.Data.length === this.paginatorService.limit) {
-            this.Data.pop()
-          }
-          this.Data = [tramite, ...this.Data]
-          this.paginatorService.length++
-          Swal.close();
-          this.Send(tramite)
-        })
+        if (this.Data.length === this.paginatorService.limit) {
+          this.Data.pop()
+        }
+        this.Data = [result, ...this.Data]
+        this.paginatorService.length++
+        this.Send(result)
       }
     });
   }
@@ -93,15 +89,11 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
       data: tramite,
       disableClose: true
     });
-    dialogRef.afterClosed().subscribe((result: { tramite: any, solicitante: Solicitante, representante: Representante }) => {
+    dialogRef.afterClosed().subscribe((result: Externo) => {
       if (result) {
-        this.showLoadingRequest()
-        this.externoService.Edit(tramite._id, result.tramite, result.solicitante, result.representante).subscribe(tramite => {
-          const indexFound = this.Data.findIndex(element => element._id === tramite._id)
-          this.Data[indexFound] = tramite
-          this.Data = [...this.Data]
-          Swal.close();
-        })
+        const indexFound = this.Data.findIndex(element => element._id === tramite._id)
+        this.Data[indexFound] = result
+        this.Data = [...this.Data]
       }
     });
   }
@@ -125,6 +117,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
         const indexFound = this.Data.findIndex(element => element._id === tramite._id)
         this.Data[indexFound].estado = "EN REVISION";
         this.Data = [...this.Data]
+        this.Add()
       }
     });
   }

@@ -99,14 +99,18 @@
         </div>
     </div>
 </div> -->
+<div *ngIf="Options">
 
-<mat-list>
-    <div mat-subheader>Folders</div>
-    <mat-list-item *ngFor="let folder of Observaciones">
-        <mat-icon matListItemIcon>folder</mat-icon>
-        <div matListItemTitle>{{folder.detalle}}</div>
-      <div matListItemLine>{{folder.updated | date}}</div>
-    </mat-list-item>
-   
-  </mat-list>
-  
+
+</div>
+<div *ngIf="!Options">
+
+    <mat-list>
+        <div mat-subheader>Folders</div>
+        <mat-list-item *ngFor="let folder of Observaciones">
+            <mat-icon matListItemIcon>folder</mat-icon>
+            <div matListItemTitle>{{folder.detalle}}</div>
+            <div matListItemLine>{{folder.updated | date}}</div>
+        </mat-list-item>
+    </mat-list>
+</div>

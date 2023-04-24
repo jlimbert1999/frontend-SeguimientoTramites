@@ -21,7 +21,7 @@ export class ObservacionesComponent implements OnInit {
 
   Me: Observacion
   Others: Observacion[] = []
-
+  panelOpenState = false;
  
 
   constructor(

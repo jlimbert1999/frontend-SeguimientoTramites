@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { Externo } from 'src/app/Tramites/models/Externo.interface';
 import { WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 import { Interno } from 'src/app/Tramites/models/Interno.interface';
+import { groupProcedure } from 'src/app/Tramites/models/ProceduresProperties';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,9 @@ export class ReporteService {
   searchParams: any = {}
 
   constructor(private http: HttpClient) { }
-  getReporteFicha(alterno: string, group: 'externo' | 'interno') {
-    return this.http.get<{ ok: boolean, tramites: any }>(`${base_url}/reportes/ficha/${alterno}?group=${group}`).pipe(
+  getReporteFicha(group: groupProcedure, paramsforSearch: any) {
+    const params = new HttpParams({ fromObject: this.filterEmptyFields(paramsforSearch) })
+    return this.http.get<{ ok: boolean, tramites: any }>(`${base_url}/reportes/ficha/${group}`, { params }).pipe(
       map(resp => {
         return resp.tramites
       })
@@ -125,5 +127,16 @@ export class ReporteService {
         return resp.procedures
       })
     )
+  }
+
+  filterEmptyFields(queryParams: any): any {
+    let filteredFields: any = {};
+    for (let key in queryParams) {
+      if (queryParams[key] !== '' && queryParams[key] !== null) {
+        if (key === 'end' || key === 'start') filteredFields[key] = queryParams[key].toISOString()
+        else filteredFields[key] = queryParams[key]
+      }
+    }
+    return filteredFields
   }
 }

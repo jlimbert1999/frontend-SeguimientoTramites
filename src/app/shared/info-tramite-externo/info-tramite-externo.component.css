@@ -1,4 +1,8 @@
 .panel-requerimientos {
     overflow: auto;
-    max-height: 500px;
+    max-height: 300px;
+}
+
+.container-fluid {
+    padding: 20px;
 }

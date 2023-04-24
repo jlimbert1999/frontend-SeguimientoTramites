@@ -48,7 +48,7 @@ export class MailComponent implements OnInit {
     this.activateRoute.params.subscribe(params => {
       if (params['id']) {
         this.entradaService.getDetailsMail(params['id']).subscribe(data => {
-          console.log(data)
+          this.tipo=data.imbox.tipo
           this.imbox = data.imbox
           this.Tramite = data.tramite
           this.Workflow = data.workflow
@@ -84,7 +84,7 @@ export class MailComponent implements OnInit {
       preConfirm: (value) => {
         if (!value) {
           Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
+            '<i class="fa fa-info-circle"></i> Ingrese la descripcion'
           )
         }
 

@@ -59,9 +59,9 @@ export class ExternosService {
     let params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, tramites: Externo[], total: number }>(`${base_url}/externos/search/${text}`, { params }).pipe(
+    return this.http.get<{ ok: boolean, tramites: Externo[], length: number }>(`${base_url}/externos/search/${text}`, { params }).pipe(
       map(resp => {
-        return { tramites: resp.tramites, length: resp.total }
+        return { tramites: resp.tramites, length: resp.length }
       })
     )
   }
