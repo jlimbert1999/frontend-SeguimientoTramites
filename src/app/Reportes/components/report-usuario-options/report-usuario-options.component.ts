@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ReporteService } from '../../services/reporte.service';
-import { FormControl, FormGroup } from '@angular/forms';
-import { group } from 'src/app/shared/models/group.model';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SendDataReportEvent } from '../../models/sendData.model';
+import { groupProcedure, statesProcedures } from 'src/app/Tramites/models/ProceduresProperties';
 
 @Component({
   selector: 'app-report-usuario-options',
@@ -12,23 +12,16 @@ import { SendDataReportEvent } from '../../models/sendData.model';
 export class ReportUsuarioOptionsComponent {
   @Output() sendDataEvent = new EventEmitter<SendDataReportEvent>();
   accounts: any[] = []
-  range = new FormGroup({
+  groupProcedure: groupProcedure = 'tramites_externos'
+  options = this._formBuilder.group({
+    id_cuenta: '',
+    estado: null,
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
-  states: string[] = [
-    'INSCRITO',
-    'OBSERVADO',
-    'CONCLUIDO',
-    'EN REVISION'
-  ]
-  id_cuenta: string
-  paramsSearch: any = {
-    estado: null,
-    group: 'tramites_externos'
-  }
+  states = statesProcedures
 
-  constructor(private reporteService: ReporteService) {
+  constructor(private reporteService: ReporteService, private _formBuilder: FormBuilder) {
 
 
   }
@@ -40,23 +33,13 @@ export class ReportUsuarioOptionsComponent {
   }
 
   selectAccount(data: any) {
-    this.id_cuenta = data._id
+    this.options.get('id_cuenta')?.setValue(data._id)
    
   }
   generateReport() {
-    Object.assign(this.paramsSearch, { start: this.range.get('start')?.value?.toISOString() })
-    Object.assign(this.paramsSearch, { end: this.range.get('end')?.value?.toISOString() })
-    Object.entries(this.paramsSearch).forEach(o => {
-      if (!o[1]) {
-        delete this.paramsSearch[o[0]]
-      }
-    });
-    this.reporteService.getProceduresOfAccount(this.id_cuenta, this.paramsSearch).subscribe(procedures => {
-      console.log(procedures);
-
+    const account = this.accounts.find(acc => acc._id === this.options.get('id_cuenta')?.value)
+    this.reporteService.getReportByAccount(this.groupProcedure, this.options.value).subscribe(data => {
+      this.sendDataEvent.emit({ data, group: this.groupProcedure, params: this.options.value, extras: { account } })
     })
-
-
   }
-
 }

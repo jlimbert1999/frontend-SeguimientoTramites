@@ -8,6 +8,7 @@ import { SendDataReportEvent } from '../../models/sendData.model';
 import { createPDFUnidad } from '../../pdf/reporte-unidad';
 import { fadeInDownAnimation, fadeInDownOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { createPDFFicha } from '../../pdf/reporte-fichas';
+import { createPDFUsuario } from '../../pdf/reporte-usuario';
 
 @Component({
   selector: 'app-menu',
@@ -74,10 +75,12 @@ export class MenuComponent implements OnDestroy {
     switch (this.reportType) {
       case 'ficha':
         createPDFFicha(reportData)
-       
+        break;
+      case 'usuario':
+        createPDFUsuario(reportData)
         break;
       case 'unidad':
-        // createPDFUnidad(data)
+        // createPDFUsuario(reportData)
         break;
 
       default:
@@ -86,6 +89,6 @@ export class MenuComponent implements OnDestroy {
 
 
   }
-  
+
 
 }

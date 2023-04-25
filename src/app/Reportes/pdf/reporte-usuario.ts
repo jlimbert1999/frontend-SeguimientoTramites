@@ -8,25 +8,25 @@ import { SendDataReportEvent } from "../models/sendData.model";
 import { createHeaderParamsPDF } from "../helpers/PDFHeaderParams";
 
 
-export async function createPDFFicha({ params, data, group }: SendDataReportEvent) {
+export async function createPDFUsuario({ params, data, group, extras }: SendDataReportEvent) {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     let docDefinition: TDocumentDefinitions
-
-    let tableData: Table = {
+    let tableUser: Table = {
         headerRows: 1,
         dontBreakRows: true,
-        widths: [100,],
-        body: [[
-            { text: 'Alterno', style: 'tableHeader', alignment: 'center' },
-            { text: 'Descripcion', style: 'tableHeader', alignment: 'center' },
-            { text: 'Estado', style: 'tableHeader', alignment: 'center' },
-            { text: 'Solicitante', style: 'tableHeader', alignment: 'center' },
-            { text: 'Fecha registro', style: 'tableHeader', alignment: 'center' }
-        ]]
+        widths: ['*', '*'],
+        body: [
+            [
+                { text: 'FUNCIONARIO', style: 'tableHeader', alignment: 'center' },
+                { text: 'CARGO', style: 'tableHeader', alignment: 'center' },
+            ],
+            [
+                extras.account.funcionario.fullname,
+                extras.account.funcionario.cargo,
+            ]
+        ]
     }
-
-
     docDefinition = {
         pageOrientation: 'landscape',
         footer: { text: `Generado en fecha: ${moment(new Date()).format('DD-MM-YYYY HH:mm:ss')} `, margin: [20, 0, 0, 0] },
@@ -40,7 +40,7 @@ export async function createPDFFicha({ params, data, group }: SendDataReportEven
                         alignment: 'left',
                     },
                     {
-                        text: `REPORTE BUSQUEDA FICHA ${group === 'tramites_externos' ? 'EXTERNOS' : 'INTERNOS'}`,
+                        text: `REPORTE USUARIO PARA TRAMITES ${group === 'tramites_externos' ? 'EXTERNOS' : 'INTERNOS'}`,
                         style: 'title',
                         alignment: 'center',
                         width: '*'
@@ -53,6 +53,8 @@ export async function createPDFFicha({ params, data, group }: SendDataReportEven
                     },
                 ]
             },
+            { text: '\nDetalles funcionario:\n ', style: 'subheader' },
+            { table: tableUser },
             { text: '\nParametros de busqueda:\n ', style: 'subheader' },
             { table: createHeaderParamsPDF(params) },
             { text: `\nTOTAL RESULTADOS: ${data.length}\n `, style: 'subheader', alignment: 'center' },

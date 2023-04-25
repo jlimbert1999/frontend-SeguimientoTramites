@@ -28,6 +28,22 @@ export class ReporteService {
       })
     )
   }
+  getReportByAccount(group: groupProcedure, paramsforSearch: any) {
+    const params = new HttpParams({ fromObject: this.filterEmptyFields(paramsforSearch) })
+    return this.http.get<{ ok: boolean, procedures: any[] }>(`${base_url}/reportes/account/procedures/${group}`, { params }).pipe(
+      map(resp => {
+        return resp.procedures
+      })
+    )
+  }
+  getReportByUnit(group: groupProcedure, paramsforSearch: any) {
+    const params = new HttpParams({ fromObject: this.filterEmptyFields(paramsforSearch) })
+    return this.http.get<{ ok: boolean, tramites: any[] }>(`${base_url}/reportes/unit/${group}`, { params }).pipe(
+      map(resp => {
+        return resp.tramites.map(data => data.tramite)
+      })
+    )
+  }
   getReporteSearch() {
     this.params = new HttpParams({ fromObject: this.searchParams })
     this.params = this.params.set('limit', this.limit)
@@ -72,14 +88,7 @@ export class ReporteService {
     )
   }
 
-  getReportByUnit(params: any, group: 'tramites_externos' | 'tramites_internos') {
-    params = new HttpParams({ fromObject: params })
-    return this.http.get<{ ok: boolean, tramites: any[] }>(`${base_url}/reportes/unit/${group}`, { params }).pipe(
-      map(resp => {
-        return resp.tramites.map(data => data.tramite)
-      })
-    )
-  }
+
 
   getInstitucionesForReports() {
     return this.http.get<{ ok: boolean, instituciones: any[] }>(`${base_url}/reportes/instituciones`).pipe(
@@ -112,22 +121,14 @@ export class ReporteService {
       })
     )
   }
-  getTypesProceduresForReports(group: 'tramites_externos' | 'tramites_internos') {
-    let typeGroup = group === 'tramites_externos' ? 'EXTERNO' : 'INTERNO'
-    return this.http.get<{ ok: boolean, types: any[] }>(`${base_url}/reportes/types/${typeGroup}`).pipe(
+  getTypesProceduresForReports(group: groupProcedure) {
+    return this.http.get<{ ok: boolean, types: any[] }>(`${base_url}/reportes/types/${group}`).pipe(
       map(resp => {
         return resp.types
       })
     )
   }
-  getProceduresOfAccount(id_account: string, params: any) {
-    params = new HttpParams({ fromObject: params })
-    return this.http.get<{ ok: boolean, procedures: any[] }>(`${base_url}/reportes/account/procedures/${id_account}`, { params }).pipe(
-      map(resp => {
-        return resp.procedures
-      })
-    )
-  }
+
 
   filterEmptyFields(queryParams: any): any {
     let filteredFields: any = {};

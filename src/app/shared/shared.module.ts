@@ -7,7 +7,6 @@ import { MailHeaderComponent } from './mail-header/mail-header.component';
 import { GraphWorkflowComponent } from './graph-workflow/graph-workflow.component';
 import { ListWorkflowComponent } from './list-workflow/list-workflow.component';
 import { ObservacionesComponent } from './observaciones/observaciones.component';
-import { LocationComponent } from './location/location.component';
 import { FullnamePipe } from './pipes/fullname.pipe';
 import { PanelNotificationComponent } from './panel-notification/panel-notification.component';
 import { PaginatorComponent } from './paginator/paginator.component';
@@ -35,7 +34,6 @@ import { EventsProcedureComponent } from './events-procedure/events-procedure.co
     GraphWorkflowComponent,
     ListWorkflowComponent,
     ObservacionesComponent,
-    LocationComponent,
     FullnamePipe,
     PanelNotificationComponent,
     PaginatorComponent,
