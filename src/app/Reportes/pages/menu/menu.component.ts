@@ -6,11 +6,16 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { createPDFSolicitante } from '../../pdf/reporte-solicitante';
 import { SendDataReportEvent } from '../../models/sendData.model';
 import { createPDFUnidad } from '../../pdf/reporte-unidad';
+import { fadeInDownAnimation, fadeInDownOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
+import { createPDFFicha } from '../../pdf/reporte-fichas';
 
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.css']
+  styleUrls: ['./menu.component.css'],
+  animations: [
+    fadeInDownOnEnterAnimation(),
+  ]
 })
 export class MenuComponent implements OnDestroy {
   destroyed = new Subject<void>();
@@ -43,51 +48,44 @@ export class MenuComponent implements OnDestroy {
   }
 
   selectTypeReport(typeReport: string) {
+    this.dataSource = []
     this.reportType = typeReport
   }
 
-  receiveData(data: any) {
-    console.log(data)
-    this.displayedColumns = [
-      { key: 'alterno', titulo: 'Alterno' },
-      { key: 'detalle', titulo: 'Detalle' },
-      { key: 'estado', titulo: 'Estado' },
-      { key: 'fecha_registro', titulo: 'Fecha' }
-    ];
-    // if (data.typeTramiteForReport === 'externo') {
-    //   this.displayedColumns = [
-    //     { key: 'alterno', titulo: 'Alterno' },
-    //     { key: 'detalle', titulo: 'Detalle' },
-    //     { key: 'estado', titulo: 'Estado' },
-    //     { key: 'fecha_registro', titulo: 'Fecha' }
-    //   ];
-    // }
-    // else if (data.group === 'tramites_internos') {
-    //   this.displayedColumns = [
-    //     { key: 'alterno', titulo: 'Alterno' },
-    //     { key: 'detalle', titulo: 'Detalle' },
-    //     { key: 'estado', titulo: 'Estado' },
-    //     { key: 'remitente', titulo: 'Remitente' },
-    //     { key: 'destinatario', titulo: 'Remitente' },
-    //     { key: 'cite', titulo: 'Cite' },
-    //     { key: 'fecha_registro', titulo: 'Fecha' }
-    //   ];
-    // }
+  receiveData(reportData: SendDataReportEvent) {
+    this.displayedColumns = reportData.group === 'tramites_externos'
+      ? [
+        { key: 'alterno', titulo: 'Alterno' },
+        { key: 'detalle', titulo: 'Detalle' },
+        { key: 'estado', titulo: 'Estado' },
+        { key: 'fecha_registro', titulo: 'Fecha' }
+      ]
+      : this.displayedColumns = [
+        { key: 'alterno', titulo: 'Alterno' },
+        { key: 'detalle', titulo: 'Detalle' },
+        { key: 'estado', titulo: 'Estado' },
+        { key: 'remitente', titulo: 'Remitente' },
+        { key: 'destinatario', titulo: 'Remitente' },
+        { key: 'cite', titulo: 'Cite' },
+        { key: 'fecha_registro', titulo: 'Fecha' }
+      ];
     this.dataSource = []
-    this.dataSource = [...data]
+    this.dataSource = [...reportData.data]
     switch (this.reportType) {
-      case 'solicitante':
-        createPDFSolicitante(data.paramsForSearch, this.dataSource)
+      case 'ficha':
+        createPDFFicha(reportData)
+       
         break;
       case 'unidad':
-        createPDFUnidad(data)
+        // createPDFUnidad(data)
         break;
 
       default:
         break;
     }
 
-  }
 
+  }
+  
 
 }

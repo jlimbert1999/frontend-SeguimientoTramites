@@ -5,19 +5,14 @@ import { TDocumentDefinitions, Table, TableOfContent } from "pdfmake/interfaces"
 import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
 import { SendDataReportEvent } from "../models/sendData.model";
+import { createHeaderParamsPDF } from "../helpers/PDFHeaderParams";
 
 
-export async function createPDFUnidad({ params, data }: SendDataReportEvent) {
+export async function createPDFFicha({ params, data }: SendDataReportEvent) {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     let docDefinition: TDocumentDefinitions
-    let tableParams: Table = {
-        headerRows: 1,
-        dontBreakRows: true,
-        widths: [150, '*'],
-        body: [[{ text: 'CAMPO', style: 'tableHeader', alignment: 'center' }, { text: 'VALOR A BUSCAR', style: 'tableHeader', alignment: 'center' }]]
-
-    }
+   
     let tableData: Table = {
         headerRows: 1,
         dontBreakRows: true,
@@ -77,7 +72,7 @@ export async function createPDFUnidad({ params, data }: SendDataReportEvent) {
                 ]
             },
             { text: '\nParametros de busqueda:\n ', style: 'subheader' },
-            { table: tableParams },
+            { table: createHeaderParamsPDF(params) },
             { text: `\nTOTAL RESULTADOS:\n `, style: 'subheader', alignment: 'center' },
             {
                 style: 'tableExample',
@@ -107,3 +102,4 @@ export async function createPDFUnidad({ params, data }: SendDataReportEvent) {
     }
     pdfMake.createPdf(docDefinition).open();
 }
+

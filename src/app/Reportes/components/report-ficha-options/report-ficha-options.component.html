@@ -1,5 +1,5 @@
 <div class="row">
-    <mat-radio-group [(ngModel)]="typeTramiteForReport" aria-label="Select an option">
+    <mat-radio-group [(ngModel)]="groupProcedure" aria-label="Select an option">
         <mat-radio-button value="tramites_externos">Externo</mat-radio-button>
         <mat-radio-button value="tramites_internos">Interno</mat-radio-button>
     </mat-radio-group>
@@ -44,11 +44,6 @@
             <mat-error *ngIf="options.controls.start.hasError('matStartDateInvalid')">Rango invalido</mat-error>
             <mat-error *ngIf="options.controls.end.hasError('matEndDateInvalid')">Rango invalido</mat-error>
         </mat-form-field>
-
     </div>
-
-  
-
 </form>
-
-<button (click)="generateReport()" mat-raised-button>Generar</button>
+<button (click)="generateReport()"  mat-raised-button>Generar</button>

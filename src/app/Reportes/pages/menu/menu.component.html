@@ -24,19 +24,19 @@
                 </div>
 
                 <div [ngSwitch]="reportType">
-                    <div *ngSwitchCase="'solicitante'">
+                    <div *ngSwitchCase="'solicitante'" [@fadeInDownOnEnter]>
                         <app-report-solicitante-options
                             (sendDataEvent)="receiveData($event)"></app-report-solicitante-options>
                     </div>
 
-                    <div *ngSwitchCase="'unidad'">
+                    <div *ngSwitchCase="'unidad'"  [@fadeInDownOnEnter]>
                         <app-report-unidad-options (sendDataEvent)="receiveData($event)"></app-report-unidad-options>
                     </div>
-                    <div *ngSwitchCase="'usuario'">
+                    <div *ngSwitchCase="'usuario'"  [@fadeInDownOnEnter]>
                         <app-report-usuario-options></app-report-usuario-options>
                     </div>
-                    <div *ngSwitchCase="'ficha'">
-                        <app-report-ficha-options (dataOutput)="receiveData($event)"></app-report-ficha-options>
+                    <div *ngSwitchCase="'ficha'"  [@fadeInDownOnEnter]>
+                        <app-report-ficha-options (sendDataEvent)="receiveData($event)"></app-report-ficha-options>
                     </div>
                     
 
@@ -46,10 +46,9 @@
         </mat-drawer>
         <mat-drawer-content>
             <mat-toolbar>
-                <span>Reportes</span>
+                <span>{{reportType|uppercase}}</span>
                 <span class="example-spacer"></span>
-                <button matTooltip="Generar reporte" [disabled]="dataSource.length===0" mat-icon-button
-                    class="example-icon favorite-icon">
+                <button matTooltip="Generar reporte" [disabled]="dataSource.length===0" mat-icon-button>
                     <mat-icon>picture_as_pdf</mat-icon>
                 </button>
                 <button matTooltip="Opciones reporte" (click)="drawer.toggle()" mat-icon-button class="example-icon">
