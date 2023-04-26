@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from '../auth/login/login.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { HomeComponent } from './home.component';
+import { BusquedaComponent } from '../Reportes/pages/busqueda/busqueda.component';
 
 const routes: Routes = [
     {
@@ -34,6 +35,11 @@ const routes: Routes = [
                 loadChildren: () =>
                     import(`../Bandejas/bandejas-routing.module`).then((m) => m.BandejasRoutingModule),
             },
+            {
+                path: 'busquedas',
+                component: BusquedaComponent
+            }
+
         ]
     },
     {

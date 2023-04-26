@@ -27,7 +27,6 @@ import { ReportUsuarioOptionsComponent } from './components/report-usuario-optio
 
 @NgModule({
   declarations: [
-   
     BusquedaComponent,
     MenuComponent,
     ReportFichaOptionsComponent,
@@ -56,7 +55,7 @@ import { ReportUsuarioOptionsComponent } from './components/report-usuario-optio
     LayoutModule,
     NgxChartsModule,
     ConfiguracionesModule,
-    NgxMatSelectSearchModule,
+    NgxMatSelectSearchModule
   ],
   providers: [
     

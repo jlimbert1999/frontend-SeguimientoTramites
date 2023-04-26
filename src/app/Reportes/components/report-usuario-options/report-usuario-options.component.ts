@@ -14,7 +14,7 @@ export class ReportUsuarioOptionsComponent {
   accounts: any[] = []
   groupProcedure: groupProcedure = 'tramites_externos'
   options = this._formBuilder.group({
-    id_cuenta: '',
+    cuenta: '',
     estado: null,
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
@@ -33,13 +33,15 @@ export class ReportUsuarioOptionsComponent {
   }
 
   selectAccount(data: any) {
-    this.options.get('id_cuenta')?.setValue(data._id)
-   
+    this.options.get('cuenta')?.setValue(data._id)
+
   }
   generateReport() {
-    const account = this.accounts.find(acc => acc._id === this.options.get('id_cuenta')?.value)
+    let extraDataPDF = { ...this.options.value }
+    const account = this.accounts.find(acc => acc._id == this.options.get('cuenta')?.value)
+    extraDataPDF['cuenta'] = account.funcionario.fullname
     this.reporteService.getReportByAccount(this.groupProcedure, this.options.value).subscribe(data => {
-      this.sendDataEvent.emit({ data, group: this.groupProcedure, params: this.options.value, extras: { account } })
+      this.sendDataEvent.emit({ data, group: this.groupProcedure, params: extraDataPDF, title: 'USUARIO' })
     })
   }
 }

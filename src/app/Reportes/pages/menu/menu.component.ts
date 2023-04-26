@@ -72,20 +72,7 @@ export class MenuComponent implements OnDestroy {
       ];
     this.dataSource = []
     this.dataSource = [...reportData.data]
-    switch (this.reportType) {
-      case 'ficha':
-        createPDFFicha(reportData)
-        break;
-      case 'usuario':
-        createPDFUsuario(reportData)
-        break;
-      case 'unidad':
-        // createPDFUsuario(reportData)
-        break;
-
-      default:
-        break;
-    }
+    createPDFFicha(reportData)
 
 
   }

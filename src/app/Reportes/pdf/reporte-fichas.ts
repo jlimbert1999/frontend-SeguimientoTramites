@@ -8,25 +8,10 @@ import { SendDataReportEvent } from "../models/sendData.model";
 import { createHeaderParamsPDF } from "../helpers/PDFHeaderParams";
 
 
-export async function createPDFFicha({ params, data, group }: SendDataReportEvent) {
+export async function createPDFFicha({ params, data, group, title }: SendDataReportEvent) {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     let docDefinition: TDocumentDefinitions
-
-    let tableData: Table = {
-        headerRows: 1,
-        dontBreakRows: true,
-        widths: [100,],
-        body: [[
-            { text: 'Alterno', style: 'tableHeader', alignment: 'center' },
-            { text: 'Descripcion', style: 'tableHeader', alignment: 'center' },
-            { text: 'Estado', style: 'tableHeader', alignment: 'center' },
-            { text: 'Solicitante', style: 'tableHeader', alignment: 'center' },
-            { text: 'Fecha registro', style: 'tableHeader', alignment: 'center' }
-        ]]
-    }
-
-
     docDefinition = {
         pageOrientation: 'landscape',
         footer: { text: `Generado en fecha: ${moment(new Date()).format('DD-MM-YYYY HH:mm:ss')} `, margin: [20, 0, 0, 0] },
@@ -40,7 +25,7 @@ export async function createPDFFicha({ params, data, group }: SendDataReportEven
                         alignment: 'left',
                     },
                     {
-                        text: `REPORTE BUSQUEDA FICHA ${group === 'tramites_externos' ? 'EXTERNOS' : 'INTERNOS'}`,
+                        text: `REPORTE ${title} ${group === 'tramites_externos' ? 'EXTERNOS' : 'INTERNOS'}`,
                         style: 'title',
                         alignment: 'center',
                         width: '*'

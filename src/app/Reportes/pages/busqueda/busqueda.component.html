@@ -1,245 +1,202 @@
-<app-toolbar title="REPORTE"></app-toolbar>
-<div class="container-fluid" [@fadeInOnEnter]>
-  <mat-card class="shipping-card">
-    <mat-card-header>
-      <mat-card-title>Busqueda avanzada</mat-card-title>
-      <mat-card-subtitle>Seleccione el tipo de tramite que desea buscar</mat-card-subtitle>
-    </mat-card-header>
-    <section class="example-section">
-      <label class="example-margin">Tramites:</label>
-      <mat-radio-group [(ngModel)]="reporteService.grupo" (change)="selectTypeSearch($event.value)">
-        <mat-radio-button class="example-margin" [value]="'EXTERNO'">Externos</mat-radio-button>
-        <mat-radio-button class="example-margin" [value]="'INTERNO'">Internos</mat-radio-button>
+<app-toolbar title="BUSQUEDA"></app-toolbar>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-6">
+      <mat-radio-group [(ngModel)]="groupProcedure" (change)="selectGroupProcedure()">
+        <mat-radio-button value="tramites_externos">Externos</mat-radio-button>
+        <mat-radio-button value="tramites_internos">Internos</mat-radio-button>
       </mat-radio-group>
-    </section>
-    <form [formGroup]="searchForm">
-      <mat-card-content *ngIf="reporteService.grupo">
-        <div class="row">
-          <div class="col-sm-3">
-            <mat-form-field class="full-width">
-              <input matInput placeholder="Alterno" formControlName="alterno">
-            </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <form [formGroup]="options">
+      <mat-accordion class="example-headers-align" multi>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Parametros tramite
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="box-container">
+            <div class="row">
+              <div class="col-sm-3">
+                <mat-form-field appearance="fill" class="example-full-width">
+                  <mat-label>Alterno</mat-label>
+                  <input matInput formControlName="alterno">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-3">
+                <mat-form-field appearance="fill" class="example-full-width">
+                  <mat-label>Cite</mat-label>
+                  <input matInput formControlName="cite">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Referencia</mat-label>
+                  <textarea matInput formControlName="detalle" placeholder="Ingrese una referencia"></textarea>
+                </mat-form-field>
+              </div>
+
+            </div>
           </div>
-          <div class="col-sm-3">
-            <mat-form-field class="full-width">
-              <mat-select placeholder="Estado" formControlName="estado">
-                <mat-option [value]="null"> - </mat-option>
-                <mat-option *ngFor="let estado of estados" [value]="estado">
-                  {{estado }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Parametros solicitante
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div *ngIf="groupProcedure==='tramites_externos'">
+            <div class="row">
+              <div class="col-sm-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Solicitante</mat-label>
+                  <input matInput placeholder="Nombre / Dni" formControlName="solicitante">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Representante</mat-label>
+                  <input matInput placeholder="Nombre / Dni" formControlName="representante">
+                </mat-form-field>
+              </div>
+            </div>
+
           </div>
-          <div class="col-sm-3">
-            <mat-form-field class="full-width">
-              <input matInput placeholder="Cite" formControlName="cite">
-            </mat-form-field>
+          <div *ngIf="groupProcedure==='tramites_internos'">
+            <div class="row">
+              <div class="col-sm-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Remitente</mat-label>
+                  <input matInput placeholder="Nombre / Cargo" formControlName="remitente">
+                </mat-form-field>
+              </div>
+              <div class="col-sm-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Destinatario</mat-label>
+                  <input matInput placeholder="Nombre / Cargo" formControlName="destinatario">
+                </mat-form-field>
+              </div>
+            </div>
           </div>
-          <div class="col-sm-3">
-            <mat-form-field class="full-width">
-              <mat-label>Ingrese el intervalo</mat-label>
-              <mat-date-range-input [rangePicker]="picker">
-                <input matStartDate formControlName="start" placeholder="Start date">
-                <input matEndDate formControlName="end" placeholder="End date">
-              </mat-date-range-input>
-              <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-date-range-picker #picker></mat-date-range-picker>
-              <mat-error *ngIf="searchForm.controls.start.hasError('matStartDateInvalid')">Invalid start
-                date</mat-error>
-              <mat-error *ngIf="searchForm.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
-            </mat-form-field>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Mas parametros
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="row">
+            <div class="col-sm-7">
+              <app-simple-mat-select-search [pathPropertyOfObjectDisplay]="'nombre'"
+                (eventSelectedOption)="selectTypeProcedure($event.value)" [placehorder]="'Buscar tipo'"
+                [data]="typesProcedures" [isRequired]="true"></app-simple-mat-select-search>
+            </div>
+            <div class="col-sm-2">
+              <mat-form-field appearance="fill">
+                <mat-label>Estado</mat-label>
+                <mat-select formControlName="estado">
+                  <mat-option *ngFor="let state of states" [value]="state">{{state}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field appearance="fill">
+                <mat-label>Ingrese un rango</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                  <input matStartDate formControlName="start" placeholder="Fecha inicial">
+                  <input matEndDate formControlName="end" placeholder="Fecha final">
+                </mat-date-range-input>
+                <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+                <mat-error *ngIf="options.get('start')?.hasError('matStartDateInvalid')">Rango invalido</mat-error>
+                <mat-error *ngIf="options.get('end')?.hasError('matEndDateInvalid')">Rango invalido</mat-error>
+              </mat-form-field>
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div *ngIf="reporteService.grupo==='EXTERNO'" class="col-sm-2">
-            <mat-form-field class="example-full-width">
-              <mat-label>Segmento</mat-label>
-              <mat-select (selectionChange)="getTypes($event.value)">
-                <mat-option *ngFor="let segmento of segmentos" [value]="segmento">
-                  {{segmento|uppercase}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="col-sm-5">
-            <mat-form-field class="example-full-width">
-              <mat-label>Seleccione el tipo de tramite</mat-label>
-              <mat-select formControlName="tipo_tramite">
-                <mat-option [value]="null">
-                  -
-                </mat-option>
-                <mat-option *ngFor="let tipo of tipos" [value]="tipo.id_tipoTramite">
-                  {{tipo.nombre| uppercase}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="col-sm-5">
-            <mat-form-field class="full-width">
-              <mat-label>Descripcion del tramite</mat-label>
-              <textarea matInput formControlName="detalle"></textarea>
-            </mat-form-field>
-          </div>
-        </div>
-      </mat-card-content>
-      <mat-divider></mat-divider>
-      <mat-card-actions>
-        <button mat-stroked-button color="primary" [disabled]="!reporteService.grupo"
-          (click)="searchExternos()">Buscar</button>
-        <button mat-stroked-button color="primary" (click)="reset()">Restablecer</button>
-        <span class="example-spacer"></span>
-        <button mat-button color="primary" (click)="generatePDF()">
-          <mat-icon>picture_as_pdf</mat-icon>
-          Generar
-        </button>
-      </mat-card-actions>
+        </mat-expansion-panel>
+      </mat-accordion>
     </form>
-  </mat-card>
+  </div>
+  <div style="padding: 20px;">
+    <button (click)="generateReport()" mat-raised-button color="primary">Generar</button>
+  </div>
+  <div class="example-container mat-elevation-z8">
+    <div class="example-table-container">
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="alterno">
+          <th mat-header-cell *matHeaderCellDef> Alterno </th>
+          <td mat-cell *matCellDef="let element">
+            <a [routerLink]="['ficha-interna', element._id]">
+              {{element.alterno}}
+            </a>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="tipo_tramite">
+          <th mat-header-cell *matHeaderCellDef> Tramite </th>
+          <td mat-cell *matCellDef="let element"> {{element.tipo_tramite.nombre}} </td>
+        </ng-container>
 
-  <ng-container
-    [ngTemplateOutlet]="reporteService.grupo === 'EXTERNO' ? formSearchExterno : reporteService.grupo === 'INTERNO' ? formSearchInterno : formSearchEmpty">
-  </ng-container>
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef> Referencia </th>
+          <td mat-cell *matCellDef="let element"> {{element.detalle|uppercase}} </td>
+        </ng-container>
+        <!-- <ng-container matColumnDef="solicitante">
+          <th mat-header-cell *matHeaderCellDef> Solicitante </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.remitente.nombre |titlecase}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="destinatario">
+          <th mat-header-cell *matHeaderCellDef> Destinatario </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.destinatario.nombre|titlecase}}
+          </td>
+        </ng-container> -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef> Estado </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="badge" [ngClass]="element.estado|state">
+              {{element.estado|uppercase}}
+            </span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="cite">
+          <th mat-header-cell *matHeaderCellDef> Cite </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.cite!=""?element.cite:'S / C'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="fecha_registro">
+          <th mat-header-cell *matHeaderCellDef> Fecha </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.fecha_registro|date:'short'}}
+          </td>
+        </ng-container>
 
-  <ng-template #formSearchExterno>
-    <div class="example-container mat-elevation-z8">
-      <div class="example-table-container">
-        <table mat-table [dataSource]="dataSource" [class.isMobile]="'isMobile'">
-          <ng-container matColumnDef="alterno">
-            <th mat-header-cell *matHeaderCellDef>Alterno</th>
-            <td mat-cell *matCellDef="let row">
-              <a (click)="View(row._id)">
-                {{row.alterno}}
-              </a>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="tramite">
-            <th mat-header-cell *matHeaderCellDef>Tramite</th>
-            <td mat-cell *matCellDef="let row">{{row.tipo_tramite.nombre|uppercase}}</td>
-          </ng-container>
-          <ng-container matColumnDef="descripcion">
-            <th mat-header-cell *matHeaderCellDef>Referencia</th>
-            <td mat-cell *matCellDef="let row">
-              {{row.detalle}}
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="solicitante">
-            <th mat-header-cell *matHeaderCellDef>Solicitante</th>
-            <td mat-cell *matCellDef="let row">
-              {{row.solicitante|solicitante}}
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="estado">
-            <th mat-header-cell *matHeaderCellDef> Estado </th>
-            <td mat-cell *matCellDef="let row">
-              <span class="badge" [ngClass]="row.estado|state">
-                {{row.estado}}
-              </span>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="fecha_registro">
-            <th mat-header-cell *matHeaderCellDef>Fecha</th>
-            <td mat-cell *matCellDef="let row">{{row.fecha_registro|date:'short'}}</td>
-          </ng-container>
-          <ng-container matColumnDef="opciones" justify="end">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let row">
-              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
+        <ng-container matColumnDef="opciones">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
 
-              </mat-menu>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-      
-      </div>
-      <mat-paginator (page)="pagination($event)" [pageIndex]="reporteService.offset" [length]="reporteService.length"
-      [pageSizeOptions]="[10, 20, 30, 50]" showFirstLastButtons></mat-paginator>
-    
+            </mat-menu>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
     </div>
-
-  </ng-template>
-
-  <ng-template #formSearchInterno>
-    <div class="example-container mat-elevation-z8">
-      <div class="example-table-container">
-        <table mat-table [dataSource]="dataSource">
-          <ng-container matColumnDef="alterno">
-            <th mat-header-cell *matHeaderCellDef> Alterno </th>
-            <td mat-cell *matCellDef="let element">
-              <a [routerLink]="['ficha-interna', element._id]">
-                {{element.alterno}}
-              </a>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="tipo_tramite">
-            <th mat-header-cell *matHeaderCellDef> Tramite </th>
-            <td mat-cell *matCellDef="let element"> {{element.tipo_tramite.nombre}} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="detalle">
-            <th mat-header-cell *matHeaderCellDef> Referencia </th>
-            <td mat-cell *matCellDef="let element"> {{element.detalle|uppercase}} </td>
-          </ng-container>
-          <ng-container matColumnDef="solicitante">
-            <th mat-header-cell *matHeaderCellDef> Solicitante </th>
-            <td mat-cell *matCellDef="let element">
-              {{element.remitente.nombre |titlecase}}
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="destinatario">
-            <th mat-header-cell *matHeaderCellDef> Destinatario </th>
-            <td mat-cell *matCellDef="let element">
-              {{element.destinatario.nombre|titlecase}}
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="estado">
-            <th mat-header-cell *matHeaderCellDef> Estado </th>
-            <td mat-cell *matCellDef="let element">
-              <span class="badge" [ngClass]="element.estado|state">
-                {{element.estado|uppercase}}
-              </span>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="cite">
-            <th mat-header-cell *matHeaderCellDef> Cite </th>
-            <td mat-cell *matCellDef="let element">
-              {{element.cite!=""?element.cite:'S / C'}}
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="fecha">
-            <th mat-header-cell *matHeaderCellDef> Fecha </th>
-            <td mat-cell *matCellDef="let element">
-              {{element.fecha_registro|date:'short'}}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="opciones">
-            <th mat-header-cell *matHeaderCellDef> </th>
-            <td mat-cell *matCellDef="let element">
-              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-
-              </mat-menu>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-      </div>
-      <mat-paginator (page)="pagination($event)" [pageIndex]="reporteService.offset" [length]="reporteService.length"
-        [pageSizeOptions]="[10, 20, 30, 50]" showFirstLastButtons></mat-paginator>
-    </div>
+    <app-paginator (page)="generateReport()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
+  </div>
 
 
-  </ng-template>
 
-  <ng-template #formSearchEmpty>
 
-  </ng-template>
+</div>

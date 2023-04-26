@@ -1,116 +1,43 @@
-<div class="row">
-    <mat-form-field appearance="fill">
-        <mat-label>Ingrese el rango</mat-label>
-        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-            <input matStartDate formControlName="start" placeholder="Fecha inicial">
-            <input matEndDate formControlName="end" placeholder="Fecha final">
-        </mat-date-range-input>
-        <mat-hint>Dia/Mes/Año – Dia/Mes/Año </mat-hint>
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-        <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Fecha inicial invalida</mat-error>
-        <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Fecha final invalida</mat-error>
-    </mat-form-field>
-</div>
-<div class="row">
-    <mat-accordion>
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    CONTRIBUYENTE
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <form [formGroup]="searchFormSolicitante">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="DNI" formControlName="dni">
-                        </mat-form-field>
-                    </div>
-                    <div class="col-sm-6">
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="telefono" formControlName="dni">
-                        </mat-form-field>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Nombre" formControlName="nombre">
-                            <mat-error *ngIf="searchFormSolicitante.get('nombre')?.invalid">Ingrese al menos 3
-                                caracteres</mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-sm-6">
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Apellido paterno" formControlName="paterno">
-                            <mat-error *ngIf="searchFormSolicitante.get('paterno')?.invalid">Ingrese al menos 3
-                                caracteres</mat-error>
-                        </mat-form-field>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Apellido materno" formControlName="paterno">
-                            <mat-error *ngIf="searchFormSolicitante.get('materno')?.invalid">Ingrese al menos 3
-                                caracteres</mat-error>
-                        </mat-form-field>
-                    </div>
-                </div>
-                <div class="row">
-                    <button (click)="getReporteSolicitante()" mat-raised-button color="primary">Generar</button>
-                </div>
-            </form>
-        </mat-expansion-panel>
-        <mat-expansion-panel (opened)=" true">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    REPRESENTANTE
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <form [formGroup]="searchFormRepresentante">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="DNI" formControlName="dni">
-                        </mat-form-field>
-                    </div>
-                    <div class="col-sm-6">
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="telefono" formControlName="dni">
-                        </mat-form-field>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Nombre" formControlName="nombre">
-                            <mat-error *ngIf="searchFormSolicitante.get('nombre')?.invalid">Ingrese al menos 3
-                                caracteres</mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-sm-6">
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Apellido paterno" formControlName="paterno">
-                            <mat-error *ngIf="searchFormSolicitante.get('paterno')?.invalid">Ingrese al menos 3
-                                caracteres</mat-error>
-                        </mat-form-field>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Apellido materno" formControlName="paterno">
-                            <mat-error *ngIf="searchFormSolicitante.get('materno')?.invalid">Ingrese al menos 3
-                                caracteres</mat-error>
-                        </mat-form-field>
-                    </div>
-                </div>
-                <div class="row">
-                    <button (click)="getReporteRepresentante()" mat-raised-button color="primary">Generar</button>
-                </div>
-            </form>
-        </mat-expansion-panel>
-    </mat-accordion>
-</div>
+<form [formGroup]="options">
+    <div class="row">
+        <div class="col-sm-6">
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="DNI" formControlName="dni">
+                <mat-error *ngIf="options.get('dni')?.invalid">{{getErrorDniMessage()}}</mat-error>
+            </mat-form-field>
+
+        </div>
+        <div class="col-sm-6">
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="telefono" formControlName="dni">
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="Nombre" formControlName="nombre">
+                <mat-error *ngIf="options.get('nombre')?.invalid">Ingrese al menos 3
+                    caracteres</mat-error>
+            </mat-form-field>
+        </div>
+        <div class="col-sm-6">
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="Apellido paterno" formControlName="paterno">
+                <mat-error *ngIf="options.get('paterno')?.invalid">Ingrese al menos 3
+                    caracteres</mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="Apellido materno" formControlName="paterno">
+                <mat-error *ngIf="options.get('materno')?.invalid">Ingrese al menos 3
+                    caracteres</mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+    <button [disabled]="options.invalid" (click)="getReporteSolicitante()" mat-raised-button
+        color="primary">Generar</button>
+</form>

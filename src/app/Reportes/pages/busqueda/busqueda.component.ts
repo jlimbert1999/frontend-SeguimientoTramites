@@ -1,15 +1,12 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PageEvent } from '@angular/material/paginator';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { fadeInOnEnterAnimation } from 'angular-animations';
-import * as moment from 'moment';
-import { ExternosService } from 'src/app/Tramites/services/externos.service';
-import { InternosService } from 'src/app/Tramites/services/internos.service';
-import Swal from 'sweetalert2';
-import { PDF_busqueda } from '../../pdf/reporte-busqueda';
 import { ReporteService } from '../../services/reporte.service';
 import { Router } from '@angular/router';
+import { MatAccordion } from '@angular/material/expansion';
+import { groupProcedure, statesProcedures } from 'src/app/Tramites/models/ProceduresProperties';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
 
 @Component({
   selector: 'app-busqueda',
@@ -19,6 +16,7 @@ import { Router } from '@angular/router';
     fadeInOnEnterAnimation()
   ]
 })
+
 export class BusquedaComponent implements OnInit {
 
   tipos: any[] = []
@@ -44,129 +42,102 @@ export class BusquedaComponent implements OnInit {
     'OBSERVADO',
     'CONCLUIDO'
   ]
-  displayedColumns: string[] = [];
+  displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'fecha_registro', 'opciones'];
+  colums: { key: string, titulo: string }[] = []
   dataSource: any[] = []
+
+  @ViewChild(MatAccordion) accordion: MatAccordion;
+  typesProcedures: any[] = []
+
+  groupProcedure: groupProcedure = 'tramites_externos'
+  options: FormGroup = this._formBuilder.group({
+    alterno: null,
+    cite: null,
+    detalle: null,
+    solicitante: null,
+    representante: null,
+    tipo_tramite: null,
+    estado: null,
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null),
+  });
+  states = statesProcedures
 
   constructor(
     private fb: FormBuilder,
-    private externoService: ExternosService,
-    private internoService: InternosService,
     public reporteService: ReporteService,
-    private router: Router
+    private router: Router,
+    private _formBuilder: FormBuilder,
+    public paginationService: PaginatorService
   ) {
-    if (this.reporteService.grupo === 'EXTERNO') {
-      this.displayedColumns = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
-      this.externoService.getTypesProcedures().subscribe(data => {
-        this.tipos = data.types
-      })
-    }
-    else {
-      this.displayedColumns = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'opciones']
-      this.internoService.getTypes().subscribe(data => {
-        this.tipos = data
-      })
-    }
+
   }
   ngOnInit(): void {
-
-    if (Object.keys(this.reporteService.searchParams).length > 0) {
-      this.searchForm.patchValue(this.reporteService.searchParams)
-      this.reporteService.getReporteSearch().subscribe(data => {
-        this.dataSource = data
-      })
+    if (Object.keys(this.paginationService.reportParams).length > 0) {
+      this.options.patchValue(this.paginationService.reportParams)
     }
 
   }
 
 
-  selectTypeSearch(type: 'INTERNO' | 'EXTERNO') {
-    this.reporteService.grupo = type
-    this.tipos = []
-    this.dataSource = []
-    if (type === 'EXTERNO') {
-      this.displayedColumns = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
-      this.externoService.getTypesProcedures().subscribe(data => {
-        this.tipos = data.types
-      })
-    }
-    else {
-      this.displayedColumns = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'opciones']
-      this.internoService.getTypes().subscribe(data => {
-        this.tipos = data
-      })
-
-    }
-  }
-
-  getTypes(segmento: string) {
-    // this.externoService.getTypes(segmento).subscribe(data => {
-    //   this.tipos = data
-    // })
-  }
-
-  searchExternos() {
-    this.campos = []
-    this.reporteService.params = new HttpParams()
-    this.reporteService.searchParams = {}
-    for (const [key, value] of Object.entries(this.searchForm.value)) {
-      if (value !== null && value != "") {
-        Object.assign(this.reporteService.searchParams, { [key]: value })
-        switch (key) {
-          case 'tipo_tramite':
-            const type_tramite = this.tipos.find(tipo => tipo.id_tipoTramite == value)
-            this.campos.push(['Tipo de tramite', type_tramite.nombre])
-            break;
-          case 'end':
-            this.campos.push(['Fecha fin', moment(value).format('DD-MM-YYYY')])
-            break;
-          case 'start':
-            this.campos.push(['Fecha inicio', moment(value).format('DD-MM-YYYY')])
-            break;
-          default:
-            this.campos.push([key, value])
-            break;
-        }
-      }
-    }
-    if (this.reporteService.grupo) {
-      this.reporteService.getReporteSearch().subscribe(data => {
-        this.dataSource = data
-      })
-    }
-  }
-
-
-  reset() {
-    this.dataSource = []
-    this.reporteService.length = 0
-    this.searchForm.reset()
-  }
-  generatePDF() {
-    if (this.campos.length > 0) {
-      Swal.fire({
-        title: 'Generando reporte....',
-        text: `Numero de registros: ${this.reporteService.length}. Por favor espere`,
-        allowOutsideClick: false,
-      });
-      Swal.showLoading();
-      this.reporteService.getReporteSearchNotPaginated(this.reporteService.grupo, this.reporteService.length).subscribe(tramites => {
-        PDF_busqueda('jose limbert', this.reporteService.grupo, this.campos, tramites, this.reporteService.length)
-        Swal.close()
-      })
-    }
-
-  }
-  pagination(page: PageEvent) {
-    this.reporteService.offset = page.pageIndex
-    this.reporteService.limit = page.pageSize
-    this.reporteService.getReporteSearch().subscribe(data => {
-      this.dataSource = data
-    })
-  }
 
   View(id: string) {
     this.router.navigate(['home/reportes/busquedas/ficha-externa', id])
   }
 
+  selectGroupProcedure() {
+    if (this.groupProcedure === 'tramites_externos') {
+      this.options = this._formBuilder.group({
+        alterno: null,
+        cite: null,
+        detalle: null,
+        solicitante: null,
+        representante: null,
+        tipo_tramite: null,
+        estado: null,
+        start: new FormControl<Date | null>(null),
+        end: new FormControl<Date | null>(null),
+      })
+
+    }
+    else {
+      this.options = this._formBuilder.group({
+        alterno: null,
+        cite: null,
+        detalle: null,
+        remitente: null,
+        destinatario: null,
+        tipo_tramite: null,
+        estado: null,
+        start: new FormControl<Date | null>(null),
+        end: new FormControl<Date | null>(null),
+      })
+      this.colums = [
+        { key: 'alterno', titulo: 'Alterno' },
+        { key: 'detalle', titulo: 'Detalle' },
+        { key: 'estado', titulo: 'Estado' },
+        { key: 'remitente', titulo: 'Remitente' },
+        { key: 'destinatario', titulo: 'Remitente' },
+        { key: 'cite', titulo: 'Cite' },
+        { key: 'fecha_registro', titulo: 'Fecha' }
+      ];
+    }
+
+
+    this.reporteService.getTypesProceduresForReports(this.groupProcedure).subscribe(data => {
+      this.typesProcedures = data
+    })
+  }
+  selectTypeProcedure(type: any) {
+    this.options.get('tipo_tramite')?.setValue(type.id_tipoTramite)
+  }
+
+  generateReport() {
+    this.reporteService.getReporteBySearch(this.groupProcedure, this.options.value, this.paginationService.limit, this.paginationService.offset).subscribe((data => {
+      this.dataSource = [...data.procedures]
+      this.paginationService.length = data.length
+    }))
+  }
+  
 
 }

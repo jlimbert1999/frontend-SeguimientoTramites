@@ -7,7 +7,6 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 import { Externo, Representante, Solicitante } from '../../models/Externo.interface';
 import { ExternosService } from '../../services/externos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { ExternoDto, RepresentanteDto, SolicitanteDto } from '../../models/Externo.dto';
 import { DialogExternoComponent } from '../../dialogs/dialog-externo/dialog-externo.component';
 import { DialogRemisionComponent } from 'src/app/Bandejas/dialogs/dialog-remision/dialog-remision.component';
 import { HojaRutaExterna } from '../../pdfs/hoja-ruta-externa';
@@ -26,19 +25,15 @@ import { Ficha } from '../../pdfs/ficha';
 export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
 
   Data: Externo[] = []
-
   displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
-  filterOpions = [
-    { value: 'solicitante', viewValue: 'SOLICITANTE / DNI' },
-    { value: 'alterno', viewValue: 'ALTERNO' }
-  ]
   constructor(
     public dialog: MatDialog,
     public authService: AuthService,
     public externoService: ExternosService,
     public paginatorService: PaginatorService,
     private router: Router
-  ) { }
+  ) {
+  }
 
   ngAfterViewInit(): void {
 
@@ -85,7 +80,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   Edit(tramite: Externo) {
     const dialogRef = this.dialog.open(DialogExternoComponent, {
-      width: '1000px',
+      width: '1600px',
       data: tramite,
       disableClose: true
     });

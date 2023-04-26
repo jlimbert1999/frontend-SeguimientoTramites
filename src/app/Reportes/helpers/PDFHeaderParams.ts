@@ -17,7 +17,8 @@ export function createHeaderParamsPDF(params: any): Table {
                 case 'end':
                     tableParams.body.push([{ text: 'FECHA FIN', bold: true }, { text: moment(params[key]).format('DD-MM-YYYY HH:mm:ss') }])
                     break;
-                case 'id_cuenta':
+                case 'tipo_tramite':
+                    tableParams.body.push([{ text: 'TIPO DE TRAMITE', bold: true }, { text: params[key] }])
                     break;
                 default:
                     tableParams.body.push([{ text: key.toUpperCase(), bold: true }, { text: params[key] }])

@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReporteService } from '../../services/reporte.service';
-import * as moment from 'moment';
+import { SendDataReportEvent } from '../../models/sendData.model';
 
 @Component({
   selector: 'app-report-solicitante-options',
@@ -9,65 +9,32 @@ import * as moment from 'moment';
   styleUrls: ['./report-solicitante-options.component.css']
 })
 export class ReportSolicitanteOptionsComponent {
-  @Output() sendDataEvent = new EventEmitter<any>();
+  @Output() sendDataEvent = new EventEmitter<SendDataReportEvent>();
 
-  searchFormSolicitante = this.fb.group({
-    dni: [null],
-    nombre: [null, Validators.minLength(3)],
-    paterno: [null, Validators.minLength(3)],
-    materno: [null, Validators.minLength(3)],
-    telefono: [null, Validators.minLength(3)]
-  });
-  searchFormRepresentante = this.fb.group({
-    dni: null,
+
+  options = this._formBuilder.group({
+    dni: [null, [Validators.minLength(5), Validators.pattern("^[0-9]*$")]],
     nombre: [null, Validators.minLength(3)],
     paterno: [null, Validators.minLength(3)],
     materno: [null, Validators.minLength(3)],
     telefono: [null, Validators.minLength(3)]
   });
 
-  range = new FormGroup({
-    start: new FormControl<Date | null>(null),
-    end: new FormControl<Date | null>(null),
-  });
-
-
-
-
-  constructor(private fb: FormBuilder, private reporteService: ReporteService) {
-
+  constructor(private _formBuilder: FormBuilder, private reporteService: ReporteService) {
   }
 
   getReporteSolicitante() {
-    let params = {}
-    for (const [key, value] of Object.entries(this.searchFormSolicitante.value)) {
-      if (value !== null && value != "") {
-        Object.assign(params, { [key]: value })
-      }
-    }
-    if (Object.keys(params).length === 0 || this.searchFormSolicitante.invalid) return
-    if (this.range.get('start')?.value) Object.assign(params, { start: this.range.get('start')?.value!.toISOString() })
-    if (this.range.get('end')?.value) Object.assign(params, { end: this.range.get('end')?.value!.toISOString() })
-    this.reporteService.getReporteSolicitante(params).subscribe(data => {
-      this.sendDataEvent.emit({
-        data,
-        typeTramiteForReport: 'externo',
-        paramsForSearch: params
-      })
+    this.reporteService.getReportByPetitioner(this.options.value).subscribe(data => {
+      this.sendDataEvent.emit({ data, group: 'tramites_externos', params: this.options.value, title:'SOLICITANTE' })
     })
   }
 
-  getReporteRepresentante() {
-    let params = {}
-    for (const [key, value] of Object.entries(this.searchFormRepresentante.value)) {
-      if (value !== null && value != "") {
-        Object.assign(params, { [key]: value })
-      }
+  getErrorDniMessage() {
+    if (this.options.get('dni')?.hasError('pattern')) {
+      return 'Solo numeros';
     }
-    if (Object.keys(params).length === 0 || this.searchFormRepresentante.invalid) return
-    this.reporteService.getReporteRepresentante(params, this.range.get('start')?.value!, this.range.get('end')?.value!).subscribe(data => {
-      this.sendDataEvent.emit({ data, typeTramiteForReport: 'externo' })
-      console.log(data)
-    })
+    return this.options.get('dni')?.hasError('minlength') ? 'Ingrese al menos 5 caracteres' : '';
   }
+
+
 }

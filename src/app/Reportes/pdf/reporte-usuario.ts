@@ -8,7 +8,7 @@ import { SendDataReportEvent } from "../models/sendData.model";
 import { createHeaderParamsPDF } from "../helpers/PDFHeaderParams";
 
 
-export async function createPDFUsuario({ params, data, group, extras }: SendDataReportEvent) {
+export async function createPDFUsuario({ params, data, group }: SendDataReportEvent) {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     let docDefinition: TDocumentDefinitions
@@ -21,10 +21,7 @@ export async function createPDFUsuario({ params, data, group, extras }: SendData
                 { text: 'FUNCIONARIO', style: 'tableHeader', alignment: 'center' },
                 { text: 'CARGO', style: 'tableHeader', alignment: 'center' },
             ],
-            [
-                extras.account.funcionario.fullname,
-                extras.account.funcionario.cargo,
-            ]
+           
         ]
     }
     docDefinition = {

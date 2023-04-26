@@ -15,6 +15,10 @@ export class PaginatorService {
   // for mails
   type: 'EXTERNO' | 'INTERNO' | undefined
 
+  // for reportsearch
+  reportParams: any = {}
+
+
   constructor(
   ) {
   }
@@ -30,6 +34,7 @@ export class PaginatorService {
     this.length = 0
     this.text = ''
     this.type = undefined
+    this.reportParams = {}
   }
 
 

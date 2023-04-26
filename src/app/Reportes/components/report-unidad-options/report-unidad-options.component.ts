@@ -63,30 +63,32 @@ export class ReportUnidadOptionsComponent implements OnInit {
   }
 
   generateReport() {
-    let extras = this.options.value
-    // Object.keys(extras).forEach(key => {
-    //   switch (key) {
-    //     case 'institucion':
-    //       extras[key] = this.institutions.find(inst => inst.id_institucion === this.options.get('institucion'))
-    //       break;
-    //     case 'dependencia':
-    //       extras[key] = this.dependencias.find(dep => dep.id_dependencia === this.options.get('dependencia'))
-    //       break;
-    //     case 'cuenta':
-    //       extras[key] = this.accounts.find(acc => acc._id === this.options.get('cuenta'))
-    //       break;
-    //     case 'tipo_tramite':
-    //       extras[key] = this.accounts.find(type => type.id_tipoTramite === this.options.get('tipo_tramite'))
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // })
-    console.log(this.options.value);
-    // console.log(extras);
-    // this.reporteService.getReportByUnit(this.groupProcedure, this.options.value).subscribe(data => {
-    //   this.sendDataEvent.emit({ data, group: this.groupProcedure, params: this.options.value, extras: {} })
-    // })
+    let extras = { ...this.options.value }
+    for (let key in extras) {
+      switch (key) {
+        case 'institucion':
+          const inst = this.institutions.find(inst => inst.id_institucion == this.options.get('institucion')?.value)
+          extras[key] = inst ? inst.nombre : null
+          break;
+        case 'dependencia':
+          const dep = this.dependencias.find(dep => dep.id_dependencia == this.options.get('dependencia')?.value)
+          extras[key] = dep ? dep.nombre : null
+          break;
+        case 'cuenta':
+          const acc = this.accounts.find(acc => acc._id == this.options.get('cuenta')?.value)
+          extras[key] = acc ? acc.funcionario.fullname : null
+          break;
+        case 'tipo_tramite':
+          const type = this.typesProcedures.find(type => type.id_tipoTramite == this.options.get('tipo_tramite')?.value)
+          extras[key] = type ? type.nombre : null
+          break;
+        default:
+          break;
+      }
+    }
+    this.reporteService.getReportByUnit(this.groupProcedure, this.options.value).subscribe(data => {
+      this.sendDataEvent.emit({ data, group: this.groupProcedure, params: extras, title:'UNIDAD' })
+    })
   }
 
 

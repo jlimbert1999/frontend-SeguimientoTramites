@@ -32,7 +32,7 @@ export class ReportFichaOptionsComponent implements OnInit {
 
   generateReport() {
     this.reporteService.getReporteFicha(this.groupProcedure, this.options.value).subscribe(data => {
-      this.sendDataEvent.emit({ data, group: this.groupProcedure, params: this.options.value })
+      this.sendDataEvent.emit({ data, group: this.groupProcedure, params: this.options.value, title:'FICHA' })
     })
   }
 

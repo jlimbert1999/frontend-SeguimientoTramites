@@ -29,18 +29,21 @@
                             (sendDataEvent)="receiveData($event)"></app-report-solicitante-options>
                     </div>
 
-                    <div *ngSwitchCase="'unidad'"  [@fadeInDownOnEnter]>
+                    <div *ngSwitchCase="'unidad'" [@fadeInDownOnEnter]>
                         <app-report-unidad-options (sendDataEvent)="receiveData($event)"></app-report-unidad-options>
                     </div>
-                    <div *ngSwitchCase="'usuario'"  [@fadeInDownOnEnter]>
+                    <div *ngSwitchCase="'usuario'" [@fadeInDownOnEnter]>
                         <app-report-usuario-options (sendDataEvent)="receiveData($event)"></app-report-usuario-options>
                     </div>
-                    <div *ngSwitchCase="'ficha'"  [@fadeInDownOnEnter]>
+                    <div *ngSwitchCase="'ficha'" [@fadeInDownOnEnter]>
                         <app-report-ficha-options (sendDataEvent)="receiveData($event)"></app-report-ficha-options>
                     </div>
-                    
+                    <div *ngSwitchCase="'tipo'" [@fadeInDownOnEnter]>
+                        <app-report-tipo-options (sendDataEvent)="receiveData($event)"></app-report-tipo-options>
+                    </div>
 
-                    <div *ngSwitchDefault>output2</div>
+
+                    <div *ngSwitchDefault>Seleccione el tipo de reporte a realizar</div>
                 </div>
             </div>
         </mat-drawer>
@@ -56,10 +59,11 @@
                 </button>
             </mat-toolbar>
             <app-table-report-precedures [data]="dataSource" [colums]="displayedColumns"></app-table-report-precedures>
-           
+
 
 
         </mat-drawer-content>
     </mat-drawer-container>
+   
 
 </div>
