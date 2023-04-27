@@ -1,8 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, Query, QueryList } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { map } from 'rxjs';
 import { LocationProcedure, WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { environment } from 'src/environments/environment';
 import { ExternoDto, RepresentanteDto, SolicitanteDto } from '../models/Externo.dto';
 import { Externo } from '../models/Externo.interface';
@@ -14,10 +13,10 @@ const base_url = environment.base_url
 })
 export class ExternosService {
 
-  constructor(private http: HttpClient, private paginatorService: PaginatorService) { }
+  constructor(private http: HttpClient) { }
 
   getTypesProcedures() {
-    return this.http.get<{ ok: boolean, types: TipoTramite[] }>(`${base_url}/externos/types`).pipe(
+    return this.http.get<{ ok: boolean, types: TipoTramite[] }>(`${base_url}/externos/tipos`).pipe(
       map(resp => {
         let segments: string[] = []
         resp.types.forEach(type => {
@@ -59,7 +58,7 @@ export class ExternosService {
     let params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, tramites: Externo[], length: number }>(`${base_url}/externos/search/${text}`, { params }).pipe(
+    return this.http.get<{ ok: boolean, tramites: Externo[], length: number }>(`${base_url}/externos/buscar/${text}`, { params }).pipe(
       map(resp => {
         return { tramites: resp.tramites, length: resp.length }
       })
@@ -89,7 +88,7 @@ export class ExternosService {
   }
 
   conclude(id_tramite: string, descripcion: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/externos/conclude/${id_tramite}`, { descripcion }).pipe(
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/externos/concluir/${id_tramite}`, { descripcion }).pipe(
       map(resp => {
         return resp.message
       })

@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -6,7 +6,7 @@ import {
   UntypedFormControl,
   Validators,
 } from '@angular/forms';
-import { ReplaySubject, Subject, take, takeUntil, tap } from 'rxjs';
+import { ReplaySubject, Subject, takeUntil, tap } from 'rxjs';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -21,8 +21,6 @@ import { SocketService } from 'src/app/home/services/socket.service';
 })
 export class DialogRemisionComponent implements OnInit, OnDestroy {
   accounts: UsersMails[] = [];
-  socketIds: string[] = [];
-
   public userCtrl = new FormControl<any[]>([]);
   public userFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredUsers: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
@@ -51,18 +49,13 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.filteredUsers.next(this.accounts);
-    this.userFilterCtrl.valueChanges
-      .pipe(
-        tap(() => (this.searching = true)),
-        takeUntil(this._onDestroy)
-      )
+    this.userFilterCtrl.valueChanges.pipe(tap(() => (this.searching = true)), takeUntil(this._onDestroy))
       .subscribe((text) => {
         if (text || text !== '') {
           this.bandejaService.GetAccounts(text).subscribe((users) => {
             this.searching = false;
             users.map((user) => {
-              let onlineUser = this.socketService.onlineUsers.find((userSocket) => userSocket.id_cuenta === user._id
-              );
+              let onlineUser = this.socketService.onlineUsers.find((userSocket) => userSocket.id_cuenta === user._id);
               user.online = onlineUser ? true : false;
             });
             this.filteredUsers.next(users);
@@ -88,7 +81,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Enviar',
-      cancelButtonText: 'Cancelar',
+      cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire({
@@ -98,15 +91,22 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
         });
         Swal.showLoading();
         this.bandejaService.Add(mails).subscribe(data => {
-          if (this.socketIds.length > 0) {
+          const isOnline = this.accounts.some(account => account.online === true)
+          if (isOnline) {
             this.socketService.socket.emit("mail", data)
           }
-          this.toastr.success(undefined, 'Tramite enviado!', {
-            positionClass: 'toast-bottom-right',
-            timeOut: 3000,
-          });
-      
           Swal.close();
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+          })
+          Toast.fire({
+            icon: 'success',
+            title: 'Tramite enviado!'
+          })
           this.dialogRef.close({})
         });
       }
@@ -121,17 +121,12 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   }
   addReceiver(user: UsersMails) {
     this.filteredUsers.next([]);
-    let found = this.accounts.find((element) => element._id === user._id);
+    let found = this.accounts.find((account) => account._id === user._id);
     if (!found) {
-      if (user.online) {
-        this.socketIds.push(user._id);
-      }
-      delete user.online;
       this.accounts.push(user);
     }
   }
-  removeReceiver(user: any): void {
+  removeReceiver(user: UsersMails): void {
     this.accounts = this.accounts.filter((item) => item._id !== user._id);
-    this.socketIds = this.socketIds.filter(socketId => socketId !== user._id);
   }
 }

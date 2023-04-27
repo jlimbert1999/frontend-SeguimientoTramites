@@ -2,7 +2,7 @@
 <mat-dialog-content>
     <form [formGroup]="FormEnvio">
         <div class="row mb-3">
-            <label class="col-sm-2 col-form-label">Destinatario: </label>
+            <label class="col-sm-2 col-form-label">Destinatario:</label>
             <div class="col-sm-10">
                 <mat-chip-listbox aria-label="Color selection">
                     <mat-chip *ngFor="let account of accounts" (removed)="removeReceiver(account)">
@@ -20,13 +20,12 @@
                                 noEntriesFoundLabel="Sin resultados" [searching]="searching"></ngx-mat-select-search>
                         </mat-option>
                         <mat-option *ngFor="let user of filteredUsers | async " [value]="user">
-                            <span>{{user.funcionario.fullname|titlecase}}</span>
-                            <small class="jobtitle">({{user.funcionario.cargo|uppercase}}</small>
+                            <span>{{user.funcionario.fullname|titlecase}} - </span>
+                            <small class="jobtitle fw-lighter">{{user.funcionario.cargo|uppercase}}</small>
                             <span class="c-pill" [ngClass]="user.online?'c-pill--success':'c-pill--danger'">{{user.online?'Conectado':'Sin conexion'}}</span>
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                
             </div>
         </div>
         <div class="row mb-3">

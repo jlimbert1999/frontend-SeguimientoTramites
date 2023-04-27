@@ -45,6 +45,29 @@ export interface WorkflowData {
     recibido?: boolean
 
 }
+export interface ListWorkflow {
+    officer: {
+        fullname: string,
+        jobtitle: string
+    }
+    shippigDate: string
+    adjunt: string
+    duration: string
+    workUnit: string
+    workInstitution: string
+    reference: string
+    sends: {
+        officer: {
+            fullname: string,
+            jobtitle: string
+        }
+        received: boolean | undefined
+        receivedDate?: string
+        duration: string,
+        workUnit: string
+        workInstitution: string
+    }[]
+}
 export interface LocationProcedure {
     cuenta: {
         dependencia: {

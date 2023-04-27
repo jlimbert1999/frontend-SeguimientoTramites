@@ -8,6 +8,9 @@ import { Location } from '@angular/common';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
 import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha';
+import { Externo } from '../../models/Externo.interface';
+import { Interno } from '../../models/Interno.interface';
+import { createListWorkflow } from 'src/app/Bandejas/helpers/createTimeDuraction';
 
 @Component({
   selector: 'app-ficha',
@@ -40,6 +43,7 @@ export class FichaComponent implements OnInit {
           this.Tramite = data.tramite
           this.Workflow = data.workflow
           this.Location = data.location
+
         })
       }
       else if (this.tipo == 'ficha-interna') {
@@ -66,7 +70,8 @@ export class FichaComponent implements OnInit {
   }
 
   generateFicha() {
-    PDF_FichaExterno(this.Tramite, this.Workflow, this.Location)
+    console.log(this.Workflow);
+    PDF_FichaExterno(this.Tramite, createListWorkflow(this.Workflow, [{ id_root: this.Workflow[0].emisor.cuenta._id, startDate: this.Tramite.fecha_registro }], []), this.Location)
   }
 
 

@@ -5,9 +5,9 @@ import { Content, ContentOrderedList, ContentUnorderedList, Table, TableCell, Ta
 import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
 import { Externo } from "src/app/Tramites/models/Externo.interface";
-import { LocationProcedure, WorkflowData } from "src/app/Bandejas/models/workflow.interface";
+import { ListWorkflow, LocationProcedure } from "src/app/Bandejas/models/workflow.interface";
 
-export async function PDF_FichaExterno(tramite: Externo, Workflow: WorkflowData[], Location: LocationProcedure[]) {
+export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkflow[], Location: LocationProcedure[]) {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     let docDefinition: TDocumentDefinitions
@@ -80,11 +80,57 @@ export async function PDF_FichaExterno(tramite: Externo, Workflow: WorkflowData[
 
     let tableWorkflow: Table = {
         dontBreakRows: true,
+        widths: ['*', '*', '*', '*'],
+        headerRows: 1,
         body: [
-            [{ text: 'Detalles tramite', style: 'tableHeader', colSpan: 2 }, ''],
-            [{ text: 'Alterno', style: 'tableHeader' }, 'siii'],
+            [{ text: 'EMISOR', style: 'tableHeader' }, { text: 'DETALLES', style: 'tableHeader' }, { text: 'PROVEIDO', style: 'tableHeader' }, { text: 'RECEPTOR', style: 'tableHeader' }],
         ]
     }
+    ListWorkflow.forEach(item => {
+        tableWorkflow.body.push(
+            [
+                {
+                    text: `${item.officer.fullname} (${item.officer.jobtitle})\nUNIDAD: ${item.workUnit} - ${item.workInstitution}`,
+                    rowSpan: item.sends.length
+                },
+                {
+                    text: `FECHA ENVIO:  ${moment(item.shippigDate).format('DD-MM-YYYY HH:mm:ss')}\nCANTIDAD:  ${item.adjunt}\nDURACION:  ${item.duration}`,
+                    rowSpan: item.sends.length
+                },
+                {
+                    text: `${item.reference}`,
+                    rowSpan: item.sends.length
+                },
+                {
+                    text: item.sends[0].officer.fullname
+                }
+            ]
+        )
+        if (item.sends.length - 1 > 0) {
+            for (let j = 1; j < item.sends.length; j++) {
+                tableWorkflow.body.push(
+                    [
+                        '', '', '',
+                        {
+                            text: `${item.sends[j].officer.fullname} (${item.sends[j].officer.jobtitle})\n`
+                        }
+                    ]
+
+                )
+
+            }
+        }
+
+
+        // item.sends.forEach(subitem => {
+        //     tableWorkflow.body.push(['', '', '',
+        //         {
+        //             text: subitem.officer.fullname
+        //         }]
+
+        //     )
+        // })
+    })
     Location.forEach(item => {
         tableLocation.body.push(
             [item.cuenta.dependencia.nombre,
@@ -92,74 +138,6 @@ export async function PDF_FichaExterno(tramite: Externo, Workflow: WorkflowData[
         )
     })
 
-
-
-    // if (Workflow.length > 0) {
-    //     let count = 0
-    //     let puntero = Workflow[0].emisor.cuenta._id
-    //     let fecha_recibido = Workflow[0].fecha_recibido ? `Fecha: ${moment(Workflow[0].fecha_recibido).format('DD-MM-YYYY')}\nHora: ${moment(Workflow[0].fecha_recibido).format('HH:mm:ss')} ` : 'Sin recibir'
-    //     for (let i = 0; i < Workflow.length; i++) {
-    //         if (puntero === Workflow[i].emisor.cuenta._id) {
-    //             count++
-    //         }
-    //         else {
-    //             break
-    //         }
-    //     }
-    //     dataWorkflow.push(
-    //         [
-    //             {
-    //                 rowSpan: count,
-    //                 text: `${Workflow[0].emisor.funcionario.nombre} ${Workflow[0].emisor.funcionario.paterno} ${Workflow[0].emisor.funcionario.materno}`
-    //             },
-    //             `Proveido: ${Workflow[0].motivo}\nCantidad: ${Workflow[0].cantidad}\nNº Interno: ${Workflow[0].numero_interno} `,
-    //             `Fecha: ${moment(Workflow[0].fecha_envio).format('DD-MM-YYYY')} \nHora: ${moment(Workflow[0].fecha_envio).format('HH:mm:ss')} `,
-    //             `${Workflow[0].receptor.funcionario.nombre} ${Workflow[0].receptor.funcionario.paterno} ${Workflow[0].receptor.funcionario.materno} `,
-    //             fecha_recibido
-    //         ],
-    //     )
-    //     for (let index = 1; index < Workflow.length; index++) {
-    //         fecha_recibido = Workflow[index].fecha_recibido ? `Fecha: ${moment(Workflow[index].fecha_recibido).format('DD-MM-YYYY')}\nHora: ${moment(Workflow[index].fecha_recibido).format('HH:mm:ss')} ` : 'Sin recibir'
-    //         if (puntero === Workflow[index].emisor.cuenta._id) {
-    //             dataWorkflow.push(
-    //                 [
-    //                     '',
-    //                     `Proveido: ${Workflow[index].motivo} \nCantidad: ${Workflow[index].cantidad} \nNº Interno: ${Workflow[index].numero_interno} `,
-    //                     `Fecha: ${moment(Workflow[index].fecha_envio).format('DD-MM-YYYY')} \nHora: ${moment(Workflow[index].fecha_envio).format('HH:mm:ss')} `,
-    //                     `${Workflow[index].receptor.funcionario.nombre} ${Workflow[index].receptor.funcionario.paterno} ${Workflow[index].receptor.funcionario.materno} `,
-    //                     fecha_recibido
-    //                 ],
-    //             )
-    //         }
-    //         else {
-    //             count = 0
-    //             puntero = Workflow[index].emisor.cuenta._id
-    //             for (let i = index; i < Workflow.length; i++) {
-    //                 if (puntero === Workflow[i].emisor.cuenta._id) {
-    //                     count++
-    //                 }
-    //                 else {
-    //                     break
-    //                 }
-    //             }
-    //             dataWorkflow.push(
-    //                 [
-    //                     {
-    //                         rowSpan: count,
-    //                         text: `${Workflow[index].emisor.funcionario.nombre} ${Workflow[index].emisor.funcionario.paterno} ${Workflow[index].emisor.funcionario.materno} `
-    //                     },
-    //                     `Proveido: ${Workflow[index].motivo} \nCantidad: ${Workflow[index].cantidad} \nNº Interno: ${Workflow[index].numero_interno} `,
-    //                     `Fecha: ${moment(Workflow[index].fecha_envio).format('DD-MM-YYYY')} \nHora: ${moment(Workflow[index].fecha_envio).format('HH:mm:ss')} `,
-    //                     `${Workflow[index].receptor.funcionario.nombre} ${Workflow[index].receptor.funcionario.paterno} ${Workflow[index].receptor.funcionario.materno} `,
-    //                     fecha_recibido
-    //                 ],
-    //             )
-    //         }
-    //     }
-    // }
-    // else {
-    //     dataWorkflow.push([{ text: 'El tramite aun no ha sido enviado', colSpan: 5 }, '', '', '', ''])
-    // }
     docDefinition = {
         footer: [
             { text: `Generado en fecha: ${moment(new Date()).format('DD-MM-YYYY HH:mm:ss')} `, margin: [20, 10, 0, 0] }
@@ -242,6 +220,17 @@ export async function PDF_FichaExterno(tramite: Externo, Workflow: WorkflowData[
             {
                 style: 'tableInfo',
                 table: tableLocation
+            },
+            {
+                pageBreak: 'before',
+                pageOrientation: 'landscape',
+                text: '\n\nFLUJO DE TRABAJO REALIZADO\n',
+                style: 'subTitle'
+            },
+            {
+
+                fontSize: 8,
+                table: tableWorkflow
             }
 
 

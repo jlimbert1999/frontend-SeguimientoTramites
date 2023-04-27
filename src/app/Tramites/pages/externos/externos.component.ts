@@ -1,10 +1,10 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { fadeInOnEnterAnimation } from 'angular-animations';
-import { Externo, Representante, Solicitante } from '../../models/Externo.interface';
+import { Externo } from '../../models/Externo.interface';
 import { ExternosService } from '../../services/externos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { DialogExternoComponent } from '../../dialogs/dialog-externo/dialog-externo.component';
@@ -22,7 +22,7 @@ import { Ficha } from '../../pdfs/ficha';
   ]
 
 })
-export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ExternosComponent implements OnInit {
 
   Data: Externo[] = []
   displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
@@ -34,13 +34,6 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router
   ) {
   }
-
-  ngAfterViewInit(): void {
-
-  }
-  ngOnDestroy(): void {
-  }
-
   ngOnInit(): void {
     this.Get()
   }
@@ -80,7 +73,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   Edit(tramite: Externo) {
     const dialogRef = this.dialog.open(DialogExternoComponent, {
-      width: '1600px',
+      width: '1000px',
       data: tramite,
       disableClose: true
     });
@@ -118,13 +111,6 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  denied_options(estado: string, responsable: string) {
-    if (estado !== 'INSCRITO' || responsable !== this.authService.account.id_cuenta) {
-      return true
-    }
-    return false
-  }
-
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getOne(id_tramite).subscribe(data => {
       HojaRutaExterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
@@ -142,7 +128,7 @@ export class ExternosComponent implements OnInit, OnDestroy, AfterViewInit {
     Swal.showLoading()
   }
 
-  cancelProcedure(tramite: Externo) {
+  cancel(tramite: Externo) {
     Swal.fire({
       icon: 'question',
       title: `Anular el tramite ${tramite.alterno}?`,

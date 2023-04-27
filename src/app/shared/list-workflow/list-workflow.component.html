@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<!-- <div class="container-fluid">
 
   <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
@@ -41,4 +41,44 @@
     </mat-nested-tree-node>
   </mat-tree>
 
+</div> -->
+
+<div class="container-fluid" *ngIf="ListWorflow.length>0">
+  <div class="row" *ngFor="let item of ListWorflow">
+    <div class="col-sm-3">
+      <mat-card class="example-card">
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image"></div>
+          <mat-card-title> {{item.officer.fullname|titlecase}}</mat-card-title>
+          <mat-card-subtitle>{{item.officer.jobtitle}}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          
+        </mat-card-content>
+       
+      </mat-card>
+
+
+    </div>
+    <div class="col-sm-9">
+      <div class="row" *ngFor="let subitem of item.sends">
+
+        <mat-card class="example-card">
+          <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title> {{subitem.officer.fullname|titlecase}}</mat-card-title>
+            <mat-card-subtitle>{{subitem.officer.jobtitle}}</mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+           
+          </mat-card-content>
+         
+        </mat-card>
+
+      </div>
+
+    </div>
+  </div>
 </div>
