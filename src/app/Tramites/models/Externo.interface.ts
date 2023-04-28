@@ -59,3 +59,10 @@ export interface Representante {
     expedido: string
     documento: string
 }
+export interface Observacion {
+    id_cuenta: string,
+    funcionario: string,
+    descripcion: string,
+    corregido: boolean
+    fecha: Date
+}

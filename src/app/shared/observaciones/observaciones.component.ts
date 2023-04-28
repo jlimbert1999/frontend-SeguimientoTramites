@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Observacion } from 'src/app/Bandejas/models/mail.model';
@@ -11,8 +11,8 @@ import Swal from 'sweetalert2';
   templateUrl: './observaciones.component.html',
   styleUrls: ['./observaciones.component.css']
 })
-export class ObservacionesComponent implements OnInit {
-  @Input() Observaciones: any[] = []
+export class ObservacionesComponent implements OnInit, AfterViewInit {
+  @Input() Observaciones: Observacion[] = []
   @Input() Options: boolean
   @Input() id_tramite: string
   @Input() type: 'tramites_externos' | 'tramites_internos'
@@ -22,14 +22,14 @@ export class ObservacionesComponent implements OnInit {
   Me: Observacion
   Others: Observacion[] = []
   panelOpenState = false;
- 
+
 
   constructor(
     private authService: AuthService,
     private externoService: ExternosService,
     private internoService: InternosService
   ) { }
-  
+
   ngOnInit(): void {
     if (this.Options) {
       this.Observaciones.forEach((obs: any) => {
@@ -104,5 +104,11 @@ export class ObservacionesComponent implements OnInit {
     }
     return true
   }
+  ngAfterViewInit(): void {
+    this.Observaciones.sort(function (a, b) {
+      return new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+    });
+  }
+
 
 }

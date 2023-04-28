@@ -1,45 +1,36 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { BandejaEntradaService } from '../../services/bandeja-entrada.service';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import Swal from 'sweetalert2';
-import { AuthService } from 'src/app/auth/services/auth.service';
 import { WorkflowData } from '../../models/workflow.interface';
-import { ExternosService } from 'src/app/Tramites/services/externos.service';
-import { InternosService } from 'src/app/Tramites/services/internos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
+import { Mail } from '../../models/entrada.interface';
+import { showToast } from 'src/app/shared/helpers/toast-alterts';
+import { Observacion } from '../../models/mail.model';
+import { ObservacionDto } from 'src/app/Tramites/models/Externo.dto';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Component({
   selector: 'app-mail',
   templateUrl: './mail.component.html',
   styleUrls: ['./mail.component.css'],
   animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-      ),
-    ]),
     slideInLeftOnEnterAnimation({ duration: 500 })
   ],
 
 })
 export class MailComponent implements OnInit {
-  tipo: 'tramites_externos' | 'tramites_internos'
   Tramite: any
   Workflow: WorkflowData[]
-  Observaciones: any
-  imbox: any
+  Mail: Mail
   constructor(
     private _location: Location,
     private activateRoute: ActivatedRoute,
     private entradaService: BandejaEntradaService,
-    private authService: AuthService,
-    private paginatorService: PaginatorService
+    private paginatorService: PaginatorService,
+    private authService: AuthService
   ) {
 
   }
@@ -48,8 +39,7 @@ export class MailComponent implements OnInit {
     this.activateRoute.params.subscribe(params => {
       if (params['id']) {
         this.entradaService.getDetailsMail(params['id']).subscribe(data => {
-          this.tipo=data.imbox.tipo
-          this.imbox = data.imbox
+          this.Mail = data.mail
           this.Tramite = data.tramite
           this.Workflow = data.workflow
         })
@@ -70,7 +60,7 @@ export class MailComponent implements OnInit {
 
   }
 
-  observar() {
+  addObservation() {
     Swal.fire({
       icon: 'question',
       title: `Registrar observacion para el tramite: ${this.Tramite.alterno}?`,
@@ -91,26 +81,80 @@ export class MailComponent implements OnInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        if (this.tipo === 'tramites_externos') {
-          // this.externoService.addObservacion(result.value!, this.Tramite._id, `${this.authService.account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observaciones => {
-          //   console.log(observaciones)
-          //   this.Observaciones = observaciones
-          // })
-          // this.externoService.addObservacion(result.value, this.id_tramite, `${this.authService.Account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observacion => {
-          //   this.Me = observacion
-          //   this.NewState.emit('OBSERVADO');
-          // })
+        const newObservation: ObservacionDto = {
+          id_cuenta: this.authService.account.id_cuenta,
+          funcionario: this.authService.fullnameAccount,
+          descripcion: result.value!
+        }
+        this.entradaService.addObservation(this.Tramite._id, newObservation).subscribe(observations => {
+          this.Tramite.observaciones = observations
+        })
+        // if (this.tipo === 'tramites_externos') {
+        //   // this.externoService.addObservacion(result.value!, this.Tramite._id, `${this.authService.account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observaciones => {
+        //   //   console.log(observaciones)
+        //   //   this.Observaciones = observaciones
+        //   // })
+        //   // this.externoService.addObservacion(result.value, this.id_tramite, `${this.authService.Account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observacion => {
+        //   //   this.Me = observacion
+        //   //   this.NewState.emit('OBSERVADO');
+        //   // })
 
-        }
-        else if (this.tipo === 'tramites_internos') {
-          // this.internoService.addObservacion(result.value, this.id_tramite, `${this.authService.Account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observacion => {
-          //   this.Me = observacion
-          //   this.NewState.emit('OBSERVADO');
-          // })
-        }
+        // }
+        // else if (this.tipo === 'tramites_internos') {
+        //   // this.internoService.addObservacion(result.value, this.id_tramite, `${this.authService.Account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observacion => {
+        //   //   this.Me = observacion
+        //   //   this.NewState.emit('OBSERVADO');
+        //   // })
+        // }
       }
     })
 
   }
 
+  aceptMail() {
+    Swal.fire({
+      title: `Aceptar tramite ${this.Tramite.alterno}?`,
+      text: `El tramite sera marcado como aceptado`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.entradaService.aceptMail(this.Mail._id).subscribe(message => {
+          showToast('success', message, undefined)
+        })
+      }
+    })
+  }
+  rejectMail() {
+    Swal.fire({
+      icon: 'question',
+      title: `Rechazar el tramite ${this.Tramite.alterno}?`,
+      text: `Para rechazar debe ingresar un motivo`,
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        validationMessage: 'my-validation-message'
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> El motivo es obligatorio'
+          )
+        }
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.entradaService.rejectMail(this.Mail._id, result.value!).subscribe(message => {
+          showToast('success', message, undefined)
+          this.back()
+        })
+      }
+    })
+  }
 }

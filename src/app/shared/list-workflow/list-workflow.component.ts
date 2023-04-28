@@ -2,7 +2,7 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import * as moment from 'moment';
-import { crearDuracion, createListWorkflow } from 'src/app/Bandejas/helpers/createTimeDuraction';
+import { createListWorkflow } from 'src/app/Bandejas/helpers/ListWorkflow';
 import { ListWorkflow, WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 
 interface ListGroupware {

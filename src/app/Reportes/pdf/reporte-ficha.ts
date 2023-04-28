@@ -83,7 +83,10 @@ export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkf
         widths: ['*', '*', '*', '*'],
         headerRows: 1,
         body: [
-            [{ text: 'EMISOR', style: 'tableHeader' }, { text: 'DETALLES', style: 'tableHeader' }, { text: 'PROVEIDO', style: 'tableHeader' }, { text: 'RECEPTOR', style: 'tableHeader' }],
+            [{ text: 'EMISOR', style: 'tableHeader' },
+            { text: 'DETALLES ENVIO', style: 'tableHeader' },
+            { text: 'RECEPTOR', style: 'tableHeader' },
+            { text: 'DETALLES RECIBIDO', style: 'tableHeader' }],
         ]
     }
     ListWorkflow.forEach(item => {
@@ -94,25 +97,28 @@ export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkf
                     rowSpan: item.sends.length
                 },
                 {
-                    text: `FECHA ENVIO:  ${moment(item.shippigDate).format('DD-MM-YYYY HH:mm:ss')}\nCANTIDAD:  ${item.adjunt}\nDURACION:  ${item.duration}`,
+                    text: `DURACION:  ${item.duration}\nFECHA:  ${moment(item.shippigDate).format('DD-MM-YYYY HH:mm:ss')}\nCANTIDAD: ${item.adjunt}\nREFERENCIA: ${item.reference}`,
                     rowSpan: item.sends.length
                 },
                 {
-                    text: `${item.reference}`,
-                    rowSpan: item.sends.length
+                    text: `${item.sends[0].officer.fullname} (${item.sends[0].officer.jobtitle})\nUNIDAD: ${item.sends[0].workUnit} - ${item.sends[0].workInstitution}`
                 },
                 {
-                    text: item.sends[0].officer.fullname
-                }
+                    text: `FECHA: ${item.sends[0].receivedDate ? moment(item.sends[0].receivedDate).format('DD-MM-YYYY HH:mm:ss') : 'Sin recibir'}`,
+                    rowSpan: item.sends.length
+                },
             ]
         )
         if (item.sends.length - 1 > 0) {
             for (let j = 1; j < item.sends.length; j++) {
                 tableWorkflow.body.push(
                     [
-                        '', '', '',
+                        '', '',
                         {
-                            text: `${item.sends[j].officer.fullname} (${item.sends[j].officer.jobtitle})\n`
+                            text: `${item.sends[j].officer.fullname} (${item.sends[j].officer.jobtitle})\nUNIDAD: ${item.workUnit} - ${item.workInstitution}`
+                        },
+                        {
+                            text: `FECHA: ${item.sends[j].receivedDate?moment(item.sends[j].receivedDate).format('DD-MM-YYYY HH:mm:ss'):'Sin recibir'}`
                         }
                     ]
 

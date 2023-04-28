@@ -39,6 +39,7 @@ export interface WorkflowData {
     fecha_envio: string
     fecha_recibido?: string
     motivo: string
+    motivo_rechazo?:string
     numero_interno: string
     tipo: string
     tramite: string
@@ -63,6 +64,7 @@ export interface ListWorkflow {
         }
         received: boolean | undefined
         receivedDate?: string
+        rejectReason?:string
         duration: string,
         workUnit: string
         workInstitution: string

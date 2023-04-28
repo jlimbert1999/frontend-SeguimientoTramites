@@ -27,3 +27,8 @@ export interface ExternoDto {
     requerimientos: string[]
     cite: string
 }
+export interface ObservacionDto {
+    id_cuenta: string,
+    funcionario: string,
+    descripcion: string
+}

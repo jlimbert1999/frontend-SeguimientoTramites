@@ -99,18 +99,26 @@
         </div>
     </div>
 </div> -->
-<div *ngIf="Options">
-
-
-</div>
-<div *ngIf="!Options">
-
-    <mat-list>
-        <div mat-subheader>Folders</div>
-        <mat-list-item *ngFor="let folder of Observaciones">
-            <mat-icon matListItemIcon>folder</mat-icon>
-            <div matListItemTitle>{{folder.detalle}}</div>
-            <div matListItemLine>{{folder.updated | date}}</div>
-        </mat-list-item>
-    </mat-list>
+<div class="container-fluid">
+    <div *ngIf="Options">
+        <mat-list>
+            <mat-list-item *ngFor="let observation of Observaciones">
+                <mat-icon matListItemIcon>chat</mat-icon>
+                <span matListItemTitle>{{observation.funcionario|titlecase}}</span>
+                <div matListItemTitle>{{observation.descripcion}}</div>
+                <div matListItemLine>{{observation.fecha| date:'short'}}</div>
+            </mat-list-item>
+        </mat-list>
+    
+    </div>
+    <div *ngIf="!Options">
+        <mat-list>
+            <mat-list-item *ngFor="let observation of Observaciones">
+                <mat-icon matListItemIcon>chat</mat-icon>
+                <span matListItemTitle>{{observation.funcionario}}</span>
+                <div matListItemTitle>{{observation.descripcion}}</div>
+                <div matListItemLine>{{observation.fecha| date:'short'}}</div>
+            </mat-list-item>
+        </mat-list>
+    </div>
 </div>

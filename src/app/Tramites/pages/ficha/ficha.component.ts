@@ -10,7 +10,7 @@ import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
 import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha';
 import { Externo } from '../../models/Externo.interface';
 import { Interno } from '../../models/Interno.interface';
-import { createListWorkflow } from 'src/app/Bandejas/helpers/createTimeDuraction';
+import { createListWorkflow } from 'src/app/Bandejas/helpers/ListWorkflow';
 
 @Component({
   selector: 'app-ficha',

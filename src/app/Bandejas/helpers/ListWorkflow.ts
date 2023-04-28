@@ -3,34 +3,35 @@ import { ListWorkflow, WorkflowData } from "../models/workflow.interface";
 
 export function createListWorkflow(data: WorkflowData[], rootAccounts: { id_root: string, startDate: string }[], list: ListWorkflow[]) {
   rootAccounts.forEach(root => {
-    const rootMail = data.find(mail => mail.emisor.cuenta._id === root.id_root)
-    if (rootMail) {
-      const send = data.filter(mail => mail.emisor.cuenta._id === root.id_root && mail.fecha_envio === rootMail.fecha_envio)
-      data = data.filter(mail => mail.emisor.cuenta._id !== root.id_root && mail.fecha_envio !== rootMail.fecha_envio)
+    const firstShipment = data.find(mail => mail.emisor.cuenta._id === root.id_root)
+    if (firstShipment) {
+      const remainingShipments = data.filter(mail => mail.emisor.cuenta._id === root.id_root && mail.fecha_envio === firstShipment.fecha_envio)
+      data = data.filter(mail => mail.emisor.cuenta._id !== root.id_root && mail.fecha_envio !== firstShipment.fecha_envio)
       list.push({
         officer: {
-          fullname: createFullName(rootMail.emisor.funcionario),
-          jobtitle: rootMail.emisor.funcionario.cargo,
+          fullname: createFullName(firstShipment.emisor.funcionario),
+          jobtitle: firstShipment.emisor.funcionario.cargo,
         },
-        shippigDate: rootMail.fecha_envio,
-        adjunt: rootMail.cantidad,
-        duration: crearDuracion(root.startDate, rootMail.fecha_envio),
-        workUnit: rootMail.emisor.cuenta.dependencia.nombre,
-        workInstitution: rootMail.emisor.cuenta.dependencia.institucion.sigla,
-        reference: rootMail.motivo,
-        sends: send.map(mail => ({
+        shippigDate: firstShipment.fecha_envio,
+        adjunt: firstShipment.cantidad,
+        duration: createDuration(root.startDate, firstShipment.fecha_envio),
+        workUnit: firstShipment.emisor.cuenta.dependencia.nombre,
+        workInstitution: firstShipment.emisor.cuenta.dependencia.institucion.sigla,
+        reference: firstShipment.motivo,
+        sends: remainingShipments.map(({ receptor, fecha_envio, fecha_recibido, motivo_rechazo, recibido }) => ({
           officer: {
-            fullname: createFullName(mail.receptor.funcionario),
-            jobtitle: mail.receptor.funcionario.cargo,
+            fullname: createFullName(receptor.funcionario),
+            jobtitle: receptor.funcionario.cargo,
           },
-          received: mail.recibido,
-          receivedDate: mail.fecha_recibido,
-          duration: crearDuracion(mail.fecha_envio, mail.fecha_recibido),
-          workUnit: mail.receptor.cuenta.dependencia.nombre,
-          workInstitution: mail.receptor.cuenta.dependencia.institucion.sigla,
+          received: recibido,
+          receivedDate: fecha_recibido || '',
+          rejectReason: motivo_rechazo || '',
+          duration: createDuration(fecha_envio, fecha_recibido),
+          workUnit: receptor.cuenta.dependencia.nombre,
+          workInstitution: receptor.cuenta.dependencia.institucion.sigla,
         }))
       })
-      rootAccounts = send.map(ele => ({ id_root: ele.receptor.cuenta._id, startDate: ele.fecha_recibido! }))
+      rootAccounts = remainingShipments.map(ele => ({ id_root: ele.receptor.cuenta._id, startDate: ele.fecha_recibido! }))
       createListWorkflow(data, rootAccounts, list)
     }
   })
@@ -38,7 +39,7 @@ export function createListWorkflow(data: WorkflowData[], rootAccounts: { id_root
 }
 
 
-export function crearDuracion(inicio: any, fin: any) {
+export function createDuration(inicio: any, fin: any) {
   inicio = moment(new Date((inicio)))
   fin = moment(new Date((fin)))
   let parts: any = [];

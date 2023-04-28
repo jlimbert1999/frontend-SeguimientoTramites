@@ -5,18 +5,75 @@
         </button>
         <span *ngIf="Tramite">{{Tramite.alterno}}</span>
         <span class="example-spacer"></span>
-        <button (click)="observar()" matTooltip="Agregar observacion" mat-icon-button>
+        <button (click)="addObservation()" matTooltip="Agregar observacion" mat-icon-button>
             <mat-icon>push_pin</mat-icon>
         </button>
-        <button (click)="generar()" matTooltip="Generar PDF" mat-icon-button>
-            <mat-icon>picture_as_pdf</mat-icon>
+        <button (click)="generar()" matTooltip="Generar ficha de tramite" mat-icon-button>
+            <mat-icon>print</mat-icon>
         </button>
     </mat-toolbar>
 </p>
 
 
 <div class="container-fluid" *ngIf="Tramite" [@slideInLeftOnEnter]>
-    <app-mail-header *ngIf="imbox" [Data]="imbox"></app-mail-header>
+    <mat-card *ngIf="Mail" appearance="outlined" class="example-card">
+        <div style="display:flex">
+            <mat-card-header *ngIf="Mail.emisor.funcionario">
+                <div mat-card-avatar class="example-header-image"></div>
+                <mat-card-title> {{Mail.emisor.funcionario|fullname|titlecase}}</mat-card-title>
+                <mat-card-subtitle>{{Mail.emisor.funcionario.cargo|uppercase}}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-header *ngIf="!Mail.emisor.funcionario" style="color: red;">
+                <div mat-card-avatar class="example-header-image"></div>
+                <mat-card-title> <strong>Recibido de:</strong> POR DESIGNAR</mat-card-title>
+                <mat-card-subtitle> S / C</mat-card-subtitle>
+            </mat-card-header>
+            <div style="flex-grow: 1"></div>
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <div [ngSwitch]="Mail.recibido">
+                    <div *ngSwitchCase="false">
+                        <button (click)="aceptMail()" mat-menu-item>
+                            <mat-icon>done</mat-icon>
+                            <span>Aceptar tramite</span>
+                        </button>
+                        <button (click)="rejectMail()" mat-menu-item>
+                            <mat-icon>block</mat-icon>
+                            <span>Rechazar tramite</span>
+                        </button>
+                    </div>
+                    <div *ngSwitchCase="true">
+                        <!-- <button (click)="send(row)" mat-menu-item>
+                            <mat-icon>send</mat-icon>
+                            <span>Remitir tramite</span>
+                        </button>
+                        <button (click)="GenerateHojaRuta(row.tramite._id)" mat-menu-item>
+                            <mat-icon>print</mat-icon>
+                            <span>Hoja de ruta</span>
+                        </button>
+                        <button (click)="concluir(row)" mat-menu-item>
+                            <mat-icon>domain_verification</mat-icon>
+                            <span>Concluir tramite</span>
+                        </button> -->
+
+                    </div>
+                </div>
+            </mat-menu>
+        </div>
+        <mat-card-content>
+            <p><strong>Dependencia: </strong> {{Mail.emisor.cuenta.dependencia.nombre}} /
+                {{Mail.emisor.cuenta.dependencia.institucion.sigla}}</p>
+            <p class="fst-italic">Instruccion / Proveido: {{Mail.motivo}}</p>
+            <p><strong>Cantidad: </strong> {{Mail.cantidad}}</p>
+            <div *ngIf="!Mail.recibido" class="alert alert-danger" role="alert">
+                Usted aun no ha aceptado este tramite
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <br>
 
     <mat-tab-group mat-align-tabs="center">
         <mat-tab>
@@ -24,9 +81,9 @@
                 <mat-icon class="tab-icon">info</mat-icon>
                 Informacion
             </ng-template>
-            <app-info-tramite-externo *ngIf="tipo==='tramites_externos' && Tramite"
+            <app-info-tramite-externo *ngIf="Mail.tipo==='tramites_externos' && Tramite"
                 [Tramite]="Tramite"></app-info-tramite-externo>
-            <app-info-tramite-interno *ngIf="tipo==='tramites_internos'&& Tramite"
+            <app-info-tramite-interno *ngIf="Mail.tipo==='tramites_internos'&& Tramite"
                 [Tramite]="Tramite"></app-info-tramite-interno>
         </mat-tab>
         <mat-tab>
@@ -34,7 +91,7 @@
                 <mat-icon class="tab-icon">push_pin</mat-icon>
                 Observaciones
             </ng-template>
-            <app-observaciones [Options]="true" [Observaciones]="Observaciones"></app-observaciones>
+            <app-observaciones [Options]="true" [Observaciones]="Tramite.observaciones"></app-observaciones>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>

@@ -132,7 +132,7 @@ export class BandejaEntradaComponent implements OnInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService.aceptProcedure(elemento._id).subscribe(message => {
+        this.bandejaService.aceptMail(elemento._id).subscribe(message => {
           const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
           this.bandejaService.Mails[indexFound].recibido = true
           this.bandejaService.Mails = [...this.bandejaService.Mails]
@@ -157,7 +157,7 @@ export class BandejaEntradaComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         if (result.value) {
-          this.bandejaService.declineProcedure(elemento._id, result.value).subscribe(message => {
+          this.bandejaService.rejectMail(elemento._id, result.value).subscribe(message => {
             this.toastr.info(undefined, message, {
               positionClass: 'toast-bottom-right',
               timeOut: 3000,
