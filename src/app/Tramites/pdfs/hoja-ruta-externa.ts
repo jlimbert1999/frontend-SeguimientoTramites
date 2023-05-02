@@ -2,7 +2,9 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { TDocumentDefinitions } from "pdfmake/interfaces";
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
-import * as moment from 'moment';
+// import * as moment from 'moment';
+import * as moment from "moment-timezone";
+moment.tz.setDefault("America/La_Paz")
 import { Externo } from "../../Tramites/models/Externo.interface";
 import { WorkflowData } from "src/app/Bandejas/models/workflow.interface";
 const ordinales = require("ordinales-js");

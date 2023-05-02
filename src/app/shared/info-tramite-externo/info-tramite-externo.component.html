@@ -35,13 +35,13 @@
             </form>
             <mat-list>
                 <div mat-subheader>Ubicacion actual</div>
-                <mat-list-item *ngFor="let message of Location">
+                <mat-list-item *ngFor="let manager of Location">
                     <img matListItemAvatar src="../../../assets/img/account.png" alt="...">
-                    <h3 matListItemTitle>{{message.cuenta.dependencia.nombre}}</h3>
+                    <h3 matListItemTitle>{{manager.cuenta.dependencia.nombre}}</h3>
                     <p matListItemLine>
-                        <span>{{message.cuenta.funcionario.nombre}} {{message.cuenta.funcionario.paterno}}
-                            {{message.cuenta.funcionario.materno}}</span>
-                        <span class="demo-2"> -- {{message.cuenta.funcionario.cargo}}</span>
+                        <span>{{manager.cuenta.funcionario.nombre}} {{manager.cuenta.funcionario.paterno}}
+                            {{manager.cuenta.funcionario.materno}}</span>
+                        <span class="demo-2"> -- {{manager.cuenta.funcionario.cargo}}</span>
                     </p>
                 </mat-list-item>
             </mat-list>

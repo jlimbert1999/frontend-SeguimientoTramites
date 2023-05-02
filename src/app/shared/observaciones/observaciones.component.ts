@@ -1,9 +1,7 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { MatAccordion } from '@angular/material/expansion';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { Observacion } from 'src/app/Bandejas/models/mail.model';
-import { ExternosService } from 'src/app/Tramites/services/externos.service';
-import { InternosService } from 'src/app/Tramites/services/internos.service';
+import { BandejaEntradaService } from 'src/app/Bandejas/services/bandeja-entrada.service';
+import { Observacion } from 'src/app/Tramites/models/Externo.interface';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -11,104 +9,50 @@ import Swal from 'sweetalert2';
   templateUrl: './observaciones.component.html',
   styleUrls: ['./observaciones.component.css']
 })
-export class ObservacionesComponent implements OnInit, AfterViewInit {
+export class ObservacionesComponent implements OnInit {
   @Input() Observaciones: Observacion[] = []
   @Input() Options: boolean
-  @Input() id_tramite: string
-  @Input() type: 'tramites_externos' | 'tramites_internos'
-  @Input() recibido: boolean
-  @Output() NewState = new EventEmitter<string>();
-
-  Me: Observacion
-  Others: Observacion[] = []
-  panelOpenState = false;
-
+  @Output() setNewState = new EventEmitter<string>();
+  filter: boolean = false
 
   constructor(
-    private authService: AuthService,
-    private externoService: ExternosService,
-    private internoService: InternosService
+    public authService: AuthService,
+    private entradaService: BandejaEntradaService
   ) { }
 
   ngOnInit(): void {
-    if (this.Options) {
-      this.Observaciones.forEach((obs: any) => {
-        if (obs.id_cuenta === this.authService.account.id_cuenta) {
-          this.Me = obs
-        }
-        else {
-          this.Others.push(obs)
-        }
-      });
-    }
+
   }
-  add() {
+
+  markAsSolved(observation: Observacion) {
     Swal.fire({
-      title: `Registro observacion`,
-      text: 'Ingrese una descripcion',
-      input: 'textarea',
-      inputAttributes: {
-        autocapitalize: 'off'
-      },
+      title: `Marcar la observacion como corregida?`,
+      text: `Esta observacion se mostrara como corregida para todos los funcionarios`,
+      icon: 'question',
       showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#38B000',
-      cancelButtonColor: '#F94144',
-      icon: 'question'
     }).then((result) => {
       if (result.isConfirmed) {
-        if (!result.value) {
-          Swal.fire({
-            title: `Debe ingresar la obsevacion`,
-            icon: 'warning'
-          })
-        }
-        else {
-          if (this.type === 'tramites_externos') {
-            this.externoService.addObservacion(result.value, this.id_tramite, `${this.authService.account.funcionario.nombre} (${this.authService.account.funcionario.cargo})`).subscribe(observacion => {
-              this.Me = observacion
-              this.NewState.emit('OBSERVADO');
-            })
-
-          }
-          else if (this.type === 'tramites_internos') {
-            // this.internoService.addObservacion(result.value, this.id_tramite, `${this.authService.Account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observacion => {
-            //   this.Me = observacion
-            //   this.NewState.emit('OBSERVADO');
-            // })
-          }
-        }
+        this.entradaService.repairObservation(observation._id).subscribe(state => {
+          const index = this.Observaciones.findIndex(obs => obs._id === observation._id)
+          this.Observaciones[index].solved = true
+          this.setNewState.emit(state)
+        })
       }
     })
   }
-  repair() {
-    if (this.type === 'tramites_externos') {
-      this.externoService.putObservacion(this.id_tramite).subscribe(state => {
-        this.Me.corregido = true
-        this.NewState.emit(state);
-      })
 
-    }
-    else if (this.type === 'tramites_internos') {
-      // this.internoService.putObservacion(this.id_tramite).subscribe(state => {
-      //   this.Me.corregido = true
-      //   this.NewState.emit(state)
-      // })
-    }
+  filterObservation() {
+    return this.filter === true
+      ? this.Observaciones.filter(obs => obs.account === this.authService.account.id_cuenta)
+      : this.Observaciones
   }
+  
 
-  get denied_register() {
-    if (this.recibido && !this.Me) {
-      return false
-    }
-    return true
-  }
-  ngAfterViewInit(): void {
-    this.Observaciones.sort(function (a, b) {
-      return new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-    });
-  }
+
 
 
 }

@@ -19,20 +19,20 @@
                 [Location]="Location"></app-info-tramite-externo>
             <app-info-tramite-interno *ngIf="tipo==='ficha-interna'&& Tramite"
                 [Tramite]="Tramite"></app-info-tramite-interno>
-        </mat-tab>
-        <mat-tab *ngIf="Tramite.observaciones.length>0">
+            </mat-tab>
+            <mat-tab *ngIf="Observations.length>0">
             <ng-template mat-tab-label>
                 <mat-icon class="example-tab-icon">push_pin</mat-icon>
                 Observaciones
             </ng-template>
-            <app-observaciones [Options]="false" [Observaciones]="Tramite.observaciones"></app-observaciones>
+            <app-observaciones [Options]="false" [Observaciones]="Observations"></app-observaciones>
         </mat-tab>
-        <mat-tab *ngIf="Tramite.eventos.length>0">
+        <mat-tab>
             <ng-template mat-tab-label>
                 <mat-icon class="example-tab-icon">list_alt</mat-icon>
                 Eventos
             </ng-template>
-            <app-events-procedure [events]="Tramite.eventos"></app-events-procedure>
+            <!-- <app-events-procedure [events]="Tramite.eventos"></app-events-procedure> -->
         </mat-tab>
         <ng-container *ngIf="Workflow.length!==0">
             <mat-tab>

@@ -8,7 +8,7 @@ import { Location } from '@angular/common';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
 import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha';
-import { Externo } from '../../models/Externo.interface';
+import { Externo, Observacion } from '../../models/Externo.interface';
 import { Interno } from '../../models/Interno.interface';
 import { createListWorkflow } from 'src/app/Bandejas/helpers/ListWorkflow';
 
@@ -25,6 +25,7 @@ export class FichaComponent implements OnInit {
   Tramite: any
   Location: LocationProcedure[] = []
   Workflow: any[] = []
+  Observations: Observacion[] = []
   constructor(
     private activateRoute: ActivatedRoute,
     private externoService: ExternosService,
@@ -43,6 +44,7 @@ export class FichaComponent implements OnInit {
           this.Tramite = data.tramite
           this.Workflow = data.workflow
           this.Location = data.location
+          this.Observations = data.observations
 
         })
       }
@@ -51,6 +53,7 @@ export class FichaComponent implements OnInit {
           this.Tramite = data.tramite
           this.Workflow = data.workflow
           this.Location = data.location
+          this.Observations = data.observations
         })
       }
       else {

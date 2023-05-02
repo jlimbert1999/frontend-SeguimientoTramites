@@ -8,9 +8,8 @@ import { WorkflowData } from '../../models/workflow.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Mail } from '../../models/entrada.interface';
 import { showToast } from 'src/app/shared/helpers/toast-alterts';
-import { Observacion } from '../../models/mail.model';
-import { ObservacionDto } from 'src/app/Tramites/models/Externo.dto';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { Observacion } from 'src/app/Tramites/models/Externo.interface';
 
 @Component({
   selector: 'app-mail',
@@ -25,6 +24,7 @@ export class MailComponent implements OnInit {
   Tramite: any
   Workflow: WorkflowData[]
   Mail: Mail
+  observations: Observacion[] = []
   constructor(
     private _location: Location,
     private activateRoute: ActivatedRoute,
@@ -42,6 +42,7 @@ export class MailComponent implements OnInit {
           this.Mail = data.mail
           this.Tramite = data.tramite
           this.Workflow = data.workflow
+          this.observations = data.observations
         })
       }
     })
@@ -60,56 +61,7 @@ export class MailComponent implements OnInit {
 
   }
 
-  addObservation() {
-    Swal.fire({
-      icon: 'question',
-      title: `Registrar observacion para el tramite: ${this.Tramite.alterno}?`,
-      text: `Debe ingresar una descripcion de la observacion`,
-      input: 'textarea',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      customClass: {
-        validationMessage: 'my-validation-message'
-      },
-      preConfirm: (value) => {
-        if (!value) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Ingrese la descripcion'
-          )
-        }
 
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const newObservation: ObservacionDto = {
-          id_cuenta: this.authService.account.id_cuenta,
-          funcionario: this.authService.fullnameAccount,
-          descripcion: result.value!
-        }
-        this.entradaService.addObservation(this.Tramite._id, newObservation).subscribe(observations => {
-          this.Tramite.observaciones = observations
-        })
-        // if (this.tipo === 'tramites_externos') {
-        //   // this.externoService.addObservacion(result.value!, this.Tramite._id, `${this.authService.account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observaciones => {
-        //   //   console.log(observaciones)
-        //   //   this.Observaciones = observaciones
-        //   // })
-        //   // this.externoService.addObservacion(result.value, this.id_tramite, `${this.authService.Account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observacion => {
-        //   //   this.Me = observacion
-        //   //   this.NewState.emit('OBSERVADO');
-        //   // })
-
-        // }
-        // else if (this.tipo === 'tramites_internos') {
-        //   // this.internoService.addObservacion(result.value, this.id_tramite, `${this.authService.Account.funcionario.nombre_completo} (${this.authService.Account.funcionario.cargo})`).subscribe(observacion => {
-        //   //   this.Me = observacion
-        //   //   this.NewState.emit('OBSERVADO');
-        //   // })
-        // }
-      }
-    })
-
-  }
 
   aceptMail() {
     Swal.fire({
@@ -156,5 +108,36 @@ export class MailComponent implements OnInit {
         })
       }
     })
+  }
+  addObservation() {
+    Swal.fire({
+      icon: 'question',
+      title: `Registrar observacion para el tramite: ${this.Tramite.alterno}?`,
+      text: `Debe ingresar una descripcion de la observacion`,
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      customClass: {
+        validationMessage: 'my-validation-message'
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Ingrese la descripcion'
+          )
+        }
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.entradaService.addObservation(this.Tramite._id, result.value!).subscribe(observation => {
+          this.Tramite.estado = 'OBSERVADO'
+          this.observations.unshift(observation)
+        })
+      }
+    })
+
+  }
+  setNewStateProcedure(state: string) {
+    this.Tramite.estado = state
   }
 }

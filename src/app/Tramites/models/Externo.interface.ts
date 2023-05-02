@@ -1,13 +1,3 @@
-import { RepresentanteDto, SolicitanteDto } from "./Externo.dto"
-// export interface TypeTramiteData {
-//     id_tipoTramite: string
-//     nombre: string
-//     segmento: string
-//     requerimientos: {
-//         nombre: string
-//     }[]
-// }
-
 export interface Externo {
     _id: string
     alterno: string
@@ -27,10 +17,9 @@ export interface Externo {
     fecha_finalizacion?: string
     pin: number
     requerimientos: string[]
-    solicitante: SolicitanteDto
-    representante?: RepresentanteDto
+    solicitante: Solicitante
+    representante?: Representante
     cite: string
-    observaciones: any[]
     tipo_tramite: {
         nombre: string
     },
@@ -38,7 +27,6 @@ export interface Externo {
 }
 
 export interface Solicitante {
-    _id?: string
     nombre: string
     paterno: string
     materno: string
@@ -49,7 +37,6 @@ export interface Solicitante {
     documento: string
 }
 export interface Representante {
-    _id?: string
     nombre: string
     paterno: string
     materno: string
@@ -60,9 +47,17 @@ export interface Representante {
     documento: string
 }
 export interface Observacion {
-    id_cuenta: string,
-    funcionario: string,
-    descripcion: string,
-    corregido: boolean
-    fecha: Date
+    _id: string
+    procedure: string
+    group: "tramites_externos" | "tramites_internos",
+    officer: {
+        nombre: string
+        paterno: string
+        materno: string
+        cargo: string
+    }
+    account: string
+    description: string
+    solved: boolean
+    date: Date
 }

@@ -1,11 +1,11 @@
-<p>
+<p *ngIf="Mail">
     <mat-toolbar color="primary">
         <button (click)="back()" mat-icon-button>
             <mat-icon>arrow_back</mat-icon>
         </button>
         <span *ngIf="Tramite">{{Tramite.alterno}}</span>
         <span class="example-spacer"></span>
-        <button (click)="addObservation()" matTooltip="Agregar observacion" mat-icon-button>
+        <button [disabled]="!Mail.recibido" (click)="addObservation()" matTooltip="Agregar observacion" mat-icon-button>
             <mat-icon>push_pin</mat-icon>
         </button>
         <button (click)="generar()" matTooltip="Generar ficha de tramite" mat-icon-button>
@@ -85,13 +85,13 @@
                 [Tramite]="Tramite"></app-info-tramite-externo>
             <app-info-tramite-interno *ngIf="Mail.tipo==='tramites_internos'&& Tramite"
                 [Tramite]="Tramite"></app-info-tramite-interno>
-        </mat-tab>
-        <mat-tab>
+            </mat-tab>
+            <mat-tab *ngIf="observations.length>0">
             <ng-template mat-tab-label>
                 <mat-icon class="tab-icon">push_pin</mat-icon>
                 Observaciones
             </ng-template>
-            <app-observaciones [Options]="true" [Observaciones]="Tramite.observaciones"></app-observaciones>
+            <app-observaciones [Options]="true" [Observaciones]="observations" (setNewState)="setNewStateProcedure($event)"></app-observaciones>
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>

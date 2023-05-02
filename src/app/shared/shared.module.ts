@@ -15,7 +15,7 @@ import { InfoTramiteExternoComponent } from './info-tramite-externo/info-tramite
 import { StatePipe } from './pipes/state.pipe';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { ToolbarComponent } from './toolbar/toolbar.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SolicitantePipe } from './pipes/solicitante.pipe';
 import { TableComponent } from './table/table.component';
 import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
@@ -56,7 +56,8 @@ import { EventsProcedureComponent } from './events-procedure/events-procedure.co
     NgxGraphModule,
     ReactiveFormsModule,
     AngularSignaturePadModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    FormsModule
   ],
   exports: [
     TablaComponent,

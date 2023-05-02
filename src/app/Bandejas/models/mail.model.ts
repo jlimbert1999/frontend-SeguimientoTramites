@@ -130,13 +130,6 @@ export interface MailDetails {
   _id: string;
 }
 
-export interface Observacion {
-  corregido: boolean;
-  descripcion: string;
-  fecha: string;
-  funcionario: string;
-  id_cuenta: string;
-}
 
 export interface Mail {
   _id: string;
@@ -145,8 +138,4 @@ export interface Mail {
     alterno: string;
     cantidad: string;
   };
-}
-
-export interface MailInData {
-  
 }

@@ -1,4 +1,17 @@
-mat-list {
-    overflow: auto;
-    max-height: 85vh;
+.solved-item {
+    color: green;
+}
+
+.pending-item {
+    color: red;
+}
+
+.mat-mdc-radio-button~.mat-mdc-radio-button {
+    margin-left: 16px;
+}
+
+.list-group {
+    max-height: 75vh;
+    margin-bottom: 10px;
+    overflow-y: scroll;
 }

@@ -5,8 +5,9 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { environment } from 'src/environments/environment';
 import { InternoDto } from '../models/interno.dto';
 import { Interno } from '../models/Interno.interface';
-import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
+import { LocationProcedure, WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 import { TypesProceduresGrouped } from 'src/app/Configuraciones/models/tipoTramite.interface';
+import { Observacion } from '../models/Externo.interface';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -51,9 +52,9 @@ export class InternosService {
     )
   }
   getOne(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: any, workflow: any[], location: LocationProcedure[] }>(`${base_url}/internos/${id_tramite}`).pipe(
+    return this.http.get<{ ok: boolean, tramite: Interno, workflow: WorkflowData[], location: LocationProcedure[], observations: Observacion[]  }>(`${base_url}/internos/${id_tramite}`).pipe(
       map(resp => {
-        return { tramite: resp.tramite, workflow: resp.workflow, location: resp.location }
+        return { tramite: resp.tramite, workflow: resp.workflow, location: resp.location, observations:resp.observations }
       })
     )
   }

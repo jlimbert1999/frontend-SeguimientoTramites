@@ -21,7 +21,6 @@ export class InfoTramiteExternoComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this.createTimer(this.Tramite.fecha_registro, this.Tramite.fecha_finalizacion, this.Tramite.estado)
-    console.log(this.Tramite);
   }
 
 

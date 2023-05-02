@@ -4,7 +4,7 @@ import { map } from 'rxjs';
 import { LocationProcedure, WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 import { environment } from 'src/environments/environment';
 import { ExternoDto, RepresentanteDto, SolicitanteDto } from '../models/Externo.dto';
-import { Externo } from '../models/Externo.interface';
+import { Externo, Observacion } from '../models/Externo.interface';
 import { TipoTramite } from 'src/app/Configuraciones/models/tipoTramite.interface';
 
 const base_url = environment.base_url
@@ -65,9 +65,9 @@ export class ExternosService {
     )
   }
   getOne(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: Externo, workflow: WorkflowData[], location: LocationProcedure[] }>(`${base_url}/externos/${id_tramite}`).pipe(
+    return this.http.get<{ ok: boolean, tramite: Externo, workflow: WorkflowData[], location: LocationProcedure[], observations: Observacion[] }>(`${base_url}/externos/${id_tramite}`).pipe(
       map(resp => {
-        return { tramite: resp.tramite, workflow: resp.workflow, location: resp.location }
+        return { tramite: resp.tramite, workflow: resp.workflow, location: resp.location, observations: resp.observations }
       })
     )
   }
