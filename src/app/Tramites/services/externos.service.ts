@@ -65,9 +65,9 @@ export class ExternosService {
     )
   }
   getOne(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: Externo, workflow: WorkflowData[], location: LocationProcedure[], observations: Observacion[] }>(`${base_url}/externos/${id_tramite}`).pipe(
+    return this.http.get<{ ok: boolean, tramite: Externo, workflow: WorkflowData[], location: LocationProcedure[], observations: Observacion[], events: any[]}>(`${base_url}/externos/${id_tramite}`).pipe(
       map(resp => {
-        return { tramite: resp.tramite, workflow: resp.workflow, location: resp.location, observations: resp.observations }
+        return { tramite: resp.tramite, workflow: resp.workflow, location: resp.location, observations: resp.observations, events: resp.events }
       })
     )
   }

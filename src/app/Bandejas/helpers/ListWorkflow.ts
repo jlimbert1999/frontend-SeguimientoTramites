@@ -5,8 +5,8 @@ export function createListWorkflow(data: WorkflowData[], rootAccounts: { id_root
   rootAccounts.forEach(root => {
     const firstShipment = data.find(mail => mail.emisor.cuenta._id === root.id_root)
     if (firstShipment) {
-      const remainingShipments = data.filter(mail => mail.emisor.cuenta._id === root.id_root && mail.fecha_envio === firstShipment.fecha_envio)
-      data = data.filter(mail => mail.emisor.cuenta._id !== root.id_root && mail.fecha_envio !== firstShipment.fecha_envio)
+      const remainingShipments = data.filter(mail => mail.emisor.cuenta._id === root.id_root)
+      data = data.filter(mail => mail.emisor.cuenta._id !== root.id_root)
       list.push({
         officer: {
           fullname: createFullName(firstShipment.emisor.funcionario),

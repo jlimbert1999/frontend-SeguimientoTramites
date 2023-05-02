@@ -10,6 +10,7 @@ import { WorkflowData } from "src/app/Bandejas/models/workflow.interface";
 const ordinales = require("ordinales-js");
 
 export const HojaRutaExterna = async (tramite: Externo, workflow: WorkflowData[], id_cuenta: string) => {
+    workflow = workflow.filter(element => element.recibido === true || element.recibido === undefined)
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     let docDefinition: TDocumentDefinitions
     let checkType = ['', '', '']

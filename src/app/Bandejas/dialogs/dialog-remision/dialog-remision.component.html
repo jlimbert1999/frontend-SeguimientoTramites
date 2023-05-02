@@ -7,7 +7,7 @@
                 <mat-chip-listbox aria-label="Color selection">
                     <mat-chip *ngFor="let account of accounts" (removed)="removeReceiver(account)">
                         <img matChipAvatar src="../../../assets/img/account.png" alt="Photo of a Shiba Inu" />
-                        {{account.funcionario|fullname|titlecase}}
+                        {{account.funcionario|fullname|titlecase}} ({{account.funcionario.cargo}})
                         <button matChipRemove [attr.aria-label]="'remove ' + account">
                             <mat-icon>cancel</mat-icon>
                         </button>

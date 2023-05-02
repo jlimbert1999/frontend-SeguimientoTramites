@@ -26,6 +26,7 @@ export class FichaComponent implements OnInit {
   Location: LocationProcedure[] = []
   Workflow: any[] = []
   Observations: Observacion[] = []
+  Events: any[] = []
   constructor(
     private activateRoute: ActivatedRoute,
     private externoService: ExternosService,
@@ -45,6 +46,8 @@ export class FichaComponent implements OnInit {
           this.Workflow = data.workflow
           this.Location = data.location
           this.Observations = data.observations
+          this.Events = data.events
+
 
         })
       }

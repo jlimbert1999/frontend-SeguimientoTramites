@@ -33,6 +33,9 @@ td.mat-column-expand {
     border-left: 1px solid;
 }
 
+td.mat-column-group {
+    width: 50px;
+}
 td.mat-column-alterno {
     width: 150px;
 }

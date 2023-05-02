@@ -25,18 +25,14 @@ interface ListGroupware {
   styleUrls: ['./list-workflow.component.css']
 })
 export class ListWorkflowComponent implements OnInit {
-  @Input() Workflow: WorkflowData[]
+  @Input() Workflow: WorkflowData[] = []
   @Input() fecha_registro: string
   treeControl = new NestedTreeControl<ListGroupware>(node => node.children);
   dataSource = new MatTreeNestedDataSource<ListGroupware>();
   ListWorflow: ListWorkflow[] = []
   constructor() { }
-  hasChild = (_: number, node: ListGroupware) => !!node.children && node.children.length > 0;
 
   ngOnInit(): void {
     this.ListWorflow = createListWorkflow(this.Workflow, [{ id_root: this.Workflow[0].emisor.cuenta._id, startDate: this.fecha_registro }], [])
   }
-
-
-
 }

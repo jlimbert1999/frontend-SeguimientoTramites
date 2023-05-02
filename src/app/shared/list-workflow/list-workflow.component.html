@@ -5,18 +5,20 @@
         <div class="card-body">
           <h2 class="card-title">{{item.officer.fullname|titlecase}}</h2>
           <h4 class="card-subtitle mb-2 text-muted">{{item.officer.jobtitle}}</h4>
+          <p>Fecha envio: {{item.shippigDate|date:'short'}}</p>
         </div>
       </div>
     </div>
-    <div class="col-sm-7" >
+    <div class="col-sm-7">
       <div class="row" *ngFor="let subitem of item.sends">
         <div class="card">
           <div class="card-body">
             <h2 class="card-title">{{subitem.officer.fullname|titlecase}}</h2>
             <h4 class="card-subtitle mb-2 text-muted">{{subitem.officer.jobtitle}}</h4>
+            <p>Fecha recibido: {{subitem.receivedDate|date:'short'}}</p>
+          </div>
         </div>
       </div>
+      <br>
     </div>
-    <br>
   </div>
-</div>

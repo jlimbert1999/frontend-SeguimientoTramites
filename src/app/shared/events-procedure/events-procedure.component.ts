@@ -10,7 +10,8 @@ export class EventsProcedureComponent implements OnInit {
   @Input() events: any[] = []
 
   ngOnInit(): void {
-    this.events.sort()
+   
+   
   }
 
 }

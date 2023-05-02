@@ -115,7 +115,7 @@ export class BandejaEntradaComponent implements OnInit {
       });
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          // this.bandejaService.Get().subscribe()
+          this.Get()
         }
       });
     }
