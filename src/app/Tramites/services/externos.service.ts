@@ -95,7 +95,7 @@ export class ExternosService {
     )
   }
   cancelProcedure(id_tramite: string, descripcion: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/externos/cancel/${id_tramite}`, { descripcion }).pipe(
+    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/externos/cancelar/${id_tramite}`, { descripcion }).pipe(
       map(resp => {
         return resp.message
       })

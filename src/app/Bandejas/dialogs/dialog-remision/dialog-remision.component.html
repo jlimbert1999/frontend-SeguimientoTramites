@@ -1,8 +1,31 @@
 <h2 mat-dialog-title>REMISION TRAMITE</h2>
 <mat-dialog-content>
     <form [formGroup]="FormEnvio">
+        <div class="row">
+            <div class="col-sm-4">
+                <app-simple-mat-select-search  [data]="institutions" (eventSelectedOption)="selectInstitution($event.value)" [pathPropertyOfObjectDisplay]="'nombre'" placehorder="Seleccione la institucion"></app-simple-mat-select-search>
+            </div>
+            <div class="col-sm-8">
+                <app-simple-mat-select-search  [data]="dependencies" (eventSelectedOption)="selectDependencie($event.value)" [pathPropertyOfObjectDisplay]="'nombre'" placehorder="Seleccione la dependencia"></app-simple-mat-select-search>
+            </div>
+        </div>
+        <div>
+            <mat-form-field class="example-full-width">
+                <mat-select [formControl]="userCtrl" (selectionChange)="addReceiver($event.value)" placeholder="Buscar funcionario">
+                    <mat-option>
+                        <ngx-mat-select-search [formControl]="userFilterCtrl" placeholderLabel="Nombre o Cargo"
+                            noEntriesFoundLabel="Sin resultados" [searching]="searching"></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let user of filteredUsers | async " [value]="user">
+                        <span>{{user.funcionario.fullname|titlecase}} - </span>
+                        <small class="jobtitle fw-lighter">{{user.funcionario.cargo|uppercase}}</small>
+                        <span class="c-pill" [ngClass]="user.online?'c-pill--success':'c-pill--danger'">{{user.online?'Conectado':'Sin conexion'}}</span>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
         <div class="row mb-3">
-            <label class="col-sm-2 col-form-label">Destinatario:</label>
+            <label class="col-sm-2 col-form-label">Destinatarios:</label>
             <div class="col-sm-10">
                 <mat-chip-listbox aria-label="Color selection">
                     <mat-chip *ngFor="let account of accounts" (removed)="removeReceiver(account)">
@@ -13,19 +36,7 @@
                         </button>
                     </mat-chip>
                 </mat-chip-listbox>
-                <mat-form-field class="example-full-width">
-                    <mat-select (selectionChange)="addReceiver($event.value)" placeholder="Buscar funcionario">
-                        <mat-option>
-                            <ngx-mat-select-search [formControl]="userFilterCtrl" placeholderLabel="Nombre o Cargo"
-                                noEntriesFoundLabel="Sin resultados" [searching]="searching"></ngx-mat-select-search>
-                        </mat-option>
-                        <mat-option *ngFor="let user of filteredUsers | async " [value]="user">
-                            <span>{{user.funcionario.fullname|titlecase}} - </span>
-                            <small class="jobtitle fw-lighter">{{user.funcionario.cargo|uppercase}}</small>
-                            <span class="c-pill" [ngClass]="user.online?'c-pill--success':'c-pill--danger'">{{user.online?'Conectado':'Sin conexion'}}</span>
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+              
             </div>
         </div>
         <div class="row mb-3">

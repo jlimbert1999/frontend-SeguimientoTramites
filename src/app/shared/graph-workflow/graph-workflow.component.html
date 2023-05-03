@@ -1,6 +1,7 @@
 <div class="areachart-wrapper dark">
-    <ngx-graph class="chart-container" [links]="links" [nodes]="nodos" [clusters]="clusters" [animate]="false"
-        layout="dagreCluster" [showMiniMap]="true" [draggingEnabled]="false" [curve]="curve">
+    <ngx-graph class="chart-container" [zoomLevel]="1" [links]="links" [nodes]="nodos"
+        [clusters]="clusters" [animate]="false" layout="dagreCluster" [showMiniMap]="true" [draggingEnabled]="false"
+        [curve]="curve">
         <ng-template #defsTemplate>
             <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4"
                 orient="auto">
@@ -33,7 +34,6 @@
                                     <strong>Dependencia: </strong>{{node.data.dependencia}}
                                 </p>
                             </mat-card-content>
-
                         </mat-card>
                     </xhtml:div>
                 </svg:foreignObject>

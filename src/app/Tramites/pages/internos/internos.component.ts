@@ -10,6 +10,7 @@ import { DialogInternosComponent } from '../../dialogs/dialog-internos/dialog-in
 import { HojaRutaInterna } from '../../pdfs/hora-ruta-interna';
 import { InternosService } from '../../services/internos.service';
 import { Router } from '@angular/router';
+import { Interno } from '../../models/Interno.interface';
 
 @Component({
   selector: 'app-internos',
@@ -157,6 +158,76 @@ export class InternosComponent implements OnInit {
       Object.assign(params, { text: this.paginatorService.text })
     }
     this.router.navigate(['home/tramites/internos/ficha-interna', id], { queryParams: params })
+  }
+  conclude(procedure: Interno) {
+    Swal.fire({
+      icon: 'question',
+      title: `Concluir el tramite ${procedure.alterno}?`,
+      text: `Ingrese una referencia para concluir`,
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      customClass: {
+        validationMessage: 'my-validation-message'
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
+          )
+        }
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.internoService.conclude(procedure._id, result.value!).subscribe(message => {
+          Swal.fire(message, undefined, 'success')
+          const index = this.dataSource.findIndex(element => element._id === procedure._id)
+          this.dataSource[index].estado = 'CONCLUIDO'
+          this.dataSource = [...this.dataSource]
+        })
+      }
+    })
+  }
+  cancel(tramite: Interno) {
+    Swal.fire({
+      icon: 'question',
+      title: `Anular el tramite ${tramite.alterno}?`,
+      text: `Ingrese una referencia para anular`,
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        validationMessage: 'my-validation-message'
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
+          )
+        }
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: `Esta seguro en anular el tramite ${tramite.alterno}?`,
+          text: `El tramite ya no se mostrara en su listado de tramites`,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Aceptar',
+          cancelButtonText: 'Cancelar',
+        }).then((confirm) => {
+          if (confirm.isConfirmed) {
+            this.internoService.cancel(tramite._id, result.value!).subscribe(message => {
+              Swal.fire(message, undefined, 'success')
+              this.Get()
+            })
+          }
+        })
+      }
+    })
   }
 
 }

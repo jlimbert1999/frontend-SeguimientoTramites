@@ -47,8 +47,6 @@ export class FichaComponent implements OnInit {
           this.Location = data.location
           this.Observations = data.observations
           this.Events = data.events
-
-
         })
       }
       else if (this.tipo == 'ficha-interna') {
@@ -76,11 +74,10 @@ export class FichaComponent implements OnInit {
   }
 
   generateFicha() {
-    console.log(this.Workflow);
-    PDF_FichaExterno(this.Tramite, createListWorkflow(this.Workflow, [{ id_root: this.Workflow[0].emisor.cuenta._id, startDate: this.Tramite.fecha_registro }], []), this.Location)
+    const group = this.tipo === 'ficha-externa' ? 'tramites_externos' : 'tramites_internos'
+    this.Workflow.length > 0
+      ? PDF_FichaExterno(this.Tramite, createListWorkflow(this.Workflow, [{ id_root: this.Workflow[0].emisor.cuenta._id, startDate: this.Tramite.fecha_registro }], []), this.Location, group)
+      : PDF_FichaExterno(this.Tramite, [], this.Location, group)
   }
-
-
-
 
 }

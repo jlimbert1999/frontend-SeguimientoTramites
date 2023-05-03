@@ -1,10 +1,8 @@
 <mat-list>
     <mat-list-item *ngFor="let event of events">
-        <mat-icon matListItemIcon>notifications</mat-icon>
+        <mat-icon matListItemIcon>circle_notifications</mat-icon>
         <div matListItemTitle>{{event.officer|fullname|titlecase}}</div>
         <div matListItemLine>{{event.description}}</div>
-        <span matListItemLine>{{event.date|date:'short'}}</span>
-
+        <span matListItemLine>{{event.date|date:'short':'-400'}}</span>
     </mat-list-item>
-
 </mat-list>

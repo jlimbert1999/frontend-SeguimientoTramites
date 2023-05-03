@@ -6,31 +6,12 @@ import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
 import { Externo } from "src/app/Tramites/models/Externo.interface";
 import { ListWorkflow, LocationProcedure } from "src/app/Bandejas/models/workflow.interface";
+import { Interno } from "src/app/Tramites/models/Interno.interface";
 
-export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkflow[], Location: LocationProcedure[]) {
+export async function PDF_FichaExterno(tramite: any, ListWorkflow: ListWorkflow[], Location: LocationProcedure[], group: 'tramites_externos' | 'tramites_internos') {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     let docDefinition: TDocumentDefinitions
-    let tableApplicat: Table = {
-        headerRows: 1,
-        dontBreakRows: true,
-        widths: [70, '*'],
-        body: []
-    }
-    let tableAgent: Table = {
-        headerRows: 1,
-        dontBreakRows: true,
-        widths: [70, '*'],
-        body: []
-    }
-    let listRequirements = tramite.requerimientos.map(requeriment => requeriment)
-    let tableLocation: Table = {
-        headerRows: 1,
-        dontBreakRows: true,
-        widths: ['*', '*'],
-        body: [
-            [{ text: 'DEPENDENCIA', bold: true, alignment: 'center' }, { text: 'FUNCIONARIO', bold: true, alignment: 'center' }]]
-    }
     const tableProcedure: Table = {
         headerRows: 1,
         dontBreakRows: true,
@@ -38,6 +19,7 @@ export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkf
         body: [
             [{ text: 'DETALLES TRAMITE', bold: true, colSpan: 2 }, ''],
             [{ text: 'Alterno:', bold: true, }, tramite.alterno],
+            [{ text: 'Tipo:', bold: true, }, tramite.tipo_tramite.nombre],
             [{ text: 'Referencia:', bold: true, }, tramite.detalle],
             [{ text: 'Cantidad hojas:', bold: true, }, tramite.cantidad],
             [{ text: 'Fecha registro:', bold: true, }, moment(tramite.fecha_registro).format('DD-MM-YYYY  HH:mm:ss')],
@@ -47,103 +29,6 @@ export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkf
             [{ text: 'Responsable registro:', bold: true }, `${tramite.cuenta.funcionario.nombre} ${tramite.cuenta.funcionario.paterno} ${tramite.cuenta.funcionario.materno} (${tramite.cuenta.funcionario.cargo})`],
         ]
     }
-
-    tableApplicat.body = tramite.solicitante.tipo === 'NATURAL'
-        ? [
-            [{ text: `DETALLES SOLICITANTE ${tramite.solicitante.tipo}`, bold: true, colSpan: 2 }, ''],
-            [{ text: 'Nombre:', bold: true, }, tramite.solicitante.nombre],
-            [{ text: 'Paterno:', bold: true, }, tramite.solicitante.paterno],
-            [{ text: 'Materno:', bold: true, }, tramite.solicitante.materno],
-            [{ text: 'Dni:', bold: true, }, tramite.solicitante.dni],
-            [{ text: 'Telefono:', bold: true, }, tramite.estado],
-        ]
-        : [
-            [{ text: `DETALLES SOLICITANTE ${tramite.solicitante.tipo}`, bold: true, colSpan: 2 }, ''],
-            [{ text: 'Nombre:', bold: true, }, tramite.solicitante.nombre],
-            [{ text: 'Telefono:', bold: true, }, tramite.estado],
-        ]
-
-
-    tableAgent.body = tramite.representante
-        ? [
-            [{ text: `DETALLES REPRESENTANTE`, bold: true, colSpan: 2 }, ''],
-            [{ text: 'Nombre:', bold: true, }, tramite.solicitante.nombre],
-            [{ text: 'Paterno:', bold: true, }, tramite.solicitante.paterno],
-            [{ text: 'Materno:', bold: true, }, tramite.solicitante.materno],
-            [{ text: 'Dni:', bold: true, }, tramite.solicitante.dni],
-            [{ text: 'Telefono:', bold: true, }, tramite.solicitante.telefono],
-        ]
-        : [
-            [{ text: `DETALLES REPRESENTANTE`, bold: true, colSpan: 2 }, ''],
-            [{ text: 'Sin representante legal', bold: true, colSpan: 2 }],
-        ]
-
-    let tableWorkflow: Table = {
-        dontBreakRows: true,
-        widths: ['*', '*', '*', '*'],
-        headerRows: 1,
-        body: [
-            [{ text: 'EMISOR', style: 'tableHeader' },
-            { text: 'DETALLES ENVIO', style: 'tableHeader' },
-            { text: 'RECEPTOR', style: 'tableHeader' },
-            { text: 'DETALLES RECIBIDO', style: 'tableHeader' }],
-        ]
-    }
-    ListWorkflow.forEach(item => {
-        tableWorkflow.body.push(
-            [
-                {
-                    text: `${item.officer.fullname} (${item.officer.jobtitle})\nUNIDAD: ${item.workUnit} - ${item.workInstitution}`,
-                    rowSpan: item.sends.length
-                },
-                {
-                    text: `DURACION:  ${item.duration}\nFECHA:  ${moment(item.shippigDate).format('DD-MM-YYYY HH:mm:ss')}\nCANTIDAD: ${item.adjunt}\nREFERENCIA: ${item.reference}`,
-                    rowSpan: item.sends.length
-                },
-                {
-                    text: `${item.sends[0].officer.fullname} (${item.sends[0].officer.jobtitle})\nUNIDAD: ${item.sends[0].workUnit} - ${item.sends[0].workInstitution}`
-                },
-                {
-                    text: `FECHA: ${item.sends[0].receivedDate ? moment(item.sends[0].receivedDate).format('DD-MM-YYYY HH:mm:ss') : 'Sin recibir'}`,
-                    rowSpan: item.sends.length
-                },
-            ]
-        )
-        if (item.sends.length - 1 > 0) {
-            for (let j = 1; j < item.sends.length; j++) {
-                tableWorkflow.body.push(
-                    [
-                        '', '',
-                        {
-                            text: `${item.sends[j].officer.fullname} (${item.sends[j].officer.jobtitle})\nUNIDAD: ${item.workUnit} - ${item.workInstitution}`
-                        },
-                        {
-                            text: `FECHA: ${item.sends[j].receivedDate?moment(item.sends[j].receivedDate).format('DD-MM-YYYY HH:mm:ss'):'Sin recibir'}`
-                        }
-                    ]
-
-                )
-
-            }
-        }
-
-
-        // item.sends.forEach(subitem => {
-        //     tableWorkflow.body.push(['', '', '',
-        //         {
-        //             text: subitem.officer.fullname
-        //         }]
-
-        //     )
-        // })
-    })
-    Location.forEach(item => {
-        tableLocation.body.push(
-            [item.cuenta.dependencia.nombre,
-            `${item.cuenta.funcionario.nombre} ${item.cuenta.funcionario.paterno} ${item.cuenta.funcionario.materno}\n ${item.cuenta.funcionario.cargo}`]
-        )
-    })
-
     docDefinition = {
         footer: [
             { text: `Generado en fecha: ${moment(new Date()).format('DD-MM-YYYY HH:mm:ss')} `, margin: [20, 10, 0, 0] }
@@ -158,7 +43,7 @@ export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkf
                         alignment: 'left',
                     },
                     {
-                        text: `Reporte ficha de tramite\n\n EXTERNO: ${tramite.alterno} `,
+                        text: `Reporte ficha de tramite\n\n ${group === 'tramites_externos' ? 'EXTERNOS' : 'INTERNO'}: ${tramite.alterno} `,
                         style: 'title',
                         alignment: 'center',
                         width: '*'
@@ -171,62 +56,17 @@ export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkf
                     },
                 ]
             },
-            // {
-            //     text: `Referencia: ${tramite.detalle} `
-            // },
-            // {
-            //     text: `Estado: ${tramite.estado} `
-            // },
-            // {
-            //     columns: [
-            //         [
-            //             { text: `Cite: ${tramite.cite} ` },
-            //             { text: `Fecha: ${moment(tramite.fecha_registro).format('DD-MM-YYYY HH:mm:ss')} ` },
-            //             { text: `Pin: ${tramite.pin} ` }
-            //         ],
-            //         [
-            //             { text: `Nº Interno: ${tramite.cite} ` },
-            //             { text: `Cantidad: ${tramite.cantidad} ` },
-            //         ]
-            //     ]
-            // },
-            // {
-            //     columns: [
-            //         sectionSolicitante,
-            //         sectionRepresentante
-            //     ]
-            // },
             {
                 style: 'tableInfo',
                 table: tableProcedure,
                 layout: 'headerLineOnly'
             },
-            {
-                columns: [
-                    {
-                        style: 'tableInfo',
-                        margin: [0, 0, 20, 0],
-                        table: tableApplicat,
-                        layout: 'headerLineOnly'
-                    },
-                    {
-                        style: 'tableInfo',
-                        margin: [20, 0, 0, 0],
-                        table: tableAgent,
-                        layout: 'headerLineOnly'
-                    },
-                ]
-            },
-            { text: '\n\nREQUISITOS PRESENTADOS', style: 'subTitle' },
-            {
-                fontSize: 10,
-                ul: listRequirements
-            },
-            { text: '\n\nUBICACION DEL TRAMITE\n', style: 'subTitle' },
-            {
-                style: 'tableInfo',
-                table: tableLocation
-            },
+            group === 'tramites_externos'
+                ? createSectionAplicantExternal(tramite)
+                : createSectionAplicantInternal(tramite),
+
+
+            createSectionLocation(Location),
             {
                 pageBreak: 'before',
                 pageOrientation: 'landscape',
@@ -236,24 +76,8 @@ export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkf
             {
 
                 fontSize: 8,
-                table: tableWorkflow
+                table: createTableWorkflow(ListWorkflow)
             }
-
-
-            // [
-            //     {
-            //         text: '\n\nFlujo de trabajo\n\n', alignment: 'center', bold: true
-            //     },
-            //     {
-
-            //         fontSize: 8,
-
-            //         table: {
-            //             widths: [80, '*', 70, 80, 70],
-            //             body: dataWorkflow
-            //         }
-            //     }
-            // ]
         ],
         styles: {
             header: {
@@ -284,3 +108,211 @@ export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkf
     }
     pdfMake.createPdf(docDefinition).print();
 }
+
+function createTableWorkflow(List: ListWorkflow[]): Table {
+    const tableWorkflow: Table = {
+        dontBreakRows: true,
+        widths: ['*', '*', '*', '*'],
+        headerRows: 1,
+        body: [
+            [{ text: 'EMISOR', style: 'tableHeader' },
+            { text: 'DETALLES ENVIO', style: 'tableHeader' },
+            { text: 'RECEPTOR', style: 'tableHeader' },
+            { text: 'DETALLES RECIBIDO', style: 'tableHeader' }],
+        ]
+    }
+    if (List.length === 0) {
+        tableWorkflow.body.push([{ text: 'El tramite no ha sido remitido', colSpan: 4 }, '', '', ''])
+        return tableWorkflow
+    }
+    List.forEach(item => {
+        tableWorkflow.body.push(
+            [
+                {
+                    text: `${item.officer.fullname} (${item.officer.jobtitle})\nUNIDAD: ${item.workUnit} - ${item.workInstitution}`,
+                    rowSpan: item.sends.length
+                },
+                {
+                    text: `DURACION:  ${item.duration}\nFECHA:  ${moment(item.shippigDate).format('DD-MM-YYYY HH:mm:ss')}\nCANTIDAD: ${item.adjunt}\nREFERENCIA: ${item.reference}`,
+                    rowSpan: item.sends.length
+                },
+                {
+                    text: `${item.sends[0].officer.fullname} (${item.sends[0].officer.jobtitle})\nUNIDAD: ${item.sends[0].workUnit} - ${item.sends[0].workInstitution}`
+                },
+                {
+                    text: `FECHA: ${item.sends[0].receivedDate ? moment(item.sends[0].receivedDate).format('DD-MM-YYYY HH:mm:ss') : 'Sin recibir'}`,
+                    rowSpan: item.sends.length
+                },
+            ]
+        )
+        if (item.sends.length - 1 > 0) {
+            for (let j = 1; j < item.sends.length; j++) {
+                tableWorkflow.body.push(
+                    [
+                        '', '',
+                        {
+                            text: `${item.sends[j].officer.fullname} (${item.sends[j].officer.jobtitle})\nUNIDAD: ${item.workUnit} - ${item.workInstitution}`
+                        },
+                        {
+                            text: `FECHA: ${item.sends[j].receivedDate ? moment(item.sends[j].receivedDate).format('DD-MM-YYYY HH:mm:ss') : 'Sin recibir'}`
+                        }
+                    ]
+                )
+            }
+        }
+    })
+    return tableWorkflow
+}
+function createSectionLocation(location: LocationProcedure[]): Content {
+    if (location.length === 0) {
+        return ''
+    }
+    const tableLocation: Table = {
+        headerRows: 1,
+        dontBreakRows: true,
+        widths: ['*', '*'],
+        body: [
+            [{ text: 'DEPENDENCIA', bold: true, alignment: 'center' }, { text: 'FUNCIONARIO', bold: true, alignment: 'center' }]]
+    }
+    location.forEach(item => {
+        tableLocation.body.push(
+            [item.cuenta.dependencia.nombre,
+            `${item.cuenta.funcionario.nombre} ${item.cuenta.funcionario.paterno} ${item.cuenta.funcionario.materno}\n ${item.cuenta.funcionario.cargo}`]
+        )
+    })
+    return ([
+        { text: '\n\nUBICACION DEL TRAMITE\n', style: 'subTitle' },
+        {
+            style: 'tableInfo',
+            table: tableLocation
+        },
+    ])
+
+}
+
+function createSectionAplicantExternal(tramite: Externo): Content {
+    const tableApplicat: Table = {
+        headerRows: 1,
+        dontBreakRows: true,
+        widths: [70, '*'],
+        body: []
+    }
+    const tableAgent: Table = {
+        headerRows: 1,
+        dontBreakRows: true,
+        widths: [70, '*'],
+        body: []
+    }
+    tableApplicat.body = tramite.solicitante.tipo === 'NATURAL'
+        ? [
+            [{ text: `DETALLES SOLICITANTE ${tramite.solicitante.tipo}`, bold: true, colSpan: 2 }, ''],
+            [{ text: 'Nombre:', bold: true, }, tramite.solicitante.nombre],
+            [{ text: 'Paterno:', bold: true, }, tramite.solicitante.paterno],
+            [{ text: 'Materno:', bold: true, }, tramite.solicitante.materno],
+            [{ text: 'Dni:', bold: true, }, tramite.solicitante.dni],
+            [{ text: 'Telefono:', bold: true, }, tramite.estado],
+        ]
+        : [
+            [{ text: `DETALLES SOLICITANTE ${tramite.solicitante.tipo}`, bold: true, colSpan: 2 }, ''],
+            [{ text: 'Nombre:', bold: true, }, tramite.solicitante.nombre],
+            [{ text: 'Telefono:', bold: true, }, tramite.estado],
+        ]
+
+    tableAgent.body = tramite.representante
+        ? [
+            [{ text: `DETALLES REPRESENTANTE`, bold: true, colSpan: 2 }, ''],
+            [{ text: 'Nombre:', bold: true, }, tramite.solicitante.nombre],
+            [{ text: 'Paterno:', bold: true, }, tramite.solicitante.paterno],
+            [{ text: 'Materno:', bold: true, }, tramite.solicitante.materno],
+            [{ text: 'Dni:', bold: true, }, tramite.solicitante.dni],
+            [{ text: 'Telefono:', bold: true, }, tramite.solicitante.telefono],
+        ]
+        : [
+            [{ text: `DETALLES REPRESENTANTE`, bold: true, colSpan: 2 }, ''],
+            [{ text: 'Sin representante legal', bold: true, colSpan: 2 }],
+        ]
+
+    return (
+        [{
+            columns: [
+                {
+                    style: 'tableInfo',
+                    margin: [0, 0, 20, 0],
+                    table: tableApplicat,
+                    layout: 'headerLineOnly'
+                },
+                {
+                    style: 'tableInfo',
+                    margin: [20, 0, 0, 0],
+                    table: tableAgent,
+                    layout: 'headerLineOnly'
+                },
+            ]
+        },]
+    )
+}
+
+function createSectionAplicantInternal(tramite: Interno): Content {
+    const tableEmitter: Table = {
+        headerRows: 1,
+        dontBreakRows: true,
+        widths: [70, '*'],
+        body: []
+    }
+    const tableReceiver: Table = {
+        headerRows: 1,
+        dontBreakRows: true,
+        widths: [70, '*'],
+        body: []
+    }
+    tableEmitter.body = [
+        [
+            [{ text: `DETALLES REMITENTE`, bold: true, colSpan: 2 }, ''],
+            [{ text: 'Funcionario:', bold: true, }, tramite.remitente.nombre],
+            [{ text: 'Cargo:', bold: true, }, tramite.remitente.cargo],
+        ]
+    ]
+    tableReceiver.body = [
+        [{ text: `DETALLES DESTINATARIO`, bold: true, colSpan: 2 }, ''],
+        [{ text: 'Nombre:', bold: true, }, tramite.destinatario.nombre],
+        [{ text: 'Paterno:', bold: true, }, tramite.destinatario.cargo],
+    ]
+    return (
+        [{
+            columns: [
+                {
+                    style: 'tableInfo',
+                    margin: [0, 0, 20, 0],
+                    table: tableEmitter,
+                    layout: 'headerLineOnly'
+                },
+                {
+                    style: 'tableInfo',
+                    margin: [20, 0, 0, 0],
+                    table: tableReceiver,
+                    layout: 'headerLineOnly'
+                },
+            ]
+        },]
+    )
+
+}
+// function createTableRequeriments(tramite: Externo, group:'tramites_externos'): Content {
+//     let listRequirements = tramite.requerimientos.map(requeriment => requeriment)
+//     if (tramite.requerimientos.length === 0) {
+//         return [
+//             { text: '\n\nREQUISITOS PRESENTADOS', style: 'subTitle' },
+//             {
+//                 fontSize: 10,
+//                 ul: ['SIN REQUERIMIENTOS']
+//             },
+//         ]
+//     }
+//     return [
+//         { text: '\n\nREQUISITOS PRESENTADOS', style: 'subTitle' },
+//         {
+//             fontSize: 10,
+//             ul: listRequirements
+//         },
+//     ]
+// }

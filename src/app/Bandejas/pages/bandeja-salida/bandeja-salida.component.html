@@ -4,7 +4,8 @@
     <div class="row">
         <div class="col-sm-3">
             <mat-radio-group [(ngModel)]="paginatorService.type" (change)="selectTypeSearch()">
-                <mat-radio-button class="default-radio-button" [value]="undefined" color="primary">TODOS</mat-radio-button>
+                <mat-radio-button class="default-radio-button" [value]="undefined"
+                    color="primary">TODOS</mat-radio-button>
                 <mat-radio-button value="EXTERNO" color="accent">EXTERNOS</mat-radio-button>
                 <mat-radio-button value="INTERNO" color="warn">INTERNOS</mat-radio-button>
             </mat-radio-group>
@@ -45,7 +46,7 @@
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="descripcion">
-                    <th mat-header-cell *matHeaderCellDef>Tipo de tramite</th>
+                    <th mat-header-cell *matHeaderCellDef>Referencia</th>
                     <td mat-cell *matCellDef="let row">{{row._id.tramite.detalle}}</td>
                 </ng-container>
                 <ng-container matColumnDef="estado">
@@ -74,19 +75,9 @@
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="situacion">
-                    <th mat-header-cell *matHeaderCellDef>Situacion</th>
+                    <th mat-header-cell *matHeaderCellDef>Envios</th>
                     <td mat-cell *matCellDef="let row">
-                        <!-- <div [ngSwitch]="row.recibido">
-                            <div *ngSwitchCase="null">
-                                <span class="c-pill c-pill--warning">ENVIADO</span>
-                            </div>
-                            <div *ngSwitchCase="true">
-                                <span class="c-pill c-pill--success">ACEPTADO</span>
-                            </div>
-                            <div *ngSwitchCase="false">
-                                <span class="c-pill c-pill--danger">RECHAZADO</span>
-                            </div>
-                        </div> -->
+                       {{row.sendings.length}}
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="opciones">
@@ -124,30 +115,34 @@
                     <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
                         <div class="example-element-detail"
                             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                            <!-- <div class="card w-100">
-                                <div class="card-body">
-                                    <h3 class="card-title">ENVIADO A:
-                                        {{element.receptor.funcionario|fullname}}
-                                        ({{element.receptor.funcionario.cargo|uppercase}}) -
-                                        {{element.receptor.cuenta.dependencia.institucion.sigla}} /
-                                        {{element.receptor.cuenta.dependencia.nombre}}</h3>
-                                    <p class="card-text">MOTIVO: {{element.motivo}}</p>
-                                    <div class="row">
-                                        <div class="col">
-                                            <p class="card-text">ENVIADO: {{element.fecha_envio|date:'d/M/yy, h:mm a'}}
-                                            </p>
+                            <div class="list-group p-2 w-100">
+                                <li *ngFor="let item of element.sendings"
+                                    class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <h3>{{item.receptor.funcionario|fullname|titlecase}}
+                                            ({{item.receptor.funcionario.cargo}})</h3>
+                                        <p *ngIf="item.recibido===false" style="color:red">Motivo: {{item.motivo_rechazo}}</p>
+                                        <button (click)="cancelOneSend(item)" *ngIf="item.recibido!==false" mat-stroked-button color="warn">Cancelar</button>
+                                    </div>
+
+                                    <div [ngSwitch]="item.recibido">
+                                        <div *ngSwitchCase="null">
+                                            <span class="c-pill c-pill--warning">ENVIADO</span>
                                         </div>
-                                        <div *ngIf="element.fecha_recibido" class="col">
-                                            <p class="card-text">RECIBIDO: {{element.fecha_recibido|date:'d/M/yy, h:mma'}}</p>
+                                        <div *ngSwitchCase="true">
+                                            <span class="c-pill c-pill--success">ACEPTADO</span>
+                                        </div>
+                                        <div *ngSwitchCase="false">
+                                            <span class="c-pill c-pill--danger">RECHAZADO</span>
                                         </div>
                                     </div>
-                                    <br>
-                                    <div *ngIf="element.recibido===false" class="alert alert-danger" role="alert">
-                                        MOTIVO RECHAZO: <strong>{{element.motivo_rechazo|uppercase}}</strong>
-                                    </div>
-                                </div>
-                            </div> -->
-                            <table class="table table-sm table-hover">
+                                </li>
+
+
+                            </div>
+
+
+                            <!-- <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
                                         <th scope="col">Funcionario</th>
@@ -183,7 +178,7 @@
 
                                 </tbody>
                             </table>
-
+ -->
 
 
 

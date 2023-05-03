@@ -58,11 +58,9 @@ mat-card-title {
     stroke: black;
     
 }
-
-
 .dark {
     background-color: #E9ECEF;
-    height: 75vh;
+    height: 85vh;
 }
 
 .indicador{

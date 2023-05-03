@@ -1,52 +1,5 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-5">
-            <form>
-                <fieldset disabled>
-                    <legend>Informacion flujo</legend>
-                    <div class="mb-3">
-                        <label class="form-label">Responsable registro</label>
-                        <div class="card">
-                            <div class="card-body">
-                                <p class="card-text fw-bold">{{Tramite.cuenta.funcionario|fullname|titlecase}}</p>
-                                <p class="card-text">{{Tramite.cuenta.funcionario.cargo|titlecase}}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div [ngSwitch]="Tramite.estado" class="col-md-4">
-                        <div *ngSwitchCase="'CONCLUIDO'">
-                            <label class="form-label">Duracion proceso</label>
-                            <h2> <span class="badge text-bg-light">{{count}}</span> </h2>
-                        </div>
-                        <div *ngSwitchDefault>
-                            <label class="form-label">Tiempo transcurrido</label>
-                            <h2> <span class="badge text-bg-success">{{count}}</span></h2>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Estado</label>
-                        <h2>
-                            <span class="badge" [ngClass]="Tramite.estado|state">
-                                {{Tramite.estado|uppercase}}
-                            </span>
-                        </h2>
-                    </div>
-                </fieldset>
-            </form>
-            <mat-list>
-                <div mat-subheader>Ubicacion actual</div>
-                <mat-list-item *ngFor="let manager of Location">
-                    <img matListItemAvatar src="../../../assets/img/account.png" alt="...">
-                    <h3 matListItemTitle>{{manager.cuenta.dependencia.nombre}}</h3>
-                    <p matListItemLine>
-                        <span>{{manager.cuenta.funcionario.nombre}} {{manager.cuenta.funcionario.paterno}}
-                            {{manager.cuenta.funcionario.materno}}</span>
-                        <span class="demo-2"> -- {{manager.cuenta.funcionario.cargo}}</span>
-                    </p>
-                </mat-list-item>
-            </mat-list>
-
-        </div>
         <div class="col-sm-7">
             <div class="row">
                 <form>
@@ -85,13 +38,148 @@
                     </fieldset>
                 </form>
             </div>
-            <div class="row">
-                <div class="mb-3">
-                    <label class="form-label">Requisitos presentados</label>
-                    <ul class="list-group list-group-flush panel-requerimientos ">
-                        <li class="list-group-item" *ngFor="let requisito of Tramite.requerimientos">{{requisito}}</li>
-                    </ul>
-                </div>
+
+        </div>
+        <div class="col-sm-5">
+            <form>
+                <fieldset disabled>
+                    <legend>Informacion flujo</legend>
+                    <div class="mb-3">
+                        <label class="form-label">Responsable registro</label>
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text fw-bold">{{Tramite.cuenta.funcionario|fullname|titlecase}}</p>
+                                <p class="card-text">{{Tramite.cuenta.funcionario.cargo|titlecase}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div [ngSwitch]="Tramite.estado" class="col-md-4">
+                        <div *ngSwitchCase="'CONCLUIDO'">
+                            <label class="form-label">Duracion proceso</label>
+                            <h2> <span class="badge text-bg-light">{{count}}</span> </h2>
+                        </div>
+                        <div *ngSwitchDefault>
+                            <label class="form-label">Tiempo transcurrido</label>
+                            <h2> <span class="badge text-bg-success">{{count}}</span></h2>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Estado</label>
+                        <h2>
+                            <span class="badge" [ngClass]="Tramite.estado|state">
+                                {{Tramite.estado|uppercase}}
+                            </span>
+                        </h2>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <fieldset disabled>
+                <legend>Informacion solicitante</legend>
+                <ng-container *ngIf="Tramite.solicitante.tipo==='NATURAL'">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-control" [value]="Tramite.solicitante|fullname">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="mb-3">
+                                <label class="form-label">Dni</label>
+                                <input type="text" class="form-control" [value]="Tramite.solicitante.dni">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="mb-3">
+                                <label class="form-label">Telefono</label>
+                                <input type="text" class="form-control" [value]="Tramite.solicitante.telefono">
+                            </div>
+                        </div>
+
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="Tramite.solicitante.tipo==='JURIDICO'">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-control" [value]="Tramite.solicitante.nombre">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="mb-3">
+                                <label class="form-label">Telefono</label>
+                                <input type="text" class="form-control" [value]="Tramite.solicitante.telefono">
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </fieldset>
+        </div>
+        <div class="col-sm-6">
+            <fieldset disabled>
+                <legend>Informacion representante</legend>
+                <ng-container *ngIf="Tramite.representante">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-control" [value]="Tramite.representante|fullname">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="mb-3">
+                                <label class="form-label">Dni</label>
+                                <input type="text" class="form-control" [value]="Tramite.representante.dni">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="mb-3">
+                                <label class="form-label">Telefono</label>
+                                <input type="text" class="form-control" [value]="Tramite.representante.telefono">
+                            </div>
+                        </div>
+
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="!Tramite.representante">
+                    <h3>Sin representante</h3>
+                </ng-container>
+            </fieldset>
+        </div>
+    </div>
+    <br>
+    <div class="row border bg-light p-3" *ngIf="Location.length>0">
+        <legend>Ubicacion tramite</legend>
+        <mat-list>
+            <mat-list-item *ngFor="let manager of Location">
+                <img matListItemAvatar src="../../../assets/img/account.png" alt="...">
+                <h3 matListItemTitle>{{manager.cuenta.dependencia.nombre}}</h3>
+                <p matListItemLine>
+                    <span>{{manager.cuenta.funcionario.nombre}} {{manager.cuenta.funcionario.paterno}}
+                        {{manager.cuenta.funcionario.materno}}</span>
+                    <span class="demo-2"> -- {{manager.cuenta.funcionario.cargo}}</span>
+                </p>
+            </mat-list-item>
+        </mat-list>
+    </div>
+    <br>
+    <div class="row">
+        <legend>Requisitos presentados</legend>
+        <div class="mb-3">
+            <ul *ngIf="Tramite.requerimientos.length>0" class="list-group list-group-flush panel-requerimientos ">
+                <li class="list-group-item" *ngFor="let requisito of Tramite.requerimientos">{{requisito}}</li>
+            </ul>
+            <div *ngIf="Tramite.requerimientos.length===0" class="alert alert-primary" role="alert">
+                No se presentaron requerimientos
             </div>
         </div>
     </div>

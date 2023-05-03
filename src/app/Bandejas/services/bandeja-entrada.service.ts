@@ -72,6 +72,28 @@ export class BandejaEntradaService {
       })
     )
   }
+  getInstitucions() {
+    return this.http.get<{ ok: boolean, institutions: any[] }>(`${base_url}/entradas/instituciones`).pipe(
+      map(resp => {
+        return resp.institutions
+      })
+    )
+  }
+  getDependenciesOfInstitution(id_institution: string) {
+    return this.http.get<{ ok: boolean, dependencies: any[] }>(`${base_url}/entradas/dependencias/${id_institution}`).pipe(
+      map(resp => {
+        return resp.dependencies
+      })
+    )
+  }
+  getAccountsOfDependencie(id_dependencie: string) {
+    return this.http.get<{ ok: boolean, accounts: any[] }>(`${base_url}/entradas/cuentas/${id_dependencie}`).pipe(
+      map(resp => {
+        resp.accounts.map(account => account.funcionario['fullname'] = `${account.funcionario.nombre} ${account.funcionario.paterno} ${account.funcionario.materno}`)
+        return resp.accounts
+      })
+    )
+  }
 
   Conclude(id_bandeja: string, description: string) {
     return this.http.put<{ ok: boolean, message: string }>(`${base_url}/entradas/concluir/${id_bandeja}`, { description }).pipe(

@@ -1,24 +1,49 @@
 <div class="container-fluid">
-  <div class="row" *ngFor="let item of ListWorflow">
-    <div class="col-sm-5 align-middle">
-      <div class="card">
-        <div class="card-body">
-          <h2 class="card-title">{{item.officer.fullname|titlecase}}</h2>
-          <h4 class="card-subtitle mb-2 text-muted">{{item.officer.jobtitle}}</h4>
-          <p>Fecha envio: {{item.shippigDate|date:'short'}}</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-7">
-      <div class="row" *ngFor="let subitem of item.sends">
+  <div class="list-workflow">
+    <div class="row mb-5  align-items-center" *ngFor="let item of ListWorflow">
+      <div class="col-sm-5 align-middle">
         <div class="card">
           <div class="card-body">
-            <h2 class="card-title">{{subitem.officer.fullname|titlecase}}</h2>
-            <h4 class="card-subtitle mb-2 text-muted">{{subitem.officer.jobtitle}}</h4>
-            <p>Fecha recibido: {{subitem.receivedDate|date:'short'}}</p>
+            <h4 class="card-title fw-bold">{{item.officer.fullname|titlecase}} ({{item.officer.jobtitle}})</h4>
+            <h4 class="card-subtitle mb-2 text-muted">{{item.workUnit}} - {{item.workInstitution}}</h4>
+            <p>Referencia: {{item.reference}}</p>
+            <p>Duracion: {{item.duration}}</p>
+            <p>Fecha envio: {{item.shippigDate|date:'short':'-400'}}</p>
           </div>
         </div>
       </div>
-      <br>
+      <div class="col-sm-7">
+        <div class="card mb-3"
+          [ngClass]="[subitem.received===false?'border-danger ':'', subitem.received===true?'border-success':'']"
+          *ngFor="let subitem of item.sends">
+          <div class="card-body"
+            [ngClass]="[subitem.received===false?'text-danger':'', subitem.received===undefined?'text-warning':'']">
+            <h4 class="card-title">{{subitem.officer.fullname|titlecase}} ({{subitem.officer.fullname}})</h4>
+            <h4 class="card-subtitle mb-2 text-muted">{{subitem.workUnit}} - {{subitem.workInstitution}}</h4>
+            <div [ngSwitch]="subitem.received">
+              <div *ngSwitchCase="true">
+                <p>Fecha recibido: {{subitem.receivedDate|date:'short':'-400'}}</p>
+                <p>Tiempo en aceptar: {{subitem.duration}}</p>
+              </div>
+              <div *ngSwitchCase="false">
+                <p>Fecha rechazo: {{subitem.receivedDate|date:'short':'-400'}}</p>
+                <div class="alert alert-danger" role="alert">
+                  Motivo: {{subitem.rejectReason}}
+                </div>
+              </div>
+              <div *ngSwitchDefault>
+                <div class="alert alert-warning" role="alert">
+                  Sin recibir
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex">
+        <hr class="my-auto flex-grow-1">
+        <div class="px-4">NUEVO ENVIO</div>
+        <hr class="my-auto flex-grow-1">
+      </div>
     </div>
   </div>

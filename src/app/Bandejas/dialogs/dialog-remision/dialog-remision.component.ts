@@ -32,6 +32,9 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
     numero_interno: [''],
   });
   public searching: boolean = false;
+  institutions: any[] = []
+  dependencies: any[] = []
+  receivers: any[] = []
 
   constructor(
     private bandejaService: BandejaEntradaService,
@@ -48,20 +51,9 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.filteredUsers.next(this.accounts);
-    this.userFilterCtrl.valueChanges.pipe(tap(() => (this.searching = true)), takeUntil(this._onDestroy))
-      .subscribe((text) => {
-        if (text || text !== '') {
-          this.bandejaService.GetAccounts(text).subscribe((users) => {
-            this.searching = false;
-            users.map((user) => {
-              let onlineUser = this.socketService.onlineUsers.find((userSocket) => userSocket.id_cuenta === user._id);
-              user.online = onlineUser ? true : false;
-            });
-            this.filteredUsers.next(users);
-          });
-        }
-      });
+    this.bandejaService.getInstitucions().subscribe(data => {
+      this.institutions = data
+    })
   }
 
   send() {
@@ -120,7 +112,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
     return true;
   }
   addReceiver(user: UsersMails) {
-    this.filteredUsers.next([]);
+    this.userCtrl.setValue(null)
     let found = this.accounts.find((account) => account._id === user._id);
     if (!found) {
       this.accounts.push(user);
@@ -128,5 +120,42 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   }
   removeReceiver(user: UsersMails): void {
     this.accounts = this.accounts.filter((item) => item._id !== user._id);
+  }
+
+  selectInstitution(institution: any) {
+    this.filteredUsers.next([])
+    this.bandejaService.getDependenciesOfInstitution(institution.id_institucion).subscribe(data => {
+      this.dependencies = data
+    })
+  }
+  selectDependencie(dependencie: any) {
+    this.bandejaService.getAccountsOfDependencie(dependencie.id_dependencia).subscribe(data => {
+      this.searching = false;
+      data.map((user) => {
+        let onlineUser = this.socketService.onlineUsers.find((userSocket) => userSocket.id_cuenta === user._id);
+        user.online = onlineUser ? true : false;
+      });
+      this.receivers = data
+      this.filteredUsers.next(this.receivers);
+      this.userFilterCtrl.valueChanges.pipe(tap(() => (this.searching = true)), takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterAccounts()
+        });
+    })
+  }
+  protected filterAccounts() {
+    if (!this.receivers) {
+      return;
+    }
+    let search = this.userFilterCtrl.value;
+    if (!search) {
+      this.filteredUsers.next(this.receivers);
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    this.filteredUsers.next(
+      this.receivers.filter(user => user.funcionario.fullname.toLowerCase().indexOf(search) > -1 || user.funcionario.cargo.toLowerCase().indexOf(search) > -1)
+    );
   }
 }

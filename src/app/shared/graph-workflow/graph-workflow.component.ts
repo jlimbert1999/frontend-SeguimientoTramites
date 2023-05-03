@@ -15,7 +15,7 @@ export class GraphWorkflowComponent implements OnInit {
   links: any[] = []
   clusters: { id: string, label: string, childNodeIds: string[] }[] = []
 
-  curve: any = shape.curveMonotoneX;
+  curve: any = shape.curveLinear;
 
   constructor() { }
 
@@ -27,7 +27,6 @@ export class GraphWorkflowComponent implements OnInit {
     let instituciones: any[] = []
     let found
     let foundInstitucion
-    let fecha_inicio, fecha_fin
     workflow.forEach((element, index) => {
       found = this.nodos.some(user => user.id == element.emisor.cuenta._id.toString());
       if (!found) {
@@ -90,8 +89,5 @@ export class GraphWorkflowComponent implements OnInit {
       })
     })
     this.clusters = instituciones
-
   }
-
-
 }
