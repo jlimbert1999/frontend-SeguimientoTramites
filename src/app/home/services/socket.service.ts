@@ -18,6 +18,7 @@ export class SocketService {
   }
   disconnect() {
     if (this.socket) {
+      this.socket.removeAllListeners()
       this.socket.disconnect();
     }
   }

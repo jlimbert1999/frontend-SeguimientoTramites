@@ -15,7 +15,7 @@ export const HojaRutaInterna = async (tramite: Interno, workflow: WorkflowData[]
     let cuadrados: any[] = []
 
     if (workflow.length > 0) {
-        if (id_cuenta === tramite.cuenta) {
+        if (id_cuenta === tramite.cuenta._id) {
             let destinatarios = ''
             for (let index = 0; index < workflow.length; index++) {
                 if (id_cuenta == workflow[index].emisor.cuenta._id) {

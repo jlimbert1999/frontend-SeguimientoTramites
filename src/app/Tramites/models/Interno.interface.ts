@@ -10,7 +10,15 @@ export interface Interno {
     }
     tipo_tramite: { nombre: string }
     alterno: string
-    cuenta: string
+    cuenta: {
+        _id: string
+        funcionario: {
+            nombre: string
+            paterno: string
+            materno: string
+            cargo: string
+        }
+    }
     ubicacion: string
     detalle: string
     cite: string

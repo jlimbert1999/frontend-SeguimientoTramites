@@ -7,7 +7,7 @@ import { InternosService } from '../../services/internos.service';
 import { Location } from '@angular/common';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
-import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha';
+import { PDF_FichaExterno, PDF_FichaInterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
 import { Externo, Observacion } from '../../models/Externo.interface';
 import { Interno } from '../../models/Interno.interface';
 import { createListWorkflow } from 'src/app/Bandejas/helpers/ListWorkflow';
@@ -55,6 +55,7 @@ export class FichaComponent implements OnInit {
           this.Workflow = data.workflow
           this.Location = data.location
           this.Observations = data.observations
+          this.Events = data.events
         })
       }
       else {
@@ -74,10 +75,15 @@ export class FichaComponent implements OnInit {
   }
 
   generateFicha() {
-    const group = this.tipo === 'ficha-externa' ? 'tramites_externos' : 'tramites_internos'
-    this.Workflow.length > 0
-      ? PDF_FichaExterno(this.Tramite, createListWorkflow(this.Workflow, [{ id_root: this.Workflow[0].emisor.cuenta._id, startDate: this.Tramite.fecha_registro }], []), this.Location, group)
-      : PDF_FichaExterno(this.Tramite, [], this.Location, group)
+    const List = this.Workflow.length > 0
+      ? createListWorkflow(this.Workflow, [{ id_root: this.Workflow[0].emisor.cuenta._id, startDate: this.Tramite.fecha_registro }], [])
+      : []
+    if (this.tipo === 'ficha-externa') {
+      PDF_FichaExterno(this.Tramite, List, this.Location)
+    }
+    else {
+      PDF_FichaInterno(this.Tramite, List, this.Location)
+    }
   }
 
 }

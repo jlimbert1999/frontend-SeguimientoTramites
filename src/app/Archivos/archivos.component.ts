@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import Swal from 'sweetalert2';
 import { ArchivoService } from './services/archivo.service';
+import { PaginatorService } from '../shared/services/paginator.service';
 
 @Component({
   selector: 'app-archivos',
@@ -13,18 +14,22 @@ import { ArchivoService } from './services/archivo.service';
 
 })
 export class ArchivosComponent {
+  
   dataSource: any[] = []
-  displayedColumns: string[] = ['alterno', 'estado', 'funcionario', 'descripcion', 'opciones'];
+  displayedColumns: string[] = ['alterno', 'estado', 'funcionario', 'descripcion', 'fecha','opciones'];
 
   constructor(
-    private archivoService: ArchivoService
+    private archivoService: ArchivoService,
+    public paginatorService: PaginatorService
   ) {
     this.get()
   }
 
   get() {
-    this.archivoService.Get().subscribe(tramites => {
-      this.dataSource = tramites
+    this.archivoService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+      console.log(data.archives);
+      this.dataSource = data.archives
+      this.paginatorService.length = data.length
     })
   }
 
@@ -65,5 +70,19 @@ export class ArchivosComponent {
       }
     })
   }
+
+  applyFilter(event: Event) {
+    this.paginatorService.offset = 0
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.paginatorService.text = filterValue;
+    // this.Get()
+  }
+
+  cancelSearch() {
+    this.paginatorService.offset = 0;
+    this.paginatorService.text = "";
+    // this.Get();
+  }
+
 
 }

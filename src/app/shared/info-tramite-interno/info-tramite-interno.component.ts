@@ -1,5 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import * as moment from 'moment';
+import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
+import { Externo } from 'src/app/Tramites/models/Externo.interface';
 import { Interno } from 'src/app/Tramites/models/Interno.interface';
 
 @Component({
@@ -10,6 +12,7 @@ import { Interno } from 'src/app/Tramites/models/Interno.interface';
 export class InfoTramiteInternoComponent implements OnInit, OnDestroy {
 
   @Input() Tramite: Interno
+  @Input() Location: LocationProcedure[] = []
   timer: any;
   count: any
 
@@ -30,7 +33,6 @@ export class InfoTramiteInternoComponent implements OnInit, OnDestroy {
         this.count = this.duration(fecha_inicio, fecha_fin)
       }, 1000)
     }
-
   }
 
   duration(inicio: any, fin: any) {

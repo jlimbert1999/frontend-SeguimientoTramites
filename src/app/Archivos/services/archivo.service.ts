@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -12,15 +12,14 @@ export class ArchivoService {
 
   constructor(private http: HttpClient) { }
 
-  Get() {
-    // const params = new HttpParams()
-    //   .set('offset', this.offset)
-    //   .set('limit', this.limit);
-    return this.http.get<{ ok: boolean, archives: any[] }>(`${base_url}/archivos`)
+  Get(limit: number, offset: number) {
+    const params = new HttpParams()
+      .set('offset', offset)
+      .set('limit', limit);
+    return this.http.get<{ ok: boolean, archives: any[], length: number }>(`${base_url}/archivos`, { params })
       .pipe(
         map((resp) => {
-          console.log(resp.archives);
-          return resp.archives
+          return { archives: resp.archives, length: resp.length }
         })
       );
   }

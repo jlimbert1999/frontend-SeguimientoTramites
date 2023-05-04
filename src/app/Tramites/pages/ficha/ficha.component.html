@@ -18,7 +18,7 @@
             <app-info-tramite-externo *ngIf="tipo==='ficha-externa' && Tramite" [Tramite]="Tramite"
                 [Location]="Location"></app-info-tramite-externo>
             <app-info-tramite-interno *ngIf="tipo==='ficha-interna'&& Tramite"
-                [Tramite]="Tramite"></app-info-tramite-interno>
+                [Tramite]="Tramite" [Location]="Location"></app-info-tramite-interno>
         </mat-tab>
         <mat-tab *ngIf="Observations.length>0">
             <ng-template mat-tab-label>

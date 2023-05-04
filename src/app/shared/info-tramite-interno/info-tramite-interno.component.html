@@ -1,103 +1,129 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-12">
-            <div class="card shadow mb-2 bg-body-tertiary rounded">
-                <div class="card-header fw-bold">
-                    TRAMITE
-                </div>
-                <div class="card-body">
-                    <form class="row g-3">
-                        <div class="col-md-8">
+        <div class="col-sm-7">
+            <div class="row">
+                <form>
+                    <fieldset disabled>
+                        <legend>Informacion tramite</legend>
+                        <div class="mb-3">
                             <label class="form-label">Tipo de tramite</label>
-                            <input type="text" class="form-control" disabled [value]="Tramite.tipo_tramite.nombre">
+                            <input type="text" class="form-control" [value]="Tramite.tipo_tramite.nombre|uppercase">
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Cite</label>
-                            <input type="text" class="form-control" disabled [value]="Tramite.cite">
-                        </div>
-                        <div class="col-12">
-                            <label for="inputAddress" class="form-label">Referencia</label>
+                        <div class="mb-3">
+                            <label class="form-label">Referencia</label>
                             <textarea class="form-control" disabled [value]="Tramite.detalle"></textarea>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Fecha registro</label>
-                            <input type="text" class="form-control" disabled
-                                [value]="Tramite.fecha_registro|date:'short'">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Cantidad hojas</label>
-                            <input type="text" class="form-control" disabled [value]="Tramite.cantidad">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Cite</label>
-                            <input type="text" class="form-control" disabled [value]="Tramite.cite">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Estado</label>
-                            <h2>
-                                <span class="badge" [ngClass]="Tramite.estado|state">
-                                    {{Tramite.estado|uppercase}}
-                                </span>
-                            </h2>
-                        </div>
-                        <div [ngSwitch]="Tramite.estado" class="col-md-4">
-                            <div *ngSwitchCase="'CONCLUIDO'">
-                                <label class="form-label">Duracion proceso</label>
-                                <h2> {{count}}</h2>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Fecha registro</label>
+                                    <input type="text" class="form-control"
+                                        [value]="Tramite.fecha_registro|date:'short'">
+                                </div>
                             </div>
-                            <div *ngSwitchDefault>
-                                <label class="form-label">Tiempo transcurrido</label>
-                                <h2> <span class="badge text-bg-success">{{count}}</span></h2>
+                            <div class="col-sm-2">
+                                <div class="mb-3">
+                                    <label class="form-label">Cite</label>
+                                    <input type="text" class="form-control"
+                                        [value]="Tramite.cite!=''?Tramite.cite:' - - - - '">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="mb-3">
+                                    <label class="form-label">Cantidad</label>
+                                    <input type="text" class="form-control" [value]="Tramite.cantidad">
+                                </div>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    </fieldset>
+                </form>
             </div>
-
+        </div>
+        <div class="col-sm-5">
+            <form>
+                <fieldset disabled>
+                    <legend>Informacion flujo</legend>
+                    <div class="mb-3">
+                        <label class="form-label">Responsable registro</label>
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text fw-bold">{{Tramite.cuenta.funcionario|fullname|titlecase}}</p>
+                                <p class="card-text">{{Tramite.cuenta.funcionario.cargo|titlecase}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div [ngSwitch]="Tramite.estado" class="col-md-4">
+                        <div *ngSwitchCase="'CONCLUIDO'">
+                            <label class="form-label">Duracion proceso</label>
+                            <h2> <span class="badge text-bg-light">{{count}}</span> </h2>
+                        </div>
+                        <div *ngSwitchDefault>
+                            <label class="form-label">Tiempo transcurrido</label>
+                            <h2> <span class="badge text-bg-success">{{count}}</span></h2>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Estado</label>
+                        <h2>
+                            <span class="badge" [ngClass]="Tramite.estado|state">
+                                {{Tramite.estado|uppercase}}
+                            </span>
+                        </h2>
+                    </div>
+                </fieldset>
+            </form>
         </div>
     </div>
+    <br>
     <div class="row">
         <div class="col-sm-6">
-            <div class="card shadow mb-2 bg-body-tertiary rounded">
-                <div class="card-header fw-bold">
-                    REMITENTE
+            <fieldset disabled>
+                <legend>Informacion remitente</legend>
+                <div class="col-sm-8">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control" [value]="Tramite.remitente.nombre">
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form class="row g-3">
-                        <div class="col-md-8">
-                            <label class="form-label">Nombre</label>
-                            <input class="form-control" type="text" value="{{Tramite.remitente.nombre}}" disabled
-                                readonly>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Cargo</label>
-                            <input class="form-control" type="text" value="{{Tramite.remitente.cargo}}" disabled
-                                readonly>
-                        </div>
-                    </form>
+                <div class="col-sm-8">
+                    <div class="mb-3">
+                        <label class="form-label">Dni</label>
+                        <input type="text" class="form-control" [value]="Tramite.remitente.cargo">
+                    </div>
                 </div>
-            </div>
+            </fieldset>
         </div>
         <div class="col-sm-6">
-            <div class="card shadow mb-2 bg-body-tertiary rounded">
-                <div class="card-header fw-bold">
-                    DESTINATARIO
+            <fieldset disabled>
+                <legend>Informacion destinatario</legend>
+                <div class="col-sm-8">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control" [value]="Tramite.destinatario.nombre">
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form class="row g-3">
-                        <div class="col-md-8">
-                            <label class="form-label">Nombre</label>
-                            <input class="form-control" type="text" value="{{Tramite.destinatario.nombre}}" disabled
-                                readonly>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Cargo</label>
-                            <input class="form-control" type="text" value="{{Tramite.remitente.cargo}}" disabled
-                                readonly>
-                        </div>
-                    </form>
+                <div class="col-sm-8">
+                    <div class="mb-3">
+                        <label class="form-label">Cargo</label>
+                        <input type="text" class="form-control" [value]="Tramite.destinatario.cargo">
+                    </div>
                 </div>
-            </div>
+            </fieldset>
         </div>
+    </div>
+    <br>
+    <div class="row border bg-light p-3" *ngIf="Location.length>0">
+        <legend>Ubicacion tramite</legend>
+        <mat-list>
+            <mat-list-item *ngFor="let manager of Location">
+                <img matListItemAvatar src="../../../assets/img/account.png" alt="...">
+                <h3 matListItemTitle>{{manager.cuenta.dependencia.nombre}}</h3>
+                <p matListItemLine>
+                    <span>{{manager.cuenta.funcionario.nombre}} {{manager.cuenta.funcionario.paterno}}
+                        {{manager.cuenta.funcionario.materno}}</span>
+                    <span class="demo-2"> -- {{manager.cuenta.funcionario.cargo}}</span>
+                </p>
+            </mat-list-item>
+        </mat-list>
     </div>
 </div>

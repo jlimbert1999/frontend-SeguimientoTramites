@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import * as moment from 'moment';
 import { Externo } from 'src/app/Tramites/models/Externo.interface';
 import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
+import { Interno } from 'src/app/Tramites/models/Interno.interface';
 
 
 @Component({
