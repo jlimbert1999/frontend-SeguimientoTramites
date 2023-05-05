@@ -11,6 +11,7 @@ import { DialogExternoComponent } from '../../dialogs/dialog-externo/dialog-exte
 import { DialogRemisionComponent } from 'src/app/Bandejas/dialogs/dialog-remision/dialog-remision.component';
 import { HojaRutaExterna } from '../../pdfs/hoja-ruta-externa';
 import { Ficha } from '../../pdfs/ficha';
+import { TestRoute } from '../../pdfs/roadMap-external';
 
 
 @Component({
@@ -113,7 +114,8 @@ export class ExternosComponent implements OnInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getOne(id_tramite).subscribe(data => {
-      HojaRutaExterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
+      TestRoute(data.tramite, data.workflow)
+      // HojaRutaExterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
     })
   }
   GenerateFicha(tramite: Externo) {
