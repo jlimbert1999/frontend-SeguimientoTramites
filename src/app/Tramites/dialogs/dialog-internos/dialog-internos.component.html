@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{data?'REGISTRO': 'EDICION'}} TRAMITE</h2>
+<h2 mat-dialog-title>{{data?'EDICION': 'REGISTRO'}} TRAMITE INTERNO</h2>
 <mat-dialog-content>
   <form [formGroup]="TramiteFormGroup" class="example-form">
     <div class="row" *ngIf="!data">
@@ -15,8 +15,10 @@
       <mat-form-field class="example-full-width">
         <mat-label>Referencia del tramite</mat-label>
         <textarea formControlName="detalle" matInput></textarea>
+        <mat-error *ngIf="TramiteFormGroup.get('detalle')!.hasError('required')">
+          La referencia es <strong>requerida</strong>
+        </mat-error>
       </mat-form-field>
-
     </div>
     <div class="row">
       <div class="col-sm-6">
@@ -29,12 +31,18 @@
               {{option|fullname|titlecase}}
             </mat-option>
           </mat-autocomplete>
+          <mat-error *ngIf="TramiteFormGroup.get('nombre_remitente')!.hasError('required')">
+            El nombre del remitente es <strong>requerido</strong>
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="col-sm-6">
         <mat-form-field class="example-full-width">
           <mat-label>Cargo del remitente</mat-label>
           <input class="uppercase" formControlName="cargo_remitente" matInput>
+          <mat-error *ngIf="TramiteFormGroup.get('cargo_remitente')!.hasError('required')">
+            El cargo del remitente es <strong>requerido</strong>
+          </mat-error>
         </mat-form-field>
       </div>
     </div>
@@ -50,12 +58,18 @@
               {{option|fullname|titlecase}}
             </mat-option>
           </mat-autocomplete>
+          <mat-error *ngIf="TramiteFormGroup.get('nombre_destinatario')!.hasError('required')">
+            El nombre del destinatario es <strong>requerido</strong>
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="col-sm-6">
         <mat-form-field class="example-full-width">
           <mat-label>Cargo del destinatario</mat-label>
           <input class="uppercase" formControlName="cargo_destinatario" matInput>
+          <mat-error *ngIf="TramiteFormGroup.get('cargo_destinatario')!.hasError('required')">
+            El cargo del destinatario es <strong>requerido</strong>
+          </mat-error>
         </mat-form-field>
       </div>
     </div>
@@ -70,6 +84,9 @@
         <mat-form-field class="example-full-width">
           <mat-label>Cant. Hojas / Anexos</mat-label>
           <input formControlName="cantidad" matInput>
+          <mat-error *ngIf="TramiteFormGroup.get('cantidad')!.hasError('required')">
+            La cantidad es <strong>requerida</strong>
+          </mat-error>
         </mat-form-field>
       </div>
 

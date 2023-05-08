@@ -60,7 +60,9 @@ export class InternosService {
   }
 
   getUsers(text: string) {
-    return this.http.get<{ ok: boolean, users: any[] }>(`${base_url}/internos/usuarios/${text}`)
+    return this.http.get<{ ok: boolean, users: any[] }>(`${base_url}/internos/usuarios/${text}`).pipe(map(resp => {
+      return resp.users
+    }))
   }
   getTypes() {
     return this.http.get<{ ok: boolean, typesProcedures: TypesProceduresGrouped[] }>(`${base_url}/internos/tipos`).pipe(

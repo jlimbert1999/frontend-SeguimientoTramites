@@ -14,7 +14,7 @@
               </div>
               <p class="mb-1">{{item.description}}</p>
               <small>Situacion: <strong [ngClass]="item.solved?'solved-item ':'pending-item '">{{item.solved?'Corregido':'Sin corregir'}}</strong> </small>
-              <button *ngIf="authService.account.id_cuenta===item.account" matTooltip="Marcar como corregido" [disabled]="item.solved" (click)="markAsSolved(item)" mat-icon-button style="vertical-align: middle;">
+              <button *ngIf="authService.account.id_account===item.account" matTooltip="Marcar como corregido" [disabled]="item.solved" (click)="markAsSolved(item)" mat-icon-button style="vertical-align: middle;">
                 <mat-icon>build_circle</mat-icon>
               </button>
             </a>

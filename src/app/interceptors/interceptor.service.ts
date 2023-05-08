@@ -14,9 +14,7 @@ export class InterceptorService {
     private router: Router
   ) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const headers = new HttpHeaders({
-      'token': localStorage.getItem('token') || ''
-    })
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token') || ''}`)
     const reqClone = req.clone({
       headers
     })

@@ -86,6 +86,7 @@ export class InternosComponent implements OnInit {
   Edit(tramite: any) {
     const dialogRef = this.dialog.open(DialogInternosComponent, {
       width: '1000px',
+      disableClose: true,
       data: tramite
     });
     dialogRef.afterClosed().subscribe((result: any) => {
@@ -146,7 +147,7 @@ export class InternosComponent implements OnInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.internoService.getOne(id_tramite).subscribe(data => {
-      HojaRutaInterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
+      // HojaRutaInterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
     })
   }
   View(id: string) {

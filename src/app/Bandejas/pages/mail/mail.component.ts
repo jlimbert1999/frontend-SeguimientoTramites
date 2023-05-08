@@ -7,9 +7,9 @@ import Swal from 'sweetalert2';
 import { WorkflowData } from '../../models/workflow.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Mail } from '../../models/entrada.interface';
-import { showToast } from 'src/app/shared/helpers/toast-alterts';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Observacion } from 'src/app/Tramites/models/Externo.interface';
+import { showToast } from 'src/app/helpers/toats.helper';
 
 @Component({
   selector: 'app-mail',

@@ -43,8 +43,8 @@ export class LoginComponent implements OnInit {
       return
     }
     this.authService.login(this.loginForm.value!, this.loginForm.get('remember')?.value!).subscribe(data => {
-      // this.notificationService.number_mails.next(data.number_mails)
-      // if (data.number_mails > 0) {
+      this.notificationService.number_mails.next(data.imbox)
+      // if (data.imbox > 0) {
       //   this.notificationService.addNotificationEvent('Debe revisar su bandeja de entrada', `USTED TIENE ${data.number_mails} TRAMITES PENDIENTES`)
       // }
       if (data.resources.includes('externos')) {

@@ -48,6 +48,19 @@ export class NotificationService {
       type: 'message'
     })
     this.notificacions.next(this.list)
+  }
+  showNotificationWarning(text: string, title: string) {
+    const toast = this.toastr.warning(text, title, {
+      positionClass: 'toast-bottom-right',
+      timeOut: 7000,
+    })
+    toast.onTap.subscribe((action: any) => {
+      this.router.navigateByUrl('home/bandeja-entrada')
+    })
+    this.list.unshift({
+      text: `Tramites pendientes encontrados, revisar bandeja de entrada`,
+      type: 'message'
+    })
 
   }
 

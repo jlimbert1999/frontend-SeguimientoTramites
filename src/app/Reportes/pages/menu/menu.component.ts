@@ -37,7 +37,7 @@ export class MenuComponent implements OnDestroy {
       .subscribe(({ matches }) => {
         this.isMobile = matches
       });
-    this.typesOfReports = this.authService.account.resources.filter(resourse => resourse.includes('reporte'))
+    this.typesOfReports = this.authService.resources.filter(resourse => resourse.includes('reporte'))
     this.typesOfReports = this.typesOfReports.map(typeReport => {
       return typeReport.split('-')[1]
     })

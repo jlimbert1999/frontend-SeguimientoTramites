@@ -2,6 +2,9 @@
     font-size: 12px;
     padding-right: 20px
 }
+.mat-mdc-row:hover {
+    background-color: #CDD7D6;
+}
 
 .badge {
     font-size: 9px;

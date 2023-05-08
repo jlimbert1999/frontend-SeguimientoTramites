@@ -11,7 +11,7 @@ export class RoleGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot) {
-    if (this.authService.account.resources.includes(route.data['resource'])) {
+    if (this.authService.resources.includes(route.data['resource'])) {
       return true
     }
     return false;

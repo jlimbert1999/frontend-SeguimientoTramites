@@ -3,8 +3,8 @@
     <mat-list>
         <mat-list-item *ngFor="let user of socketService.onlineUsers">
             <img matListItemAvatar src="../../../assets/img/account.png" alt="...">
-            <h3 class="fw-bold" matListItemTitle>{{user.funcionario.nombre|titlecase}}</h3>
-            <span class="fst-italic" matListItemLine>{{user.funcionario.cargo|uppercase}}</span>
+            <h3 class="fw-bold" matListItemTitle>{{user.officer.fullname|titlecase}}</h3>
+            <span class="fst-italic" matListItemLine>{{user.officer.jobtitle|uppercase}}</span>
             <span matListItemLine>Sesiones: {{user.socketIds.length}}</span>
             <button matListItemMeta mat-icon-button [matMenuTriggerFor]="menu">
                 <mat-icon>more_vert</mat-icon>

@@ -13,6 +13,8 @@ const base_url = environment.base_url
 })
 export class AuthService {
   account: account
+  code: string
+  resources: string[]
   menu: any[] = []
   constructor(
     private http: HttpClient,
@@ -30,10 +32,10 @@ export class AuthService {
     else {
       localStorage.removeItem('login')
     }
-    return this.http.post<{ ok: boolean, token: string, imbox: number }>(`${base_url}/login`, formData).pipe(
+    return this.http.post<{ ok: boolean, token: string, resources: string[], imbox: number }>(`${base_url}/login`, formData).pipe(
       map(res => {
         localStorage.setItem('token', res.token)
-        return { resources: jwt_decode<account>(res.token).resources, imbox: res.imbox }
+        return { resources: res.resources, imbox: res.imbox }
       })
     )
   }
@@ -44,18 +46,17 @@ export class AuthService {
   }
 
   verifyToken(): Observable<boolean> {
-    return this.http.get<{ ok: boolean, token: string, menu: any[] }>(`${base_url}/login/verify`).pipe(
+    return this.http.get<{ ok: boolean, token: string, resources: string[], code: string, menu: any[] }>(`${base_url}/login/verify`).pipe(
       map(resp => {
+        localStorage.setItem('token', resp.token)
         this.account = jwt_decode(resp.token)
-        console.log(this.account)
+        this.resources = resp.resources
+        this.code = resp.code
         this.menu = resp.menu
         return true
       }), catchError(err => {
         return of(false)
       })
     )
-  }
-  get fullnameAccount(){
-    return `${this.account.funcionario.nombre} ${this.account.funcionario.paterno} ${this.account.funcionario.materno}`
   }
 }

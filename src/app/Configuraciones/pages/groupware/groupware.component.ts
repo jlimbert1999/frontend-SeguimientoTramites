@@ -18,7 +18,7 @@ export class GroupwareComponent implements OnInit {
   sendNotificacion(user: userSocket) {
     Swal.fire({
       icon: 'info',
-      title: `Enviar notificacion a ${user.funcionario.nombre}`,
+      title: `Enviar notificacion a ${user.officer.fullname}`,
       text: `Ingrese una descripcion`,
       input: 'textarea',
       showCancelButton: true,
@@ -35,7 +35,7 @@ export class GroupwareComponent implements OnInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        this.socketService.sendNotificationToUser(user.id_cuenta, result.value!)
+        this.socketService.sendNotificationToUser(user.id_account, result.value!)
       }
     })
 
@@ -45,14 +45,14 @@ export class GroupwareComponent implements OnInit {
   kickUser(user: userSocket) {
     Swal.fire({
       icon: 'info',
-      title: `Expulsar al funcionario ${user.funcionario.nombre}`,
+      title: `Expulsar al funcionario ${user.officer.fullname}`,
       text: `Ingrese un motivo`,
       input: 'textarea',
       showCancelButton: true,
       confirmButtonText: 'Aceptar'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.socketService.sendNotificacionToExpelUser(user.id_cuenta, result.value!)
+        this.socketService.sendNotificacionToExpelUser(user.id_account, result.value!)
       }
     })
   }

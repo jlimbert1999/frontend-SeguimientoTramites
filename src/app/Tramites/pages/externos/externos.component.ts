@@ -12,6 +12,7 @@ import { DialogRemisionComponent } from 'src/app/Bandejas/dialogs/dialog-remisio
 import { HojaRutaExterna } from '../../pdfs/hoja-ruta-externa';
 import { Ficha } from '../../pdfs/ficha';
 import { TestRoute } from '../../pdfs/roadMap-external';
+import { showToast } from 'src/app/helpers/toats.helper';
 
 
 @Component({
@@ -24,7 +25,6 @@ import { TestRoute } from '../../pdfs/roadMap-external';
 
 })
 export class ExternosComponent implements OnInit {
-
   Data: Externo[] = []
   displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
   constructor(
@@ -83,6 +83,7 @@ export class ExternosComponent implements OnInit {
         const indexFound = this.Data.findIndex(element => element._id === tramite._id)
         this.Data[indexFound] = result
         this.Data = [...this.Data]
+        showToast('success', 'Tramite guardado')
       }
     });
   }
@@ -192,10 +193,10 @@ export class ExternosComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.externoService.conclude(tramite._id, result.value!).subscribe(message => {
-          Swal.fire(message, undefined, 'success')
           const index = this.Data.findIndex(element => element._id === tramite._id)
           this.Data[index].estado = 'CONCLUIDO'
           this.Data = [...this.Data]
+          showToast('success', message)
         })
       }
     })

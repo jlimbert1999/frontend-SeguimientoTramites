@@ -2,11 +2,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Entrada, Mail } from '../models/entrada.interface';
-import { UsersMails } from '../models/mail.model';
-import { Externo, Observacion } from 'src/app/Tramites/models/Externo.interface';
-import { Interno } from 'src/app/Tramites/models/Interno.interface';
+import { AccountForSend, Entrada, Mail } from '../models/entrada.interface';
+import { Observacion } from 'src/app/Tramites/models/Externo.interface';
 import { LocationProcedure, WorkflowData } from '../models/workflow.interface';
+import { EntradaDto } from '../models/entrada.dto';
 
 const base_url = environment.base_url;
 
@@ -58,20 +57,20 @@ export class BandejaEntradaService {
       })
     )
   }
-  Add(data: any) {
-    return this.http.post<{ ok: boolean, mails: any[] }>(`${base_url}/entradas`, data).pipe(
+  Add(data: EntradaDto) {
+    return this.http.post<{ ok: boolean, mails: Entrada }>(`${base_url}/entradas`, data).pipe(
       map(resp => {
         return resp.mails
       })
     )
   }
-  GetAccounts(text: string) {
-    return this.http.get<{ ok: boolean, cuentas: UsersMails[] }>(`${base_url}/entradas/users/${text}`).pipe(
-      map(resp => {
-        return resp.cuentas
-      })
-    )
-  }
+  // GetAccounts(text: string) {
+  //   return this.http.get<{ ok: boolean, cuentas: AccountForSend[] }>(`${base_url}/entradas/users/${text}`).pipe(
+  //     map(resp => {
+  //       return resp.cuentas
+  //     })
+  //   )
+  // }
   getInstitucions() {
     return this.http.get<{ ok: boolean, institutions: any[] }>(`${base_url}/entradas/instituciones`).pipe(
       map(resp => {
@@ -87,9 +86,9 @@ export class BandejaEntradaService {
     )
   }
   getAccountsOfDependencie(id_dependencie: string) {
-    return this.http.get<{ ok: boolean, accounts: any[] }>(`${base_url}/entradas/cuentas/${id_dependencie}`).pipe(
+    return this.http.get<{ ok: boolean, accounts: AccountForSend[] }>(`${base_url}/entradas/cuentas/${id_dependencie}`).pipe(
       map(resp => {
-        resp.accounts.map(account => account.funcionario['fullname'] = `${account.funcionario.nombre} ${account.funcionario.paterno} ${account.funcionario.materno}`)
+        resp.accounts.map(account => account.funcionario.fullname = `${account.funcionario.nombre} ${account.funcionario.paterno} ${account.funcionario.materno}`)
         return resp.accounts
       })
     )

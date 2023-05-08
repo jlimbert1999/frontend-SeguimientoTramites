@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
 import { map, Observable, startWith, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { InternosService } from '../../services/internos.service';
@@ -18,16 +17,13 @@ export class DialogInternosComponent implements OnInit {
   TramiteFormGroup: FormGroup = this.fb.group({
     tipo_tramite: ['', Validators.required],
     detalle: ['', Validators.required],
-    cite: [this.authService.account.citeCode],
-    nombre_remitente: [this.authService.fullnameAccount, Validators.required],
-    cargo_remitente: [this.authService.account.funcionario.cargo, Validators.required],
+    cite: [this.authService.code],
+    nombre_remitente: [this.authService.account.officer.fullname, Validators.required],
+    cargo_remitente: [this.authService.account.officer.jobtitle, Validators.required],
     nombre_destinatario: ['', Validators.required],
     cargo_destinatario: ['', Validators.required],
     cantidad: ['', Validators.required],
-    alterno: ['']
   });
-
-
 
   tipos_tramites: TypesProceduresGrouped[] = []
 
@@ -79,7 +75,7 @@ export class DialogInternosComponent implements OnInit {
 
   selectTypeProcedure(id_tipoTramite: string) {
     const typeProcedure = this.tipos_tramites.find(type => type.id_tipoTramite === id_tipoTramite)
-    this.TramiteFormGroup.get('alterno')?.setValue(`${typeProcedure?.segmento}-${this.authService.account.institutionCode}`)
+    // this.TramiteFormGroup.get('alterno')?.setValue(`${typeProcedure?.segmento}-${this.authService.account.institutionCode}`)
   }
 
 
@@ -108,13 +104,13 @@ export class DialogInternosComponent implements OnInit {
   FiltrarUsuarios(termino: string) {
     return this.internoService.getUsers(termino)
       .pipe(
-        map(response => response.users)
+        map(officers => officers)
       )
   }
   FiltrarDestinatarios(termino: string) {
     return this.internoService.getUsers(termino)
       .pipe(
-        map(response => response.users)
+        map(officers => officers)
       )
   }
   seleccionar_remitente(funcionario: any) {

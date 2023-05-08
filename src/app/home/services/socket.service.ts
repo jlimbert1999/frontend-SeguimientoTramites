@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client'
-import { account, userSocket } from 'src/app/auth/models/account.model';
+import { userSocket } from 'src/app/auth/models/account.model';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Entrada } from 'src/app/Bandejas/models/entrada.interface';
-import { BandejaEntradaData } from 'src/app/Bandejas/models/mail.model';
 import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
@@ -13,8 +12,8 @@ export class SocketService {
   socket: Socket;
   onlineUsers: userSocket[] = []
   constructor() { }
-  setupSocketConnection({ id_cuenta, funcionario }: account) {
-    this.socket = io(environment.base_url, { auth: { token: { id_cuenta, funcionario } } });
+  setupSocketConnection(token: string) {
+    this.socket = io(environment.base_url, { auth: { token } });
   }
   disconnect() {
     if (this.socket) {

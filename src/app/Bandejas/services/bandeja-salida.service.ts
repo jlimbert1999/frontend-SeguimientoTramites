@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BandejaSalidaModel_View } from '../models/mail.model';
 import { Salida, GroupedMails } from '../models/salida.interface';
 
 const base_url = environment.base_url

@@ -28,7 +28,6 @@ export class DialogExternoComponent implements OnInit {
     cantidad: ['', Validators.required],
     detalle: ['', Validators.required],
     tipo_tramite: ['', Validators.required],
-    alterno: [''],
     requerimientos: [''],
     cite: ['']
   });
@@ -87,7 +86,7 @@ export class DialogExternoComponent implements OnInit {
     this.SelectedType = type
     this.TramiteFormGroup.get('tipo_tramite')?.setValue(type.id_tipoTramite)
     this.TramiteFormGroup.get('requerimientos')?.setValue(this.SelectedType?.requerimientos.map(requerimiento => requerimiento.nombre))
-    this.TramiteFormGroup.get('alterno')?.setValue(`${type.segmento}-${this.authService.account.institutionCode}`)
+    // this.TramiteFormGroup.get('alterno')?.setValue(`${type.segmento}-${this.authService.account.institutionCode}`)
   }
 
 

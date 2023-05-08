@@ -23,7 +23,6 @@ export interface ExternoDto {
     cantidad: string
     detalle: string
     tipo_tramite: string
-    alterno: string
     requerimientos: string[]
     cite: string
 }

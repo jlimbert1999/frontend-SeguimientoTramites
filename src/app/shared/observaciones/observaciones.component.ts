@@ -47,7 +47,7 @@ export class ObservacionesComponent implements OnInit {
 
   filterObservation() {
     return this.filter === true
-      ? this.Observaciones.filter(obs => obs.account === this.authService.account.id_cuenta)
+      ? this.Observaciones.filter(obs => obs.account === this.authService.account.id_account)
       : this.Observaciones
   }
   

@@ -8,9 +8,9 @@
       <mat-card class="card-profile footer">
         <mat-card-header>
           <div mat-card-avatar class="card-profile-image"></div>
-          <mat-card-title>{{authService.fullnameAccount|titlecase|slice:0:20}}
+          <mat-card-title>{{authService.account.officer.fullname|titlecase|slice:0:25}}
           </mat-card-title>
-          <mat-card-subtitle>{{authService.account.funcionario.cargo|titlecase}}</mat-card-subtitle>
+          <mat-card-subtitle>{{authService.account.officer.jobtitle|slice:0:25}}</mat-card-subtitle>
           <div style="flex-grow: 1"></div>
           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
             <mat-icon>more_vert</mat-icon>

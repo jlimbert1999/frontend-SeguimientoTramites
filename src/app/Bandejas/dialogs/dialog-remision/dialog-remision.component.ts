@@ -1,18 +1,12 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  UntypedFormControl,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { ReplaySubject, Subject, takeUntil, tap } from 'rxjs';
 import Swal from 'sweetalert2';
-import { ToastrService } from 'ngx-toastr';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Mail, MailDto, UsersMails } from '../../models/mail.model';
 import { BandejaEntradaService } from '../../services/bandeja-entrada.service';
 import { SocketService } from 'src/app/home/services/socket.service';
+import { AccountForSend, ImboxData } from '../../models/entrada.interface';
+import { EntradaDto } from '../../models/entrada.dto';
 
 @Component({
   selector: 'app-dialog-remision',
@@ -20,29 +14,27 @@ import { SocketService } from 'src/app/home/services/socket.service';
   styleUrls: ['./dialog-remision.component.css'],
 })
 export class DialogRemisionComponent implements OnInit, OnDestroy {
-  accounts: UsersMails[] = [];
+  accountsForSend: AccountForSend[] = [];
   public userCtrl = new FormControl<any[]>([]);
   public userFilterCtrl: UntypedFormControl = new UntypedFormControl();
-  public filteredUsers: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+  public filteredUsers: ReplaySubject<AccountForSend[]> = new ReplaySubject<any[]>(1);
   protected _onDestroy = new Subject<void>();
-
+  institutions: any[] = []
+  dependencies: any[] = []
+  receivers: AccountForSend[] = []
   FormEnvio: FormGroup = this.fb.group({
     motivo: ['PARA SU ATENCION', Validators.required],
     cantidad: [this.Data.tramite.cantidad, Validators.required],
-    numero_interno: [''],
+    numero_interno: ['']
   });
-  public searching: boolean = false;
-  institutions: any[] = []
-  dependencies: any[] = []
-  receivers: any[] = []
+
 
   constructor(
     private bandejaService: BandejaEntradaService,
     private socketService: SocketService,
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public Data: Mail,
-    public dialogRef: MatDialogRef<DialogRemisionComponent>,
-    private toastr: ToastrService
+    @Inject(MAT_DIALOG_DATA) public Data: ImboxData,
+    public dialogRef: MatDialogRef<DialogRemisionComponent>
   ) { }
 
   ngOnDestroy(): void {
@@ -57,17 +49,17 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
   }
 
   send() {
-    let mails: MailDto = {
+    let mails: EntradaDto = {
       tramite: this.Data._id,
       tipo: this.Data.tipo,
       motivo: this.FormEnvio.get('motivo')?.value,
       cantidad: this.FormEnvio.get('cantidad')?.value,
       numero_interno: this.FormEnvio.get('numero_interno')?.value,
-      receptores: this.accounts,
+      receptores: this.accountsForSend,
     };
     Swal.fire({
       title: `Remitir el tramite ${this.Data.tramite.alterno}?`,
-      text: `Numero de destinatarios: ${this.accounts.length}`,
+      text: `Numero de destinatarios: ${this.accountsForSend.length}`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -83,61 +75,44 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
         });
         Swal.showLoading();
         this.bandejaService.Add(mails).subscribe(data => {
-          const isOnline = this.accounts.some(account => account.online === true)
-          if (isOnline) {
+          const isRealTime = this.accountsForSend.some(account => account.online === true)
+          if (isRealTime) {
             this.socketService.socket.emit("mail", data)
           }
           Swal.close();
-          const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-          })
-          Toast.fire({
-            icon: 'success',
-            title: 'Tramite enviado!'
-          })
           this.dialogRef.close({})
         });
       }
     });
   }
 
-  allowSend() {
-    if (this.FormEnvio.valid && this.accounts.length !== 0) {
-      return false;
-    }
-    return true;
-  }
-  addReceiver(user: UsersMails) {
+  addReceiver(account: AccountForSend) {
     this.userCtrl.setValue(null)
-    let found = this.accounts.find((account) => account._id === user._id);
+    const found = this.accountsForSend.find((accountForSend) => accountForSend._id === account._id);
     if (!found) {
-      this.accounts.push(user);
+      this.accountsForSend.push(account);
     }
   }
-  removeReceiver(user: UsersMails): void {
-    this.accounts = this.accounts.filter((item) => item._id !== user._id);
+  removeReceiver(account: AccountForSend): void {
+    this.accountsForSend = this.accountsForSend.filter((accountForSend) => accountForSend._id !== account._id);
   }
 
   selectInstitution(institution: any) {
     this.filteredUsers.next([])
+    this.receivers = []
     this.bandejaService.getDependenciesOfInstitution(institution.id_institucion).subscribe(data => {
       this.dependencies = data
     })
   }
   selectDependencie(dependencie: any) {
     this.bandejaService.getAccountsOfDependencie(dependencie.id_dependencia).subscribe(data => {
-      this.searching = false;
-      data.map((user) => {
-        let onlineUser = this.socketService.onlineUsers.find((userSocket) => userSocket.id_cuenta === user._id);
-        user.online = onlineUser ? true : false;
+      data.map((accountForSend) => {
+        const onlineUser = this.socketService.onlineUsers.find((userSocket) => userSocket.id_account === accountForSend._id);
+        accountForSend.online = onlineUser ? true : false;
       });
       this.receivers = data
       this.filteredUsers.next(this.receivers);
-      this.userFilterCtrl.valueChanges.pipe(tap(() => (this.searching = true)), takeUntil(this._onDestroy))
+      this.userFilterCtrl.valueChanges.pipe(takeUntil(this._onDestroy))
         .subscribe(() => {
           this.filterAccounts()
         });
@@ -157,5 +132,11 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
     this.filteredUsers.next(
       this.receivers.filter(user => user.funcionario.fullname.toLowerCase().indexOf(search) > -1 || user.funcionario.cargo.toLowerCase().indexOf(search) > -1)
     );
+  }
+  allowSend() {
+    if (this.FormEnvio.valid && this.accountsForSend.length > 0) {
+      return false;
+    }
+    return true;
   }
 }

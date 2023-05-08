@@ -18,7 +18,6 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
 import { LoaderService } from 'src/app/auth/services/loader.service';
 import { BandejaEntradaService } from '../../services/bandeja-entrada.service';
-import { BandejaEntradaData } from '../../models/mail.model';
 import { DialogRemisionComponent } from '../../dialogs/dialog-remision/dialog-remision.component';
 import { InternosService } from 'src/app/Tramites/services/internos.service';
 import { ExternosService } from 'src/app/Tramites/services/externos.service';
@@ -26,6 +25,7 @@ import { HojaRutaExterna } from 'src/app/Tramites/pdfs/hoja-ruta-externa';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { Entrada } from '../../models/entrada.interface';
 
 
 @Component({
@@ -95,7 +95,7 @@ export class BandejaEntradaComponent implements OnInit {
     }
   }
 
-  send(elemento: BandejaEntradaData) {
+  send(elemento: Entrada) {
     if (elemento.tramite.estado === 'OBSERVADO') {
       Swal.fire('El tramite tiene observaciones pendedientes', undefined, 'info')
     }
@@ -120,7 +120,7 @@ export class BandejaEntradaComponent implements OnInit {
       });
     }
   }
-  aceptar_tramite(elemento: BandejaEntradaData) {
+  aceptar_tramite(elemento: Entrada) {
     Swal.fire({
       title: `Aceptar tramite ${elemento.tramite.alterno}?`,
       text: `El tramite sera marcado como aceptado`,
@@ -146,7 +146,7 @@ export class BandejaEntradaComponent implements OnInit {
 
 
   }
-  rechazar_tramite(elemento: BandejaEntradaData) {
+  rechazar_tramite(elemento: Entrada) {
     Swal.fire({
       icon: 'info',
       title: 'Ingrese el motivo para el rechazo del tramite',
@@ -173,7 +173,7 @@ export class BandejaEntradaComponent implements OnInit {
       }
     })
   }
-  concluir(mail: BandejaEntradaData) {
+  concluir(mail: Entrada) {
     Swal.fire({
       icon: 'question',
       title: `Concluir el tramite ${mail.tramite.alterno}?`,
@@ -230,7 +230,7 @@ export class BandejaEntradaComponent implements OnInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getOne(id_tramite).subscribe(data => {
-      HojaRutaExterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
+      // HojaRutaExterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
     })
   }
   View(id_bandeja: string) {

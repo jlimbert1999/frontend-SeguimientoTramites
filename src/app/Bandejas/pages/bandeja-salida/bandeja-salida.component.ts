@@ -1,7 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { BandejaSalidaModel_View } from '../../models/mail.model';
 
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ExternosService } from '../../../Tramites/services/externos.service';
@@ -32,7 +31,7 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
   dataSource: GroupedMails[] = []
   displayedColumns = ['group', 'alterno', 'descripcion', 'estado', 'fecha_envio', 'situacion', 'opciones', 'expand']
   isLoadingResults = true;
-  expandedElement: BandejaSalidaModel_View | null;
+  expandedElement: Salida | null;
   resulstLenght: number = 0
 
   constructor(

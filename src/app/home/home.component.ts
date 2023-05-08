@@ -52,7 +52,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
-    this.socketService.setupSocketConnection(this.authService.account)
+    this.socketService.setupSocketConnection(this.authService.token)
   }
   ngOnDestroy(): void {
     this.mobileQuery!.removeListener(this._mobileQueryListener);

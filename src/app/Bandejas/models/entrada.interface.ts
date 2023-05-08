@@ -59,3 +59,25 @@ export interface Mail {
     fecha_envio: Date;
     recibido: boolean;
 }
+
+export interface ImboxData {
+    _id: string;
+    tipo: 'tramites_externos' | 'tramites_internos';
+    tramite: {
+        alterno: string;
+        cantidad: string;
+    };
+}
+
+export interface AccountForSend {
+    _id: string;
+    funcionario: {
+        _id: string;
+        nombre: string,
+        paterno: string,
+        materno: string,
+        cargo: string,
+        fullname: string
+    }
+    online?: boolean,
+}
