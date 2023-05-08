@@ -36,6 +36,7 @@ td.mat-column-expand {
 td.mat-column-group {
     width: 50px;
 }
+
 td.mat-column-alterno {
     width: 150px;
 }
@@ -161,4 +162,9 @@ td.mat-column-fecha_envio {
     /* .mat-mdc-table .mat-column-expand {
         display: none;
     } */
+}
+
+.table {
+    font-size: 14px;
+    vertical-align: middle;
 }

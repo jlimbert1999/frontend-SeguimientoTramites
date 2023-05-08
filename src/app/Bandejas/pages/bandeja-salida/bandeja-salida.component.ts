@@ -67,16 +67,16 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
   }
 
   generar_hoja_ruta(id_tramite: string, tipo_hoja: 'tramites_externos' | 'tramites_internos') {
-    if (tipo_hoja === 'tramites_externos') {
-      this.externoService.getOne(id_tramite).subscribe(data => {
-        // crear_hoja_ruta(data.tramite, data.workflow, tipo_hoja)
-      })
-    }
-    else {
-      this.internoService.getOne(id_tramite).subscribe(data => {
-        // HojaRutaInterna(data.tramite, data.workflow, tipo_hoja)
-      })
-    }
+    // if (tipo_hoja === 'tramites_externos') {
+    //   this.externoService.getOne(id_tramite).subscribe(data => {
+    //     // crear_hoja_ruta(data.tramite, data.workflow, tipo_hoja)
+    //   })
+    // }
+    // else {
+    //   this.internoService.getOne(id_tramite).subscribe(data => {
+    //     // HojaRutaInterna(data.tramite, data.workflow, tipo_hoja)
+    //   })
+    // }
   }
 
   cancelOneSend(imbox: Salida) {

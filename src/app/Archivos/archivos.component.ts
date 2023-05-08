@@ -3,6 +3,7 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 import Swal from 'sweetalert2';
 import { ArchivoService } from './services/archivo.service';
 import { PaginatorService } from '../shared/services/paginator.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-archivos',
@@ -14,23 +15,32 @@ import { PaginatorService } from '../shared/services/paginator.service';
 
 })
 export class ArchivosComponent {
-  
+
   dataSource: any[] = []
-  displayedColumns: string[] = ['alterno', 'estado', 'funcionario', 'descripcion', 'fecha','opciones'];
+  displayedColumns: string[] = ['group', 'alterno', 'estado', 'funcionario', 'descripcion', 'fecha', 'opciones'];
+
 
   constructor(
     private archivoService: ArchivoService,
-    public paginatorService: PaginatorService
+    public paginatorService: PaginatorService,
+    private router: Router
   ) {
-    this.get()
+    this.Get()
   }
 
-  get() {
-    this.archivoService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-      console.log(data.archives);
-      this.dataSource = data.archives
-      this.paginatorService.length = data.length
-    })
+  Get() {
+    if (this.paginatorService.type) {
+      this.archivoService.search(this.paginatorService.text, this.paginatorService.type!, this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+        this.dataSource = data.archives
+        this.paginatorService.length = data.length
+      })
+    }
+    else {
+      this.archivoService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+        this.dataSource = data.archives
+        this.paginatorService.length = data.length
+      })
+    }
   }
 
   unarchive(archive: any) {
@@ -72,17 +82,40 @@ export class ArchivosComponent {
   }
 
   applyFilter(event: Event) {
+    if (this.paginatorService.type) {
+      this.paginatorService.offset = 0
+      const filterValue = (event.target as HTMLInputElement).value;
+      this.paginatorService.text = filterValue.toLowerCase();
+      this.Get()
+    }
+  }
+
+  selectTypeSearch() {
+    if (this.paginatorService.type === undefined) {
+      this.paginatorService.text = ''
+    }
     this.paginatorService.offset = 0
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.paginatorService.text = filterValue;
-    // this.Get()
+    this.Get()
   }
 
   cancelSearch() {
     this.paginatorService.offset = 0;
     this.paginatorService.text = "";
-    // this.Get();
+    this.paginatorService.type = undefined
+    this.Get();
   }
-
+  View(archive: any) {
+    let params = {
+      limit: this.paginatorService.limit,
+      offset: this.paginatorService.offset
+    }
+    if (this.paginatorService.text !== '') {
+      Object.assign(params, { type: this.paginatorService.type })
+      Object.assign(params, { text: this.paginatorService.text })
+    }
+    archive.group === 'tramites_externos'
+      ? this.router.navigate(['home/archivos/tramite/ficha-externa', archive.procedure._id], { queryParams: params })
+      : this.router.navigate(['home/archivos/tramite/ficha-interna', archive.procedure._id], { queryParams: params })
+  }
 
 }

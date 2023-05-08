@@ -39,10 +39,10 @@ export class FichaComponent implements OnInit {
 
   ngOnInit(): void {
     this.activateRoute.params.subscribe(params => {
-      this.tipo = params['tipo']
+      this.tipo=params['tipo']
       if (this.tipo == 'ficha-externa') {
-        this.externoService.getOne(params['id']).subscribe(data => {
-          this.Tramite = data.tramite
+        this.externoService.getAllDataExternalProcedure(params['id']).subscribe(data => {
+          this.Tramite = data.procedure
           this.Workflow = data.workflow
           this.Location = data.location
           this.Observations = data.observations
@@ -50,8 +50,8 @@ export class FichaComponent implements OnInit {
         })
       }
       else if (this.tipo == 'ficha-interna') {
-        this.internoService.getOne(params['id']).subscribe(data => {
-          this.Tramite = data.tramite
+        this.internoService.getAllDataInternalProcedure(params['id']).subscribe(data => {
+          this.Tramite = data.procedure
           this.Workflow = data.workflow
           this.Location = data.location
           this.Observations = data.observations
@@ -59,7 +59,7 @@ export class FichaComponent implements OnInit {
         })
       }
       else {
-        console.log('no validos')
+        this.back()
       }
     })
   }

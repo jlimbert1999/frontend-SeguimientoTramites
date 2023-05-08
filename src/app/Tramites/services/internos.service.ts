@@ -51,10 +51,10 @@ export class InternosService {
       })
     )
   }
-  getOne(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: Interno, workflow: WorkflowData[], location: LocationProcedure[], observations: Observacion[], events: any[] }>(`${base_url}/internos/${id_tramite}`).pipe(
+  getAllDataInternalProcedure(id_procedure: string) {
+    return this.http.get<{ ok: boolean, procedure: Interno, workflow: WorkflowData[], location: LocationProcedure[], observations: Observacion[], events: any[] }>(`${base_url}/shared/procedure/tramites_internos/${id_procedure}`).pipe(
       map(resp => {
-        return { tramite: resp.tramite, workflow: resp.workflow, location: resp.location, observations: resp.observations, events: resp.events }
+        return { procedure: resp.procedure, workflow: resp.workflow, location: resp.location, observations: resp.observations, events: resp.events }
       })
     )
   }

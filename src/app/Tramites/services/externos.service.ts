@@ -64,10 +64,10 @@ export class ExternosService {
       })
     )
   }
-  getOne(id_tramite: string) {
-    return this.http.get<{ ok: boolean, tramite: Externo, workflow: WorkflowData[], location: LocationProcedure[], observations: Observacion[], events: any[]}>(`${base_url}/externos/${id_tramite}`).pipe(
+  getAllDataExternalProcedure(id_procedure: string) {
+    return this.http.get<{ ok: boolean, procedure: Externo, workflow: WorkflowData[], location: LocationProcedure[], observations: Observacion[], events: any[] }>(`${base_url}/shared/procedure/tramites_externos/${id_procedure}`).pipe(
       map(resp => {
-        return { tramite: resp.tramite, workflow: resp.workflow, location: resp.location, observations: resp.observations, events: resp.events }
+        return { procedure: resp.procedure, workflow: resp.workflow, location: resp.location, observations: resp.observations, events: resp.events }
       })
     )
   }

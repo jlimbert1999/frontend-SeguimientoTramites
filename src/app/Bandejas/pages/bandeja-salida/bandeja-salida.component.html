@@ -77,7 +77,7 @@
                 <ng-container matColumnDef="situacion">
                     <th mat-header-cell *matHeaderCellDef>Envios</th>
                     <td mat-cell *matCellDef="let row">
-                       {{row.sendings.length}}
+                        {{row.sendings.length}}
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="opciones">
@@ -110,55 +110,26 @@
                         </button>
                     </td>
                 </ng-container>
-
                 <ng-container matColumnDef="expandedDetail">
                     <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
                         <div class="example-element-detail"
                             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                            <div class="list-group p-2 w-100">
-                                <li *ngFor="let item of element.sendings"
-                                    class="list-group-item d-flex justify-content-between align-items-start">
-                                    <div class="ms-2 me-auto">
-                                        <h3>{{item.receptor.funcionario|fullname|titlecase}}
-                                            ({{item.receptor.funcionario.cargo}})</h3>
-                                        <p *ngIf="item.recibido===false" style="color:red">Motivo: {{item.motivo_rechazo}}</p>
-                                        <button (click)="cancelOneSend(item)" *ngIf="item.recibido!==false" mat-stroked-button color="warn">Cancelar</button>
-                                    </div>
-
-                                    <div [ngSwitch]="item.recibido">
-                                        <div *ngSwitchCase="null">
-                                            <span class="c-pill c-pill--warning">ENVIADO</span>
-                                        </div>
-                                        <div *ngSwitchCase="true">
-                                            <span class="c-pill c-pill--success">ACEPTADO</span>
-                                        </div>
-                                        <div *ngSwitchCase="false">
-                                            <span class="c-pill c-pill--danger">RECHAZADO</span>
-                                        </div>
-                                    </div>
-                                </li>
-
-
-                            </div>
-                         
-
-                            <!-- <table class="table table-sm table-hover">
+                            <table class="table caption-top">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Funcionario</th>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Destinatario</th>
                                         <th scope="col">Situacion</th>
                                         <th scope="col">Opciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let imbox of element.sendings">
-                                        <th scope="row">
-                                            {{imbox.receptor.funcionario|fullname|titlecase}}
-                                            <br>
-                                            {{ imbox.receptor.funcionario.cargo}}
-                                        </th>
+                                    <tr *ngFor="let item of element.sendings, let i=index">
+                                        <th scope="row">{{i+1}}</th>
+                                        <td>{{item.receptor.funcionario|fullname|titlecase}}
+                                            ({{item.receptor.funcionario.cargo}})</td>
                                         <td>
-                                            <div [ngSwitch]="imbox.recibido">
+                                            <div [ngSwitch]="item.recibido">
                                                 <div *ngSwitchCase="null">
                                                     <span class="c-pill c-pill--warning">ENVIADO</span>
                                                 </div>
@@ -171,18 +142,15 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <button (click)="cancelOneSend(imbox)" mat-stroked-button color="warn">Cancelar</button>
+                                            <button (click)="cancelOneSend(item)" [disabled]="item.recibido!==undefined"
+                                                matTooltip="Cancelar envio" mat-icon-button color="accent"
+                                                aria-label="Example icon button with a menu icon">
+                                                <mat-icon>unsubscribe</mat-icon>
+                                            </button>
                                         </td>
-                                      
                                     </tr>
-
                                 </tbody>
                             </table>
- -->
-
-
-
-
                         </div>
                     </td>
                 </ng-container>

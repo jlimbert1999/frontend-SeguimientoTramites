@@ -229,9 +229,9 @@ export class BandejaEntradaComponent implements OnInit {
 
 
   GenerateHojaRuta(id_tramite: string) {
-    this.externoService.getOne(id_tramite).subscribe(data => {
-      // HojaRutaExterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
-    })
+    // this.externoService.getOne(id_tramite).subscribe(data => {
+    //   // HojaRutaExterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
+    // })
   }
   View(id_bandeja: string) {
     let params = {

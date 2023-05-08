@@ -5,6 +5,7 @@ import { AuthGuard } from '../guards/auth.guard';
 import { HomeComponent } from './home.component';
 import { BusquedaComponent } from '../Reportes/pages/busqueda/busqueda.component';
 
+
 const routes: Routes = [
     {
         path: 'home', component: HomeComponent, canActivate: [AuthGuard],
@@ -38,13 +39,14 @@ const routes: Routes = [
             {
                 path: 'busquedas',
                 component: BusquedaComponent
-            }
-
+            },
         ]
     },
+    
     {
         path: 'login', component: LoginComponent,
     },
+
 
 ];
 

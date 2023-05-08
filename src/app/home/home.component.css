@@ -125,3 +125,7 @@ mat-card-subtitle {
     background-color: #3A86FF;
     color: white;
 }
+
+.mat-badge-medium.mat-badge-above .mat-badge-content {
+    top: unset;
+}

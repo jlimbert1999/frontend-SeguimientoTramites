@@ -6,6 +6,7 @@ import { catchError, map } from 'rxjs/operators'
 import jwt_decode from "jwt-decode";
 import { Router } from '@angular/router';
 import { account } from '../models/account.model';
+import { NotificationService } from 'src/app/home/services/notification.service';
 const base_url = environment.base_url
 
 @Injectable({
@@ -18,7 +19,8 @@ export class AuthService {
   menu: any[] = []
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) { }
 
   get token() {
@@ -46,12 +48,13 @@ export class AuthService {
   }
 
   verifyToken(): Observable<boolean> {
-    return this.http.get<{ ok: boolean, token: string, resources: string[], code: string, menu: any[] }>(`${base_url}/login/verify`).pipe(
+    return this.http.get<{ ok: boolean, token: string, resources: string[], code: string, imbox: number, menu: any[] }>(`${base_url}/login/verify`).pipe(
       map(resp => {
         localStorage.setItem('token', resp.token)
         this.account = jwt_decode(resp.token)
         this.resources = resp.resources
         this.code = resp.code
+        this.notificationService.number_mails.next(resp.imbox)
         this.menu = resp.menu
         return true
       }), catchError(err => {
