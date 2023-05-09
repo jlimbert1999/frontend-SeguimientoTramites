@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Salida, GroupedMails } from '../models/salida.interface';
+import { GroupedMails, GroupedResponse } from '../models/salida.interface';
 
 const base_url = environment.base_url
 
@@ -12,15 +12,18 @@ const base_url = environment.base_url
 export class BandejaSalidaService {
   constructor(private http: HttpClient) { }
 
-  Get(limit: number, offset: number) {
+  get(limit: number, offset: number) {
     const params = new HttpParams()
       .set('offset', offset)
       .set('limit', limit)
-    return this.http.get<{ ok: boolean, mails: GroupedMails[], length: number }>(
+    return this.http.get<{ ok: boolean, mails: GroupedResponse[], length: number }>(
       `${base_url}/salidas`, { params }).pipe(
         map(resp => {
-          console.log(resp.mails);
-          return { mails: resp.mails, length: resp.length }
+          const orderMails: GroupedMails[] = resp.mails.map<GroupedMails>(
+            ({ _id: { tramite, ...rootData }, sendings }) => {
+              return { tramite: sendings[0].tramite, ...rootData, sendings }
+            })
+          return { mails: orderMails, length: resp.length }
         })
       )
   }
@@ -29,9 +32,13 @@ export class BandejaSalidaService {
       .set('offset', offset)
       .set('limit', limit)
       .set('text', text)
-    return this.http.get<{ ok: boolean, mails: GroupedMails[], length: number }>(`${base_url}/salidas/search/${type}`, { params }).pipe(
+    return this.http.get<{ ok: boolean, mails: GroupedResponse[], length: number }>(`${base_url}/salidas/search/${type}`, { params }).pipe(
       map(resp => {
-        return { mails: resp.mails, length: resp.length }
+        const orderMails: GroupedMails[] = resp.mails.map<GroupedMails>(
+          ({ _id: { tramite, ...rootData }, sendings }) => {
+            return { tramite: sendings[0].tramite, ...rootData, sendings }
+          })
+        return { mails: orderMails, length: resp.length }
       })
     )
   }
@@ -44,7 +51,7 @@ export class BandejaSalidaService {
         })
       )
   }
-  cancelAllSend(id_tramite: string, fecha_envio: Date) {
+  cancelAllSend(id_tramite: string, fecha_envio: string) {
     return this.http.put<{ ok: boolean, message: string }>(
       `${base_url}/salidas/all/${id_tramite}`, { fecha_envio }).pipe(
         map(resp => {

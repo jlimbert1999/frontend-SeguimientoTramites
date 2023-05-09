@@ -61,10 +61,26 @@ export class NotificationService {
       text: `Tramites pendientes encontrados, revisar bandeja de entrada`,
       type: 'message'
     })
-
   }
-
-
-
-
+  showNotificationPendingMails(numberMails: number) {
+    this.number_mails.next(numberMails)
+    if (numberMails === 0) return
+    const toast = this.toastr.warning('Revise su bandeja de entrada', `Tramites pendientes: ${numberMails}`, {
+      positionClass: 'toast-bottom-right',
+      timeOut: 7000,
+    })
+    toast.onTap.subscribe(action => {
+      this.router.navigateByUrl('home/bandejas/entrada')
+    })
+  }
+  showNotificationNewMail(user: { nombre: string, paterno: string, materno: string }) {
+    this.number_mails.next(this.number_mails.value + 1)
+    const toast = this.toastr.info(`${user.nombre} ${user.paterno} ${user.materno} ha enviado un tramite`, "Nuevo tramite recibido", {
+      positionClass: 'toast-bottom-right',
+      timeOut: 7000,
+    })
+    toast.onTap.subscribe(action => {
+      this.router.navigateByUrl('home/bandejas/entrada')
+    })
+  }
 }

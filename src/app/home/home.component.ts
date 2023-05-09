@@ -65,6 +65,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.socketService.listenNotifications().subscribe(data => {
       this.notificationService.addNotificationEvent('admi', 'dsds')
     })
+    this.socketService.listenMails().subscribe(mail => {
+      this.bandejaService.Mails = [mail, ...this.bandejaService.Mails]
+      this.notificationService.showNotificationNewMail(mail.emisor.funcionario)
+    })
     this.socketService.listenExpel().subscribe(message => {
       Swal.fire({
         icon: 'info',
@@ -74,15 +78,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       this.logout()
     })
-
-    this.socketService.listenMails().subscribe(mail => {
-      this.bandejaService.Mails = [mail, ...this.bandejaService.Mails]
-      let toast = this.toastr.info(`${mail.emisor.funcionario.nombre} ${mail.emisor.funcionario.paterno} ${mail.emisor.funcionario.materno} ha enviado un tramite`, "Nuevo tramite recibido", {
-        positionClass: 'toast-bottom-right',
-        timeOut: 8000,
-      })
-      // this.notificationService.addNotificationNewMail(mail.emisor.funcionario, this.bandejaService.PaginationMailsIn.total)
-    })
+   
   }
   editAccount() {
     this.router.navigate(['home/perfil'])

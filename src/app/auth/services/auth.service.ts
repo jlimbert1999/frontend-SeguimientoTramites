@@ -54,7 +54,7 @@ export class AuthService {
         this.account = jwt_decode(resp.token)
         this.resources = resp.resources
         this.code = resp.code
-        this.notificationService.number_mails.next(resp.imbox)
+        this.notificationService.showNotificationPendingMails(resp.imbox)
         this.menu = resp.menu
         return true
       }), catchError(err => {

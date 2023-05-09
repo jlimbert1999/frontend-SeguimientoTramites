@@ -1,76 +1,57 @@
-// export interface Salida {
-//     _id: string
-//     tramite: {
-//         _id: string
-//         estado: string
-//         alterno: string
-//         detalle: string
-//     };
-//     receptor: {
-//         _id: string
-//         dependencia: {
-//             nombre: string
-//             institucion: {
-//                 sigla: string
-//             };
-//         };
-//         funcionario: {
-//             _id: string
-//             nombre: string
-//             paterno: string
-//             materno: string
-//             cargo: string
-//         };
-//     };
-//     tipo: 'tramites_externos' | 'tramites_internos';
-//     emisor: string;
-//     motivo: string;
-//     cantidad: string;
-//     fecha_envio: Date;
-//     recibido: boolean;
-// }
-export interface Salida {
-    _id: string
+export interface GroupedResponse {
+  _id: {
+    cuenta: string
     tramite: string
-    receptor: {
-        _id: string
-        dependencia: {
-            nombre: string
-            institucion: {
-                sigla: string
-            };
-        };
-        funcionario: {
-            _id: string
-            nombre: string
-            paterno: string
-            materno: string
-            cargo: string
-        };
-    };
-    tipo: 'tramites_externos' | 'tramites_internos';
-    emisor: string;
-    motivo: string;
-    cantidad: string;
-    fecha_envio: Date;
-    recibido: boolean;
+    tipo: string
+    fecha_envio: string
+  }
+  sendings: Salida[]
 }
-
-
 export interface GroupedMails {
-    _id: {
-        cuenta: string
-        fecha_envio: Date
-        tipo: "tramites_internos" | "tramites_externos"
-        tramite: {
-            _id: string
-            alterno: string,
-            estado: string
-            tipo_tramite: {
-                nombre: string
-            }
-        }
-    }
-    sendings: Salida[]
-
+  cuenta: string
+  tramite: Tramite
+  tipo: string
+  fecha_envio: string
+  sendings: Salida[]
 }
+export interface Salida {
+  _id: string
+  emisor: Emisor
+  receptor: Receptor
+  tramite: Tramite
+  tipo: string
+  motivo: string
+  cantidad: string
+  fecha_envio: string
+  numero_interno: string
+  fecha_recibido?: string
+  recibido?: boolean
+}
+
+export interface Emisor {
+  cuenta: string
+  funcionario: string
+}
+
+export interface Receptor {
+  cuenta: string
+  funcionario: Funcionario
+}
+
+export interface Funcionario {
+  _id: string
+  nombre: string
+  paterno: string
+  materno: string
+  cargo: string
+}
+
+export interface Tramite {
+  _id: string
+  estado: string
+  alterno: string
+  detalle: string
+}
+
+
+

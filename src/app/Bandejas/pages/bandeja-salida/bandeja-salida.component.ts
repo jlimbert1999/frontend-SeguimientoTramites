@@ -10,8 +10,8 @@ import Swal from 'sweetalert2';
 import { BandejaSalidaService } from '../../services/bandeja-salida.service';
 import { InternosService } from 'src/app/Tramites/services/internos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { Salida, GroupedMails } from '../../models/salida.interface';
 import { Router } from '@angular/router';
+import { GroupedMails, Salida } from '../../models/salida.interface';
 
 
 @Component({
@@ -59,7 +59,7 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
       })
     }
     else {
-      this.bandejaService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+      this.bandejaService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
         this.dataSource = data.mails
         this.paginatorService.length = data.length
       })
@@ -92,16 +92,20 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.bandejaService.cancelOneSend(imbox._id).subscribe(message => {
+          const index = this.dataSource.findIndex(mail => mail.cuenta === imbox.emisor.cuenta && mail.tramite._id === imbox.tramite._id && mail.fecha_envio === imbox.fecha_envio)
+          const sendings = this.dataSource[index].sendings.filter((item: any) => item._id !== imbox._id)
+          if (sendings.length === 0) {
+            this.Get()
+          }
+          else {
+            this.dataSource[index].sendings = sendings
+          }
           Swal.fire({
             icon: 'success',
             title: 'Envio cancelado!',
-            text: message
+            text: message,
+            confirmButtonText: 'Aceptar'
           })
-          // Swal.fire({ title: 'Envio cancelado!', icon: 'success', text: message })
-          // const index = this.dataSource.findIndex(data => data._id.tramite._id === imbox.tramite)
-          // this.dataSource[index].
-          // this.dataSource = this.dataSource.filter(element => element._id !== mail._id)
-          // this.dataSource = [...this.dataSource]
         })
       }
     })
@@ -118,11 +122,12 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService.cancelAllSend(data._id.tramite._id, data._id.fecha_envio).subscribe(message => {
+        this.bandejaService.cancelAllSend(data.tramite._id, data.fecha_envio).subscribe(message => {
           Swal.fire({
             icon: 'success',
-            title: 'Envio cancelado!',
-            text: message
+            title: 'Todos los envios han sidos cancelados!',
+            text: message,
+            confirmButtonText: 'Aceptar'
           })
         })
         this.Get()
@@ -140,11 +145,11 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
       Object.assign(params, { type: this.paginatorService.type })
       Object.assign(params, { text: this.paginatorService.text })
     }
-    if (mail._id.tipo === 'tramites_externos') {
-      this.router.navigate(['home/bandejas/salida/mail/ficha-externa', mail._id.tramite._id], { queryParams: params })
+    if (mail.tipo === 'tramites_externos') {
+      this.router.navigate(['home/bandejas/salida/mail/ficha-externa', mail.tramite._id], { queryParams: params })
     }
     else {
-      this.router.navigate(['home/bandejas/salida/mail/ficha-interna', mail._id.tramite._id], { queryParams: params })
+      this.router.navigate(['home/bandejas/salida/mail/ficha-interna', mail.tramite._id], { queryParams: params })
     }
 
   }
