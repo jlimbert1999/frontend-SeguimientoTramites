@@ -105,7 +105,7 @@ export class ExternosComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const indexFound = this.Data.findIndex(element => element._id === tramite._id)
-        this.Data[indexFound].estado = "EN REVISION";
+        this.Data[indexFound].enviado = true
         this.Data = [...this.Data]
         this.Add()
       }
@@ -115,8 +115,7 @@ export class ExternosComponent implements OnInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getAllDataExternalProcedure(id_tramite).subscribe(data => {
-      TestRoute(data.procedure, data.workflow)
-      // HojaRutaExterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
+      HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
     })
   }
   GenerateFicha(tramite: Externo) {

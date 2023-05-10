@@ -4,7 +4,8 @@
         <div class="col-sm-3">
             <mat-radio-group [(ngModel)]="paginatorService.type" (change)="selectTypeSearch()"
                 aria-label="Select an option">
-                <mat-radio-button class="default-radio-button" [value]="undefined" color="primary">TODOS</mat-radio-button>
+                <mat-radio-button class="default-radio-button" [value]="undefined"
+                    color="primary">TODOS</mat-radio-button>
                 <mat-radio-button value="EXTERNO" color="accent">EXTERNOS</mat-radio-button>
                 <mat-radio-button value="INTERNO" color="warn">INTERNOS</mat-radio-button>
             </mat-radio-group>
@@ -74,7 +75,7 @@
                         </button>
                         <mat-menu #menu="matMenu">
                             <div [ngSwitch]="row.recibido">
-                                <div *ngSwitchCase="false">
+                                <div *ngSwitchCase="undefined">
                                     <button (click)="aceptar_tramite(row)" mat-menu-item>
                                         <mat-icon>done</mat-icon>
                                         <span>Aceptar tramite</span>
@@ -84,7 +85,7 @@
                                         <span>Rechazar tramite</span>
                                     </button>
                                 </div>
-                                <div *ngSwitchCase="true">
+                                <div *ngSwitchDefault>
                                     <button (click)="send(row)" mat-menu-item>
                                         <mat-icon>send</mat-icon>
                                         <span>Remitir tramite</span>
@@ -97,7 +98,7 @@
                                         <mat-icon>domain_verification</mat-icon>
                                         <span>Concluir tramite</span>
                                     </button>
-                                    
+
                                 </div>
                             </div>
                         </mat-menu>
@@ -123,12 +124,10 @@
                 </ng-container>
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
-                    [ngClass]="{'mail_recibido': row.recibido==false }"
+                    [ngClass]="[ row.recibido===undefined ? 'mail_recibido' : '',  row.recibido===false ? 'mail_rechazado' : '']"
                     [class.example-expanded-row]="expandedElement === row"></tr>
                 <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
             </table>
+            <app-paginator (page)="Get()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
         </div>
-        <app-paginator (page)="Get()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
     </div>
-
-</div>

@@ -29,7 +29,7 @@ export interface Entrada {
     motivo: string;
     cantidad: string;
     fecha_envio: Date;
-    recibido: boolean;
+    recibido?: boolean;
 }
 
 export interface Mail {
@@ -57,7 +57,7 @@ export interface Mail {
     motivo: string;
     cantidad: string;
     fecha_envio: Date;
-    recibido: boolean;
+    recibido?: boolean;
 }
 
 export interface ImboxData {

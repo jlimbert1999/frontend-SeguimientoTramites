@@ -44,6 +44,13 @@ export class SocketService {
       })
     })
   }
+  listenCancelMail(): Observable<Entrada> {
+    return new Observable((observable) => {
+      this.socket.on('cancelmail', data => {
+        observable.next(data)
+      })
+    })
+  }
   listenExpel(): Observable<string> {
     return new Observable((observable) => {
       this.socket.on('kick', (message: string | undefined) => {

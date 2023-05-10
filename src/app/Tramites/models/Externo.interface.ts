@@ -24,6 +24,7 @@ export interface Externo {
         nombre: string
     },
     eventos?: any[]
+    enviado:boolean
 }
 
 export interface Solicitante {

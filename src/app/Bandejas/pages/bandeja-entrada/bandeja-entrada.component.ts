@@ -26,6 +26,7 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { Entrada } from '../../models/entrada.interface';
+import { SocketService } from 'src/app/home/services/socket.service';
 
 
 @Component({
@@ -75,11 +76,13 @@ export class BandejaEntradaComponent implements OnInit {
     public loaderService: LoaderService,
     public paginatorService: PaginatorService,
     private router: Router,
-    private _bottomSheet: MatBottomSheet
+    private _bottomSheet: MatBottomSheet,
+    private socketService: SocketService
   ) { }
 
   ngOnInit(): void {
     this.Get()
+    this.socketService.listenCancelMail().subscribe(() => this.Get())
 
   }
   Get() {
@@ -91,34 +94,29 @@ export class BandejaEntradaComponent implements OnInit {
     else {
       this.bandejaService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(length => {
         this.paginatorService.length = length
+        console.log(this.Mails);
       })
     }
   }
 
   send(elemento: Entrada) {
-    if (elemento.tramite.estado === 'OBSERVADO') {
-      Swal.fire('El tramite tiene observaciones pendedientes', undefined, 'info')
-    }
-    else {
-      console.log(elemento)
-      const dialogRef = this.dialog.open(DialogRemisionComponent, {
-        width: '1200px',
-        data: {
-          _id: elemento.tramite._id,
-          tipo: elemento.tipo,
-          tramite: {
-            nombre: '',
-            alterno: elemento.tramite.alterno,
-            cantidad: elemento.cantidad
-          }
+    const dialogRef = this.dialog.open(DialogRemisionComponent, {
+      width: '1200px',
+      data: {
+        _id: elemento.tramite._id,
+        tipo: elemento.tipo,
+        tramite: {
+          nombre: '',
+          alterno: elemento.tramite.alterno,
+          cantidad: elemento.cantidad
         }
-      });
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.Get()
-        }
-      });
-    }
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.Get()
+      }
+    });
   }
   aceptar_tramite(elemento: Entrada) {
     Swal.fire({
@@ -132,11 +130,11 @@ export class BandejaEntradaComponent implements OnInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService.aceptMail(elemento._id).subscribe(message => {
+        this.bandejaService.aceptMail(elemento._id).subscribe(data => {
           const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
           this.bandejaService.Mails[indexFound].recibido = true
           this.bandejaService.Mails = [...this.bandejaService.Mails]
-          this.toastr.success(undefined, message, {
+          this.toastr.success(undefined, data.message, {
             positionClass: 'toast-bottom-right',
             timeOut: 3000,
           })
@@ -229,9 +227,9 @@ export class BandejaEntradaComponent implements OnInit {
 
 
   GenerateHojaRuta(id_tramite: string) {
-    // this.externoService.getOne(id_tramite).subscribe(data => {
-    //   // HojaRutaExterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
-    // })
+    this.externoService.getAllDataExternalProcedure(id_tramite).subscribe(data => {
+      HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
+    })
   }
   View(id_bandeja: string) {
     let params = {

@@ -26,7 +26,10 @@ tr.example-detail-row {
     background-color: #FE5F55;
     color: white;
 }
-
+.mail_rechazado .mat-mdc-cell {
+    background-color: #F6BD60;
+    color: black;
+}
 .mail_recibido a {
     color: black;
 }

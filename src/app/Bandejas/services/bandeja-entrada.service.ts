@@ -44,9 +44,9 @@ export class BandejaEntradaService {
 
 
   aceptMail(id_bandeja: string) {
-    return this.http.put<{ ok: boolean, message: string }>(`${base_url}/entradas/aceptar/${id_bandeja}`, {}).pipe(
+    return this.http.put<{ ok: boolean, state: string, message: string }>(`${base_url}/entradas/aceptar/${id_bandeja}`, {}).pipe(
       map(resp => {
-        return resp.message
+        return { message: resp.message, state: resp.state }
       })
     )
   }
@@ -103,14 +103,15 @@ export class BandejaEntradaService {
   }
 
   getDetailsMail(id_bandeja: string) {
-    return this.http.get<{ ok: boolean, mail: Mail, procedure: any, observations: Observacion[], workflow: WorkflowData[], location: LocationProcedure[] }>(`${base_url}/entradas/${id_bandeja}`).pipe(
+    return this.http.get<{ ok: boolean, mail: Mail, procedure: any, observations: Observacion[], workflow: WorkflowData[], location: LocationProcedure[], events: any[] }>(`${base_url}/entradas/${id_bandeja}`).pipe(
       map(resp => {
         return {
           mail: resp.mail,
           tramite: resp.procedure,
           workflow: resp.workflow,
           observations: resp.observations,
-          location: resp.location
+          location: resp.location,
+          events: resp.events
         }
       })
     )

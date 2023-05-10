@@ -138,6 +138,23 @@ export class BusquedaComponent implements OnInit {
       this.paginationService.length = data.length
     }))
   }
-  
+  // View(mail: GroupedMails) {
+  //   let params = {
+  //     limit: this.paginatorService.limit,
+  //     offset: this.paginatorService.offset
+  //   }
+  //   if (this.paginatorService.text !== '') {
+  //     Object.assign(params, { type: this.paginatorService.type })
+  //     Object.assign(params, { text: this.paginatorService.text })
+  //   }
+  //   if (mail.tipo === 'tramites_externos') {
+  //     this.router.navigate(['home/bandejas/salida/mail/ficha-externa', mail.tramite._id], { queryParams: params })
+  //   }
+  //   else {
+  //     this.router.navigate(['home/bandejas/salida/mail/ficha-interna', mail.tramite._id], { queryParams: params })
+  //   }
+
+  // }ss
+
 
 }

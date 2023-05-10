@@ -60,7 +60,7 @@
                                 <mat-icon>edit</mat-icon>
                                 <span>Editar tramite</span>
                             </button>
-                            <button (click)="Send(row)" [disabled]="row.estado!=='INSCRITO'" mat-menu-item>
+                            <button (click)="Send(row)" [disabled]="row.enviado" mat-menu-item>
                                 <mat-icon>send</mat-icon>
                                 <span>Remitir tramite</span>
                             </button>

@@ -10,6 +10,8 @@ import { Mail } from '../../models/entrada.interface';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Observacion } from 'src/app/Tramites/models/Externo.interface';
 import { showToast } from 'src/app/helpers/toats.helper';
+import { DialogRemisionComponent } from '../../dialogs/dialog-remision/dialog-remision.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-mail',
@@ -25,12 +27,14 @@ export class MailComponent implements OnInit {
   Workflow: WorkflowData[]
   Mail: Mail
   observations: Observacion[] = []
+  Events: any[] = []
   constructor(
     private _location: Location,
     private activateRoute: ActivatedRoute,
     private entradaService: BandejaEntradaService,
     private paginatorService: PaginatorService,
-    private authService: AuthService
+    private authService: AuthService,
+    public dialog: MatDialog,
   ) {
 
   }
@@ -43,6 +47,7 @@ export class MailComponent implements OnInit {
           this.Tramite = data.tramite
           this.Workflow = data.workflow
           this.observations = data.observations
+          this.Events = data.events
         })
       }
     })
@@ -58,7 +63,7 @@ export class MailComponent implements OnInit {
   }
 
   generar() {
-
+    
   }
 
 
@@ -75,8 +80,10 @@ export class MailComponent implements OnInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.entradaService.aceptMail(this.Mail._id).subscribe(message => {
-          showToast('success', message, undefined)
+        this.entradaService.aceptMail(this.Mail._id).subscribe(data => {
+          this.Mail.recibido = true
+          this.Tramite.estado = data.state
+          showToast('success', data.message, undefined)
         })
       }
     })
@@ -135,9 +142,56 @@ export class MailComponent implements OnInit {
         })
       }
     })
-
   }
+  send() {
+    const dialogRef = this.dialog.open(DialogRemisionComponent, {
+      width: '1200px',
+      data: {
+        _id: this.Tramite._id,
+        tipo: this.Mail.tipo,
+        tramite: {
+          nombre: '',
+          alterno: this.Tramite.alterno,
+          cantidad: this.Mail.cantidad
+        }
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.back()
+      }
+    });
+  }
+  concluir() {
+    Swal.fire({
+      icon: 'question',
+      title: `Concluir el tramite ${this.Tramite.alterno}?`,
+      text: `Ingrese una referencia para concluir`,
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        validationMessage: 'my-validation-message'
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
+          )
+        }
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.back()
+      }
+    })
+  }
+
+
   setNewStateProcedure(state: string) {
     this.Tramite.estado = state
   }
+
+
 }

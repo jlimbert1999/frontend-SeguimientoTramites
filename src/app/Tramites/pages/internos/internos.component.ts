@@ -24,7 +24,7 @@ import { Interno } from '../../models/Interno.interface';
 })
 export class InternosComponent implements OnInit {
   displayedColumns: string[] = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'opciones']
-  dataSource: any[]
+  dataSource: Interno[] = []
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   filterOpions = [
@@ -56,8 +56,8 @@ export class InternosComponent implements OnInit {
     }
     else {
       this.internoService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-        this.dataSource = data.tramites,
-          this.paginatorService.length = data.length
+        this.dataSource = data.tramites
+        this.paginatorService.length = data.length
       })
     }
   }
@@ -118,7 +118,7 @@ export class InternosComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         const indexFound = this.dataSource.findIndex(element => element._id === tramite._id)
-        this.dataSource[indexFound].estado = 'EN REVISION'
+        this.dataSource[indexFound].enviado = true
         this.dataSource = [...this.dataSource]
       }
     });
@@ -146,9 +146,9 @@ export class InternosComponent implements OnInit {
   }
 
   GenerateHojaRuta(id_tramite: string) {
-    // this.internoService.getOne(id_tramite).subscribe(data => {
-    //   // HojaRutaInterna(data.tramite, data.workflow, this.authService.account.id_cuenta)
-    // })
+    this.internoService.getAllDataInternalProcedure(id_tramite).subscribe(data => {
+      HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
+    })
   }
   View(id: string) {
     let params = {

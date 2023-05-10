@@ -12,6 +12,7 @@ import { InternosService } from 'src/app/Tramites/services/internos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
 import { GroupedMails, Salida } from '../../models/salida.interface';
+import { SocketService } from 'src/app/home/services/socket.service';
 
 
 @Component({
@@ -41,7 +42,8 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
     private internoService: InternosService,
     private bandejaService: BandejaSalidaService,
     public paginatorService: PaginatorService,
-    private router: Router
+    private router: Router,
+    private socketService: SocketService
   ) { }
   ngAfterViewInit(): void {
 
@@ -100,6 +102,7 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
           else {
             this.dataSource[index].sendings = sendings
           }
+          this.socketService.socket.emit('mail-one-cancel', imbox.receptor.cuenta)
           Swal.fire({
             icon: 'success',
             title: 'Envio cancelado!',
@@ -129,8 +132,9 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
             text: message,
             confirmButtonText: 'Aceptar'
           })
+          this.Get()
         })
-        this.Get()
+
       }
     })
   }
