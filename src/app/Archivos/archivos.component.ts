@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-archivos',
   templateUrl: './archivos.component.html',
-  styleUrls: ['./archivos.component.css'],
+  styleUrls: ['./archivos.component.scss'],
   animations: [
     fadeInOnEnterAnimation(),
   ]

@@ -10,7 +10,7 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 @Component({
   selector: 'app-tipos-tramites',
   templateUrl: './tipos-tramites.component.html',
-  styleUrls: ['./tipos-tramites.component.css'],
+  styleUrls: ['./tipos-tramites.component.scss'],
   animations: [
     fadeInOnEnterAnimation()
   ]

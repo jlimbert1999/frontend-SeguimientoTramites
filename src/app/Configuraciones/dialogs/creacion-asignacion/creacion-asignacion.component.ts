@@ -13,7 +13,7 @@ import { RolService } from '../../services/rol.service';
 @Component({
   selector: 'app-creacion-asignacion',
   templateUrl: './creacion-asignacion.component.html',
-  styleUrls: ['./creacion-asignacion.component.css']
+  styleUrls: ['./creacion-asignacion.component.scss']
 })
 export class CreacionAsignacionComponent implements OnInit {
   dependencias: { id_dependencia: string, nombre: string }[] = [];

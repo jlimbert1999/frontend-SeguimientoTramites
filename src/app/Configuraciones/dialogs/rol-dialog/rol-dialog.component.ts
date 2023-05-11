@@ -7,7 +7,7 @@ import { Rol, RolDto } from '../../models/rol.model';
 @Component({
   selector: 'app-rol-dialog',
   templateUrl: './rol-dialog.component.html',
-  styleUrls: ['./rol-dialog.component.css']
+  styleUrls: ['./rol-dialog.component.scss']
 })
 export class RolDialogComponent implements OnInit {
   Form_Role: FormGroup = this.fb.group({

@@ -8,7 +8,7 @@ import { InstitucionesService } from 'src/app/Configuraciones/services/instituci
 @Component({
   selector: 'app-institucion-dialog',
   templateUrl: './institucion-dialog.component.html',
-  styleUrls: ['./institucion-dialog.component.css']
+  styleUrls: ['./institucion-dialog.component.scss']
 })
 export class InstitucionDialogComponent implements OnInit {
   titulo: string = ''

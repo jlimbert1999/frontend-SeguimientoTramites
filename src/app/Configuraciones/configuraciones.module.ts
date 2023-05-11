@@ -14,7 +14,6 @@ import { CuentasComponent } from './pages/cuentas/cuentas.component';
 import { CuentaDialogComponent } from './dialogs/cuenta-dialog/cuenta-dialog.component';
 import { FuncionariosComponent } from './pages/funcionarios/funcionarios.component';
 import { GroupwareComponent } from './pages/groupware/groupware.component';
-import { CuentaComponent } from './pages/cuenta/cuenta.component';
 import { CreacionAsignacionComponent } from './dialogs/creacion-asignacion/creacion-asignacion.component';
 import { DetallesMovilidadComponent } from './pages/funcionarios/detalles-movilidad/detalles-movilidad.component';
 import { EdicionCuentaComponent } from './dialogs/edicion-cuenta/edicion-cuenta.component';
@@ -40,7 +39,6 @@ import { RolDialogComponent } from './dialogs/rol-dialog/rol-dialog.component';
     GroupwareComponent,
     CreacionAsignacionComponent,
     DetallesMovilidadComponent,
-    CuentaComponent,
     EdicionCuentaComponent,
     RolesComponent,
     RolDialogComponent

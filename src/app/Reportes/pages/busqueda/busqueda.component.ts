@@ -11,7 +11,7 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 @Component({
   selector: 'app-busqueda',
   templateUrl: './busqueda.component.html',
-  styleUrls: ['./busqueda.component.css'],
+  styleUrls: ['./busqueda.component.scss'],
   animations: [
     fadeInOnEnterAnimation()
   ]

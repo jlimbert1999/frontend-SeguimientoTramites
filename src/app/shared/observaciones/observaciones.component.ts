@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-observaciones',
   templateUrl: './observaciones.component.html',
-  styleUrls: ['./observaciones.component.css']
+  styleUrls: ['./observaciones.component.scss']
 })
 export class ObservacionesComponent implements OnInit {
   @Input() Observaciones: Observacion[] = []

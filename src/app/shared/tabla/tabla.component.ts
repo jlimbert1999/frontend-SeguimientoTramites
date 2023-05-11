@@ -10,7 +10,7 @@ import { PaginationService } from 'src/app/Configuraciones/services/pagination.s
 @Component({
   selector: 'app-tabla',
   templateUrl: './tabla.component.html',
-  styleUrls: ['./tabla.component.css'],
+  styleUrls: ['./tabla.component.scss'],
   animations: [
     fadeInOnEnterAnimation({ duration: 500 })
   ]

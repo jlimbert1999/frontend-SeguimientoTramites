@@ -5,7 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 @Component({
   selector: 'app-table-report-precedures',
   templateUrl: './table-report-precedures.component.html',
-  styleUrls: ['./table-report-precedures.component.css']
+  styleUrls: ['./table-report-precedures.component.scss']
 })
 export class TableReportPreceduresComponent implements OnInit, OnChanges {
   @Input() data: any[] = []

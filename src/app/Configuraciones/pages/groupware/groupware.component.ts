@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-groupware',
   templateUrl: './groupware.component.html',
-  styleUrls: ['./groupware.component.css']
+  styleUrls: ['./groupware.component.scss']
 })
 export class GroupwareComponent implements OnInit {
   constructor(public socketService: SocketService, private authService: AuthService) {

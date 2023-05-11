@@ -8,7 +8,7 @@ import { DependenciasService } from 'src/app/Configuraciones/services/dependenci
 @Component({
   selector: 'app-dependencia-dialog',
   templateUrl: './dependencia-dialog.component.html',
-  styleUrls: ['./dependencia-dialog.component.css'],
+  styleUrls: ['./dependencia-dialog.component.scss'],
 })
 export class DependenciaDialogComponent implements OnInit {
   titulo: string = '';

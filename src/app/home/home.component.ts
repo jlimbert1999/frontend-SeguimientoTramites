@@ -13,11 +13,12 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { SocketService } from './services/socket.service';
 import { NotificationService } from './services/notification.service';
 import Swal from 'sweetalert2';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   mobileQuery: MediaQueryList;
@@ -26,6 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   loading$ = this.loader.loading$;
 
   number_mails = this.notificationService.number_mails$
+  isDarkTheme = this.themeService.isDarkTheme
   @ViewChild('snav') public sidenav: MatSidenav;
 
   private _mobileQueryListener: () => void;
@@ -47,7 +49,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private notificationService: NotificationService,
     private bottomSheet: MatBottomSheet,
-    private sidenavService: SidenavService
+    private sidenavService: SidenavService,
+    private themeService: ThemeService
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
@@ -78,10 +81,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       this.logout()
     })
-   
+
   }
   editAccount() {
-    this.router.navigate(['home/perfil'])
+    this.router.navigate(['home/perfil', this.authService.account.id_account])
   }
 
 

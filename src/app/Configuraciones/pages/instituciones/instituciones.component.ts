@@ -9,7 +9,7 @@ import { InstitucionDialogComponent } from './institucion-dialog/institucion-dia
 @Component({
   selector: 'app-instituciones',
   templateUrl: './instituciones.component.html',
-  styleUrls: ['./instituciones.component.css'],
+  styleUrls: ['./instituciones.component.scss'],
   animations: [
     fadeInOnEnterAnimation(),
   ]

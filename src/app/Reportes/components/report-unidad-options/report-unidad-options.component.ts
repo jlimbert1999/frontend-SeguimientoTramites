@@ -8,7 +8,7 @@ import { groupProcedure, statesProcedures } from 'src/app/Tramites/models/Proced
 @Component({
   selector: 'app-report-unidad-options',
   templateUrl: './report-unidad-options.component.html',
-  styleUrls: ['./report-unidad-options.component.css']
+  styleUrls: ['./report-unidad-options.component.scss']
 })
 export class ReportUnidadOptionsComponent implements OnInit {
   @Output() sendDataEvent = new EventEmitter<SendDataReportEvent>();

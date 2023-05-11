@@ -20,7 +20,7 @@ import { RolService } from '../../services/rol.service';
 @Component({
   selector: 'app-cuenta-dialog',
   templateUrl: './cuenta-dialog.component.html',
-  styleUrls: ['./cuenta-dialog.component.css'],
+  styleUrls: ['./cuenta-dialog.component.scss'],
 })
 export class CuentaDialogComponent implements OnInit, OnDestroy {
   dependencias: any[] = [];

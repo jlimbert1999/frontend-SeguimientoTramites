@@ -15,7 +15,7 @@ import { createListWorkflow } from 'src/app/Bandejas/helpers/ListWorkflow';
 @Component({
   selector: 'app-ficha',
   templateUrl: './ficha.component.html',
-  styleUrls: ['./ficha.component.css'],
+  styleUrls: ['./ficha.component.scss'],
   animations: [
     slideInLeftOnEnterAnimation({ duration: 500 })
   ]

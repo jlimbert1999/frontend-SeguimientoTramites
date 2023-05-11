@@ -34,8 +34,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {CdkTableModule} from '@angular/cdk/table';
 import {PortalModule} from '@angular/cdk/portal';
 import {OverlayModule} from '@angular/cdk/overlay';
-
-
+import {MatSliderModule} from '@angular/material/slider';
 @NgModule({
   declarations: [],
   imports: [
@@ -75,7 +74,8 @@ import {OverlayModule} from '@angular/cdk/overlay';
     MatProgressBarModule,
     CdkTableModule,
     PortalModule,
-    OverlayModule
+    OverlayModule,
+    MatSliderModule
     
   ]
 })

@@ -5,7 +5,7 @@ import { UsuariosService } from 'src/app/Configuraciones/services/usuarios.servi
 @Component({
   selector: 'app-detalles-movilidad',
   templateUrl: './detalles-movilidad.component.html',
-  styleUrls: ['./detalles-movilidad.component.css']
+  styleUrls: ['./detalles-movilidad.component.scss']
 })
 export class DetallesMovilidadComponent implements OnInit {
   Detalles: any[] = []

@@ -6,7 +6,7 @@ import { WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 @Component({
   selector: 'app-graph-workflow',
   templateUrl: './graph-workflow.component.html',
-  styleUrls: ['./graph-workflow.component.css'],
+  styleUrls: ['./graph-workflow.component.scss'],
 
 })
 export class GraphWorkflowComponent implements OnInit {

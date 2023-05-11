@@ -1,4 +1,4 @@
-<div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
+<div class="example-container mat-app-background" [ngClass]="{'dark-theme': isDarkTheme | async}" [class.example-is-mobile]="mobileQuery.matches">
   <mat-sidenav-container class="example-sidenav-container">
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
       [opened]="mobileQuery.matches ===false">
@@ -16,6 +16,10 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
+            <button routerLink="/home/recursos" mat-menu-item>
+              <mat-icon>dataset</mat-icon>
+              <span>Recursos</span>
+            </button>
             <button (click)="editAccount()" mat-menu-item>
               <mat-icon>manage_accounts</mat-icon>
               <span>Configurar cuenta</span>

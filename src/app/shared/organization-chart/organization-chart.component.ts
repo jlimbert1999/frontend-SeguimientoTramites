@@ -9,7 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-organization-chart',
   templateUrl: './organization-chart.component.html',
-  styleUrls: ['./organization-chart.component.css']
+  styleUrls: ['./organization-chart.component.scss']
 })
 export class OrganizationChartComponent implements OnInit {
 

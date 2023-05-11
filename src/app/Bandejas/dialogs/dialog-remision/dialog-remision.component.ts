@@ -11,7 +11,7 @@ import { EntradaDto } from '../../models/entrada.dto';
 @Component({
   selector: 'app-dialog-remision',
   templateUrl: './dialog-remision.component.html',
-  styleUrls: ['./dialog-remision.component.css'],
+  styleUrls: ['./dialog-remision.component.scss'],
 })
 export class DialogRemisionComponent implements OnInit, OnDestroy {
   accountsForSend: AccountForSend[] = [];

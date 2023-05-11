@@ -114,7 +114,13 @@
                     <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
                         <div class="example-element-detail"
                             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                            <table class="table caption-top">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Fill form field</mat-label>
+                                <input matInput placeholder="Placeholder">
+                                <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                                <mat-hint>Hint</mat-hint>
+                              </mat-form-field>
+                            <!-- <table class="table caption-top">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
@@ -150,7 +156,7 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                            </table>
+                            </table> -->
                         </div>
                     </td>
                 </ng-container>

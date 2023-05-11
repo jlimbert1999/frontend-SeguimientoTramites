@@ -9,7 +9,7 @@ import { Interno } from 'src/app/Tramites/models/Interno.interface';
 @Component({
   selector: 'app-info-tramite-externo',
   templateUrl: './info-tramite-externo.component.html',
-  styleUrls: ['./info-tramite-externo.component.css']
+  styleUrls: ['./info-tramite-externo.component.scss']
 })
 export class InfoTramiteExternoComponent implements OnInit, OnDestroy {
   @Input() Tramite: Externo

@@ -4,6 +4,8 @@ import { LoginComponent } from '../auth/login/login.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { HomeComponent } from './home.component';
 import { BusquedaComponent } from '../Reportes/pages/busqueda/busqueda.component';
+import { PerfilComponent } from './pages/perfil/perfil.component';
+import { RecursosComponent } from './pages/recursos/recursos.component';
 
 
 const routes: Routes = [
@@ -40,9 +42,17 @@ const routes: Routes = [
                 path: 'busquedas',
                 component: BusquedaComponent
             },
+            {
+                path: 'perfil/:id_account',
+                component: PerfilComponent
+            },
+            {
+                path: 'recursos',
+                component: RecursosComponent
+            },
         ]
     },
-    
+
     {
         path: 'login', component: LoginComponent,
     },

@@ -16,7 +16,7 @@ import { UsuarioDialogComponent } from './usuario-dialog/usuario-dialog.componen
 @Component({
   selector: 'app-cuentas',
   templateUrl: './cuentas.component.html',
-  styleUrls: ['./cuentas.component.css'],
+  styleUrls: ['./cuentas.component.scss'],
   animations: [
     fadeInOnEnterAnimation(),
   ]

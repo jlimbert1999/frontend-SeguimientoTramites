@@ -11,7 +11,7 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 @Component({
   selector: 'app-funcionarios',
   templateUrl: './funcionarios.component.html',
-  styleUrls: ['./funcionarios.component.css'],
+  styleUrls: ['./funcionarios.component.scss'],
   animations: [
     fadeInOnEnterAnimation(),
   ]

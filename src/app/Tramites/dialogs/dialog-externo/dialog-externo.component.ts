@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-dialog-externo',
   templateUrl: './dialog-externo.component.html',
-  styleUrls: ['./dialog-externo.component.css']
+  styleUrls: ['./dialog-externo.component.scss']
 })
 export class DialogExternoComponent implements OnInit {
   Segmentos: string[] = []

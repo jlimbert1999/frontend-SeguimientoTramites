@@ -8,7 +8,7 @@ import { TypesProceduresGrouped } from 'src/app/Configuraciones/models/tipoTrami
 @Component({
   selector: 'app-dialog-internos',
   templateUrl: './dialog-internos.component.html',
-  styleUrls: ['./dialog-internos.component.css']
+  styleUrls: ['./dialog-internos.component.scss']
 })
 export class DialogInternosComponent implements OnInit {
   filteredOptions: Observable<any[]>;

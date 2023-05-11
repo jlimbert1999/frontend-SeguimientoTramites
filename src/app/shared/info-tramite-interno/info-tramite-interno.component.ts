@@ -7,7 +7,7 @@ import { Interno } from 'src/app/Tramites/models/Interno.interface';
 @Component({
   selector: 'app-info-tramite-interno',
   templateUrl: './info-tramite-interno.component.html',
-  styleUrls: ['./info-tramite-interno.component.css']
+  styleUrls: ['./info-tramite-interno.component.scss']
 })
 export class InfoTramiteInternoComponent implements OnInit, OnDestroy {
 

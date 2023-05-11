@@ -7,7 +7,7 @@ import { FormControl, FormBuilder, Validators } from '@angular/forms';
 @Component({
   selector: 'app-report-tipo-options',
   templateUrl: './report-tipo-options.component.html',
-  styleUrls: ['./report-tipo-options.component.css']
+  styleUrls: ['./report-tipo-options.component.scss']
 })
 export class ReportTipoOptionsComponent {
   @Output() sendDataEvent = new EventEmitter<SendDataReportEvent>();

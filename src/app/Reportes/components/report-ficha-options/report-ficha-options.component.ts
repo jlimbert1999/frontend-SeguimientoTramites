@@ -7,7 +7,7 @@ import { SendDataReportEvent } from '../../models/sendData.model';
 @Component({
   selector: 'app-report-ficha-options',
   templateUrl: './report-ficha-options.component.html',
-  styleUrls: ['./report-ficha-options.component.css']
+  styleUrls: ['./report-ficha-options.component.scss']
 })
 export class ReportFichaOptionsComponent implements OnInit {
   @Output() sendDataEvent = new EventEmitter<SendDataReportEvent>();

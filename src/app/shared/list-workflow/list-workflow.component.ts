@@ -8,7 +8,7 @@ import { ListWorkflow, WorkflowData } from 'src/app/Bandejas/models/workflow.int
 @Component({
   selector: 'app-list-workflow',
   templateUrl: './list-workflow.component.html',
-  styleUrls: ['./list-workflow.component.css']
+  styleUrls: ['./list-workflow.component.scss']
 })
 export class ListWorkflowComponent implements OnInit {
   @Input() Workflow: WorkflowData[] = []

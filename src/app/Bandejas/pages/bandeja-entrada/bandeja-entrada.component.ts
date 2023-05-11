@@ -32,7 +32,7 @@ import { SocketService } from 'src/app/home/services/socket.service';
 @Component({
   selector: 'app-bandeja-entrada',
   templateUrl: './bandeja-entrada.component.html',
-  styleUrls: ['./bandeja-entrada.component.css'],
+  styleUrls: ['./bandeja-entrada.component.scss'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),

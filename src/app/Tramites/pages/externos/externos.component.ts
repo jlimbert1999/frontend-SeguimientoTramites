@@ -18,7 +18,7 @@ import { showToast } from 'src/app/helpers/toats.helper';
 @Component({
   selector: 'app-externos',
   templateUrl: './externos.component.html',
-  styleUrls: ['./externos.component.css'],
+  styleUrls: ['./externos.component.scss'],
   animations: [
     fadeInOnEnterAnimation(),
   ]

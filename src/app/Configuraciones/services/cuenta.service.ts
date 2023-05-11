@@ -4,6 +4,7 @@ import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Cuenta, CuentaDto } from '../models/cuenta.interface';
 import { Funcionario, FuncionarioDto } from '../models/funcionario.interface';
+import { myAccount } from 'src/app/home/models/myAccount.interface';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -107,6 +108,16 @@ export class CuentaService {
   addAccountLink(cuenta: CuentaDto, id_funcionario: string) {
     return this.http.post<{ ok: boolean, cuenta: Cuenta }>(`${base_url}/cuentas/link`, { cuenta, id_funcionario }).pipe(
       map(resp => resp.cuenta)
+    )
+  }
+  getMyAccount(id_account: string) {
+    return this.http.get<{ ok: boolean, account: myAccount }>(`${base_url}/shared/my-account/${id_account}`).pipe(
+      map(resp => resp.account)
+    )
+  }
+  updateMyAccount(id_account: string, login: string, password: string) {
+    return this.http.put<{ ok: boolean, login: string }>(`${base_url}/shared/my-account/${id_account}`, { login, password }).pipe(
+      map(resp => resp.login)
     )
   }
 

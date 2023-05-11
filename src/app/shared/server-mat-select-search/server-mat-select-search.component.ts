@@ -5,7 +5,7 @@ import { ReplaySubject, Subject, filter, takeUntil, tap } from 'rxjs';
 @Component({
   selector: 'app-server-mat-select-search',
   templateUrl: './server-mat-select-search.component.html',
-  styleUrls: ['./server-mat-select-search.component.css']
+  styleUrls: ['./server-mat-select-search.component.scss']
 })
 export class ServerMatSelectSearchComponent implements OnChanges {
 

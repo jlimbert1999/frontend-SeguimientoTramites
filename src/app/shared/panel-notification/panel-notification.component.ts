@@ -4,7 +4,7 @@ import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 @Component({
   selector: 'app-panel-notification',
   templateUrl: './panel-notification.component.html',
-  styleUrls: ['./panel-notification.component.css']
+  styleUrls: ['./panel-notification.component.scss']
 })
 export class PanelNotificationComponent implements OnInit {
 

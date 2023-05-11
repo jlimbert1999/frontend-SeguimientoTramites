@@ -13,7 +13,7 @@ import { createPDFUsuario } from '../../pdf/reporte-usuario';
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.css'],
+  styleUrls: ['./menu.component.scss'],
   animations: [
     fadeInDownOnEnterAnimation(),
   ]

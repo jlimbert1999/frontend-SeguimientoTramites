@@ -18,7 +18,7 @@ import { SocketService } from 'src/app/home/services/socket.service';
 @Component({
   selector: 'app-bandeja-salida',
   templateUrl: './bandeja-salida.component.html',
-  styleUrls: ['./bandeja-salida.component.css'],
+  styleUrls: ['./bandeja-salida.component.scss'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),

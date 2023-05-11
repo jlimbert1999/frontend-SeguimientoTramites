@@ -6,7 +6,7 @@ import { SendDataReportEvent } from '../../models/sendData.model';
 @Component({
   selector: 'app-report-solicitante-options',
   templateUrl: './report-solicitante-options.component.html',
-  styleUrls: ['./report-solicitante-options.component.css']
+  styleUrls: ['./report-solicitante-options.component.scss']
 })
 export class ReportSolicitanteOptionsComponent {
   @Output() sendDataEvent = new EventEmitter<SendDataReportEvent>();

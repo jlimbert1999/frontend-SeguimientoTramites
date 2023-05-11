@@ -6,7 +6,7 @@ import { ReplaySubject, Subject, take, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-simple-mat-select-search',
   templateUrl: './simple-mat-select-search.component.html',
-  styleUrls: ['./simple-mat-select-search.component.css']
+  styleUrls: ['./simple-mat-select-search.component.scss']
 })
 export class SimpleMatSelectSearchComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 

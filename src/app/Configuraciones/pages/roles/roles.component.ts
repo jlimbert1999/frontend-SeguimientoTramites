@@ -8,7 +8,7 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 @Component({
   selector: 'app-roles',
   templateUrl: './roles.component.html',
-  styleUrls: ['./roles.component.css'],
+  styleUrls: ['./roles.component.scss'],
   animations:[
     fadeInOnEnterAnimation(),
   ]

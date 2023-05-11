@@ -16,7 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-mail',
   templateUrl: './mail.component.html',
-  styleUrls: ['./mail.component.css'],
+  styleUrls: ['./mail.component.scss'],
   animations: [
     slideInLeftOnEnterAnimation({ duration: 500 })
   ],

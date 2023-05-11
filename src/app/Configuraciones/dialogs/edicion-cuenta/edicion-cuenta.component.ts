@@ -11,7 +11,7 @@ import { RolService } from '../../services/rol.service';
 @Component({
   selector: 'app-edicion-cuenta',
   templateUrl: './edicion-cuenta.component.html',
-  styleUrls: ['./edicion-cuenta.component.css']
+  styleUrls: ['./edicion-cuenta.component.scss']
 })
 export class EdicionCuentaComponent implements OnInit {
   Form_Cuenta: FormGroup = this.fb.group({

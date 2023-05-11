@@ -12,7 +12,7 @@ import { DependenciaDialogComponent } from './dependencia-dialog/dependencia-dia
 @Component({
   selector: 'app-dependencias',
   templateUrl: './dependencias.component.html',
-  styleUrls: ['./dependencias.component.css'],
+  styleUrls: ['./dependencias.component.scss'],
   animations: [
     fadeInOnEnterAnimation(),
   ]

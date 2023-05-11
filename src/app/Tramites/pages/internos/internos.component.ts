@@ -15,7 +15,7 @@ import { Interno } from '../../models/Interno.interface';
 @Component({
   selector: 'app-internos',
   templateUrl: './internos.component.html',
-  styleUrls: ['./internos.component.css'],
+  styleUrls: ['./internos.component.scss'],
   animations: [
     fadeInOnEnterAnimation(),
     expandOnEnterAnimation(),

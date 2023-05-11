@@ -14,7 +14,7 @@ import { Requerimiento, TipoTramite } from 'src/app/Configuraciones/models/tipoT
 @Component({
   selector: 'app-dialog-tipos',
   templateUrl: './dialog-tipos.component.html',
-  styleUrls: ['./dialog-tipos.component.css'],
+  styleUrls: ['./dialog-tipos.component.scss'],
 })
 export class DialogTiposComponent implements OnInit, AfterViewInit {
   titulo: string;

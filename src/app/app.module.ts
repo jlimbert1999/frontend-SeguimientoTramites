@@ -21,6 +21,7 @@ import { ArchivosModule } from './Archivos/archivos.module';
 import { BandejasModule } from './Bandejas/bandejas.module';
 import { TramitesModule } from './Tramites/tramites.module';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { HomeModule } from './home/home.module';
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
@@ -40,6 +41,7 @@ registerLocaleData(localeEs, 'es');
     MaterialModule,
     BandejasModule,
     TramitesModule,
+    HomeModule
   ],
   providers: [
     {
