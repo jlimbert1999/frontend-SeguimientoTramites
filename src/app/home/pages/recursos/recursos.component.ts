@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { generateWhiteRoadMap } from 'src/app/Tramites/pdfs/whiteRoadMap';
 import { ThemeService } from '../../services/theme.service';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-recursos',
@@ -10,8 +11,12 @@ import { ThemeService } from '../../services/theme.service';
 export class RecursosComponent {
   numberRoadMaps = 9
   isDarkTheme = this.themService.isDarkTheme;
-  check: boolean
-  constructor(private themService: ThemeService) {
+  check: boolean = false
+  
+
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    private themService: ThemeService) {
     this.numberRoadMaps = 9
   }
   formatLabel(value: number): string {
@@ -21,6 +26,14 @@ export class RecursosComponent {
     generateWhiteRoadMap(this.numberRoadMaps)
   }
   toggleDarkTheme() {
-    this.check ? this.themService.activeDarkThem() : this.themService.desactiveDarkThem()
+    this.check = this.check!
+    if (this.check) {
+      this.document.body.classList.add('dark-theme')
+    }
+    else {
+      this.document.body.classList.remove('dark-theme')
+    }
+
   }
+
 }

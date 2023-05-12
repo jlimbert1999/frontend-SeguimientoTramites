@@ -24,7 +24,7 @@ export class InternosService {
     )
   }
   Edit(id_tramite: string, tramite: any) {
-    return this.http.put<{ ok: boolean, tramite: any }>(`${base_url}/internos/${id_tramite}`, tramite).pipe(
+    return this.http.put<{ ok: boolean, tramite: Interno }>(`${base_url}/internos/${id_tramite}`, tramite).pipe(
       map(resp => {
         return resp.tramite
       })

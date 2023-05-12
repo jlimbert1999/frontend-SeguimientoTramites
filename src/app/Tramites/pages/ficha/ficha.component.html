@@ -15,10 +15,10 @@
                 <mat-icon class="example-tab-icon">info</mat-icon>
                 Informacion
             </ng-template>
-            <app-info-tramite-externo *ngIf="tipo==='ficha-externa' && Tramite" [Tramite]="Tramite"
+            <app-info-tramite-externo *ngIf="tipo==='ficha-externa'" [Tramite]="Tramite"
                 [Location]="Location"></app-info-tramite-externo>
-            <app-info-tramite-interno *ngIf="tipo==='ficha-interna'&& Tramite"
-                [Tramite]="Tramite" [Location]="Location"></app-info-tramite-interno>
+            <app-info-tramite-interno *ngIf="tipo==='ficha-interna'" [Tramite]="Tramite"
+                [Location]="Location"></app-info-tramite-interno>
         </mat-tab>
         <mat-tab *ngIf="Observations.length>0">
             <ng-template mat-tab-label>
@@ -50,6 +50,5 @@
                 <app-graph-workflow [Workflow]="Workflow"></app-graph-workflow>
             </mat-tab>
         </ng-container>
-
     </mat-tab-group>
 </div>

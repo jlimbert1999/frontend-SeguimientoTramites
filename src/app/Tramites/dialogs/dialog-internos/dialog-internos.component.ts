@@ -5,6 +5,7 @@ import { map, Observable, startWith, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { InternosService } from '../../services/internos.service';
 import { TypesProceduresGrouped } from 'src/app/Configuraciones/models/tipoTramite.interface';
+import { showLoadingRequest, closeLoadingRequets } from 'src/app/helpers/swal.helper';
 @Component({
   selector: 'app-dialog-internos',
   templateUrl: './dialog-internos.component.html',
@@ -73,12 +74,6 @@ export class DialogInternosComponent implements OnInit {
     )
   }
 
-  selectTypeProcedure(id_tipoTramite: string) {
-    const typeProcedure = this.tipos_tramites.find(type => type.id_tipoTramite === id_tipoTramite)
-    // this.TramiteFormGroup.get('alterno')?.setValue(`${typeProcedure?.segmento}-${this.authService.account.institutionCode}`)
-  }
-
-
   guardar() {
     const {
       nombre_remitente,
@@ -86,7 +81,7 @@ export class DialogInternosComponent implements OnInit {
       nombre_destinatario,
       cargo_destinatario,
       ...Object } = this.TramiteFormGroup.value
-    let tramite: any = {
+    const tramite = {
       remitente: {
         nombre: nombre_remitente,
         cargo: cargo_remitente
@@ -97,9 +92,15 @@ export class DialogInternosComponent implements OnInit {
       },
       ...Object
     }
-    this.dialogRef.close(tramite)
+    showLoadingRequest()
+    const observable = this.data
+      ? this.internoService.Edit(this.data._id, tramite)
+      : this.internoService.Add(tramite)
+    observable.subscribe(tramite => {
+      this.dialogRef.close(tramite)
+      closeLoadingRequets('Tramite guardado')
+    })
   }
-
 
   FiltrarUsuarios(termino: string) {
     return this.internoService.getUsers(termino)
@@ -123,3 +124,4 @@ export class DialogInternosComponent implements OnInit {
   }
 
 }
+

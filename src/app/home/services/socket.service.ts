@@ -28,15 +28,6 @@ export class SocketService {
       })
     })
   }
-
-  listenNotifications() {
-    return new Observable((observable) => {
-      this.socket.on('notify', (data: any) => {
-        console.log(data)
-        observable.next(data)
-      })
-    })
-  }
   listenMails(): Observable<Entrada> {
     return new Observable<Entrada>((observable) => {
       this.socket.on('newmail', (data: Entrada) => {
@@ -44,6 +35,15 @@ export class SocketService {
       })
     })
   }
+  listenNotifications() {
+    return new Observable((observable) => {
+      this.socket.on('notify', (data: any) => {
+       alert(data)
+        observable.next(data)
+      })
+    })
+  }
+  
   listenCancelMail(): Observable<Entrada> {
     return new Observable((observable) => {
       this.socket.on('cancelmail', data => {

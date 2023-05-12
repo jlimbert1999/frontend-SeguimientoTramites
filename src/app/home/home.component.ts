@@ -32,6 +32,37 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private _mobileQueryListener: () => void;
 
+  options = [
+    {
+      "backgroundColor": "#fff",
+      "buttonColor": "#ffc107",
+      "headingColor": "#673ab7",
+      "label": "Deep Purple & Amber",
+      "value": "light-theme-a"
+    },
+    {
+      "backgroundColor": "#fff",
+      "buttonColor": "#ff4081",
+      "headingColor": "#3f51b5",
+      "label": "Indigo & Pink",
+      "value": "light-theme-b"
+    },
+    {
+      "backgroundColor": "#303030",
+      "buttonColor": "#607d8b",
+      "headingColor": "#e91e63",
+      "label": "Pink & Blue Grey",
+      "value": "dark-theme-a"
+    },
+    {
+      "backgroundColor": "#303030",
+      "buttonColor": "#4caf50",
+      "headingColor": "#9c27b0",
+      "label": "Purple & Green",
+      "value": "dark-theme-b"
+    }
+  ]
+
   ngAfterViewInit() {
     this.sidenavService.sideNavToggleSubject.subscribe(() => {
       this.sidenav.toggle();
@@ -65,9 +96,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.socketService.listenUserConection().subscribe(users => {
       this.socketService.onlineUsers = users
     })
-    this.socketService.listenNotifications().subscribe(data => {
-      this.notificationService.addNotificationEvent('admi', 'dsds')
-    })
+    this.socketService.listenNotifications().subscribe()
     this.socketService.listenMails().subscribe(mail => {
       this.bandejaService.Mails = [mail, ...this.bandejaService.Mails]
       this.notificationService.showNotificationNewMail(mail.emisor.funcionario)
@@ -95,6 +124,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   openBottomSheet(): void {
     this.bottomSheet.open(PanelNotificationComponent);
+  }
+
+  setTheme(theme:string){
+    this.themeService.setTheme(theme)
   }
 
 

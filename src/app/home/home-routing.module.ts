@@ -6,6 +6,7 @@ import { HomeComponent } from './home.component';
 import { BusquedaComponent } from '../Reportes/pages/busqueda/busqueda.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
 import { RecursosComponent } from './pages/recursos/recursos.component';
+import { NotificacionsComponent } from './pages/notificacions/notificacions.component';
 
 
 const routes: Routes = [
@@ -49,6 +50,10 @@ const routes: Routes = [
             {
                 path: 'recursos',
                 component: RecursosComponent
+            },
+            {
+                path: 'notifications',
+                component: NotificacionsComponent
             },
         ]
     },

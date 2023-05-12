@@ -4,7 +4,7 @@
     <div class="row" *ngIf="!data">
       <mat-form-field>
         <mat-label>Seleccione el tipo de tramite</mat-label>
-        <mat-select (selectionChange)="selectTypeProcedure($event.value)" formControlName="tipo_tramite">
+        <mat-select formControlName="tipo_tramite">
           <mat-option *ngFor="let tipo of tipos_tramites" [value]="tipo.id_tipoTramite">
             {{tipo.nombre}}
           </mat-option>

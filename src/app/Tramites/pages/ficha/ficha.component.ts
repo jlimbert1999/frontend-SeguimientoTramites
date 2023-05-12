@@ -6,7 +6,7 @@ import { ExternosService } from '../../services/externos.service';
 import { InternosService } from '../../services/internos.service';
 import { Location } from '@angular/common';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
-import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
+import { LocationProcedure, WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 import { PDF_FichaExterno, PDF_FichaInterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
 import { Externo, Observacion } from '../../models/Externo.interface';
 import { Interno } from '../../models/Interno.interface';
@@ -24,7 +24,7 @@ export class FichaComponent implements OnInit {
   tipo: 'ficha-externa' | 'ficha-interna'
   Tramite: any
   Location: LocationProcedure[] = []
-  Workflow: any[] = []
+  Workflow: WorkflowData[] = []
   Observations: Observacion[] = []
   Events: any[] = []
   constructor(
@@ -39,7 +39,7 @@ export class FichaComponent implements OnInit {
 
   ngOnInit(): void {
     this.activateRoute.params.subscribe(params => {
-      this.tipo=params['tipo']
+      this.tipo = params['tipo']
       if (this.tipo == 'ficha-externa') {
         this.externoService.getAllDataExternalProcedure(params['id']).subscribe(data => {
           this.Tramite = data.procedure

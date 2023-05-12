@@ -5,6 +5,7 @@ import { MaterialModule } from '../angular-material/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { RecursosComponent } from './pages/recursos/recursos.component';
+import { NotificacionsComponent } from './pages/notificacions/notificacions.component';
 
 
 
@@ -12,6 +13,7 @@ import { RecursosComponent } from './pages/recursos/recursos.component';
   declarations: [
     PerfilComponent,
     RecursosComponent,
+    NotificacionsComponent,
   ],
   imports: [
     CommonModule,

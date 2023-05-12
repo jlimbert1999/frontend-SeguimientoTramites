@@ -108,7 +108,7 @@ export class DialogExternoComponent implements OnInit {
         ? this.externoService.Add(this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup.value)
         : this.externoService.Add(this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, null)
       obeservable.subscribe(externo => {
-        Swal.close();
+        // Swal.close();
         this.dialogRef.close(externo)
       })
     }

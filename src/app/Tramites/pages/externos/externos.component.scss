@@ -39,6 +39,12 @@ td.mat-column-enviado {
     text-align: center;
 }
 
+.mat-column-enviado {
+    width: 32px;
+    text-align: center;
+    font-weight: bold;
+}
+
 td.mat-column-opciones {
     width: 32px;
     border-left: 1px solid;
@@ -163,4 +169,11 @@ td.mat-column-opciones {
 .mat-mdc-form-field {
     font-size: 14px;
     width: 100%;
+}
+
+.send {
+    color: green;
+}
+.pending {
+    color: red;
 }

@@ -11,6 +11,7 @@ import { HojaRutaInterna } from '../../pdfs/hora-ruta-interna';
 import { InternosService } from '../../services/internos.service';
 import { Router } from '@angular/router';
 import { Interno } from '../../models/Interno.interface';
+import { SocketService } from 'src/app/home/services/socket.service';
 
 @Component({
   selector: 'app-internos',
@@ -41,7 +42,8 @@ export class InternosComponent implements OnInit {
     public internoService: InternosService,
     private authService: AuthService,
     public paginatorService: PaginatorService,
-    private router: Router
+    private router: Router,
+    private socketService: SocketService
   ) { }
 
   ngOnInit(): void {
@@ -68,40 +70,31 @@ export class InternosComponent implements OnInit {
       width: '1000px',
       disableClose: true
     });
-    dialogRef.afterClosed().subscribe((result: any) => {
+    dialogRef.afterClosed().subscribe((result: Interno) => {
       if (result) {
-        this.showLoadingRequest()
-        this.internoService.Add(result).subscribe(tramite => {
-          if (this.dataSource.length === this.paginatorService.limit) {
-            this.dataSource.pop()
-          }
-          this.dataSource = [tramite, ...this.dataSource]
-          this.paginatorService.length++
-          Swal.close();
-          this.Send(tramite)
-        })
+        if (this.dataSource.length === this.paginatorService.limit) {
+          this.dataSource.pop()
+        }
+        this.dataSource = [result, ...this.dataSource]
+        this.paginatorService.length++
       }
     });
   }
-  Edit(tramite: any) {
+  Edit(tramite: Interno) {
     const dialogRef = this.dialog.open(DialogInternosComponent, {
       width: '1000px',
       disableClose: true,
       data: tramite
     });
-    dialogRef.afterClosed().subscribe((result: any) => {
+    dialogRef.afterClosed().subscribe((result: Interno) => {
       if (result) {
-        this.showLoadingRequest()
-        this.internoService.Edit(tramite._id, result).subscribe(tramite => {
-          const indexFound = this.dataSource.findIndex(element => element._id === tramite._id)
-          this.dataSource[indexFound] = tramite
-          this.dataSource = [...this.dataSource]
-          Swal.close();
-        })
+        const indexFound = this.dataSource.findIndex(element => element._id === tramite._id)
+        this.dataSource[indexFound] = tramite
+        this.dataSource = [...this.dataSource]
       }
     });
   }
-  Send(tramite: any) {
+  Send(tramite: Interno) {
     const dialogRef = this.dialog.open(DialogRemisionComponent, {
       width: '1200px',
       data: {
@@ -136,14 +129,6 @@ export class InternosComponent implements OnInit {
     this.Get();
   }
 
-  showLoadingRequest() {
-    Swal.fire({
-      title: 'Guardando....',
-      text: 'Por favor espere',
-      allowOutsideClick: false,
-    });
-    Swal.showLoading()
-  }
 
   GenerateHojaRuta(id_tramite: string) {
     this.internoService.getAllDataInternalProcedure(id_tramite).subscribe(data => {
@@ -181,6 +166,7 @@ export class InternosComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.internoService.conclude(procedure._id, result.value!).subscribe(message => {
+          this.socketService.socket.emit('archive', this.authService.account.id_dependencie)
           Swal.fire(message, undefined, 'success')
           const index = this.dataSource.findIndex(element => element._id === procedure._id)
           this.dataSource[index].estado = 'CONCLUIDO'

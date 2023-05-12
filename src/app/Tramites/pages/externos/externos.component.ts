@@ -13,6 +13,7 @@ import { HojaRutaExterna } from '../../pdfs/hoja-ruta-externa';
 import { Ficha } from '../../pdfs/ficha';
 import { TestRoute } from '../../pdfs/roadMap-external';
 import { showToast } from 'src/app/helpers/toats.helper';
+import { SocketService } from 'src/app/home/services/socket.service';
 
 
 @Component({
@@ -26,13 +27,14 @@ import { showToast } from 'src/app/helpers/toats.helper';
 })
 export class ExternosComponent implements OnInit {
   Data: Externo[] = []
-  displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'opciones'];
+  displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'enviado', 'opciones'];
   constructor(
     public dialog: MatDialog,
     public authService: AuthService,
     public externoService: ExternosService,
     public paginatorService: PaginatorService,
-    private router: Router
+    private router: Router,
+    private socket: SocketService
   ) {
   }
   ngOnInit(): void {
@@ -83,7 +85,7 @@ export class ExternosComponent implements OnInit {
         const indexFound = this.Data.findIndex(element => element._id === tramite._id)
         this.Data[indexFound] = result
         this.Data = [...this.Data]
-        showToast('success', 'Tramite guardado')
+        // showToast('success', 'Tramite guardado')
       }
     });
   }
@@ -120,14 +122,6 @@ export class ExternosComponent implements OnInit {
   }
   GenerateFicha(tramite: Externo) {
     Ficha(tramite)
-  }
-  showLoadingRequest() {
-    Swal.fire({
-      title: 'Guardando....',
-      text: 'Por favor espere',
-      allowOutsideClick: false,
-    });
-    Swal.showLoading()
   }
 
   cancel(tramite: Externo) {
@@ -193,13 +187,14 @@ export class ExternosComponent implements OnInit {
       if (result.isConfirmed) {
         this.externoService.conclude(tramite._id, result.value!).subscribe(message => {
           const index = this.Data.findIndex(element => element._id === tramite._id)
+          this.socket.socket.emit('archive', this.authService.account.id_dependencie)
           this.Data[index].estado = 'CONCLUIDO'
           this.Data = [...this.Data]
           showToast('success', message)
+          
         })
       }
     })
-
   }
 
   applyFilter(event: Event) {

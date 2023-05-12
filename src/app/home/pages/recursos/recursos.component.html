@@ -9,7 +9,7 @@
 <div class="container-fluid">
   <mat-card class="example-result-card">
     <mat-card-content>
-      <h2>Generador de hojas de ruta</h2>
+      <p>Generador de hojas de ruta</p>
       <div class="example-label-container">
         <label id="example-name-label" class="example-name-label">Destinatario: 4 - Destinatario: </label>
         <label class="example-value-label">{{numberRoadMaps}}</label>
@@ -25,13 +25,17 @@
   <br>
   <mat-card>
     <mat-card-content>
-      <h2>Tema: {{(isDarkTheme | async)===true?'OSCURO':'CLARO'}}</h2>
+      <p>Tema: {{(isDarkTheme | async)===true?'OSCURO':'CLARO'}}</p>
       <label class="switch">
         <input [(ngModel)]="check" [checked]="isDarkTheme | async" (change)="toggleDarkTheme()" type="checkbox">
         <span class="slider"></span>
       </label>
     </mat-card-content>
   </mat-card>
+
+  
+ 
+
 
   <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
     <div class="col-md-4 d-flex align-items-center">
