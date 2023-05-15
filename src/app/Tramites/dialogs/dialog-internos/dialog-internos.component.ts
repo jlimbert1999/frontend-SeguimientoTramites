@@ -92,13 +92,11 @@ export class DialogInternosComponent implements OnInit {
       },
       ...Object
     }
-    showLoadingRequest()
     const observable = this.data
       ? this.internoService.Edit(this.data._id, tramite)
       : this.internoService.Add(tramite)
     observable.subscribe(tramite => {
       this.dialogRef.close(tramite)
-      closeLoadingRequets('Tramite guardado')
     })
   }
 

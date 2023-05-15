@@ -9,6 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class TableReportPreceduresComponent implements OnInit, OnChanges {
   @Input() data: any[] = []
+  @Input() group: string = ''
   @Input() colums: { key: string, titulo: string }[] = []
 
   displayedColumns: string[] = []
@@ -34,9 +35,9 @@ export class TableReportPreceduresComponent implements OnInit, OnChanges {
     this.dataSource = new MatTableDataSource(this.data);
     this.dataSource.paginator = this.paginator;
   }
-
-  callPrint(id_tramite: string) {
-    this.print.emit(id_tramite);
+  
+  callPrint(tramite:any) {
+    this.print.emit(tramite);
   }
 
 }

@@ -27,6 +27,7 @@ import { Router } from '@angular/router';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { Entrada } from '../../models/entrada.interface';
 import { SocketService } from 'src/app/home/services/socket.service';
+import { HojaRutaInterna } from 'src/app/Tramites/pdfs/hora-ruta-interna';
 
 
 @Component({
@@ -226,10 +227,15 @@ export class BandejaEntradaComponent implements OnInit {
   }
 
 
-  GenerateHojaRuta(id_tramite: string) {
-    this.externoService.getAllDataExternalProcedure(id_tramite).subscribe(data => {
-      HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
-    })
+  GenerateHojaRuta(mail: Entrada) {
+    mail.tipo === 'tramites_externos'
+      ? this.externoService.getAllDataExternalProcedure(mail.tramite._id).subscribe(data => {
+        HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
+      })
+      : this.internoService.getAllDataInternalProcedure(mail.tramite._id).subscribe(data=>{
+        HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
+      })
+   
   }
   View(id_bandeja: string) {
     let params = {

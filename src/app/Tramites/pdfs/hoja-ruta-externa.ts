@@ -1,6 +1,6 @@
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { TDocumentDefinitions } from "pdfmake/interfaces";
+import { ContentTable, TDocumentDefinitions } from "pdfmake/interfaces";
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 // import * as moment from 'moment';
 import * as moment from "moment-timezone";
@@ -16,9 +16,7 @@ export const HojaRutaExterna = async (tramite: Externo, workflow: WorkflowData[]
     let checkType = ['', '', '']
     let solicitante: string = tramite.solicitante.tipo === 'NATURAL' ? `${tramite.solicitante.nombre} ${tramite.solicitante.paterno} ${tramite.solicitante.materno}` : `${tramite.solicitante.nombre}`
     let cuadrados: any[] = []
-    console.log(workflow);
     if (workflow.length > 0) {
-
         if (id_cuenta === tramite.cuenta._id) {
             let destinatarios = ''
             for (let index = 0; index < workflow.length; index++) {
@@ -282,7 +280,7 @@ export const HojaRutaExterna = async (tramite: Externo, workflow: WorkflowData[]
                                                     body: [
                                                         [
                                                             { text: 'CORRESPONDENCIA EXTERNA', border: [false, false, false, false] },
-                                                            { text: checkType[1], style: 'header' }
+                                                            { text: 'X', style: 'header' }
                                                         ]
                                                     ]
                                                 }
@@ -379,8 +377,8 @@ export const HojaRutaExterna = async (tramite: Externo, workflow: WorkflowData[]
                                                 },
                                                 ],
                                                 [`REMITENTE: ${solicitante}`, `CARGO: P. ${tramite.solicitante.tipo}`],
-                                                [`DESTINATARIO: `, `CARGO:`],
-                                                [{ text: `REFERENCIA:`, colSpan: 2 }]
+                                                [`DESTINATARIO:  ${createFullName(workflow[0].receptor.funcionario)}`, `CARGO: ${workflow[0].receptor.funcionario.cargo ? workflow[0].receptor.funcionario.cargo : ''}`],
+                                                [{ text: `REFERENCIA: ${workflow[0].motivo ? workflow[0].motivo : ''}`, colSpan: 2 }]
                                             ]
                                         },
                                         layout: 'noBorders'
@@ -592,17 +590,6 @@ export const HojaRutaExterna = async (tramite: Externo, workflow: WorkflowData[]
                     cuadrados[0].table.body.push([{ text: `SEGUNDA PARTE`, colSpan: 2, fontSize: 7, bold: true, alignment: 'left', border: [true, false, true, true] }, ''])
                 }
             })
-
-            let numerPages = 0
-            if (way.length < 8) {
-
-            }
-            else {
-                numerPages = (workflow.length - 3) / 5
-            }
-
-
-
             docDefinition = {
                 pageSize: 'LETTER',
                 pageMargins: [30, 30, 30, 30],
@@ -658,7 +645,7 @@ export const HojaRutaExterna = async (tramite: Externo, workflow: WorkflowData[]
                                                     body: [
                                                         [
                                                             { text: 'CORRESPONDENCIA EXTERNA', border: [false, false, false, false] },
-                                                            { text: checkType[1], style: 'header' }
+                                                            { text: 'X', style: 'header' }
                                                         ]
                                                     ]
                                                 }
@@ -805,7 +792,8 @@ export const HojaRutaExterna = async (tramite: Externo, workflow: WorkflowData[]
                             ]
                         }
                     },
-                    cuadrados
+                    cuadrados,
+                    createWhiteContainers(way.length, 12)
                 ],
                 footer: [
                     { text: 'NOTA: Esta hoja de ruta de correspondencia, no debera ser separada ni extraviada del documento del cual se encuentra adherida, por constituirse parte indivisible del mismo', margin: [30, -2], fontSize: 7, bold: true },
@@ -991,7 +979,7 @@ export const HojaRutaExterna = async (tramite: Externo, workflow: WorkflowData[]
                                                 body: [
                                                     [
                                                         { text: 'CORRESPONDENCIA EXTERNA', border: [false, false, false, false] },
-                                                        { text: checkType[1], style: 'header' }
+                                                        { text: 'X', style: 'header' }
                                                     ]
                                                 ]
                                             }
@@ -1181,3 +1169,101 @@ const getBase64ImageFromUrl = async (imageUrl: string) => {
     })
 }
 
+function createFullName(account: { nombre: string, paterno: string, materno: string }): string {
+    if (!account) return ''
+    return `${account.nombre} ${account.paterno} ${account.materno}`
+}
+
+function createWhiteContainers(initRange: number, endRange: number) {
+    const cuadros: ContentTable[] = []
+    for (let index = initRange; index < endRange; index++) {
+        cuadros.push(
+            {
+                fontSize: 7,
+                unbreakable: true,
+                table: {
+                    dontBreakRows: true,
+                    widths: [360, '*'],
+                    body: [
+                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(index)}:`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, true, true, false] }, ''],
+                        [
+                            {
+                                border: [true, false, false, false],
+                                table: {
+                                    body: [
+                                        [
+                                            {
+                                                table: {
+                                                    heights: 70,
+                                                    widths: [70],
+                                                    body: [
+                                                        [{ text: 'SELLO DE RECEPCION', fontSize: 4, alignment: 'center' }]
+                                                    ]
+                                                },
+                                            },
+                                            [
+                                                { text: 'INSTRUCCION / PROVEIDO' },
+                                                { text: ``, bold: true },
+                                            ]
+                                        ]
+                                    ]
+                                },
+                                layout: {
+                                    defaultBorder: false,
+                                }
+                            },
+                            {
+                                rowSpan: 1,
+                                border: [false, false, true, false],
+                                table: {
+                                    widths: [100, 40],
+                                    body: [[
+                                        { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
+                                        { text: `` }
+                                    ],]
+                                }
+                            }
+                        ],
+                        [
+                            {
+                                colSpan: 2,
+                                border: [true, false, true, true],
+                                alignment: 'center',
+                                fontSize: 5,
+                                table: {
+                                    widths: [30, 45, 35, '*', 30, 45, 35, '*'],
+                                    body: [
+                                        [
+                                            '',
+                                            'FECHA',
+                                            'HORA',
+                                            'CANTIDAD DE HOJAS / ANEXOS',
+                                            '',
+                                            'FECHA',
+                                            'HORA',
+                                            'CANTIDAD DE HOJAS / ANEXOS'
+                                        ],
+                                        [
+                                            { text: 'INGRESO', border: [false, false, false, false], fontSize: 7 },
+                                            { text: ``, fontSize: 8, border: [true, true, true, true] },
+                                            { text: ``, fontSize: 8, border: [true, true, true, true] },
+                                            { text: ``, fontSize: 6, border: [true, true, true, true] },
+                                            { text: 'SALIDA', border: [false, false, false, false], fontSize: 7 },
+                                            { text: ``, border: [true, true, true, true], fontSize: 8 },
+                                            { text: ``, border: [true, true, true, true], fontSize: 8 },
+                                            { text: ``, border: [true, true, true, true], fontSize: 6 }
+                                        ]]
+                                },
+                                layout: {
+                                    defaultBorder: false,
+                                }
+                            }
+                        ],
+
+                    ]
+                }
+            }
+        )
+    }
+    return cuadros
+}

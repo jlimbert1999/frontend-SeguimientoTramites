@@ -26,16 +26,16 @@
                                     {{node.data.funcionario|fullname|titlecase}}
                                 </mat-card-title>
                                 <mat-card-subtitle>
-                                    {{node.data.funcionario}}
+                                    {{node.data.funcionario.cargo}}
                                 </mat-card-subtitle>
                             </mat-card-header>
                             <mat-card-header *ngIf="!node.data.funcionario">
                                 <div mat-card-avatar class="example-header-image"></div>
                                 <mat-card-title>
-                                   POR SE
+                                   Desvinculado
                                 </mat-card-title>
                                 <mat-card-subtitle>
-                                    {{node.data.funcionario}}
+                                   ------
                                 </mat-card-subtitle>
                             </mat-card-header>
                             <mat-card-content>

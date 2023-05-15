@@ -105,6 +105,10 @@ export class BandejaEntradaService {
   getDetailsMail(id_bandeja: string) {
     return this.http.get<{ ok: boolean, mail: Mail, procedure: any, observations: Observacion[], workflow: WorkflowData[], location: LocationProcedure[], events: any[] }>(`${base_url}/entradas/${id_bandeja}`).pipe(
       map(resp => {
+        resp.workflow = resp.workflow.map(mail => {
+          mail.emisor.funcionario ? mail.emisor.funcionario : { nombre: 'Desvinculado', paterno: '', materno: '', cargo: '----' }
+          return mail
+        })
         return {
           mail: resp.mail,
           tramite: resp.procedure,

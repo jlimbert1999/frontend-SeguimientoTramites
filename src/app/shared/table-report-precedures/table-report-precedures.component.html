@@ -26,7 +26,7 @@
                 <ng-container [matColumnDef]="'opciones'">
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let element">
-                        <button (click)="callPrint(element._id)" mat-icon-button matTooltip="Imprimir reporte">
+                        <button (click)="callPrint(element)" mat-icon-button matTooltip="Imprimir reporte">
                             <mat-icon>print</mat-icon>
                         </button>
                     </td>

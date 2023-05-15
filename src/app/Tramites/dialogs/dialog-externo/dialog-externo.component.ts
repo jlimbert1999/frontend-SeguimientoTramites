@@ -93,7 +93,6 @@ export class DialogExternoComponent implements OnInit {
 
 
   guardar() {
-    this.showLoadingRequest()
     if (this.data) {
       let obeservable: Observable<Externo> = this.RepresentanteFormGroup
         ? this.externoService.Edit(this.data._id, this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup.value)

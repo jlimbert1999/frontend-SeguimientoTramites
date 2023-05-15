@@ -10,7 +10,7 @@ export function createListWorkflow(data: WorkflowData[], rootAccounts: { id_root
       list.push({
         officer: {
           fullname: createFullName(firstShipment.emisor.funcionario),
-          jobtitle: firstShipment.emisor.funcionario.cargo,
+          jobtitle: firstShipment.emisor.funcionario ? firstShipment.emisor.funcionario.cargo : '',
         },
         shippigDate: firstShipment.fecha_envio,
         adjunt: firstShipment.cantidad,
@@ -21,7 +21,7 @@ export function createListWorkflow(data: WorkflowData[], rootAccounts: { id_root
         sends: remainingShipments.map(({ receptor, fecha_envio, fecha_recibido, motivo_rechazo, recibido }) => ({
           officer: {
             fullname: createFullName(receptor.funcionario),
-            jobtitle: receptor.funcionario.cargo,
+            jobtitle: receptor.funcionario ? receptor.funcionario.cargo : '',
           },
           received: recibido,
           receivedDate: fecha_recibido || '',
@@ -72,6 +72,7 @@ export function createDuration(inicio: any, fin: any) {
 }
 
 function createFullName(account: { nombre: string, paterno: string, materno: string }): string {
+  if (!account) return 'Desvinculado'
   return `${account.nombre} ${account.paterno} ${account.materno}`
 }
 

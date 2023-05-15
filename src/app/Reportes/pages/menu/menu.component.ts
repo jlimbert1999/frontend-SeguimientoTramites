@@ -9,6 +9,10 @@ import { createPDFUnidad } from '../../pdf/reporte-unidad';
 import { fadeInDownAnimation, fadeInDownOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { createPDFFicha } from '../../pdf/reporte-fichas';
 import { createPDFUsuario } from '../../pdf/reporte-usuario';
+import { ExternosService } from 'src/app/Tramites/services/externos.service';
+import { InternosService } from 'src/app/Tramites/services/internos.service';
+import { PDF_FichaExterno, PDF_FichaInterno } from '../../pdf/reporte-ficha-externa';
+import { createListWorkflow } from 'src/app/Bandejas/helpers/ListWorkflow';
 
 @Component({
   selector: 'app-menu',
@@ -25,9 +29,15 @@ export class MenuComponent implements OnDestroy {
   reportType: string
   displayedColumns: any[] = []
   dataSource: any[] = []
+  group: string
 
 
-  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService) {
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private authService: AuthService,
+    private externoService: ExternosService,
+    private internoService: InternosService
+  ) {
     this.breakpointObserver
       .observe([
         Breakpoints.XSmall,
@@ -72,10 +82,30 @@ export class MenuComponent implements OnDestroy {
       ];
     this.dataSource = []
     this.dataSource = [...reportData.data]
+    this.group = reportData.group
     createPDFFicha(reportData)
+  }
 
+  generateFicha(data: any) {
+    if (this.group === 'tramites_externos') {
+      this.externoService.getAllDataExternalProcedure(data._id).subscribe(data => {
+        const List = data.workflow.length > 0
+          ? createListWorkflow(data.workflow, [{ id_root: data.workflow[0].emisor.cuenta._id, startDate: data.procedure.fecha_registro }], [])
+          : []
+        PDF_FichaExterno(data.procedure, List, data.location)
+      })
+    }
+    else {
+      this.internoService.getAllDataInternalProcedure(data._id).subscribe(data => {
+        const List = data.workflow.length > 0
+          ? createListWorkflow(data.workflow, [{ id_root: data.workflow[0].emisor.cuenta._id, startDate: data.procedure.fecha_registro }], [])
+          : []
+        PDF_FichaInterno(data.procedure, List, data.location)
+      })
+    }
 
   }
+
 
 
 }
