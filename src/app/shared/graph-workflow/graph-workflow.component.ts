@@ -37,7 +37,7 @@ export class GraphWorkflowComponent implements OnInit {
             dependencia: element.emisor.cuenta.dependencia.nombre,
             institucion: element.emisor.cuenta.dependencia.institucion.sigla,
             funcionario: element.emisor.funcionario,
-            cargo: element.emisor.funcionario.cargo
+            cargo: element.emisor.funcionario ? element.emisor.funcionario.cargo : '----'
           },
           position: `x${index}`
         })
@@ -59,7 +59,7 @@ export class GraphWorkflowComponent implements OnInit {
             dependencia: element.receptor.cuenta.dependencia.nombre,
             institucion: element.receptor.cuenta.dependencia.institucion.sigla,
             funcionario: element.receptor.funcionario,
-            cargo: element.receptor.funcionario.cargo
+            cargo: element.receptor.funcionario ? element.receptor.funcionario.cargo : '----'
           },
           position: `x${index}`
         })

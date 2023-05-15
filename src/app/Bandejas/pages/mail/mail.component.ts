@@ -43,6 +43,7 @@ export class MailComponent implements OnInit {
     this.activateRoute.params.subscribe(params => {
       if (params['id']) {
         this.entradaService.getDetailsMail(params['id']).subscribe(data => {
+          console.log(data)
           this.Mail = data.mail
           this.Tramite = data.tramite
           this.Workflow = data.workflow
