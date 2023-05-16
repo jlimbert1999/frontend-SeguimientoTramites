@@ -117,7 +117,8 @@ export class ExternosComponent implements OnInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getAllDataExternalProcedure(id_tramite).subscribe(data => {
-      HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
+      TestRoute(data.procedure, data.workflow)
+      // HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
     })
   }
   GenerateFicha(tramite: Externo) {

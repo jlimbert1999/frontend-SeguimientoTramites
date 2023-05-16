@@ -17,18 +17,18 @@ import Swal from 'sweetalert2';
 })
 export class PerfilComponent {
   Form_Cuenta: FormGroup = this.fb.group({
-    login: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(15), Validators.pattern(/^[A-Za-z0-9]*$/)]]
+    login: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(4), Validators.maxLength(15), Validators.pattern(/^[A-Za-z0-9]*$/)]]
   })
   Account: myAccount
   hide = true;
   changePassword: boolean = false
- 
+
   constructor(
     private cuentaService: CuentaService,
     private activateRoute: ActivatedRoute,
     private _location: Location,
     private fb: FormBuilder,
-    
+
   ) {
     this.activateRoute.params.subscribe(params => {
       this.cuentaService.getMyAccount(params['id_account']).subscribe(account => {
@@ -41,11 +41,11 @@ export class PerfilComponent {
     this.changePassword = value
     this.changePassword
       ? this.Form_Cuenta = this.fb.group({
-        login: [this.Account.login, [Validators.required, Validators.minLength(4), Validators.maxLength(15), Validators.pattern(/^[A-Za-z0-9]*$/)]],
+        login: [{ value: this.Account.login, disabled: true }, [Validators.required, Validators.minLength(4), Validators.maxLength(15), Validators.pattern(/^[A-Za-z0-9]*$/)]],
         password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(20), Validators.pattern(/^\S+$/)]]
       })
       : this.Form_Cuenta = this.fb.group({
-        login: [this.Account.login, [Validators.required, Validators.minLength(4), Validators.maxLength(15), Validators.pattern(/^[A-Za-z0-9]*$/)]]
+        login: [{ value: this.Account.login, disabled: true }, [Validators.required, Validators.minLength(4), Validators.maxLength(15), Validators.pattern(/^[A-Za-z0-9]*$/)]]
       })
   }
   back() {
@@ -86,5 +86,5 @@ export class PerfilComponent {
       this.changeForm(false)
     })
   }
-  
+
 }

@@ -44,7 +44,7 @@ export class BandejaEntradaService {
 
 
   aceptMail(id_bandeja: string) {
-    return this.http.put<{ ok: boolean, state: string, message: string }>(`${base_url}/entradas/aceptar/${id_bandeja}`, {}).pipe(
+    return this.http.put<{ ok: boolean, state: string, message: string }>(`${base_url}/entradas/acept/${id_bandeja}`, {}).pipe(
       map(resp => {
         return { message: resp.message, state: resp.state }
       })

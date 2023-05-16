@@ -134,6 +134,7 @@ export class BandejaEntradaComponent implements OnInit {
         this.bandejaService.aceptMail(elemento._id).subscribe(data => {
           const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
           this.bandejaService.Mails[indexFound].recibido = true
+          this.bandejaService.Mails[indexFound].tramite.estado = data.state
           this.bandejaService.Mails = [...this.bandejaService.Mails]
           this.toastr.success(undefined, data.message, {
             positionClass: 'toast-bottom-right',
@@ -232,10 +233,10 @@ export class BandejaEntradaComponent implements OnInit {
       ? this.externoService.getAllDataExternalProcedure(mail.tramite._id).subscribe(data => {
         HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
       })
-      : this.internoService.getAllDataInternalProcedure(mail.tramite._id).subscribe(data=>{
+      : this.internoService.getAllDataInternalProcedure(mail.tramite._id).subscribe(data => {
         HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
       })
-   
+
   }
   View(id_bandeja: string) {
     let params = {

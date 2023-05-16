@@ -23,9 +23,7 @@ import { ThemeService } from './services/theme.service';
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   mobileQuery: MediaQueryList;
   Menu: any = this.authService.menu
-
   loading$ = this.loader.loading$;
-
   number_mails = this.notificationService.number_mails$
   isDarkTheme = this.themeService.isDarkTheme
   @ViewChild('snav') public sidenav: MatSidenav;
@@ -126,12 +124,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.bottomSheet.open(PanelNotificationComponent);
   }
 
-  setTheme(theme:string){
+  setTheme(theme: string) {
     this.themeService.setTheme(theme)
   }
-
-
-
-
 
 }

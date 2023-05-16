@@ -6,6 +6,7 @@ import * as moment from "moment-timezone";
 moment.tz.setDefault("America/La_Paz")
 import { Externo } from "../../Tramites/models/Externo.interface";
 import { WorkflowData } from "src/app/Bandejas/models/workflow.interface";
+import { Interno } from "../models/Interno.interface";
 const ordinales = require("ordinales-js");
 
 interface RoadMap {
@@ -13,141 +14,111 @@ interface RoadMap {
         nombre_completo: string
         cargo: string
     }
-    proveido: string
+    motivo: string
     sends: {
         destinatario: {
             nombre_completo: string
             cargo: string
         }
-        entrada: [string, string, string, string]
-        salida: [string, string, string, string]
+        entrada: [string, string, string]
+        salida: [string, string, string, string, string]
     }[]
 }
-// export const TestRoute2 = async (tramite: Externo, workflow: WorkflowData[]) => {
-//     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
-//     let docDefinition: TDocumentDefinitions
-//     const solicitante: string = tramite.solicitante.tipo === 'NATURAL' ? `${tramite.solicitante.nombre} ${tramite.solicitante.paterno} ${tramite.solicitante.materno}` : `${tramite.solicitante.nombre}`
-//     let firstContainerData: { destinatario: { nombre_completo: string, cargo: string }, proveido: string, numero_interno: string } = {
-//         destinatario: { nombre_completo: '', cargo: '' },
-//         numero_interno: '',
-//         proveido: ''
-//     }
-//     workflow = workflow.filter(element => element.recibido === true || element.recibido === undefined)
-//     const roadMap = createRoadMapData(workflow)
-//     if (roadMap.length > 0) {
-//         firstContainerData = {
-//             destinatario: { nombre_completo: createFullName(workflow[0].emisor.funcionario), cargo: workflow[0].emisor.funcionario.cargo },
-//             numero_interno: workflow[0].numero_interno,
-//             proveido: roadMap[0].proveido
-//         }
-//     }
-//     docDefinition = {
-//         pageSize: 'LETTER',
-//         pageMargins: [30, 30, 30, 30],
-//         content: [
-//             createTitleSheet(logo),
-//             createFirstContainer(tramite, '233', firstContainerData.proveido, { nombre_completo: 'ds', cargo: 'ds' }, [{ nombre_completo: 'ds', cargo: 'dsd' }]),
-//             createWhiteContainers(1, 2),
-//             {
-//                 table: {
-//                     widths: ['*'],
-//                     body: [
-//                         [{ text: `SEGUNDA PARTE`, fontSize: 7, bold: true, alignment: 'left', border: [true, false, true, true] }]
-//                     ]
-//                 }
-//             },
-//             createWhiteContainers(2, 10),
-//         ],
-//         footer: [
-//             { text: 'NOTA: Esta hoja de ruta de correspondencia, no debera ser separada ni extraviada del documento del cual se encuentra adherida, por constituirse parte indivisible del mismo', margin: [30, -2], fontSize: 7, bold: true },
-//             { text: 'Direccion: Plaza 6 de agosto E-0415 - Telefono: No. Piloto 4701677 - 4702301 - 4703059 - Fax interno: 143', fontSize: 7, color: '#BC6C25', margin: [30, 1] },
-//             { text: 'E-mail: info@sacaba.gob.bo - Pagina web: www.sacaba.gob.bo', fontSize: 7, pageBreak: 'after', color: '#BC6C25', margin: [30, 1] },
-//         ],
-//         styles: {
-//             cabecera: {
-//                 margin: [0, 0, 0, 10]
-//             },
-//             header: {
-//                 fontSize: 10,
-//                 bold: true,
-//             },
-//             tableExample: {
-//                 fontSize: 8,
-//                 alignment: 'center',
-//                 margin: [0, 0, 0, 5]
-//             },
-//             selection_container: {
-//                 fontSize: 7,
-//                 alignment: 'center',
-//                 margin: [0, 10, 0, 0]
-//             }
-//         }
-//     }
-//     pdfMake.createPdf(docDefinition).print();
-// }
 export const TestRoute = async (tramite: Externo, workflow: WorkflowData[]) => {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     RoadMap1(tramite, workflow, logo)
 }
 function RoadMap1(tramite: Externo, workflow: WorkflowData[], logo: string) {
-    const remitente = {
-        nombre_completo: createFullName(workflow[0].emisor.funcionario),
-        cargo: workflow[0].emisor.funcionario.cargo
-    }
-    const destinatario = { nombre_completo: createFullName(workflow[0].receptor.funcionario), cargo: workflow[0].receptor.funcionario.cargo }
-    const numero_interno = workflow[0].numero_interno
-    const proveido = workflow[0].motivo
-    workflow = workflow.filter(element => element.recibido === true || element.recibido === undefined)
-    let namesReceivers = ''
-    for (let index = 0; index < workflow.length; index++) {
-        if (workflow[index].emisor.cuenta._id != workflow[0].emisor.cuenta._id) {
-            break
-        }
-        namesReceivers = namesReceivers + ` ${createFullName(workflow[index].receptor.funcionario)} (${workflow[index].receptor.funcionario.cargo}) //`
-    }
-    const docDefinition: TDocumentDefinitions = {
-        pageSize: 'LETTER',
-        pageMargins: [30, 30, 30, 30],
-        content: [
-            createTitleSheet(logo),
-            createFirstContainer(tramite, numero_interno, proveido, remitente, [destinatario]),
-            createContainerAproved(namesReceivers),
-            {
-                table: {
-                    widths: ['*'],
-                    body: [
-                        [{ text: `SEGUNDA PARTE`, fontSize: 7, bold: true, alignment: 'left', border: [true, false, true, true] }]
-                    ]
+    workflow = workflow.filter(element => element.recibido !== false)
+    if (workflow.length > 0) {
+        const data = createRoadMapData(workflow)
+        const docDefinition: TDocumentDefinitions = {
+            pageSize: 'LETTER',
+            pageMargins: [30, 30, 30, 30],
+            content: [
+                createTitleSheet(logo),
+                createFirstContainer(
+                    tramite,
+                    { nombre_completo: createFullName(tramite.solicitante), cargo: tramite.solicitante.tipo },
+                    data[0].sends.map(dest => dest.destinatario),
+                    [moment(workflow[0].fecha_envio).format('DD-MM-YYYY'),
+                    moment(workflow[0].fecha_envio).format('HH:mm A'), workflow[0].cantidad, workflow[0].numero_interno]),
+                createContainers(data),
+                createWhiteContainers(data.length + 1, 8)
+            ],
+            footer: [
+                { text: 'NOTA: Esta hoja de ruta de correspondencia, no debera ser separada ni extraviada del documento del cual se encuentra adherida, por constituirse parte indivisible del mismo', margin: [30, -2], fontSize: 7, bold: true },
+                { text: 'Direccion: Plaza 6 de agosto E-0415 - Telefono: No. Piloto 4701677 - 4702301 - 4703059 - Fax interno: 143', fontSize: 7, color: '#BC6C25', margin: [30, 1] },
+                { text: 'E-mail: info@sacaba.gob.bo - Pagina web: www.sacaba.gob.bo', fontSize: 7, pageBreak: 'after', color: '#BC6C25', margin: [30, 1] },
+            ],
+            styles: {
+                cabecera: {
+                    margin: [0, 0, 0, 10]
+                },
+                header: {
+                    fontSize: 10,
+                    bold: true,
+                },
+                tableExample: {
+                    fontSize: 8,
+                    alignment: 'center',
+                    margin: [0, 0, 0, 5]
+                },
+                selection_container: {
+                    fontSize: 7,
+                    alignment: 'center',
+                    margin: [0, 10, 0, 0]
                 }
-            },
-            createWhiteContainers(2, 8),
-        ],
-        footer: [
-            { text: 'NOTA: Esta hoja de ruta de correspondencia, no debera ser separada ni extraviada del documento del cual se encuentra adherida, por constituirse parte indivisible del mismo', margin: [30, -2], fontSize: 7, bold: true },
-            { text: 'Direccion: Plaza 6 de agosto E-0415 - Telefono: No. Piloto 4701677 - 4702301 - 4703059 - Fax interno: 143', fontSize: 7, color: '#BC6C25', margin: [30, 1] },
-            { text: 'E-mail: info@sacaba.gob.bo - Pagina web: www.sacaba.gob.bo', fontSize: 7, pageBreak: 'after', color: '#BC6C25', margin: [30, 1] },
-        ],
-        styles: {
-            cabecera: {
-                margin: [0, 0, 0, 10]
-            },
-            header: {
-                fontSize: 10,
-                bold: true,
-            },
-            tableExample: {
-                fontSize: 8,
-                alignment: 'center',
-                margin: [0, 0, 0, 5]
-            },
-            selection_container: {
-                fontSize: 7,
-                alignment: 'center',
-                margin: [0, 10, 0, 0]
             }
         }
+        pdfMake.createPdf(docDefinition).print();
+
     }
-    pdfMake.createPdf(docDefinition).print();
+    else {
+        const docDefinition: TDocumentDefinitions = {
+            pageSize: 'LETTER',
+            pageMargins: [30, 30, 30, 30],
+            content: [
+                createTitleSheet(logo),
+                createFirstContainer(tramite, { nombre_completo: createFullName(tramite.solicitante), cargo: tramite.solicitante.tipo }, [{ nombre_completo: '', cargo: '' }], ['', '', '', '']),
+                createWhiteContainers(1, 1),
+                {
+                    table: {
+                        widths: ['*'],
+                        body: [
+                            [{ text: `SEGUNDA PARTE`, fontSize: 7, bold: true, alignment: 'left', border: [true, false, true, true] }]
+                        ]
+                    }
+                },
+                createWhiteContainers(2, 8)
+            ],
+            footer: [
+                { text: 'NOTA: Esta hoja de ruta de correspondencia, no debera ser separada ni extraviada del documento del cual se encuentra adherida, por constituirse parte indivisible del mismo', margin: [30, -2], fontSize: 7, bold: true },
+                { text: 'Direccion: Plaza 6 de agosto E-0415 - Telefono: No. Piloto 4701677 - 4702301 - 4703059 - Fax interno: 143', fontSize: 7, color: '#BC6C25', margin: [30, 1] },
+                { text: 'E-mail: info@sacaba.gob.bo - Pagina web: www.sacaba.gob.bo', fontSize: 7, pageBreak: 'after', color: '#BC6C25', margin: [30, 1] },
+            ],
+            styles: {
+                cabecera: {
+                    margin: [0, 0, 0, 10]
+                },
+                header: {
+                    fontSize: 10,
+                    bold: true,
+                },
+                tableExample: {
+                    fontSize: 8,
+                    alignment: 'center',
+                    margin: [0, 0, 0, 5]
+                },
+                selection_container: {
+                    fontSize: 7,
+                    alignment: 'center',
+                    margin: [0, 10, 0, 0]
+                }
+            }
+        }
+        pdfMake.createPdf(docDefinition).print();
+    }
 }
 
 
@@ -186,102 +157,16 @@ const createTitleSheet = (pathImage: string): any => {
         ]
     }]
 }
-
-function createContainerAproved(namesReceivers: string): ContentTable {
-    return {
-        fontSize: 7,
-        unbreakable: true,
-        table: {
-            dontBreakRows: true,
-            widths: [360, '*'],
-            body: [
-                [{ margin: [0, 10, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(1)}: ${namesReceivers}`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
-                [
-                    {
-                        border: [true, false, false, false],
-                        table: {
-                            body: [
-                                [
-                                    {
-                                        table: {
-                                            heights: 70,
-                                            widths: [70],
-                                            body: [
-                                                [{ text: 'SELLO DE RECEPCION', fontSize: 4, alignment: 'center' }]
-                                            ]
-                                        },
-                                    },
-                                    [
-                                        { text: 'INSTRUCCION / PROVEIDO' },
-                                        { text: ``, bold: true },
-                                    ]
-                                ]
-                            ]
-                        },
-                        layout: {
-                            defaultBorder: false,
-                        }
-                    },
-                    {
-                        rowSpan: 1,
-                        border: [false, false, true, false],
-                        table: {
-                            widths: [100, 40],
-                            body: [[
-                                { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                { text: `` }
-                            ],]
-                        }
-                    }
-                ],
-                [
-                    {
-                        colSpan: 2,
-                        border: [true, false, true, true],
-                        alignment: 'center',
-                        fontSize: 5,
-                        table: {
-                            widths: [30, 45, 35, '*', 30, 45, 35, '*'],
-                            body: [
-                                [
-                                    '',
-                                    'FECHA',
-                                    'HORA',
-                                    'CANTIDAD DE HOJAS / ANEXOS',
-                                    '',
-                                    'FECHA',
-                                    'HORA',
-                                    'CANTIDAD DE HOJAS / ANEXOS'
-                                ],
-                                [
-                                    { text: 'INGRESO', border: [false, false, false, false], fontSize: 7 },
-                                    { text: ``, fontSize: 8, border: [true, true, true, true] },
-                                    { text: ``, fontSize: 8, border: [true, true, true, true] },
-                                    { text: ``, fontSize: 6, border: [true, true, true, true] },
-                                    { text: 'SALIDA', border: [false, false, false, false], fontSize: 7 },
-                                    { text: ``, border: [true, true, true, true], fontSize: 8 },
-                                    { text: ``, border: [true, true, true, true], fontSize: 8 },
-                                    { text: ``, border: [true, true, true, true], fontSize: 6 }
-                                ]]
-                        },
-                        layout: {
-                            defaultBorder: false,
-                        }
-                    }
-                ],
-
-            ]
-        }
-    }
-}
 function createContainers(data: RoadMap[]) {
+    let multiple = false
+    if (data.some(element => element.sends.length > 1)) multiple = true
     const cuadros: ContentTable[] = []
     for (let index = 0; index < data.length; index++) {
         const sectionDates: TableCell[][] = []
         let sectionNumbers: TableCell[][] = []
         let destinatarios = ''
-        data[index].sends.forEach(element => {
-            destinatarios = destinatarios + `${element.destinatario.nombre_completo} (${element.destinatario.cargo}) // `
+        data[index].sends.forEach((element, index) => {
+            destinatarios = destinatarios + ` ${multiple ? index + 1 + ')' : ''} ${element.destinatario.nombre_completo} (${element.destinatario.cargo}) `
             sectionDates.push(
                 [
                     '',
@@ -294,11 +179,11 @@ function createContainers(data: RoadMap[]) {
                     'CANTIDAD DE HOJAS / ANEXOS'
                 ],
                 [
-                    { text: 'INGRESO', border: [false, false, false, false], fontSize: 7 },
+                    { text: `INGRESO `, border: [false, false, false, false], fontSize: 7 },
                     { text: `${element.entrada[0]}`, fontSize: 8, border: [true, true, true, true] },
                     { text: `${element.entrada[1]}`, fontSize: 8, border: [true, true, true, true] },
                     { text: `${element.entrada[2]}`, fontSize: 6, border: [true, true, true, true] },
-                    { text: 'SALIDA', border: [false, false, false, false], fontSize: 7 },
+                    { text: `SALIDA`, border: [false, false, false, false], fontSize: 7 },
                     { text: `${element.salida[0]}`, border: [true, true, true, true], fontSize: 8 },
                     { text: `${element.salida[1]}`, border: [true, true, true, true], fontSize: 8 },
                     { text: `${element.salida[2]}`, border: [true, true, true, true], fontSize: 6 }
@@ -306,11 +191,10 @@ function createContainers(data: RoadMap[]) {
             )
             sectionNumbers.push(
                 [
-                    { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
+                    { text: `NRO. REGISTRO INTERNO (Correlativo)`, border: [false, false, false, false] },
                     { text: `${element.salida[3]}` }
                 ],
             )
-
         });
         sectionNumbers = [...sectionNumbers,
         [
@@ -327,11 +211,12 @@ function createContainers(data: RoadMap[]) {
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(1)}: ${destinatarios}`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
+                        [{ margin: [0, 0, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(index + 1)}: ${destinatarios}`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
                         [
                             {
                                 border: [true, false, false, false],
                                 table: {
+                                    widths: [80, 300],
                                     body: [
                                         [
                                             {
@@ -345,7 +230,7 @@ function createContainers(data: RoadMap[]) {
                                             },
                                             [
                                                 { text: 'INSTRUCCION / PROVEIDO' },
-                                                { text: `${data[index].proveido}`, bold: true },
+                                                { text: `\n\n${data[index].motivo}`, bold: true, alignment: 'center' }
                                             ]
                                         ]
                                     ]
@@ -377,26 +262,26 @@ function createContainers(data: RoadMap[]) {
                                     defaultBorder: false,
                                 }
                             }
-                        ],
-
-                        // [{ text: `SEGUNDA PARTE`, colSpan: 2, fontSize: 7, bold: true, alignment: 'left', border: [true, false, true, true] }, '']
-
+                        ]
                     ]
                 }
             }
         )
-        if (data[index].sends.length > 1) {
+        if (multiple === true) {
             cuadros[index].table.body.unshift(
-                [{ margin: [0, 0, 0, 0], text: `REMITENTE ${ordinales.toOrdinal(index + 1)}: ${data[index].remitente.nombre_completo} - CARGO:${data[index].remitente.cargo}`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, '']
+                [{ margin: [0, 0, 0, 0], text: `REMITENTE: ${data[index].remitente.nombre_completo} - CARGO:${data[index].remitente.cargo}`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, '']
             )
+        }
+        if (index === 0) {
+            cuadros[index].table.body.push([{ text: `SEGUNDA PARTE`, fontSize: 7, bold: true, alignment: 'left', border: [true, false, true, true], colSpan: 2 }, ''])
         }
     }
     return cuadros
 }
-function createFirstContainer(tramite: Externo, correlativo: string, proveido: string, remitente: { nombre_completo: string, cargo: string }, destinatarios: { nombre_completo: string, cargo: string }[]): ContentTable {
+function createFirstContainer(tramite: Externo, remitente: { nombre_completo: string, cargo: string }, destinatarios: { nombre_completo: string, cargo: string }[], salida: [string, string, string, string]): ContentTable {
     let sectionReceiver: TableCell[] = []
     destinatarios.forEach(dest => {
-        sectionReceiver.push(`DESTINATARIO: ${dest.nombre_completo}`, `CARGO: ${dest.cargo}`)
+        sectionReceiver.push([`DESTINATARIO: ${dest.nombre_completo}`, `CARGO: ${dest.cargo}`])
     })
     return {
         fontSize: 7,
@@ -511,7 +396,7 @@ function createFirstContainer(tramite: Externo, correlativo: string, proveido: s
                             widths: ['*', '*'],
                             body: [
                                 [{ text: 'DATOS DE ORIGEN', bold: true }, ''],
-                                [`${tramite.cite !== '' ? `CITE: ${tramite.cite}  |  ` : ''}TEL.: ${tramite.solicitante.telefono}`,
+                                [`${tramite.cite !== '' ? `CITE: ${tramite.cite}  |  ` : ''}TEL.: ${tramite.solicitante?'':''}`,
                                 {
                                     table: {
                                         widths: [85, 100, 40],
@@ -519,15 +404,15 @@ function createFirstContainer(tramite: Externo, correlativo: string, proveido: s
                                             [
                                                 { text: '', border: [false, false, false, false] },
                                                 { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                                { text: `${correlativo}`, fontSize: 9, alignment: 'center' },
+                                                { text: `${salida[3]}`, fontSize: 9, alignment: 'center' },
                                             ]
                                         ]
                                     },
                                 },
                                 ],
                                 [`REMITENTE: ${remitente.nombre_completo}`, `CARGO: P. ${remitente.cargo}`],
-                                sectionReceiver,
-                                [{ text: `REFERENCIA: ${proveido}`, colSpan: 2 }]
+                                ...sectionReceiver,
+                                [{ text: `REFERENCIA: ${tramite.detalle}`, colSpan: 2 }]
                             ]
                         },
                         layout: 'noBorders'
@@ -556,9 +441,9 @@ function createFirstContainer(tramite: Externo, correlativo: string, proveido: s
                                         ],
                                         [
                                             { text: 'SALIDA', border: [false, false, false, false], fontSize: 7 },
-                                            { text: ``, border: [true, true, true, true], fontSize: 8 },
-                                            { text: ``, border: [true, true, true, true], fontSize: 8 },
-                                            { text: ``, border: [true, true, true, true], fontSize: 6 }
+                                            { text: `${salida[0]}`, border: [true, true, true, true], fontSize: 8 },
+                                            { text: `${salida[1]}`, border: [true, true, true, true], fontSize: 8 },
+                                            { text: `${salida[2]}`, border: [true, true, true, true], fontSize: 6 }
                                         ]
                                     ]
                                 },
@@ -577,10 +462,9 @@ function createFirstContainer(tramite: Externo, correlativo: string, proveido: s
         }
     }
 }
-
 function createWhiteContainers(initRange: number, endRange: number) {
     const cuadros: ContentTable[] = []
-    for (let index = initRange; index < endRange; index++) {
+    for (let index = initRange; index < endRange + 1; index++) {
         cuadros.push(
             {
                 fontSize: 7,
@@ -674,19 +558,19 @@ function createWhiteContainers(initRange: number, endRange: number) {
 function createRoadMapData(workflow: WorkflowData[]): RoadMap[] {
     const merged = workflow.reduce((r: any, { tramite, emisor, fecha_envio, motivo, numero_interno, cantidad, ...rest }, index) => {
         const key = `${tramite}-${emisor.cuenta._id}-${fecha_envio}`;
-        r[key] = r[key] || { remitente: { nombre_completo: createFullName(emisor.funcionario), cargo: emisor.funcionario.cargo }, proveido: motivo, sends: [] };
+        r[key] = r[key] || { remitente: { nombre_completo: createFullName(emisor.funcionario), cargo: emisor.funcionario.cargo }, motivo, sends: [] };
         let salida: [string, string, string, string] = ['', '', '', '']
         for (let j = index; j < workflow.length; j++) {
             if (rest.receptor.cuenta._id === workflow[j].emisor.cuenta._id) {
-                salida = [moment(new Date(workflow[j].fecha_envio)).format('DD-MM-YYYY'), moment(new Date(workflow[j].fecha_envio)).format('HH:mm A'), workflow[j].cantidad, workflow[j].numero_interno]
+                salida = [moment(workflow[j].fecha_envio).format('DD-MM-YYYY'), moment(workflow[j].fecha_envio).format('HH:mm A'), workflow[j].cantidad, workflow[j].numero_interno]
                 break
             }
         }
-        r[key]["sends"].push({ destinatario: { nombre_completo: createFullName(rest.receptor.funcionario), cargo: rest.receptor.funcionario.cargo }, entrada: rest.fecha_recibido ? [moment(rest.fecha_recibido).format('DD-MM-YYYY'), moment(rest.fecha_recibido).format('HH:mm A'), cantidad, numero_interno] : ['', '', '', ''], salida })
+        r[key]["sends"].push({ destinatario: { nombre_completo: createFullName(rest.receptor.funcionario), cargo: rest.receptor.funcionario.cargo }, entrada: rest.fecha_recibido ? [moment(rest.fecha_recibido).format('DD-MM-YYYY'), moment(rest.fecha_recibido).format('HH:mm A'), cantidad] : ['', '', ''], salida })
         return r;
     }, {})
     return Object.values(merged)
 }
-function createFullName(account: { nombre: string, paterno: string, materno: string }): string {
-    return `${account.nombre} ${account.paterno} ${account.materno}`
+function createFullName(person: { nombre: string, paterno: string, materno: string }): string {
+    return [person.nombre, person.paterno, person.paterno].filter(Boolean).join(" ");
 }
