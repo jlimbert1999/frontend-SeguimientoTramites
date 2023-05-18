@@ -16,7 +16,7 @@
                 <ng-container matColumnDef="alterno">
                     <th mat-header-cell *matHeaderCellDef> Alterno </th>
                     <td mat-cell *matCellDef="let element">
-                        <a (click)="View(element._id)">
+                        <a (click)="view(element)">
                             {{element.alterno}}
                         </a>
                     </td>
@@ -62,7 +62,13 @@
                         {{element.fecha_registro|date:'short'}}
                     </td>
                 </ng-container>
-
+                <ng-container matColumnDef="enviado">
+                    <th mat-header-cell *matHeaderCellDef> Enviado </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-icon
+                            [ngClass]="element.enviado?'send':'pending'">{{element.enviado?'mark_email_read':'unsubscribe'}}</mat-icon>
+                    </td>
+                </ng-container>
                 <ng-container matColumnDef="opciones">
                     <th mat-header-cell *matHeaderCellDef> </th>
                     <td mat-cell *matCellDef="let element">
@@ -70,35 +76,30 @@
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="Edit(element)">
+                            <button mat-menu-item (click)="Edit(element)" [disabled]="element.estado!=='INSCRITO'">
                                 <mat-icon>edit</mat-icon>
                                 <span>Editar tramite</span>
                             </button>
-                            <button mat-menu-item [disabled]="element.enviado" (click)="Send(element)">
+                            <button mat-menu-item (click)="Send(element)" [disabled]="element.enviado">
                                 <mat-icon>send</mat-icon>
                                 <span>Remitir tramite</span>
                             </button>
-                            <button (click)="GenerateHojaRuta(element._id)" mat-menu-item>
+                            <button mat-menu-item (click)="GenerateHojaRuta(element._id)">
                                 <mat-icon>feed</mat-icon>
                                 <span>Hoja de ruta</span>
                             </button>
-                            <button (click)="conclude(element)" mat-menu-item>
+                            <button mat-menu-item (click)="conclude(element)"
+                                [disabled]="element.estado==='CONCLUIDO'|| element.enviado===true">
                                 <mat-icon>domain_verification</mat-icon>
                                 <span>Concluir tramite</span>
                             </button>
                         </mat-menu>
                     </td>
                 </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </div>
-        <!-- <mat-paginator (page)="pagination($event)" [pageIndex]="internoService.offset"
-            [length]="internoService.resultsLength" [pageSizeOptions]="[10, 20, 30, 50]"
-            showFirstLastButtons></mat-paginator> -->
-
         <app-paginator (page)="Get()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
     </div>
-
 </div>

@@ -36,7 +36,7 @@ export class InterceptorService {
       Swal.fire("Sin autorizacion", error.error.message, 'warning',)
     }
     else if (error.status === 404) {
-      Swal.fire("El recurso solicitado no existe", error.error.message, 'info')
+      Swal.fire({ title: "El recurso solicitado no existe", text: error.error.message, icon: 'info', confirmButtonText: 'Aceptar' })
     }
     else if (error.status >= 500) {
       Swal.fire("Error en el sevidor", error.error.message, 'error')

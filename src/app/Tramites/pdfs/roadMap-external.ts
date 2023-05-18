@@ -133,8 +133,6 @@ const getBase64ImageFromUrl = async (imageUrl: string) => {
         reader.readAsDataURL(blob);
     })
 }
-
-
 const createTitleSheet = (pathImage: string): any => {
     return [{
         style: 'cabecera',
@@ -396,7 +394,7 @@ function createFirstContainer(tramite: Externo, remitente: { nombre_completo: st
                             widths: ['*', '*'],
                             body: [
                                 [{ text: 'DATOS DE ORIGEN', bold: true }, ''],
-                                [`${tramite.cite !== '' ? `CITE: ${tramite.cite}  |  ` : ''}TEL.: ${tramite.solicitante?'':''}`,
+                                [`${tramite.cite !== '' ? `CITE: ${tramite.cite}  |  ` : ''}TEL.: ${tramite.solicitante ? '' : ''}`,
                                 {
                                     table: {
                                         widths: [85, 100, 40],

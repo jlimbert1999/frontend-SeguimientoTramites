@@ -12,6 +12,7 @@ import { Observacion } from 'src/app/Tramites/models/Externo.interface';
 import { showToast } from 'src/app/helpers/toats.helper';
 import { DialogRemisionComponent } from '../../dialogs/dialog-remision/dialog-remision.component';
 import { MatDialog } from '@angular/material/dialog';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-mail',
@@ -43,7 +44,6 @@ export class MailComponent implements OnInit {
     this.activateRoute.params.subscribe(params => {
       if (params['id']) {
         this.entradaService.getDetailsMail(params['id']).subscribe(data => {
-          console.log(data)
           this.Mail = data.mail
           this.Tramite = data.tramite
           this.Workflow = data.workflow
@@ -64,7 +64,7 @@ export class MailComponent implements OnInit {
   }
 
   generar() {
-    
+
   }
 
 
@@ -85,6 +85,10 @@ export class MailComponent implements OnInit {
           this.Mail.recibido = true
           this.Tramite.estado = data.state
           showToast('success', data.message, undefined)
+        }, (HttpError: HttpErrorResponse) => {
+          if (HttpError.status === 404) {
+            this.back()
+          }
         })
       }
     })

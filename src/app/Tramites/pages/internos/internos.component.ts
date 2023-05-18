@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { DialogRemisionComponent } from 'src/app/Bandejas/dialogs/dialog-remision/dialog-remision.component';
@@ -12,6 +11,7 @@ import { InternosService } from '../../services/internos.service';
 import { Router } from '@angular/router';
 import { Interno } from '../../models/Interno.interface';
 import { SocketService } from 'src/app/home/services/socket.service';
+import { paramsNavigation } from '../../models/ProceduresProperties';
 
 @Component({
   selector: 'app-internos',
@@ -24,17 +24,8 @@ import { SocketService } from 'src/app/home/services/socket.service';
   ]
 })
 export class InternosComponent implements OnInit {
-  displayedColumns: string[] = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'opciones']
+  displayedColumns: string[] = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'enviado', 'opciones']
   dataSource: Interno[] = []
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  filterOpions = [
-    { value: 'remitente', viewValue: 'REMITENTE / CARGO' },
-    { value: 'destinatario', viewValue: 'DESTINATARIO / CARGO' },
-    { value: 'alterno', viewValue: 'ALTERNO' },
-    { value: 'cite', viewValue: 'CITE' },
-  ]
-
 
 
   constructor(
@@ -89,7 +80,7 @@ export class InternosComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: Interno) => {
       if (result) {
         const indexFound = this.dataSource.findIndex(element => element._id === tramite._id)
-        this.dataSource[indexFound] = tramite
+        this.dataSource[indexFound] = result
         this.dataSource = [...this.dataSource]
       }
     });
@@ -135,21 +126,13 @@ export class InternosComponent implements OnInit {
       HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
     })
   }
-  View(id: string) {
-    let params = {
-      limit: this.paginatorService.limit,
-      offset: this.paginatorService.offset
-    }
-    if (this.paginatorService.text !== '') {
-      Object.assign(params, { text: this.paginatorService.text })
-    }
-    this.router.navigate(['home/tramites/internos/ficha-interna', id], { queryParams: params })
-  }
+
   conclude(procedure: Interno) {
     Swal.fire({
       icon: 'question',
       title: `Concluir el tramite ${procedure.alterno}?`,
-      text: `Ingrese una referencia para concluir`,
+      text: `El tramite pasara a su seccion de archivos`,
+      inputPlaceholder: 'Ingrese una referencia para concluir',
       input: 'textarea',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
@@ -159,62 +142,30 @@ export class InternosComponent implements OnInit {
       preConfirm: (value) => {
         if (!value) {
           Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
+            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para concluir'
           )
         }
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        this.internoService.conclude(procedure._id, result.value!).subscribe(message => {
-          this.socketService.socket.emit('archive', this.authService.account.id_dependencie)
-          Swal.fire(message, undefined, 'success')
-          const index = this.dataSource.findIndex(element => element._id === procedure._id)
-          this.dataSource[index].estado = 'CONCLUIDO'
-          this.dataSource = [...this.dataSource]
-        })
+        this.socketService.socket.emit('archive', this.authService.account.id_dependencie)
+        // this.internoService.conclude(procedure._id, result.value!).subscribe(message => {
+        //   this.socketService.socket.emit('archive', this.authService.account.id_dependencie)
+        //   Swal.fire(message, undefined, 'success')
+        //   const index = this.dataSource.findIndex(element => element._id === procedure._id)
+        //   this.dataSource[index].estado = 'CONCLUIDO'
+        //   this.dataSource = [...this.dataSource]
+        // })
       }
     })
   }
-  cancel(tramite: Interno) {
-    Swal.fire({
-      icon: 'question',
-      title: `Anular el tramite ${tramite.alterno}?`,
-      text: `Ingrese una referencia para anular`,
-      input: 'textarea',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-      customClass: {
-        validationMessage: 'my-validation-message'
-      },
-      preConfirm: (value) => {
-        if (!value) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
-          )
-        }
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: `Esta seguro en anular el tramite ${tramite.alterno}?`,
-          text: `El tramite ya no se mostrara en su listado de tramites`,
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Aceptar',
-          cancelButtonText: 'Cancelar',
-        }).then((confirm) => {
-          if (confirm.isConfirmed) {
-            this.internoService.cancel(tramite._id, result.value!).subscribe(message => {
-              Swal.fire(message, undefined, 'success')
-              this.Get()
-            })
-          }
-        })
-      }
-    })
+  view(procedure: Interno) {
+    let params: paramsNavigation = {
+      limit: this.paginatorService.limit,
+      offset: this.paginatorService.offset
+    }
+    if (this.paginatorService.text !== '') params.text = this.paginatorService.text
+    this.router.navigate(['home/tramites/internos/ficha-interna', procedure._id], { queryParams: params })
   }
 
 }

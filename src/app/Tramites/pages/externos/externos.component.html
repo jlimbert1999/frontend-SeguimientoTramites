@@ -14,7 +14,7 @@
                 <ng-container matColumnDef="alterno">
                     <th mat-header-cell *matHeaderCellDef>Alterno</th>
                     <td mat-cell *matCellDef="let row">
-                        <a (click)="View(row._id)">
+                        <a (click)="view(row)">
                             {{row.alterno}}
                         </a>
                     </td>
@@ -50,33 +50,35 @@
                 <ng-container matColumnDef="enviado">
                     <th mat-header-cell *matHeaderCellDef>Enviado</th>
                     <td mat-cell *matCellDef="let row">
-                        <mat-icon [ngClass]="row.enviado?'send':'pending'">{{row.enviado?'mark_email_read':'unsubscribe'}}</mat-icon>
+                        <mat-icon
+                            [ngClass]="row.enviado?'send':'pending'">{{row.enviado?'mark_email_read':'unsubscribe'}}</mat-icon>
                     </td>
                 </ng-container>
-                <ng-container matColumnDef="opciones" justify="end">
+                <ng-container matColumnDef="opciones">
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let row">
                         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu">
-                            <button (click)="Edit(row)" mat-menu-item>
+                            <button mat-menu-item (click)="Edit(row)" [disabled]="row.estado!=='INSCRITO'">
                                 <mat-icon>edit</mat-icon>
                                 <span>Editar tramite</span>
                             </button>
-                            <button (click)="Send(row)" [disabled]="row.enviado" mat-menu-item>
+                            <button mat-menu-item (click)="Send(row)" [disabled]="row.enviado">
                                 <mat-icon>send</mat-icon>
                                 <span>Remitir tramite</span>
                             </button>
-                            <button (click)="GenerateFicha(row)" mat-menu-item>
+                            <button mat-menu-item (click)="GenerateFicha(row)">
                                 <mat-icon>receipt_long</mat-icon>
                                 <span>Ficha de tramite</span>
                             </button>
-                            <button (click)="GenerateHojaRuta(row._id)" mat-menu-item>
+                            <button mat-menu-item (click)="GenerateHojaRuta(row._id)">
                                 <mat-icon>feed</mat-icon>
                                 <span>Hoja de ruta</span>
                             </button>
-                            <button (click)="conclude(row)" mat-menu-item>
+                            <button mat-menu-item (click)="conclude(row)"
+                                [disabled]="row.estado==='CONCLUIDO'|| row.enviado===true">
                                 <mat-icon>domain_verification</mat-icon>
                                 <span>Concluir tramite</span>
                             </button>

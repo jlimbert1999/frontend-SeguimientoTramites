@@ -94,7 +94,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.socketService.listenUserConection().subscribe(users => {
       this.socketService.onlineUsers = users
     })
-    this.socketService.listenNotifications().subscribe()
     this.socketService.listenMails().subscribe(mail => {
       this.bandejaService.Mails = [mail, ...this.bandejaService.Mails]
       this.notificationService.showNotificationNewMail(mail.emisor.funcionario)
@@ -108,7 +107,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       this.logout()
     })
-
   }
   editAccount() {
     this.router.navigate(['home/perfil', this.authService.account.id_account])

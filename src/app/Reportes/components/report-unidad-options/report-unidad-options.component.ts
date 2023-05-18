@@ -4,7 +4,7 @@ import { SendDataReportEvent } from '../../models/sendData.model';
 import { forkJoin } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { searchParamsReportUnit } from '../../models/repot-unidad.model';
-import { groupProcedure, statesProcedures } from 'src/app/Tramites/models/ProceduresProperties';
+import { groupProcedure, statesProcedure } from 'src/app/Tramites/models/ProceduresProperties';
 @Component({
   selector: 'app-report-unidad-options',
   templateUrl: './report-unidad-options.component.html',
@@ -26,7 +26,7 @@ export class ReportUnidadOptionsComponent implements OnInit {
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
-  states = statesProcedures
+  states: statesProcedure
 
 
 
@@ -87,7 +87,7 @@ export class ReportUnidadOptionsComponent implements OnInit {
       }
     }
     this.reporteService.getReportByUnit(this.groupProcedure, this.options.value).subscribe(data => {
-      this.sendDataEvent.emit({ data, group: this.groupProcedure, params: extras, title:'UNIDAD' })
+      this.sendDataEvent.emit({ data, group: this.groupProcedure, params: extras, title: 'UNIDAD' })
     })
   }
 

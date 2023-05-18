@@ -1,3 +1,5 @@
+import { statesProcedure } from "./ProceduresProperties"
+
 export interface Externo {
     _id: string
     alterno: string
@@ -12,7 +14,7 @@ export interface Externo {
         }
     }
     detalle: string
-    estado: string
+    estado: statesProcedure
     fecha_registro: string
     fecha_finalizacion?: string
     pin: number
@@ -24,7 +26,7 @@ export interface Externo {
         nombre: string
     },
     eventos?: any[]
-    enviado:boolean
+    enviado: boolean
 }
 
 export interface Solicitante {

@@ -48,14 +48,14 @@ export class AuthService {
   }
 
   verifyToken(): Observable<boolean> {
-    return this.http.get<{ ok: boolean, token: string, resources: string[], code: string, imbox: number, menu: any[] }>(`${base_url}/login/verify`).pipe(
+    return this.http.get<{ ok: boolean, token: string, resources: string[], code: string, imbox?: number, menu: any[] }>(`${base_url}/login/verify`).pipe(
       map(resp => {
         localStorage.setItem('token', resp.token)
         this.account = jwt_decode(resp.token)
         this.resources = resp.resources
         this.code = resp.code
-        this.notificationService.showNotificationPendingMails(resp.imbox)
         this.menu = resp.menu
+        resp.imbox ? this.notificationService.showNotificationPendingMails(resp.imbox) : null
         return true
       }), catchError(err => {
         return of(false)

@@ -52,6 +52,7 @@ export class DialogInternosComponent implements OnInit {
     else {
       this.internoService.getTypes().subscribe(tipos => {
         this.tipos_tramites = tipos
+        this.TramiteFormGroup.get('tipo_tramite')?.setValue(tipos[0].id_tipoTramite)
       })
     }
     this.filteredOptions = this.TramiteFormGroup.controls['nombre_remitente'].valueChanges.pipe(
@@ -120,6 +121,5 @@ export class DialogInternosComponent implements OnInit {
     this.TramiteFormGroup.get('cargo_destinatario')?.setValue(funcionario.cargo.toUpperCase())
     this.TramiteFormGroup.get('nombre_destinatario')?.setValue(`${funcionario.nombre} ${funcionario.paterno} ${funcionario.materno}`.toUpperCase())
   }
-
 }
 

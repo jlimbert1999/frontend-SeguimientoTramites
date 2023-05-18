@@ -6,15 +6,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class FullnamePipe implements PipeTransform {
 
   transform(funcionario: { nombre: string, paterno: string, materno: string }): string {
-    let fullname
-    if (funcionario.materno !== '') {
-      fullname = `${funcionario.nombre} ${funcionario.paterno} ${funcionario.materno}`
-    }
-    else {
-      fullname = `${funcionario.nombre} ${funcionario.paterno}`
-    }
+    return [funcionario.nombre, funcionario.paterno, funcionario.materno].filter(Boolean).join(" ");
 
-    return fullname
   }
 
 }

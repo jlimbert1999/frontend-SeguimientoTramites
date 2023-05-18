@@ -14,6 +14,7 @@ import { Ficha } from '../../pdfs/ficha';
 import { TestRoute } from '../../pdfs/roadMap-external';
 import { showToast } from 'src/app/helpers/toats.helper';
 import { SocketService } from 'src/app/home/services/socket.service';
+import { paramsNavigation } from '../../models/ProceduresProperties';
 
 
 @Component({
@@ -125,53 +126,14 @@ export class ExternosComponent implements OnInit {
     Ficha(tramite)
   }
 
-  cancel(tramite: Externo) {
-    Swal.fire({
-      icon: 'question',
-      title: `Anular el tramite ${tramite.alterno}?`,
-      text: `Ingrese una referencia para anular`,
-      input: 'textarea',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-      customClass: {
-        validationMessage: 'my-validation-message'
-      },
-      preConfirm: (value) => {
-        if (!value) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
-          )
-        }
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: `Esta seguro en anular el tramite ${tramite.alterno}?`,
-          text: `El tramite ya no se mostrara en su listado de tramites`,
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Aceptar',
-          cancelButtonText: 'Cancelar',
-        }).then((confirm) => {
-          if (confirm.isConfirmed) {
-            this.externoService.cancelProcedure(tramite._id, result.value!).subscribe(message => {
-              Swal.fire(message, undefined, 'success')
-              this.Get()
-            })
-          }
-        })
-      }
-    })
-  }
+
   conclude(tramite: Externo) {
     Swal.fire({
       icon: 'question',
       title: `Concluir el tramite ${tramite.alterno}?`,
-      text: `Ingrese una referencia para concluir`,
+      text: `El tramite pasara a su seccion de archivos`,
       input: 'textarea',
+      inputPlaceholder: 'Ingrese una referencia para concluir',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
       customClass: {
@@ -180,7 +142,7 @@ export class ExternosComponent implements OnInit {
       preConfirm: (value) => {
         if (!value) {
           Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
+            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para concluir'
           )
         }
       }
@@ -192,7 +154,6 @@ export class ExternosComponent implements OnInit {
           this.Data[index].estado = 'CONCLUIDO'
           this.Data = [...this.Data]
           showToast('success', message)
-          
         })
       }
     })
@@ -211,21 +172,13 @@ export class ExternosComponent implements OnInit {
     this.Get();
   }
 
-  View(id: string) {
-    let params = {
+  view(procedure: Externo) {
+    let params: paramsNavigation = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset
     }
-    if (this.paginatorService.text !== '') {
-      Object.assign(params, { text: this.paginatorService.text })
-    }
-    this.router.navigate(['home/tramites/externos/ficha-externa', id], { queryParams: params })
+    if (this.paginatorService.text !== '') params.text = this.paginatorService.text
+    this.router.navigate(['home/tramites/externos/ficha-externa', procedure._id], { queryParams: params })
   }
-
-
-
-
-
-
 }
 

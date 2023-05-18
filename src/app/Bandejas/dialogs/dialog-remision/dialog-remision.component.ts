@@ -85,7 +85,6 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
       }
     });
   }
-
   addReceiver(account: AccountForSend) {
     this.userCtrl.setValue(null)
     const found = this.accountsForSend.find((accountForSend) => accountForSend._id === account._id);

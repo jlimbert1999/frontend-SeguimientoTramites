@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
 
-  number_mails = new BehaviorSubject<number>(0)
+  number_mails = new BehaviorSubject<string>('0')
   number_mails$ = this.number_mails.asObservable()
 
   list: any[] = []
@@ -17,23 +17,6 @@ export class NotificationService {
 
 
   constructor(private toastr: ToastrService, private router: Router) { }
-
-  addNotificationNewMail(user: { nombre: string, paterno: string, materno: string }, total_mails: number) {
-    this.number_mails.next(total_mails)
-    let fullname = `${user.nombre} ${user.paterno} ${user.materno}`
-    let toast = this.toastr.info(`${fullname} ha enviado un tramite`, "Nuevo tramite recibido", {
-      positionClass: 'toast-bottom-right',
-      timeOut: 7000,
-    })
-    toast.onTap.subscribe((action: any) => {
-      this.router.navigateByUrl('home/bandeja-entrada')
-    })
-    this.list.unshift({
-      text: `${fullname} ha enviado un nuevo tramite`,
-      type: 'message'
-    })
-    this.notificacions.next(this.list)
-  }
 
   addNotificationEvent(text: string, title: string) {
     let toast = this.toastr.warning(text, title, {
@@ -63,7 +46,7 @@ export class NotificationService {
     })
   }
   showNotificationPendingMails(numberMails: number) {
-    this.number_mails.next(numberMails)
+    numberMails > 99 ? this.number_mails.next('99') : this.number_mails.next(numberMails.toString())
     if (numberMails === 0) return
     const toast = this.toastr.warning('Revise su bandeja de entrada', `Tramites pendientes: ${numberMails}`, {
       positionClass: 'toast-bottom-right',
@@ -74,7 +57,6 @@ export class NotificationService {
     })
   }
   showNotificationNewMail(user: { nombre: string, paterno: string, materno: string }) {
-    this.number_mails.next(this.number_mails.value + 1)
     const toast = this.toastr.info(`${user.nombre} ${user.paterno} ${user.materno} ha enviado un tramite`, "Nuevo tramite recibido", {
       positionClass: 'toast-bottom-right',
       timeOut: 7000,

@@ -77,14 +77,13 @@ export class BandejaEntradaComponent implements OnInit {
     public loaderService: LoaderService,
     public paginatorService: PaginatorService,
     private router: Router,
-    private _bottomSheet: MatBottomSheet,
     private socketService: SocketService
-  ) { }
+  ) {
+    this.socketService.listenCancelMail().subscribe(() => this.Get())
+  }
 
   ngOnInit(): void {
     this.Get()
-    this.socketService.listenCancelMail().subscribe(() => this.Get())
-
   }
   Get() {
     if (this.paginatorService.type) {

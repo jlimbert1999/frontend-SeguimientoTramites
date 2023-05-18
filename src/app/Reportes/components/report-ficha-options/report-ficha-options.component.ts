@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ReporteService } from '../../services/reporte.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { groupProcedure, statesProcedures } from 'src/app/Tramites/models/ProceduresProperties';
+import { groupProcedure, statesProcedure } from 'src/app/Tramites/models/ProceduresProperties';
 import { SendDataReportEvent } from '../../models/sendData.model';
 
 @Component({
@@ -20,7 +20,7 @@ export class ReportFichaOptionsComponent implements OnInit {
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
-  states = statesProcedures
+  states: statesProcedure
 
   constructor(private reporteService: ReporteService, private _formBuilder: FormBuilder) {
   }
@@ -32,7 +32,7 @@ export class ReportFichaOptionsComponent implements OnInit {
 
   generateReport() {
     this.reporteService.getReporteFicha(this.groupProcedure, this.options.value).subscribe(data => {
-      this.sendDataEvent.emit({ data, group: this.groupProcedure, params: this.options.value, title:'FICHA' })
+      this.sendDataEvent.emit({ data, group: this.groupProcedure, params: this.options.value, title: 'FICHA' })
     })
   }
 

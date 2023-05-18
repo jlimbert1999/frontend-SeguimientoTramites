@@ -5,7 +5,7 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ReporteService } from '../../services/reporte.service';
 import { Router } from '@angular/router';
 import { MatAccordion } from '@angular/material/expansion';
-import { groupProcedure, statesProcedures } from 'src/app/Tramites/models/ProceduresProperties';
+import { groupProcedure, statesProcedure } from 'src/app/Tramites/models/ProceduresProperties';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 
 @Component({
@@ -61,7 +61,7 @@ export class BusquedaComponent implements OnInit {
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
-  states = statesProcedures
+  states: statesProcedure
 
   constructor(
     private fb: FormBuilder,

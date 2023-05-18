@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ReporteService } from '../../services/reporte.service';
 import { SendDataReportEvent } from '../../models/sendData.model';
-import { groupProcedure, statesProcedures } from 'src/app/Tramites/models/ProceduresProperties';
+import { groupProcedure, statesProcedure } from 'src/app/Tramites/models/ProceduresProperties';
 import { FormControl, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
@@ -21,7 +21,7 @@ export class ReportTipoOptionsComponent {
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
-  states = statesProcedures
+  states: statesProcedure
   typesProcedures: any[] = []
   constructor(private reporteService: ReporteService, private _formBuilder: FormBuilder) {
     this.selectGroupProcedure()

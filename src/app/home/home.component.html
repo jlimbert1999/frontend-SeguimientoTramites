@@ -78,7 +78,7 @@
           <mat-icon>{{menu.icon}}</mat-icon>
           <span *ngIf="!menu.routerLink.includes('entrada')"> {{menu.text}}</span>
           <span *ngIf="menu.routerLink.includes('entrada')" [matBadge]="(number_mails|async)"
-            [matBadgeHidden]="(number_mails|async)===0" matBadgeOverlap=false class="demo-section" matBadgeColor="warn">
+            [matBadgeHidden]="(number_mails|async)==='0'" matBadgeOverlap=false class="demo-section" matBadgeColor="warn">
             {{menu.text}}</span>
         </mat-list-item>
       </ng-template>

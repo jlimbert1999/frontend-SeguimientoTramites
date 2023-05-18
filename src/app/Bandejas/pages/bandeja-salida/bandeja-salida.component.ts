@@ -94,33 +94,31 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.bandejaService.cancelOneSend(imbox._id).subscribe(message => {
+          this.socketService.emitCancelMail(imbox.receptor.cuenta)
           const index = this.dataSource.findIndex(mail => mail.cuenta === imbox.emisor.cuenta && mail.tramite._id === imbox.tramite._id && mail.fecha_envio === imbox.fecha_envio)
-          const sendings = this.dataSource[index].sendings.filter((item: any) => item._id !== imbox._id)
+          const sendings = this.dataSource[index].sendings.filter(item => item._id !== imbox._id)
           if (sendings.length === 0) {
             this.Get()
+            Swal.fire({
+              icon: 'success',
+              title: 'Todos los envios se cancelaron',
+              text: message,
+              confirmButtonText: 'Aceptar'
+            })
           }
           else {
             this.dataSource[index].sendings = sendings
           }
-          this.socketService.socket.emit('mail-one-cancel', imbox.receptor.cuenta)
-          Swal.fire({
-            icon: 'success',
-            title: 'Envio cancelado!',
-            text: message,
-            confirmButtonText: 'Aceptar'
-          })
         })
       }
     })
   }
   cancelAllSend(data: GroupedMails) {
     Swal.fire({
-      title: `Cancelar todos los envios del tramite?`,
+      title: `Cancelar envio del tramite ${data.tramite.alterno}?`,
       text: `Se cancelaran ${data.sendings.length} envios`,
       icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
     }).then((result) => {
@@ -128,13 +126,13 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
         this.bandejaService.cancelAllSend(data.tramite._id, data.fecha_envio).subscribe(message => {
           Swal.fire({
             icon: 'success',
-            title: 'Todos los envios han sidos cancelados!',
+            title: 'Todos los envios se cancelaron',
             text: message,
             confirmButtonText: 'Aceptar'
           })
+          this.socketService.emitCancelAllMails(data.sendings.map(imbox => imbox.receptor.cuenta))
           this.Get()
         })
-
       }
     })
   }

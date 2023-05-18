@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client'
 import { userSocket } from 'src/app/auth/models/account.model';
-import { AuthService } from 'src/app/auth/services/auth.service';
 import { Entrada } from 'src/app/Bandejas/models/entrada.interface';
 import { environment } from 'src/environments/environment';
 @Injectable({
@@ -38,15 +37,15 @@ export class SocketService {
   listenNotifications() {
     return new Observable((observable) => {
       this.socket.on('notify', (data: any) => {
-       alert(data)
+        alert(data)
         observable.next(data)
       })
     })
   }
-  
-  listenCancelMail(): Observable<Entrada> {
+
+  listenCancelMail(): Observable<null> {
     return new Observable((observable) => {
-      this.socket.on('cancelmail', data => {
+      this.socket.on('cancel-mail', (data: null) => {
         observable.next(data)
       })
     })
@@ -66,6 +65,13 @@ export class SocketService {
   }
   sendNotificacionToExpelUser(id_accountReceiver: string, message: string) {
     this.socket.emit('expel', { id_cuenta: id_accountReceiver, message })
+  }
+
+  emitCancelAllMails(ids_receivers: string[]) {
+    this.socket.emit('mail-all-cancel', ids_receivers)
+  }
+  emitCancelMail(id_receiver: string){
+    this.socket.emit('mail-one-cancel', id_receiver)
   }
 
 }
