@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { createDuration } from 'src/app/Bandejas/helpers/ListWorkflow';
 import { environment } from 'src/environments/environment';
+import { Archive } from './models/archive.interface';
 
 const base_url = environment.base_url
 
@@ -17,7 +18,7 @@ export class ArchivoService {
     const params = new HttpParams()
       .set('offset', offset)
       .set('limit', limit);
-    return this.http.get<{ ok: boolean, archives: any[], length: number }>(`${base_url}/archivos`, { params })
+    return this.http.get<{ ok: boolean, archives: Archive[], length: number }>(`${base_url}/archivos`, { params })
       .pipe(
         map((resp) => {
           return { archives: resp.archives, length: resp.length }

@@ -4,6 +4,9 @@ import Swal from 'sweetalert2';
 import { ArchivoService } from './services/archivo.service';
 import { PaginatorService } from '../shared/services/paginator.service';
 import { Router } from '@angular/router';
+import { SocketService } from '../home/services/socket.service';
+import { Archive } from './services/models/archive.interface';
+import { createFullName } from 'src/app/helpers/fullname.helper';
 
 @Component({
   selector: 'app-archivos',
@@ -16,14 +19,14 @@ import { Router } from '@angular/router';
 })
 export class ArchivosComponent {
 
-  dataSource: any[] = []
+  dataSource: Archive[] = []
   displayedColumns: string[] = ['group', 'alterno', 'estado', 'funcionario', 'descripcion', 'fecha', 'opciones'];
-
 
   constructor(
     private archivoService: ArchivoService,
     public paginatorService: PaginatorService,
-    private router: Router
+    private router: Router,
+    private socketService: SocketService
   ) {
     this.Get()
   }
@@ -37,22 +40,22 @@ export class ArchivosComponent {
     }
     else {
       this.archivoService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+        console.log(data.archives);
         this.dataSource = data.archives
         this.paginatorService.length = data.length
       })
     }
   }
 
-  unarchive(archive: any) {
+  unarchive(archive: Archive) {
     Swal.fire({
       icon: 'question',
       title: `Desarchivar el tramite: ${archive.procedure.alterno}?`,
-      text: `Ingrese el motivo para el desarchivo`,
+      text: `El tramite regresara a la ${archive.location ? 'bandeja de entrada' : 'administracion'} del funcionario ${createFullName(archive.account.funcionario)}`,
       input: 'textarea',
+      inputPlaceholder: 'Ingrese el motivo para el desarchivo',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Desarchivar',
+      confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
       customClass: {
         validationMessage: 'my-validation-message'
@@ -63,7 +66,6 @@ export class ArchivosComponent {
             '<i class="fa fa-info-circle"></i> Debe ingresar una descripcion para desarchivar'
           )
         }
-
       }
     }).then((result) => {
       if (result.isConfirmed) {
@@ -74,8 +76,7 @@ export class ArchivosComponent {
         });
         Swal.showLoading();
         this.archivoService.unarchive(archive._id, result.value!).subscribe(message => {
-          Swal.fire({ title: message, icon: 'success' })
-          this.dataSource = [...this.dataSource.filter(element => element._id !== archive._id)]
+          this.Get()
         })
       }
     })

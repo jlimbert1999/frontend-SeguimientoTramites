@@ -26,12 +26,12 @@ export class BusquedaComponent implements OnInit {
   segmentos: string[] = []
   searchForm = this.fb.group({
     alterno: null,
-    estado: null,
     cite: null,
+    detalle: null,
+    estado: null,
     start: null,
     end: null,
     tipo_tramite: null,
-    detalle: null
   });
 
   hasUnitNumber = false;
@@ -43,25 +43,37 @@ export class BusquedaComponent implements OnInit {
     'CONCLUIDO'
   ]
   displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'fecha_registro', 'opciones'];
-  colums: { key: string, titulo: string }[] = []
+  colums: { key: string, titulo: string }[] = [
+    { key: 'alterno', titulo: 'Alterno' },
+    { key: 'detalle', titulo: 'Detalle' },
+    { key: 'estado', titulo: 'Estado' },
+    { key: 'remitente', titulo: 'Remitente' },
+    { key: 'destinatario', titulo: 'Remitente' },
+    { key: 'cite', titulo: 'Cite' },
+    { key: 'fecha_registro', titulo: 'Fecha' }
+  ]
   dataSource: any[] = []
 
   @ViewChild(MatAccordion) accordion: MatAccordion;
   typesProcedures: any[] = []
 
   groupProcedure: groupProcedure = 'tramites_externos'
-  options: FormGroup = this._formBuilder.group({
-    alterno: null,
-    cite: null,
-    detalle: null,
-    solicitante: null,
-    representante: null,
-    tipo_tramite: null,
-    estado: null,
-    start: new FormControl<Date | null>(null),
-    end: new FormControl<Date | null>(null),
-  });
+  options: FormGroup = this.createForm(this.groupProcedure)
   states: statesProcedure
+
+  step = 0;
+
+  setStep(index: number) {
+    this.step = index;
+  }
+
+  nextStep() {
+    this.step++;
+  }
+
+  prevStep() {
+    this.step--;
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -76,7 +88,6 @@ export class BusquedaComponent implements OnInit {
     if (Object.keys(this.paginationService.reportParams).length > 0) {
       this.options.patchValue(this.paginationService.reportParams)
     }
-
   }
 
 
@@ -85,46 +96,10 @@ export class BusquedaComponent implements OnInit {
     this.router.navigate(['home/reportes/busquedas/ficha-externa', id])
   }
 
-  selectGroupProcedure() {
-    if (this.groupProcedure === 'tramites_externos') {
-      this.options = this._formBuilder.group({
-        alterno: null,
-        cite: null,
-        detalle: null,
-        solicitante: null,
-        representante: null,
-        tipo_tramite: null,
-        estado: null,
-        start: new FormControl<Date | null>(null),
-        end: new FormControl<Date | null>(null),
-      })
-
-    }
-    else {
-      this.options = this._formBuilder.group({
-        alterno: null,
-        cite: null,
-        detalle: null,
-        remitente: null,
-        destinatario: null,
-        tipo_tramite: null,
-        estado: null,
-        start: new FormControl<Date | null>(null),
-        end: new FormControl<Date | null>(null),
-      })
-      this.colums = [
-        { key: 'alterno', titulo: 'Alterno' },
-        { key: 'detalle', titulo: 'Detalle' },
-        { key: 'estado', titulo: 'Estado' },
-        { key: 'remitente', titulo: 'Remitente' },
-        { key: 'destinatario', titulo: 'Remitente' },
-        { key: 'cite', titulo: 'Cite' },
-        { key: 'fecha_registro', titulo: 'Fecha' }
-      ];
-    }
-
-
-    this.reporteService.getTypesProceduresForReports(this.groupProcedure).subscribe(data => {
+  selectGroupProcedure(group:groupProcedure) {
+    this.createForm(this.groupProcedure)
+    this.reporteService.getTypesProceduresForReports(group).subscribe(data => {
+      console.log(data);
       this.typesProcedures = data
     })
   }
@@ -138,23 +113,29 @@ export class BusquedaComponent implements OnInit {
       this.paginationService.length = data.length
     }))
   }
-  // View(mail: GroupedMails) {
-  //   let params = {
-  //     limit: this.paginatorService.limit,
-  //     offset: this.paginatorService.offset
-  //   }
-  //   if (this.paginatorService.text !== '') {
-  //     Object.assign(params, { type: this.paginatorService.type })
-  //     Object.assign(params, { text: this.paginatorService.text })
-  //   }
-  //   if (mail.tipo === 'tramites_externos') {
-  //     this.router.navigate(['home/bandejas/salida/mail/ficha-externa', mail.tramite._id], { queryParams: params })
-  //   }
-  //   else {
-  //     this.router.navigate(['home/bandejas/salida/mail/ficha-interna', mail.tramite._id], { queryParams: params })
-  //   }
-
-  // }ss
-
-
+  createForm(group: groupProcedure): FormGroup {
+    return group === 'tramites_externos'
+      ? this._formBuilder.group({
+        alterno: null,
+        cite: null,
+        detalle: null,
+        solicitante: null,
+        representante: null,
+        tipo_tramite: null,
+        estado: null,
+        start: new FormControl<Date | null>(null),
+        end: new FormControl<Date | null>(null),
+      })
+      : this._formBuilder.group({
+        alterno: null,
+        cite: null,
+        detalle: null,
+        remitente: null,
+        destinatario: null,
+        tipo_tramite: null,
+        estado: null,
+        start: new FormControl<Date | null>(null),
+        end: new FormControl<Date | null>(null),
+      })
+  }
 }
