@@ -148,14 +148,13 @@ export class InternosComponent implements OnInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        this.socketService.socket.emit('archive', this.authService.account.id_dependencie)
-        // this.internoService.conclude(procedure._id, result.value!).subscribe(message => {
-        //   this.socketService.socket.emit('archive', this.authService.account.id_dependencie)
-        //   Swal.fire(message, undefined, 'success')
-        //   const index = this.dataSource.findIndex(element => element._id === procedure._id)
-        //   this.dataSource[index].estado = 'CONCLUIDO'
-        //   this.dataSource = [...this.dataSource]
-        // })
+        this.internoService.conclude(procedure._id, result.value!).subscribe(message => {
+          this.socketService.socket.emit('archive', this.authService.account.id_dependencie)
+          Swal.fire(message, undefined, 'success')
+          const index = this.dataSource.findIndex(element => element._id === procedure._id)
+          this.dataSource[index].estado = 'CONCLUIDO'
+          this.dataSource = [...this.dataSource]
+        })
       }
     })
   }

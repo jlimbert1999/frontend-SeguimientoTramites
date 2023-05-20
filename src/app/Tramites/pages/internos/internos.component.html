@@ -1,6 +1,6 @@
 <app-toolbar title="INTERNOS" [showAdd]="true" (add)="Add()"></app-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
-    <mat-form-field>
+    <mat-form-field class="example-full-width">
         <mat-label>Buscar tramite interno</mat-label>
         <input matInput [(ngModel)]="paginatorService.text" (keyup)="applyFilter($event)"
             placeholder="Alterno / Referencia / Destinatario / Cite" #input>

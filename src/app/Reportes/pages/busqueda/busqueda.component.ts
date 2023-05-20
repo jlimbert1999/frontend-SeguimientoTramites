@@ -5,8 +5,9 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ReporteService } from '../../services/reporte.service';
 import { Router } from '@angular/router';
 import { MatAccordion } from '@angular/material/expansion';
-import { groupProcedure, statesProcedure } from 'src/app/Tramites/models/ProceduresProperties';
+import { groupProcedure, paramsNavigation, statesProcedure } from 'src/app/Tramites/models/ProceduresProperties';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-busqueda',
@@ -18,30 +19,20 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 })
 
 export class BusquedaComponent implements OnInit {
-
-  tipos: any[] = []
-
-  campos: Object[] = []
-
-  segmentos: string[] = []
-  searchForm = this.fb.group({
-    alterno: null,
-    cite: null,
-    detalle: null,
-    estado: null,
-    start: null,
-    end: null,
-    tipo_tramite: null,
-  });
-
-  hasUnitNumber = false;
-
-  estados = [
-    'INSCRITO',
+  groupProcedure: groupProcedure = 'tramites_externos'
+  searchForm: FormGroup = this.createForm(this.groupProcedure)
+  states: statesProcedure[] = [
+    'CONCLUIDO',
     'EN REVISION',
-    'OBSERVADO',
-    'CONCLUIDO'
+    'INSCRITO',
+    'OBSERVADO'
   ]
+  typesProcedures: any[] = []
+  institutions: any[] = []
+  dependencies: any[] = []
+  accounts: any[] = []
+  @ViewChild(MatAccordion) accordion: MatAccordion;
+
   displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'fecha_registro', 'opciones'];
   colums: { key: string, titulo: string }[] = [
     { key: 'alterno', titulo: 'Alterno' },
@@ -54,68 +45,47 @@ export class BusquedaComponent implements OnInit {
   ]
   dataSource: any[] = []
 
-  @ViewChild(MatAccordion) accordion: MatAccordion;
-  typesProcedures: any[] = []
 
-  groupProcedure: groupProcedure = 'tramites_externos'
-  options: FormGroup = this.createForm(this.groupProcedure)
-  states: statesProcedure
 
-  step = 0;
-
-  setStep(index: number) {
-    this.step = index;
-  }
-
-  nextStep() {
-    this.step++;
-  }
-
-  prevStep() {
-    this.step--;
-  }
 
   constructor(
     private fb: FormBuilder,
     public reporteService: ReporteService,
     private router: Router,
-    private _formBuilder: FormBuilder,
     public paginationService: PaginatorService
   ) {
 
   }
   ngOnInit(): void {
-    if (Object.keys(this.paginationService.reportParams).length > 0) {
-      this.options.patchValue(this.paginationService.reportParams)
-    }
-  }
-
-
-
-  View(id: string) {
-    this.router.navigate(['home/reportes/busquedas/ficha-externa', id])
-  }
-
-  selectGroupProcedure(group:groupProcedure) {
-    this.createForm(this.groupProcedure)
-    this.reporteService.getTypesProceduresForReports(group).subscribe(data => {
-      console.log(data);
-      this.typesProcedures = data
+    forkJoin([
+      this.reporteService.getInstitucionesForReports(),
+      this.reporteService.getTypesProceduresForReports(this.groupProcedure)
+    ]).subscribe(data => {
+      this.institutions = data[0]
+      this.typesProcedures = data[1]
     })
   }
-  selectTypeProcedure(type: any) {
-    this.options.get('tipo_tramite')?.setValue(type.id_tipoTramite)
+
+
+
+  view(procedure: any) {
+    let params: paramsNavigation = {
+      limit: this.paginationService.limit,
+      offset: this.paginationService.offset
+    }
+    this.router.navigate([`home/reportes/busquedas/${this.groupProcedure === 'tramites_externos' ? 'ficha-externa' : 'ficha-interna'}`, procedure._id], { queryParams: params })
   }
 
+
   generateReport() {
-    this.reporteService.getReporteBySearch(this.groupProcedure, this.options.value, this.paginationService.limit, this.paginationService.offset).subscribe((data => {
+    this.reporteService.getReporteBySearch(this.groupProcedure, this.searchForm.value, this.paginationService.limit, this.paginationService.offset).subscribe((data => {
       this.dataSource = [...data.procedures]
       this.paginationService.length = data.length
     }))
   }
-  createForm(group: groupProcedure): FormGroup {
+  createForm(group: groupProcedure) {
     return group === 'tramites_externos'
-      ? this._formBuilder.group({
+      ? this.fb.group({
         alterno: null,
         cite: null,
         detalle: null,
@@ -123,10 +93,13 @@ export class BusquedaComponent implements OnInit {
         representante: null,
         tipo_tramite: null,
         estado: null,
+        dependencia: null,
+        institucion: null,
+        cuents: null,
         start: new FormControl<Date | null>(null),
         end: new FormControl<Date | null>(null),
       })
-      : this._formBuilder.group({
+      : this.fb.group({
         alterno: null,
         cite: null,
         detalle: null,
@@ -134,8 +107,39 @@ export class BusquedaComponent implements OnInit {
         destinatario: null,
         tipo_tramite: null,
         estado: null,
+        dependencia: null,
+        institucion: null,
+        cuents: null,
         start: new FormControl<Date | null>(null),
         end: new FormControl<Date | null>(null),
       })
   }
+  selectGroupProcedure(group: groupProcedure) {
+    this.searchForm = this.createForm(this.groupProcedure)
+    this.reporteService.getTypesProceduresForReports(group).subscribe(data => {
+      this.typesProcedures = data
+    })
+  }
+  selectTypeProcedure(type: any) {
+    this.searchForm.get('tipo_tramite')?.setValue(type.id_tipoTramite)
+  }
+
+  selectInstitution(id_institucion: string) {
+    this.reporteService.getDependenciasForReports(id_institucion).subscribe(dependencias => {
+      this.dependencies = dependencias
+    })
+  }
+  selectDependencia(dependence: any) {
+    this.searchForm.get('dependencia')?.setValue(dependence.id_dependencia)
+    this.reporteService.getUsersForReports(dependence.id_dependencia).subscribe(accounts => {
+      this.accounts = accounts
+    })
+  }
+  selectUser(account: any) {
+    this.searchForm.get('cuenta')?.setValue(account._id)
+  }
+  reset() {
+    this.searchForm.reset()
+  }
+
 }
