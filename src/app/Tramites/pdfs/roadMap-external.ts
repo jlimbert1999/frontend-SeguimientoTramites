@@ -1021,6 +1021,18 @@ function createRoadMapData(workflow: WorkflowData[]): RoadMap[] {
     }, {})
     return Object.values(merged)
 }
+export function filtreMyData(workflow: WorkflowData[], id_account: string) {
+    const indexFound = workflow.map(el => el.receptor.cuenta._id).lastIndexOf(id_account)
+    let newData = []
+    let root = workflow[indexFound].receptor.cuenta._id
+    for (let i = indexFound; i + 1 > 0; i--) {
+        if (workflow[i].receptor.cuenta._id === root) {
+            newData.unshift(workflow[i])
+            root = workflow[i].emisor.cuenta._id
+        }
+    }
+    return newData
+}
 function createFullName(person: { nombre: string, paterno: string, materno: string }): string {
     return [person.nombre, person.paterno, person.paterno].filter(Boolean).join(" ");
 }

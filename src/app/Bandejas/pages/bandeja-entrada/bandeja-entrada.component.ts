@@ -1,18 +1,7 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import {
-  collapseOnLeaveAnimation,
-  expandOnEnterAnimation,
-  fadeInOnEnterAnimation,
-} from 'angular-animations';
+import { MatPaginator } from '@angular/material/paginator';
+import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
@@ -24,10 +13,12 @@ import { ExternosService } from 'src/app/Tramites/services/externos.service';
 import { HojaRutaExterna } from 'src/app/Tramites/pdfs/hoja-ruta-externa';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { Entrada } from '../../models/entrada.interface';
 import { SocketService } from 'src/app/home/services/socket.service';
 import { HojaRutaInterna } from 'src/app/Tramites/pdfs/hora-ruta-interna';
+import { createFullName } from 'src/app/helpers/fullname.helper';
+import { showToast } from 'src/app/helpers/toats.helper';
+import { filtreMyData } from 'src/app/Tramites/pdfs/roadMap-external';
 
 
 @Component({
@@ -54,7 +45,6 @@ export class BandejaEntradaComponent implements OnInit {
     { value: 'externo', viewValue: 'EXTERNO' },
   ];
   Mails = this.bandejaService.Mails
-  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     public bandejaService: BandejaEntradaService,
@@ -112,8 +102,6 @@ export class BandejaEntradaComponent implements OnInit {
       text: `El tramite sera marcado como aceptado`,
       icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
     }).then((result) => {
@@ -136,27 +124,29 @@ export class BandejaEntradaComponent implements OnInit {
   rechazar_tramite(elemento: Entrada) {
     Swal.fire({
       icon: 'info',
-      title: 'Ingrese el motivo para el rechazo del tramite',
-      input: 'text',
+      title: `Rechazar tramite ${elemento.tramite.alterno}`,
+      text: `El tramite sera devuelto a ${createFullName(elemento.emisor.funcionario)}`,
+      input: 'textarea',
+      inputPlaceholder: 'Ingrese el motivo del rechazo',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        validationMessage: 'my-validation-message'
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Debe ingresar el motivo para el rechazo'
+          )
+        }
+      }
     }).then((result) => {
       if (result.isConfirmed) {
-        if (result.value) {
-          this.bandejaService.rejectMail(elemento._id, result.value).subscribe(message => {
-            this.toastr.info(undefined, message, {
-              positionClass: 'toast-bottom-right',
-              timeOut: 3000,
-            })
-            this.Get()
-          })
-        } else {
-          Swal.fire({
-            title: "Debe ingrese el motivo para rechazar",
-            icon: 'warning'
-          })
-        }
+        this.bandejaService.rejectMail(elemento._id, result.value!).subscribe(message => {
+          showToast('success', message)
+          this.Get()
+        })
       }
     })
   }
@@ -164,7 +154,8 @@ export class BandejaEntradaComponent implements OnInit {
     Swal.fire({
       icon: 'question',
       title: `Concluir el tramite ${mail.tramite.alterno}?`,
-      text: `Ingrese una referencia para concluir`,
+      text: `El tramite pasara a su seccion de archivos`,
+      inputPlaceholder:'Ingrese una referencia para concluir',
       input: 'textarea',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
@@ -182,6 +173,7 @@ export class BandejaEntradaComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.bandejaService.Conclude(mail._id, result.value!).subscribe(message => {
+          showToast('success', message)
           this.Get()
         })
       }
@@ -194,7 +186,7 @@ export class BandejaEntradaComponent implements OnInit {
     if (this.paginatorService.type) {
       this.paginatorService.offset = 0
       const filterValue = (event.target as HTMLInputElement).value;
-      this.paginatorService.text = filterValue.toLowerCase();
+      this.paginatorService.text = filterValue;
       this.Get()
     }
   }
@@ -216,12 +208,16 @@ export class BandejaEntradaComponent implements OnInit {
 
 
   GenerateHojaRuta(mail: Entrada) {
+    
     mail.tipo === 'tramites_externos'
       ? this.externoService.getAllDataExternalProcedure(mail.tramite._id).subscribe(data => {
-        HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
+      
+        filtreMyData(data.workflow, this.authService.account.id_account)
+        // HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
       })
       : this.internoService.getAllDataInternalProcedure(mail.tramite._id).subscribe(data => {
-        HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
+
+        // HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
       })
 
   }

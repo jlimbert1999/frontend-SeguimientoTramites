@@ -1,20 +1,31 @@
-.mail_recibido {
+.mail-pending {
     background-color: #FE5F55;
 }
 
-.mail_recibido .mat-mdc-cell {
+.mail-pending .mat-mdc-cell {
     color: white;
 }
 
-tr.mail_recibido:hover {
+tr.mail-pending:hover {
     background: #F4978E;
 }
 
-.mail_rechazado .mat-mdc-cell {
+.mail-reject {
     background-color: #F6BD60;
+}
+
+.mail-reject .mat-mdc-cell {
     color: black;
 }
 
-.mail_recibido a {
+tr.mail-reject:hover {
+    background: #FFE6A7;
+}
+
+.mail-pending a {
+    color: black;
+}
+
+.mail-reject a {
     color: black;
 }

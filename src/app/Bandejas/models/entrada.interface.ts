@@ -1,22 +1,12 @@
 export interface Entrada {
     _id: string;
     tramite: {
-        _id: string;
-        tipo_tramite: {
-            nombre: string;
-        };
+        _id:string
         estado: string;
         alterno: string;
         detalle: string;
     };
     emisor: {
-        _id: string;
-        dependencia: {
-            nombre: string;
-            institucion: {
-                sigla: string;
-            };
-        };
         funcionario: {
             _id: string;
             nombre: string;

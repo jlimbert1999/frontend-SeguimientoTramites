@@ -24,6 +24,7 @@ import { SimpleMatSelectSearchComponent } from './components/simple-mat-select-s
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ServerMatSelectSearchComponent } from './components/server-mat-select-search/server-mat-select-search.component';
 import { EventsProcedureComponent } from './events-procedure/events-procedure.component';
+import { BadgePipe } from './pipes/badge.pipe';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { EventsProcedureComponent } from './events-procedure/events-procedure.co
     SimpleMatSelectSearchComponent,
     ServerMatSelectSearchComponent,
     EventsProcedureComponent,
+    BadgePipe,
 
   ],
   imports: [
@@ -74,7 +76,8 @@ import { EventsProcedureComponent } from './events-procedure/events-procedure.co
     TableReportPreceduresComponent,
     SimpleMatSelectSearchComponent,
     ServerMatSelectSearchComponent,
-    EventsProcedureComponent
+    EventsProcedureComponent,
+    BadgePipe
 
   ]
 })

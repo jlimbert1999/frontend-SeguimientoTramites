@@ -3,12 +3,11 @@ import Swal, { SweetAlertIcon } from "sweetalert2"
 export function showToast(icon: SweetAlertIcon, title: string, timer: number = 2000, text?: string) {
     const Toast = Swal.mixin({
         toast: true,
-        position: 'top-end',
+        position: 'bottom',
         showConfirmButton: false,
-        timer: timer,
-        showCloseButton:true,   
+        timer: 3000,
+        showCloseButton: true,
         timerProgressBar: true,
-        
     })
     Toast.fire({
         icon: icon,

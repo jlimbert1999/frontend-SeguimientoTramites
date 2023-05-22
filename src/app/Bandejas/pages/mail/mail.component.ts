@@ -13,6 +13,9 @@ import { showToast } from 'src/app/helpers/toats.helper';
 import { DialogRemisionComponent } from '../../dialogs/dialog-remision/dialog-remision.component';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
+import { createFullName } from 'src/app/helpers/fullname.helper';
+import { createListWorkflow } from '../../helpers/ListWorkflow';
+import { PDF_FichaExterno, PDF_FichaInterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
 
 @Component({
   selector: 'app-mail',
@@ -29,6 +32,7 @@ export class MailComponent implements OnInit {
   Mail: Mail
   observations: Observacion[] = []
   Events: any[] = []
+  Location: any[] = []
   constructor(
     private _location: Location,
     private activateRoute: ActivatedRoute,
@@ -49,6 +53,7 @@ export class MailComponent implements OnInit {
           this.Workflow = data.workflow
           this.observations = data.observations
           this.Events = data.events
+          this.Location = data.location
         })
       }
     })
@@ -64,7 +69,15 @@ export class MailComponent implements OnInit {
   }
 
   generar() {
-
+    const List = this.Workflow.length > 0
+      ? createListWorkflow(this.Workflow, [{ id_root: this.Workflow[0].emisor.cuenta._id, startDate: this.Tramite.fecha_registro }], [])
+      : []
+    if (this.Mail.tipo === 'tramites_externos') {
+      PDF_FichaExterno(this.Tramite, List, this.Location)
+    }
+    else {
+      PDF_FichaInterno(this.Tramite, List, this.Location)
+    }
   }
 
 
@@ -84,7 +97,7 @@ export class MailComponent implements OnInit {
         this.entradaService.aceptMail(this.Mail._id).subscribe(data => {
           this.Mail.recibido = true
           this.Tramite.estado = data.state
-          showToast('success', data.message, undefined)
+          showToast('success', data.message)
         }, (HttpError: HttpErrorResponse) => {
           if (HttpError.status === 404) {
             this.back()
@@ -95,10 +108,11 @@ export class MailComponent implements OnInit {
   }
   rejectMail() {
     Swal.fire({
-      icon: 'question',
-      title: `Rechazar el tramite ${this.Tramite.alterno}?`,
-      text: `Para rechazar debe ingresar un motivo`,
+      icon: 'info',
+      title: `Rechazar tramite ${this.Tramite.alterno}`,
+      text: `El tramite sera devuelto a ${createFullName(this.Mail.emisor.funcionario)}`,
       input: 'textarea',
+      inputPlaceholder: 'Ingrese el motivo del rechazo',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
@@ -108,14 +122,14 @@ export class MailComponent implements OnInit {
       preConfirm: (value) => {
         if (!value) {
           Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> El motivo es obligatorio'
+            '<i class="fa fa-info-circle"></i> Debe ingresar el motivo para el rechazo'
           )
         }
       }
     }).then((result) => {
       if (result.isConfirmed) {
         this.entradaService.rejectMail(this.Mail._id, result.value!).subscribe(message => {
-          showToast('success', message, undefined)
+          showToast('success', message)
           this.back()
         })
       }
@@ -171,7 +185,8 @@ export class MailComponent implements OnInit {
     Swal.fire({
       icon: 'question',
       title: `Concluir el tramite ${this.Tramite.alterno}?`,
-      text: `Ingrese una referencia para concluir`,
+      text: `El tramite pasara a su seccion de archivos`,
+      inputPlaceholder: 'Ingrese una referencia para concluir',
       input: 'textarea',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
@@ -188,11 +203,13 @@ export class MailComponent implements OnInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        this.back()
+        this.entradaService.Conclude(this.Mail._id, result.value!).subscribe(message => {
+          showToast('success', message)
+          this.back()
+        })
       }
     })
   }
-
 
   setNewStateProcedure(state: string) {
     this.Tramite.estado = state

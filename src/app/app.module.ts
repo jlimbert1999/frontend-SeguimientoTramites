@@ -22,36 +22,39 @@ import { BandejasModule } from './Bandejas/bandejas.module';
 import { TramitesModule } from './Tramites/tramites.module';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { HomeModule } from './home/home.module';
+import { SharedModule } from "./shared/shared.module";
+
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    ToastrModule.forRoot(), // ToastrModule added
-    ConfiguracionesModule,
-    AuthModule,
-    ArchivosModule,
-    ReportesModule,
-    MaterialModule,
-    BandejasModule,
-    TramitesModule,
-    HomeModule
-  ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: InterceptorService,
-      multi: true
-    },
-    { provide: LOCALE_ID, useValue: 'es' },
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
-  ],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        HomeComponent,
+    ],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: InterceptorService,
+            multi: true
+        },
+        { provide: LOCALE_ID, useValue: 'es' },
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+    ],
+    bootstrap: [AppComponent],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        ConfiguracionesModule,
+        AuthModule,
+        ArchivosModule,
+        ReportesModule,
+        MaterialModule,
+        BandejasModule,
+        TramitesModule,
+        HomeModule,
+        SharedModule
+    ]
 })
 export class AppModule { }

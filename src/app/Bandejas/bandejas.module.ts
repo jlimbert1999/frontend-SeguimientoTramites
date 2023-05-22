@@ -16,7 +16,8 @@ import { BandejaSalidaComponent } from './pages/bandeja-salida/bandeja-salida.co
     DialogRemisionComponent,
     MailComponent,
     BandejaEntradaComponent,
-    BandejaSalidaComponent
+    BandejaSalidaComponent,
+
   ],
   imports: [
     CommonModule,

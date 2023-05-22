@@ -2,9 +2,7 @@
   <mat-sidenav-container class="example-sidenav-container" [ngClass]="">
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
       [opened]="mobileQuery.matches ===false">
-      <mat-toolbar>
-        <span>Menu</span>
-      </mat-toolbar>
+      
       <mat-card class="card-profile footer">
         <mat-card-header>
           <div mat-card-avatar class="card-profile-image"></div>
@@ -18,7 +16,7 @@
           <mat-menu #menu="matMenu">
             <button mat-menu-item [matMenuTriggerFor]="themes">
               <mat-icon>palette</mat-icon>
-              <span>temas</span>
+              <span>Tema</span>
             </button>
             <!-- <button routerLink="/home/recursos" mat-menu-item>
               <mat-icon>dataset</mat-icon>
@@ -51,8 +49,8 @@
         </mat-card-header>
       </mat-card>
 
-      <mat-nav-list class="side-navnar">
-        <ng-container *ngFor="let menu of Menu ; index as i;">
+      <mat-nav-list>
+        <ng-container *ngFor="let menu of Menu">
           <ng-container [ngTemplateOutlet]="menu.children ?  childMenu : parentMenu"
             [ngTemplateOutletContext]="{menu:menu}">
           </ng-container>
@@ -60,13 +58,13 @@
       </mat-nav-list>
 
       <ng-template #parentMenu let-menu="menu">
-        <mat-list-item routerLinkActive="active" [routerLink]="menu.routerLink">
-          <mat-icon>{{menu.icon}}</mat-icon>
-          <span *ngIf="!menu.routerLink.includes('entrada')"> {{menu.text}}</span>
-          <span *ngIf="menu.routerLink.includes('entrada')" [matBadge]="(number_mails|async)"
-            [matBadgeHidden]="(number_mails|async)===0" class="demo-section" matBadgeColor="warn">
-            {{menu.text}}</span>
+        <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="active">
+          <mat-icon *ngIf="menu.routerLink.includes('entrada'); else item" matListItemIcon [matBadge]="(number_mails|async)!|badge"
+            matBadgeColor="warn">{{menu.icon}}</mat-icon>
+          <ng-template #item> <mat-icon matListItemIcon>{{menu.icon}}</mat-icon></ng-template>
+          <a matListItemTitle>{{ menu.text }}</a>
         </mat-list-item>
+        <mat-divider></mat-divider>
       </ng-template>
 
       <ng-template #childMenu let-menu="menu">
@@ -75,14 +73,13 @@
             <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>{{menu.text}}
           </mat-expansion-panel-header>
           <mat-nav-list>
-            <mat-list-item [routerLink]="submenu.routerLink" *ngFor="let submenu of menu.children"
-              routerLinkActive="active">
+            <mat-list-item [routerLink]="submenu.routerLink" *ngFor="let submenu of menu.children" routerLinkActive="active">
               <mat-icon>{{submenu.icon}}</mat-icon> {{submenu.text}}
             </mat-list-item>
+            <mat-divider></mat-divider>
           </mat-nav-list>
         </mat-expansion-panel>
       </ng-template>
-
     </mat-sidenav>
 
     <mat-sidenav-content>

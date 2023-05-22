@@ -3,28 +3,21 @@
     overflow: auto;
     max-height: 75vh;
 }
-
 .mat-mdc-cell {
-    font-size: 14px;
+    font-size: 12px;
     padding-right: 10px
 }
-
 .mat-column-alterno {
     width: 200px;
 }
-
 .mat-column-estado {
     width: 150px;
 }
-
 .mat-column-opciones {
     width: 32px;
     border-left: 1px solid currentColor;
     text-align: center;
 }
-
-
-
 @media screen and (max-width: 800px) {
     .mat-elevation-z8 {
         background: transparent;
@@ -57,7 +50,6 @@
         padding: 0 16px;
         margin: 16px 0;
         border: 0 none;
-
     }
 
     .mat-mdc-table .mat-mdc-cell:first-child {

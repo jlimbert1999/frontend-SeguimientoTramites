@@ -40,7 +40,6 @@ export class ArchivosComponent {
     }
     else {
       this.archivoService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-        console.log(data.archives);
         this.dataSource = data.archives
         this.paginatorService.length = data.length
       })

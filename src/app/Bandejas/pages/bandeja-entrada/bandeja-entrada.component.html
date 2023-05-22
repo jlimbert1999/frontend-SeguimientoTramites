@@ -104,7 +104,7 @@
                 </ng-container>
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
-                    [ngClass]="{'mail_recibido': row.recibido===undefined}"
+                    [ngClass]="{'mail-pending': row.recibido===undefined, 'mail-reject':row.recibido===false}"
                     [class.example-expanded-row]="expandedElement === row"></tr>
             </table>
 

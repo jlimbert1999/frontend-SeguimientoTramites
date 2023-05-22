@@ -121,9 +121,16 @@ mat-card-subtitle {
     padding-left: 15px !important;
 }
 
+// .active {
+//     background-color: #3A86FF;
+// }
+
+.active a {
+    color: white;
+}
+
 .active {
     background-color: #3A86FF;
-    color: white;
 }
 
 .mat-badge-medium.mat-badge-above .mat-badge-content {
