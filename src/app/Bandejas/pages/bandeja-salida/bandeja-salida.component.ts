@@ -13,6 +13,8 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
 import { GroupedMails, Salida } from '../../models/salida.interface';
 import { SocketService } from 'src/app/home/services/socket.service';
+import { HojaRutaInterna } from 'src/app/Tramites/pdfs/hora-ruta-interna';
+import { HojaRutaExterna } from 'src/app/Tramites/pdfs/hoja-ruta-externa';
 
 
 @Component({
@@ -69,16 +71,16 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
   }
 
   generar_hoja_ruta(id_tramite: string, tipo_hoja: 'tramites_externos' | 'tramites_internos') {
-    // if (tipo_hoja === 'tramites_externos') {
-    //   this.externoService.getOne(id_tramite).subscribe(data => {
-    //     // crear_hoja_ruta(data.tramite, data.workflow, tipo_hoja)
-    //   })
-    // }
-    // else {
-    //   this.internoService.getOne(id_tramite).subscribe(data => {
-    //     // HojaRutaInterna(data.tramite, data.workflow, tipo_hoja)
-    //   })
-    // }
+    if (tipo_hoja === 'tramites_externos') {
+      this.externoService.getAllDataExternalProcedure(id_tramite).subscribe(data => {
+        HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
+      })
+    }
+    else {
+      this.internoService.getAllDataInternalProcedure(id_tramite).subscribe(data => {
+        HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
+      })
+    }
   }
 
   cancelOneSend(imbox: Salida) {

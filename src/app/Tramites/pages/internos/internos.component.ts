@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { Interno } from '../../models/Interno.interface';
 import { SocketService } from 'src/app/home/services/socket.service';
 import { paramsNavigation } from '../../models/ProceduresProperties';
+import { RouteMapReceptionInternal } from '../../pdfs/roadMap-external';
 
 @Component({
   selector: 'app-internos',
@@ -123,7 +124,8 @@ export class InternosComponent implements OnInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.internoService.getAllDataInternalProcedure(id_tramite).subscribe(data => {
-      HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
+      // HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
+      RouteMapReceptionInternal(data.procedure, data.workflow)
     })
   }
 

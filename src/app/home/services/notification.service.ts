@@ -8,7 +8,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 })
 export class NotificationService {
 
-  number_mails = new BehaviorSubject<string>('0')
+  number_mails = new BehaviorSubject<number>(0)
   number_mails$ = this.number_mails.asObservable()
 
   list: any[] = []
@@ -46,7 +46,7 @@ export class NotificationService {
     })
   }
   showNotificationPendingMails(numberMails: number) {
-    numberMails > 99 ? this.number_mails.next('99') : this.number_mails.next(numberMails.toString())
+    this.number_mails.next(numberMails)
     if (numberMails === 0) return
     const toast = this.toastr.warning('Revise su bandeja de entrada', `Tramites pendientes: ${numberMails}`, {
       positionClass: 'toast-bottom-right',

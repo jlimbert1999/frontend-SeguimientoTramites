@@ -35,28 +35,17 @@ import { HojaRutaInterna } from 'src/app/Tramites/pdfs/hora-ruta-interna';
   templateUrl: './bandeja-entrada.component.html',
   styleUrls: ['./bandeja-entrada.component.scss'],
   animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-      ),
-    ]),
     fadeInOnEnterAnimation(),
-    expandOnEnterAnimation(),
-    collapseOnLeaveAnimation(),
   ],
 })
 export class BandejaEntradaComponent implements OnInit {
   displayedColumns = [
-    'tipo_correspondencia',
     'alterno',
     'descripcion',
     'estado',
+    'emisor',
     'fecha_envio',
     'opciones',
-    'expand',
   ];
   expandedElement: any | null;
 
@@ -94,7 +83,6 @@ export class BandejaEntradaComponent implements OnInit {
     else {
       this.bandejaService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(length => {
         this.paginatorService.length = length
-        console.log(this.Mails);
       })
     }
   }

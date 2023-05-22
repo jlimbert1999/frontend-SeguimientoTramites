@@ -11,7 +11,7 @@ import { DialogExternoComponent } from '../../dialogs/dialog-externo/dialog-exte
 import { DialogRemisionComponent } from 'src/app/Bandejas/dialogs/dialog-remision/dialog-remision.component';
 import { HojaRutaExterna } from '../../pdfs/hoja-ruta-externa';
 import { Ficha } from '../../pdfs/ficha';
-import { TestRoute } from '../../pdfs/roadMap-external';
+import { RouteMapReception, TestRoute } from '../../pdfs/roadMap-external';
 import { showToast } from 'src/app/helpers/toats.helper';
 import { SocketService } from 'src/app/home/services/socket.service';
 import { paramsNavigation } from '../../models/ProceduresProperties';
@@ -118,8 +118,9 @@ export class ExternosComponent implements OnInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getAllDataExternalProcedure(id_tramite).subscribe(data => {
+      RouteMapReception(data.procedure, data.workflow)
       // TestRoute(data.procedure, data.workflow)
-      HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
+      // HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
     })
   }
   GenerateFicha(tramite: Externo) {
@@ -181,4 +182,6 @@ export class ExternosComponent implements OnInit {
     this.router.navigate(['home/tramites/externos/ficha-externa', procedure._id], { queryParams: params })
   }
 }
+
+
 

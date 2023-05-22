@@ -1,3 +1,3 @@
-export function createFullName(person: { nombre: string, paterno: string, materno: string }): string {
-    return [person.nombre, person.paterno, person.paterno].filter(Boolean).join(" ");
+export function createFullName(officer: { nombre: string, paterno?: string, materno?: string, }): string {
+    return [officer.nombre, officer.paterno, officer.paterno].filter(Boolean).join(" ");
 }

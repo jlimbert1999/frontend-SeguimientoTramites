@@ -25,7 +25,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   Menu: any = this.authService.menu
   loading$ = this.loader.loading$;
   number_mails = this.notificationService.number_mails$
-  isDarkTheme = this.themeService.isDarkTheme
   @ViewChild('snav') public sidenav: MatSidenav;
 
   private _mobileQueryListener: () => void;
@@ -36,14 +35,14 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       "buttonColor": "#ffc107",
       "headingColor": "#673ab7",
       "label": "Deep Purple & Amber",
-      "value": "light-theme-a"
+      "value": "dafault-theme"
     },
     {
       "backgroundColor": "#fff",
       "buttonColor": "#ff4081",
       "headingColor": "#3f51b5",
       "label": "Indigo & Pink",
-      "value": "light-theme-b"
+      "value": "light-theme-a"
     },
     {
       "backgroundColor": "#303030",
@@ -79,9 +78,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     private notificationService: NotificationService,
     private bottomSheet: MatBottomSheet,
     private sidenavService: SidenavService,
-    private themeService: ThemeService
+    public themeService: ThemeService
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
+    this.themeService.startTheme()
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
     this.socketService.setupSocketConnection(this.authService.token)
@@ -121,9 +121,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   openBottomSheet(): void {
     this.bottomSheet.open(PanelNotificationComponent);
   }
-
-  setTheme(theme: string) {
-    this.themeService.setTheme(theme)
-  }
+  
 
 }

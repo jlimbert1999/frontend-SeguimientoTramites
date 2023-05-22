@@ -46,7 +46,7 @@
                     <legend>Informacion flujo</legend>
                     <div class="mb-3">
                         <label class="form-label">Responsable registro</label>
-                        <div class="card">
+                        <div class="card  bg-white text-dark">
                             <div class="card-body">
                                 <p class="card-text fw-bold">{{Tramite.cuenta.funcionario|fullname|titlecase}}</p>
                                 <p class="card-text">{{Tramite.cuenta.funcionario.cargo|titlecase}}</p>
@@ -157,7 +157,7 @@
         </div>
     </div>
     <br>
-    <div class="row border bg-light p-3" *ngIf="Location.length>0">
+    <div class="row border  p-3" *ngIf="Location.length>0">
         <legend>Ubicacion tramite</legend>
         <mat-list>
             <mat-list-item *ngFor="let manager of Location">

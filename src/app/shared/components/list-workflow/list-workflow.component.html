@@ -1,0 +1,56 @@
+<div class="container-fluid">
+  <div class="list-workflow">
+    <div class="row mb-5  align-items-center" *ngFor="let item of ListWorflow">
+      <div class="col-sm-5 align-middle">
+        <div class="card bg-transparent">
+          <div class="card-body">
+            <h5 class="card-title">
+              {{item.emitter.officer|fullname|titlecase}}
+              <small class="fw-lighter"> ({{item.emitter.officer.cargo|uppercase}})</small>
+            </h5>
+            <p class="card-text fw-light">Instruccion / Proveido: {{item.message}}</p>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Tiempo empleado: {{item.timeWorked}}</li>
+            <li class="list-group-item">Envio: {{item.sendDate|date:'short'}}</li>
+            <li class="list-group-item">Cantidad: {{item.adjunt}}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-7">
+        <div class="card bg-transparent" *ngFor="let subitem of item.sends"
+          [ngClass]="[subitem.received===false?'border-danger ':'', subitem.received===true?'border-success':'']">
+          <div class="card-body"
+            [ngClass]="{'text-danger': subitem.received === false, 'text-waring' : subitem.received === undefined }">
+            <h5 class="card-title">
+              {{subitem.receiver.officer|fullname|titlecase}}
+              <small class="fw-lighter"> ({{subitem.receiver.officer.cargo|uppercase}})</small>
+            </h5>
+            <ng-container [ngSwitch]="subitem.received">
+              <ng-container *ngSwitchCase="true">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">Tiempo en aceptar: {{subitem.timeToAccept}}</li>
+                  <li class="list-group-item">Recibido: {{subitem.acceptDate}}</li>
+                </ul>
+              </ng-container>
+              <div *ngSwitchCase="false">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">Tiempo en aceptar: {{subitem.timeToAccept}}</li>
+                  <li class="list-group-item">Recibido: {{subitem.acceptDate}}</li>
+                  <li class="list-group-item">Motivo rechazo: {{subitem.rejectionReason}}</li>
+                </ul>
+              </div>
+              <div *ngSwitchDefault class="alert alert-warning" role="alert">
+                Sin recibir
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex">
+        <hr class="my-auto flex-grow-1">
+        <div class="px-4">NUEVO ENVIO</div>
+        <hr class="my-auto flex-grow-1">
+      </div>
+    </div>
+  </div>

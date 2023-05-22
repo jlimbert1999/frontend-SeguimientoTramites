@@ -10,7 +10,7 @@ import { DOCUMENT } from '@angular/common';
 })
 export class RecursosComponent {
   numberRoadMaps = 9
-  isDarkTheme = this.themService.isDarkTheme;
+ 
   check: boolean = false
   
 
@@ -25,15 +25,6 @@ export class RecursosComponent {
   generate() {
     generateWhiteRoadMap(this.numberRoadMaps)
   }
-  toggleDarkTheme() {
-    this.check = this.check!
-    if (this.check) {
-      this.document.body.classList.add('dark-theme')
-    }
-    else {
-      this.document.body.classList.remove('dark-theme')
-    }
-
-  }
+  
 
 }

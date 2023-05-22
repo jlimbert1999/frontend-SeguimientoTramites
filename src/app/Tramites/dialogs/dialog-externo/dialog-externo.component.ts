@@ -7,6 +7,7 @@ import { TipoTramite } from 'src/app/Configuraciones/models/tipoTramite.interfac
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
+import { closeLoadingRequets, showLoadingRequest } from 'src/app/helpers/loading.helper';
 
 
 @Component({
@@ -86,19 +87,19 @@ export class DialogExternoComponent implements OnInit {
     this.SelectedType = type
     this.TramiteFormGroup.get('tipo_tramite')?.setValue(type.id_tipoTramite)
     this.TramiteFormGroup.get('requerimientos')?.setValue(this.SelectedType?.requerimientos.map(requerimiento => requerimiento.nombre))
-    // this.TramiteFormGroup.get('alterno')?.setValue(`${type.segmento}-${this.authService.account.institutionCode}`)
   }
 
 
 
 
   guardar() {
+    showLoadingRequest()
     if (this.data) {
       let obeservable: Observable<Externo> = this.RepresentanteFormGroup
         ? this.externoService.Edit(this.data._id, this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup.value)
         : this.externoService.Edit(this.data._id, this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, null)
       obeservable.subscribe(externo => {
-        Swal.close();
+        closeLoadingRequets('Tramite editado')
         this.dialogRef.close(externo)
       })
     }
@@ -107,7 +108,7 @@ export class DialogExternoComponent implements OnInit {
         ? this.externoService.Add(this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup.value)
         : this.externoService.Add(this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, null)
       obeservable.subscribe(externo => {
-        // Swal.close();
+        closeLoadingRequets('Tramite guardado')
         this.dialogRef.close(externo)
       })
     }

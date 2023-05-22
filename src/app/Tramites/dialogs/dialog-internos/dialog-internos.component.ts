@@ -5,7 +5,7 @@ import { map, Observable, startWith, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { InternosService } from '../../services/internos.service';
 import { TypesProceduresGrouped } from 'src/app/Configuraciones/models/tipoTramite.interface';
-import { showLoadingRequest, closeLoadingRequets } from 'src/app/helpers/swal.helper';
+import { closeLoadingRequets, showLoadingRequest } from 'src/app/helpers/loading.helper';
 @Component({
   selector: 'app-dialog-internos',
   templateUrl: './dialog-internos.component.html',
@@ -93,10 +93,12 @@ export class DialogInternosComponent implements OnInit {
       },
       ...Object
     }
+    showLoadingRequest()
     const observable = this.data
       ? this.internoService.Edit(this.data._id, tramite)
       : this.internoService.Add(tramite)
     observable.subscribe(tramite => {
+      closeLoadingRequets(this.data ? 'Tramite editado' : 'Tramite guardado')
       this.dialogRef.close(tramite)
     })
   }

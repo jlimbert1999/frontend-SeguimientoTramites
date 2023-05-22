@@ -17,7 +17,6 @@ export function closeLoadingRequets(message: string) {
         timer: 3000,
         showCloseButton: true,
         timerProgressBar: true,
-
     })
     Toast.fire({
         icon: 'success',

@@ -40,11 +40,11 @@ export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkf
     tableAgent.body = tramite.representante
         ? [
             [{ text: `DETALLES REPRESENTANTE`, bold: true, colSpan: 2 }, ''],
-            [{ text: 'Nombre:', bold: true, }, tramite.solicitante.nombre],
-            [{ text: 'Paterno:', bold: true, }, tramite.solicitante.paterno],
-            [{ text: 'Materno:', bold: true, }, tramite.solicitante.materno],
-            [{ text: 'Dni:', bold: true, }, tramite.solicitante.dni],
-            [{ text: 'Telefono:', bold: true, }, tramite.solicitante.telefono],
+            [{ text: 'Nombre:', bold: true, }, tramite.representante.nombre],
+            [{ text: 'Paterno:', bold: true, }, tramite.representante.paterno],
+            [{ text: 'Materno:', bold: true, }, tramite.representante.materno],
+            [{ text: 'Dni:', bold: true, }, tramite.representante.dni],
+            [{ text: 'Telefono:', bold: true, }, tramite.representante.telefono],
         ]
         : [
             [{ text: `DETALLES REPRESENTANTE`, bold: true, colSpan: 2 }, ''],

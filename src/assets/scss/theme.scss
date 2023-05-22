@@ -1,35 +1,19 @@
 @use '@angular/material' as mat;
 @include mat.core();
-// Define a dark theme
-$dark-theme-a: mat.define-dark-theme((color: (primary: mat.define-palette(mat.$blue-grey-palette),
+$light-theme: mat.define-light-theme((color: (primary: mat.define-palette(mat.$indigo-palette),
+                accent: mat.define-palette(mat.$pink-palette),
+            ),
+            typography: mat.define-typography-config(),
+            density: 0));
+
+$dark-theme: mat.define-dark-theme((color: (primary: mat.define-palette(mat.$blue-grey-palette),
                 accent: mat.define-palette(mat.$green-palette, A200, A100, A400),
             ),
             typography: mat.define-typography-config(),
             density: 0));
-$dark-theme-b: mat.define-dark-theme((color: (primary: mat.define-palette(mat.$pink-palette, 700, 500, 900),
-                accent: mat.define-palette(mat.$blue-grey-palette, A200, A100, A400),
-            ),
-            typography: mat.define-typography-config(),
-            density: 0));
-$light-theme-a: mat.define-light-theme((color: (primary: mat.define-palette(mat.$indigo-palette),
-                accent: mat.define-palette(mat.$pink-palette),
-            ),
-            typography: mat.define-typography-config(),
-            density: 0
-        ));
-$light-theme-b: mat.define-light-theme((color: (primary: mat.define-palette(mat.$deep-purple-palette),
-                accent: mat.define-palette(mat.$amber-palette, A200, A100, A400),
-            ),
-            typography: mat.define-typography-config(),
-            density: 0
-        ));
-@include mat.all-component-themes($light-theme-a);
-.dark-theme-a {
-    @include mat.all-component-colors($dark-theme-a);
-}
-.dark-theme-b {
-    @include mat.all-component-colors($dark-theme-b);
-}
-.light-theme-b {
-    @include mat.all-component-colors($light-theme-b);
+
+@include mat.all-component-themes($light-theme);
+
+.dark-theme {
+    @include mat.all-component-colors($dark-theme);
 }
