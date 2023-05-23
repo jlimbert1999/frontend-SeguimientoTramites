@@ -24,41 +24,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   mobileQuery: MediaQueryList;
   Menu: any = this.authService.menu
   loading$ = this.loader.loading$;
-  number_mails = this.notificationService.number_mails$
+  numberMails$= this.notificationService.number_mails$
   @ViewChild('snav') public sidenav: MatSidenav;
 
   private _mobileQueryListener: () => void;
 
-  options = [
-    {
-      "backgroundColor": "#fff",
-      "buttonColor": "#ffc107",
-      "headingColor": "#673ab7",
-      "label": "Deep Purple & Amber",
-      "value": "dafault-theme"
-    },
-    {
-      "backgroundColor": "#fff",
-      "buttonColor": "#ff4081",
-      "headingColor": "#3f51b5",
-      "label": "Indigo & Pink",
-      "value": "light-theme-a"
-    },
-    {
-      "backgroundColor": "#303030",
-      "buttonColor": "#607d8b",
-      "headingColor": "#e91e63",
-      "label": "Pink & Blue Grey",
-      "value": "dark-theme-a"
-    },
-    {
-      "backgroundColor": "#303030",
-      "buttonColor": "#4caf50",
-      "headingColor": "#9c27b0",
-      "label": "Purple & Green",
-      "value": "dark-theme-b"
-    }
-  ]
 
   ngAfterViewInit() {
     this.sidenavService.sideNavToggleSubject.subscribe(() => {
@@ -121,6 +91,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   openBottomSheet(): void {
     this.bottomSheet.open(PanelNotificationComponent);
   }
-  
+
 
 }

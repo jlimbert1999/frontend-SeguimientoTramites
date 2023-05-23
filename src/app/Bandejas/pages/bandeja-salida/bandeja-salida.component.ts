@@ -15,6 +15,7 @@ import { GroupedMails, Salida } from '../../models/salida.interface';
 import { SocketService } from 'src/app/home/services/socket.service';
 import { HojaRutaInterna } from 'src/app/Tramites/pdfs/hora-ruta-interna';
 import { HojaRutaExterna } from 'src/app/Tramites/pdfs/hoja-ruta-externa';
+import { externalRouteMap, internalRouteMap } from 'src/app/Tramites/pdfs/roadMap-external';
 
 
 @Component({
@@ -32,7 +33,7 @@ import { HojaRutaExterna } from 'src/app/Tramites/pdfs/hoja-ruta-externa';
 })
 export class BandejaSalidaComponent implements OnInit, AfterViewInit {
   dataSource: GroupedMails[] = []
-  displayedColumns = ['group', 'alterno', 'descripcion', 'estado', 'fecha_envio', 'situacion', 'opciones', 'expand']
+  displayedColumns = ['alterno', 'descripcion', 'estado', 'fecha_envio', 'situacion', 'opciones', 'expand']
   isLoadingResults = true;
   expandedElement: Salida | null;
   resulstLenght: number = 0
@@ -73,12 +74,14 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
   generar_hoja_ruta(id_tramite: string, tipo_hoja: 'tramites_externos' | 'tramites_internos') {
     if (tipo_hoja === 'tramites_externos') {
       this.externoService.getAllDataExternalProcedure(id_tramite).subscribe(data => {
-        HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
+        externalRouteMap(data.procedure, data.workflow)
+        // HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
       })
     }
     else {
       this.internoService.getAllDataInternalProcedure(id_tramite).subscribe(data => {
-        HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
+        // HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
+        internalRouteMap(data.procedure, data.workflow)
       })
     }
   }

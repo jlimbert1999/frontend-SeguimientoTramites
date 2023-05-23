@@ -11,7 +11,7 @@ import { DialogExternoComponent } from '../../dialogs/dialog-externo/dialog-exte
 import { DialogRemisionComponent } from 'src/app/Bandejas/dialogs/dialog-remision/dialog-remision.component';
 import { HojaRutaExterna } from '../../pdfs/hoja-ruta-externa';
 import { Ficha } from '../../pdfs/ficha';
-import { RouteMapReception, TestRoute } from '../../pdfs/roadMap-external';
+import { createAllRoute, externalRouteMap } from '../../pdfs/roadMap-external';
 import { showToast } from 'src/app/helpers/toats.helper';
 import { SocketService } from 'src/app/home/services/socket.service';
 import { paramsNavigation } from '../../models/ProceduresProperties';
@@ -28,7 +28,7 @@ import { paramsNavigation } from '../../models/ProceduresProperties';
 })
 export class ExternosComponent implements OnInit {
   Data: Externo[] = []
-  displayedColumns: string[] = ['alterno', 'descripcion', 'estado', 'solicitante', 'fecha_registro', 'enviado', 'opciones'];
+  displayedColumns: string[] = ['alterno', 'detalle', 'estado', 'solicitante', 'fecha_registro', 'enviado', 'opciones'];
   constructor(
     public dialog: MatDialog,
     public authService: AuthService,
@@ -119,7 +119,8 @@ export class ExternosComponent implements OnInit {
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getAllDataExternalProcedure(id_tramite).subscribe(data => {
       // RouteMapReception(data.procedure, data.workflow)
-      TestRoute(data.procedure, data.workflow)
+      externalRouteMap(data.procedure, data.workflow)
+      // createAllRoute(data.procedure, data.workflow)
       // HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
     })
   }

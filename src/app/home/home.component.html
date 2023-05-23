@@ -18,14 +18,11 @@
               <mat-icon>palette</mat-icon>
               <span>Tema</span>
             </button>
-            <!-- <button routerLink="/home/recursos" mat-menu-item>
+            <button routerLink="/home/recursos" mat-menu-item>
               <mat-icon>dataset</mat-icon>
               <span>Recursos</span>
             </button>
-            <button routerLink="/home/notifications" mat-menu-item>
-              <mat-icon>dataset</mat-icon>
-              <span>noti</span>
-            </button> -->
+            
             <button (click)="editAccount()" mat-menu-item>
               <mat-icon>manage_accounts</mat-icon>
               <span>Configurar cuenta</span>
@@ -59,8 +56,8 @@
 
       <ng-template #parentMenu let-menu="menu">
         <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="active">
-          <mat-icon *ngIf="menu.routerLink.includes('entrada'); else item" matListItemIcon [matBadge]="(number_mails|async)!|badge"
-            matBadgeColor="warn">{{menu.icon}}</mat-icon>
+          <mat-icon *ngIf="menu.routerLink.includes('entrada'); else item" matListItemIcon [matBadge]="(numberMails$|async)!|badge"
+            matBadgeColor="warn" [matBadgeHidden]="(numberMails$|async)===0">{{menu.icon}}</mat-icon>
           <ng-template #item> <mat-icon matListItemIcon>{{menu.icon}}</mat-icon></ng-template>
           <a matListItemTitle>{{ menu.text }}</a>
         </mat-list-item>

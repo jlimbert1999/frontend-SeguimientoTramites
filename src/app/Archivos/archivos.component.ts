@@ -47,10 +47,11 @@ export class ArchivosComponent {
   }
 
   unarchive(archive: Archive) {
+    console.log(archive);
     Swal.fire({
       icon: 'question',
       title: `Desarchivar el tramite: ${archive.procedure.alterno}?`,
-      text: `El tramite regresara a la ${archive.location ? 'bandeja de entrada' : 'administracion'} del funcionario ${createFullName(archive.account.funcionario)}`,
+      text: `El tramite regresara a la ${archive.location ? 'bandeja de entrada' : 'administracion'} del funcionario ${createFullName(archive.officer)}`,
       input: 'textarea',
       inputPlaceholder: 'Ingrese el motivo para el desarchivo',
       showCancelButton: true,

@@ -18,7 +18,8 @@ import { SocketService } from 'src/app/home/services/socket.service';
 import { HojaRutaInterna } from 'src/app/Tramites/pdfs/hora-ruta-interna';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { showToast } from 'src/app/helpers/toats.helper';
-import { filtreMyData } from 'src/app/Tramites/pdfs/roadMap-external';
+import { NotificationService } from 'src/app/home/services/notification.service';
+import { createAllRoute, externalRouteMap, internalRouteMap } from 'src/app/Tramites/pdfs/roadMap-external';
 
 
 @Component({
@@ -32,7 +33,7 @@ import { filtreMyData } from 'src/app/Tramites/pdfs/roadMap-external';
 export class BandejaEntradaComponent implements OnInit {
   displayedColumns = [
     'alterno',
-    'descripcion',
+    'detalle',
     'estado',
     'emisor',
     'fecha_envio',
@@ -56,9 +57,13 @@ export class BandejaEntradaComponent implements OnInit {
     public loaderService: LoaderService,
     public paginatorService: PaginatorService,
     private router: Router,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private notificationService: NotificationService
   ) {
-    this.socketService.listenCancelMail().subscribe(() => this.Get())
+    this.socketService.listenCancelMail().subscribe(() => {
+      this.notificationService.number_mails.next(this.notificationService.number_mails.value - 1)
+      this.Get()
+    })
   }
 
   ngOnInit(): void {
@@ -155,7 +160,7 @@ export class BandejaEntradaComponent implements OnInit {
       icon: 'question',
       title: `Concluir el tramite ${mail.tramite.alterno}?`,
       text: `El tramite pasara a su seccion de archivos`,
-      inputPlaceholder:'Ingrese una referencia para concluir',
+      inputPlaceholder: 'Ingrese una referencia para concluir',
       input: 'textarea',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
@@ -207,17 +212,18 @@ export class BandejaEntradaComponent implements OnInit {
   }
 
 
-  GenerateHojaRuta(mail: Entrada) {
-    
+  generateRouteMap(mail: Entrada) {
     mail.tipo === 'tramites_externos'
       ? this.externoService.getAllDataExternalProcedure(mail.tramite._id).subscribe(data => {
-      
-        filtreMyData(data.workflow, this.authService.account.id_account)
+        // routeMapEvaluationExternal(data.procedure, data.workflow, false, this.authService.account.id_account)
         // HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
+        createAllRoute(data.procedure, data.workflow)
+        // externalRouteMap(data.procedure, data.workflow)
       })
       : this.internoService.getAllDataInternalProcedure(mail.tramite._id).subscribe(data => {
 
         // HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
+        internalRouteMap(data.procedure, data.workflow)
       })
 
   }
