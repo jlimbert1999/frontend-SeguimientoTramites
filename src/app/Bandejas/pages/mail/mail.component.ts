@@ -16,6 +16,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { createListWorkflow } from '../../helpers/ListWorkflow';
 import { PDF_FichaExterno, PDF_FichaInterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
+import { ExternosService } from 'src/app/Tramites/services/externos.service';
+import { InternosService } from 'src/app/Tramites/services/internos.service';
+import { externalRouteMap, internalRouteMap } from 'src/app/Tramites/pdfs/roadMap';
 
 @Component({
   selector: 'app-mail',
@@ -38,7 +41,8 @@ export class MailComponent implements OnInit {
     private activateRoute: ActivatedRoute,
     private entradaService: BandejaEntradaService,
     private paginatorService: PaginatorService,
-    private authService: AuthService,
+    private externoService: ExternosService,
+    private internoService: InternosService,
     public dialog: MatDialog,
   ) {
 
@@ -80,6 +84,16 @@ export class MailComponent implements OnInit {
     }
   }
 
+  generateRouteMap() {
+    this.Mail.tipo === 'tramites_externos'
+      ? this.externoService.getAllDataExternalProcedure(this.Mail.tramite).subscribe(data => {
+        externalRouteMap(data.procedure, data.workflow)
+      })
+      : this.internoService.getAllDataInternalProcedure(this.Mail.tramite).subscribe(data => {
+        internalRouteMap(data.procedure, data.workflow)
+      })
+
+  }
 
 
   aceptMail() {

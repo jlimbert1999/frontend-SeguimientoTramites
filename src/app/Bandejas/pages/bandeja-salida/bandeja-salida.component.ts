@@ -15,7 +15,7 @@ import { GroupedMails, Salida } from '../../models/salida.interface';
 import { SocketService } from 'src/app/home/services/socket.service';
 import { HojaRutaInterna } from 'src/app/Tramites/pdfs/hora-ruta-interna';
 import { HojaRutaExterna } from 'src/app/Tramites/pdfs/hoja-ruta-externa';
-import { externalRouteMap, internalRouteMap } from 'src/app/Tramites/pdfs/roadMap-external';
+import { externalRouteMap, internalRouteMap } from 'src/app/Tramites/pdfs/roadMap';
 
 
 @Component({

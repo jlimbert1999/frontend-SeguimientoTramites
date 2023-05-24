@@ -4,7 +4,7 @@ import { Content, ContentTable, TDocumentDefinitions, Table, TableCell } from "p
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from "moment-timezone";
 moment.tz.setDefault("America/La_Paz")
-import { Externo } from "../../Tramites/models/Externo.interface";
+import { Externo } from "../models/Externo.interface";
 import { WorkflowData } from "src/app/Bandejas/models/workflow.interface";
 import { Interno } from "../models/Interno.interface";
 const ordinales = require("ordinales-js");
@@ -25,14 +25,14 @@ interface RoadMap {
     }[]
 }
 export async function externalRouteMap(procedure: Externo, workflow: WorkflowData[]) {
-    const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
+    const logo1 = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
+    const logo2 = await getBase64ImageFromUrl('../../../assets/img/logo_sacaba.jpeg')
     workflow = workflow.filter(element => element.recibido !== false)
-    console.log(workflow);
     let content: Content[] = []
     if (workflow.length > 0) {
         const data = createRoadMapData(workflow)
         content = [
-            createTitleSheet(logo),
+            createTitleSheet(logo1, logo2),
             createFirstContainerExternal(
                 procedure,
                 [{ nombre_completo: createFullName(workflow[0].receptor.funcionario), cargo: workflow[0].receptor.funcionario.cargo }],
@@ -44,12 +44,12 @@ export async function externalRouteMap(procedure: Externo, workflow: WorkflowDat
                 ]
             ),
             createAprovedRouteMap(data),
-            createWhiteContainers(data.length + 1, 10)
+            createWhiteContainers(data.length + 1, 8)
         ]
     }
     else {
         content = [
-            createTitleSheet(logo),
+            createTitleSheet(logo1, logo2),
             createFirstContainerExternal(
                 procedure,
                 [{ nombre_completo: '', cargo: '' }],
@@ -61,13 +61,14 @@ export async function externalRouteMap(procedure: Externo, workflow: WorkflowDat
     createRouteMap(content)
 }
 export async function internalRouteMap(procedure: Interno, workflow: WorkflowData[]) {
-    const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
+    const logo1 = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
+    const logo2 = await getBase64ImageFromUrl('../../../assets/img/logo_sacaba.jpeg')
     workflow = workflow.filter(element => element.recibido !== false)
     let content: Content[] = []
     if (workflow.length > 0) {
         const data = createRoadMapData(workflow)
         content = [
-            createTitleSheet(logo),
+            createTitleSheet(logo1, logo2),
             createFirstContainerInternal(
                 procedure,
                 [
@@ -78,12 +79,12 @@ export async function internalRouteMap(procedure: Interno, workflow: WorkflowDat
                 ]
             ),
             createAprovedRouteMap(data),
-            createWhiteContainers(data.length + 1, 10)
+            createWhiteContainers(data.length + 1, 8)
         ]
     }
     else {
         content = [
-            createTitleSheet(logo),
+            createTitleSheet(logo1, logo2),
             createFirstContainerInternal(
                 procedure,
                 ['', '', '', '']
@@ -94,41 +95,6 @@ export async function internalRouteMap(procedure: Interno, workflow: WorkflowDat
     createRouteMap(content)
 }
 
-export async function createAllRoute(procedure: Externo, workflow: WorkflowData[]) {
-    const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
-    workflow = workflow.filter(element => element.recibido !== false)
-    let content: Content[] = []
-    if (workflow.length > 0) {
-        const data = createRoadMapData(workflow)
-        content = [
-            createTitleSheet(logo),
-            createFirstContainerExternal(
-                procedure,
-                [{ nombre_completo: createFullName(workflow[0].receptor.funcionario), cargo: workflow[0].receptor.funcionario.cargo }],
-                [
-                    moment(workflow[0].fecha_envio).format('DD-MM-YYYY'),
-                    moment(workflow[0].fecha_envio).format('HH:mm A'),
-                    workflow[0].cantidad,
-                    workflow[0].numero_interno
-                ]
-            ),
-            createContainers(data),
-            createWhiteContainers(data.length + 1, 8)
-        ]
-    }
-    else {
-        content = [
-            createTitleSheet(logo),
-            createFirstContainerExternal(
-                procedure,
-                [{ nombre_completo: '', cargo: '' }],
-                ['', '', '', '']
-            ),
-            createWhiteContainers(1, 8)
-        ]
-    }
-    createRouteMap(content)
-}
 
 
 function createRouteMap(content: Content[]) {
@@ -165,7 +131,7 @@ function createRouteMap(content: Content[]) {
 }
 
 
-const getBase64ImageFromUrl = async (imageUrl: string) => {
+const getBase64ImageFromUrl = async (imageUrl: string): Promise<any> => {
     var res = await fetch(imageUrl);
     var blob = await res.blob();
     return new Promise((resolve, reject) => {
@@ -176,12 +142,12 @@ const getBase64ImageFromUrl = async (imageUrl: string) => {
         reader.readAsDataURL(blob);
     })
 }
-const createTitleSheet = (pathImage: string): Content => {
+const createTitleSheet = (logo1: string, logo2: string): Content => {
     return [{
         style: 'cabecera',
         columns: [
             {
-                image: pathImage,
+                image: logo1,
                 width: 150,
                 height: 60,
             },
@@ -193,8 +159,10 @@ const createTitleSheet = (pathImage: string): Content => {
 
             },
             {
-                text: ''
-            }
+                image: logo2,
+                width: 70,
+                height: 70,
+            },
         ]
     }]
 }
@@ -320,13 +288,10 @@ function createContainers(data: RoadMap[]) {
     return cuadros
 }
 function createAprovedRouteMap(data: RoadMap[]) {
-    console.log(data.slice(3, 4));
     const divider = data.findIndex(element => element.sends.length > 1)
     const firstPart = divider > -1 ? data.slice(0, divider) : data
     const secondPart = divider > -1 ? data[divider] : undefined
     const cuadros: ContentTable[] = []
-  
-    console.log(secondPart);
     for (let index = 0; index < firstPart.length; index++) {
         const sectionDates: TableCell[][] = []
         let sectionNumbers: TableCell[][] = []
@@ -377,7 +342,7 @@ function createAprovedRouteMap(data: RoadMap[]) {
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ margin: [0, 0, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(index + 1)}: ${destinatarios}`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
+                        [{ margin: [0, 0, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(index + 1)} (NOMBRE Y CARGO): ${destinatarios}`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
                         [
                             {
                                 border: [true, false, false, false],
@@ -447,7 +412,7 @@ function createAprovedRouteMap(data: RoadMap[]) {
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ margin: [0, 0, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(divider > 0 ? divider : 1)}: ${destinatarios}`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
+                        [{ margin: [0, 0, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(divider > 0 ? divider : 1)} (NOMBRE Y CARGO): ${destinatarios}`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
                         [
                             {
                                 border: [true, false, false, false],
@@ -652,7 +617,7 @@ function createFirstContainerExternal(tramite: Externo, destinatarios: { nombre_
                             widths: ['*', '*'],
                             body: [
                                 [{ text: 'DATOS DE ORIGEN', bold: true }, ''],
-                                [`${tramite.cite !== '' ? `CITE: ${tramite.cite}  |  ` : ''} TEL.: ${tramite.solicitante ? '' : ''}`,
+                                [`${tramite.cite !== '' ? `CITE: ${tramite.cite}  |  ` : ''} TEL.: ${tramite.solicitante.telefono}`,
                                 {
                                     table: {
                                         widths: [85, 100, 40],
@@ -831,7 +796,7 @@ function createFirstContainerInternal(tramite: Interno, salida: [string, string,
                             widths: ['*', '*'],
                             body: [
                                 [{ text: 'DATOS DE ORIGEN', bold: true }, ''],
-                                [`${tramite.cite !== '' ? `CITE: ${tramite.cite}  |  ` : 'CITE: S/C'}}`,
+                                [`${tramite.cite !== '' ? `CITE: ${tramite.cite}` : 'CITE: S/C'}}`,
                                 {
                                     table: {
                                         widths: [85, 100, 40],
@@ -846,7 +811,7 @@ function createFirstContainerInternal(tramite: Interno, salida: [string, string,
                                 },
                                 ],
                                 [`REMITENTE: ${tramite.remitente.nombre}`, `CARGO: P. ${tramite.remitente.cargo}`],
-
+                                [`DESTINATARIO: ${tramite.destinatario.nombre}`, `CARGO: P. ${tramite.destinatario.cargo}`],
                                 [{ text: `REFERENCIA: ${tramite.detalle}`, colSpan: 2 }]
                             ]
                         },
@@ -908,7 +873,7 @@ function createWhiteContainers(initRange: number, endRange: number) {
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(index)}:`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
+                        [{ margin: [0, 10, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(index)} (NOMBRE Y CARGO):`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
                         [
                             {
                                 border: [true, false, false, false],
@@ -940,10 +905,18 @@ function createWhiteContainers(initRange: number, endRange: number) {
                                 border: [false, false, true, false],
                                 table: {
                                     widths: [100, 40],
-                                    body: [[
-                                        { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                        { text: `` }
-                                    ],]
+                                    body: [
+                                        [
+                                            { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
+                                            { text: `` }
+                                        ],
+                                        [
+                                            { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
+                                        ],
+                                        [
+                                            { text: 'FIRMA Y SELLO', colSpan: 2, border: [false, false, false, false], alignment: 'right' },
+                                        ]
+                                    ]
                                 }
                             }
                         ],
@@ -987,6 +960,9 @@ function createWhiteContainers(initRange: number, endRange: number) {
                 }
             }
         )
+    }
+    if (initRange === 1) {
+        cuadros[0].table.body.push([{ text: `SEGUNDA PARTE`, fontSize: 7, bold: true, alignment: 'left', border: [true, false, true, true], colSpan: 2 }, ''])
     }
     return cuadros
 }

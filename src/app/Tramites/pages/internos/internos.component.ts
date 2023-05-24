@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 import { Interno } from '../../models/Interno.interface';
 import { SocketService } from 'src/app/home/services/socket.service';
 import { paramsNavigation } from '../../models/ProceduresProperties';
-import { internalRouteMap } from '../../pdfs/roadMap-external';
+import { internalRouteMap } from '../../pdfs/roadMap';
 
 @Component({
   selector: 'app-internos',
@@ -69,6 +69,7 @@ export class InternosComponent implements OnInit {
         }
         this.dataSource = [result, ...this.dataSource]
         this.paginatorService.length++
+        this.Send(result)
       }
     });
   }

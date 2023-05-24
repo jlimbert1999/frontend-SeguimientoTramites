@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { SocketService } from '../home/services/socket.service';
 import { Archive } from './services/models/archive.interface';
 import { createFullName } from 'src/app/helpers/fullname.helper';
+import { closeLoadingRequets, showLoadingRequest } from '../helpers/loading.helper';
 
 @Component({
   selector: 'app-archivos',
@@ -47,7 +48,6 @@ export class ArchivosComponent {
   }
 
   unarchive(archive: Archive) {
-    console.log(archive);
     Swal.fire({
       icon: 'question',
       title: `Desarchivar el tramite: ${archive.procedure.alterno}?`,
@@ -69,13 +69,9 @@ export class ArchivosComponent {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire({
-          title: 'Desarchivando el tramite....',
-          text: 'Por favor espere',
-          allowOutsideClick: false,
-        });
-        Swal.showLoading();
+        showLoadingRequest()
         this.archivoService.unarchive(archive._id, result.value!).subscribe(message => {
+          closeLoadingRequets(message)
           this.Get()
         })
       }

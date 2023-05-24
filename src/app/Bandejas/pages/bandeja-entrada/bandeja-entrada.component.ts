@@ -19,7 +19,7 @@ import { HojaRutaInterna } from 'src/app/Tramites/pdfs/hora-ruta-interna';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { showToast } from 'src/app/helpers/toats.helper';
 import { NotificationService } from 'src/app/home/services/notification.service';
-import { createAllRoute, externalRouteMap, internalRouteMap } from 'src/app/Tramites/pdfs/roadMap-external';
+import { externalRouteMap, internalRouteMap } from 'src/app/Tramites/pdfs/roadMap';
 
 
 @Component({
@@ -215,14 +215,9 @@ export class BandejaEntradaComponent implements OnInit {
   generateRouteMap(mail: Entrada) {
     mail.tipo === 'tramites_externos'
       ? this.externoService.getAllDataExternalProcedure(mail.tramite._id).subscribe(data => {
-        // routeMapEvaluationExternal(data.procedure, data.workflow, false, this.authService.account.id_account)
-        // HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
-        createAllRoute(data.procedure, data.workflow)
-        // externalRouteMap(data.procedure, data.workflow)
+        externalRouteMap(data.procedure, data.workflow)
       })
       : this.internoService.getAllDataInternalProcedure(mail.tramite._id).subscribe(data => {
-
-        // HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
         internalRouteMap(data.procedure, data.workflow)
       })
 
