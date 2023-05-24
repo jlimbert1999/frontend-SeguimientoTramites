@@ -67,6 +67,25 @@ export class ExternosService {
   getAllDataExternalProcedure(id_procedure: string) {
     return this.http.get<{ ok: boolean, procedure: Externo, workflow: WorkflowData[], location: LocationProcedure[], observations: Observacion[], events: any[] }>(`${base_url}/shared/procedure/tramites_externos/${id_procedure}`).pipe(
       map(resp => {
+        resp.workflow.map(element => {
+          if (element.receptor.funcionario === undefined) {
+            element.receptor.funcionario = {
+              nombre: element.receptor.usuario,
+              paterno: '',
+              materno: '',
+              cargo: element.receptor.cargo
+            }
+          }
+          if (element.emisor.funcionario === undefined) {
+            element.emisor.funcionario = {
+              nombre: element.emisor.usuario,
+              paterno: '',
+              materno: '',
+              cargo: element.emisor.cargo
+            }
+          }
+          return element
+        })
         return { procedure: resp.procedure, workflow: resp.workflow, location: resp.location, observations: resp.observations, events: resp.events }
       })
     )

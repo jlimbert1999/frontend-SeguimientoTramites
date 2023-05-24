@@ -165,13 +165,4 @@ export class DialogExternoComponent implements OnInit {
     }
     return disabled
   }
-
-  showLoadingRequest() {
-    Swal.fire({
-      title: 'Guardando....',
-      text: 'Por favor espere',
-      allowOutsideClick: false,
-    });
-    Swal.showLoading()
-  }
 }

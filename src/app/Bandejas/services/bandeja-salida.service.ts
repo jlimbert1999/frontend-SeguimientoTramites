@@ -21,6 +21,12 @@ export class BandejaSalidaService {
         map(resp => {
           const orderMails: GroupedMails[] = resp.mails.map<GroupedMails>(
             ({ _id: { tramite, ...rootData }, sendings }) => {
+              sendings.map(send => {
+                if (send.receptor.funcionario === undefined) {
+                  send.receptor.funcionario = { nombre: send.receptor.usuario, paterno: '', materno: '', cargo: send.receptor.cargo, _id: '' }
+                }
+                return send
+              })
               // sendings.map(send => send.receptor.funcionario ? send.receptor.funcionario.cargo === '')
               return { tramite: sendings[0].tramite, ...rootData, sendings }
             })

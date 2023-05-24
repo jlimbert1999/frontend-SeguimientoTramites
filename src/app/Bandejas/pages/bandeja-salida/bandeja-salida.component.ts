@@ -16,6 +16,7 @@ import { SocketService } from 'src/app/home/services/socket.service';
 import { HojaRutaInterna } from 'src/app/Tramites/pdfs/hora-ruta-interna';
 import { HojaRutaExterna } from 'src/app/Tramites/pdfs/hoja-ruta-externa';
 import { externalRouteMap, internalRouteMap } from 'src/app/Tramites/pdfs/roadMap';
+import { createFullName } from 'src/app/helpers/fullname.helper';
 
 
 @Component({
@@ -89,7 +90,7 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
   cancelOneSend(imbox: Salida) {
     Swal.fire({
       title: `Cancelar el envio del tramite?`,
-      text: `El funcionario ${imbox.receptor.funcionario.nombre} ${imbox.receptor.funcionario.paterno} ${imbox.receptor.funcionario.materno} ya no podra ver el tramite.`,
+      text: `El funcionario ${createFullName(imbox.receptor.funcionario!)} ya no podra ver el tramite.`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',

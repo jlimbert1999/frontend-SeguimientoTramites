@@ -35,7 +35,9 @@ export interface Emisor {
 
 export interface Receptor {
   cuenta: string
-  funcionario: Funcionario
+  funcionario?: Funcionario
+  usuario: string,
+  cargo: string
 }
 
 export interface Funcionario {
