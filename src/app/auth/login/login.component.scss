@@ -48,9 +48,9 @@ label {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: 350px 350px;
-  background-image: url(../../../assets/img/logo_alcaldia.png);
- 
+  background-size: 350px 250px;
+  background-image: url(../../../assets/img/logoo.png);
+
 }
 
 .wrap {
@@ -69,6 +69,7 @@ label {
 }
 
 @media (max-width: 991.98px) {
+
   .img,
   .login-wrap {
     width: 100%;
@@ -95,4 +96,12 @@ label {
 
 mat-form-field {
   width: 100%;
+}
+
+.golden-btn+.golden-btn {
+  margin-top: 1em;
+}
+
+.golden-btn {
+  background-color: #efb73d;
 }

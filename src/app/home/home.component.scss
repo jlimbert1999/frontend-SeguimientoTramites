@@ -130,9 +130,25 @@ mat-card-subtitle {
 }
 
 .active {
-    background-color: #3A86FF;
+    background-color: #126782;
 }
 
 .mat-badge-medium.mat-badge-above .mat-badge-content {
     top: unset;
+}
+
+.panel {
+    background-color: #002c48;
+    background-image: url(../../assets/img/logoo.png);
+    background-size: 250px;
+    background-repeat: no-repeat;
+    background-position: 10px 500px;
+}
+
+.panel .mat-icon {
+    color: white;
+}
+
+.my-toolbar {
+    background-color: #002c48;
 }
