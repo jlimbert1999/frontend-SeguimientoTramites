@@ -52,9 +52,10 @@ export class CuentaService {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, cuentas: Cuenta[], length: number }>(`${base_url}/cuentas`, { params }).pipe(
+    return this.http.get<{ accounts: Cuenta[], length: number }>(`${base_url}/account`, { params }).pipe(
       map(resp => {
-        return { cuentas: resp.cuentas, length: resp.length }
+        console.log(resp.accounts);
+        return { cuentas: resp.accounts, length: resp.length }
       })
     )
   }

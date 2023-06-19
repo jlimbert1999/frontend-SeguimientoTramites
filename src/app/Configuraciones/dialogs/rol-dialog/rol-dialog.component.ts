@@ -94,7 +94,7 @@ export class RolDialogComponent implements OnInit {
       read: false,
       delete: false
     });
-    this.privileges.push(priviligeForm);
+    // this.privileges.(priviligeForm);
   }
 
   removePrivilege(lessonIndex: number) {
@@ -116,16 +116,17 @@ export class RolDialogComponent implements OnInit {
 
 
   Save() {
-    if (this.data) {
-      this.rolService.edit(this.data._id, this.Form_Role.value).subscribe(Rol => {
-        this.dialogRef.close(Rol)
-      })
-    }
-    else {
-      this.rolService.add(this.Form_Role.value).subscribe(Rol => {
-        this.dialogRef.close(Rol)
-      })
-    }
+    console.log(this.Form_Role.value);
+    // if (this.data) {
+    //   this.rolService.edit(this.data._id, this.Form_Role.value).subscribe(Rol => {
+    //     this.dialogRef.close(Rol)
+    //   })
+    // }
+    // else {
+    //   this.rolService.add(this.Form_Role.value).subscribe(Rol => {
+    //     this.dialogRef.close(Rol)
+    //   })
+    // }
 
   }
 }

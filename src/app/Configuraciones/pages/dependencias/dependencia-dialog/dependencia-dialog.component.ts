@@ -1,7 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DependenciaModel } from 'src/app/Configuraciones/models/dependencia.model';
+import { dependency } from 'src/app/Configuraciones/interfaces/dependency.interface';
+import { institution } from 'src/app/Configuraciones/interfaces/institution.interface';
 import { DependenciasService } from 'src/app/Configuraciones/services/dependencias.service';
 
 
@@ -11,11 +12,8 @@ import { DependenciasService } from 'src/app/Configuraciones/services/dependenci
   styleUrls: ['./dependencia-dialog.component.scss'],
 })
 export class DependenciaDialogComponent implements OnInit {
-  titulo: string = '';
-  Instituciones: { id_institucion: string; nombre: string, sigla: string }[];
 
-  //guardar data institucion seleccionada
-  institucion: { id_institucion: string; nombre: string, sigla: string };
+  institutions: institution[] = []
 
   Form_Dependencia: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
@@ -26,14 +24,13 @@ export class DependenciaDialogComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: DependenciaModel,
+    @Inject(MAT_DIALOG_DATA) public data: dependency,
     public dialogRef: MatDialogRef<DependenciaDialogComponent>,
     private dependenciasService: DependenciasService
   ) { }
 
   ngOnInit(): void {
     if (this.data) {
-      this.titulo = 'Edicion';
       this.Form_Dependencia = this.fb.group({
         nombre: ['', Validators.required],
         sigla: ['', [Validators.required, Validators.maxLength(10)]],
@@ -41,29 +38,22 @@ export class DependenciaDialogComponent implements OnInit {
       });
       this.Form_Dependencia.patchValue(this.data);
     } else {
-      this.titulo = 'Registro';
       this.dependenciasService
-        .getInstituciones()
-        .subscribe((inst) => (this.Instituciones = inst));
+        .getInstitutions()
+        .subscribe((inst) => (this.institutions = inst));
     }
   }
+
   guardar() {
-    if (this.Form_Dependencia.valid) {
-      if (this.data) {
-        this.dependenciasService.edit(
-          this.data.id_dependencia!, this.Form_Dependencia.value
-        ).subscribe(dep => this.dialogRef.close(dep));
-      } else {
-        this.dependenciasService
-          .add(this.Form_Dependencia.value)
-          .subscribe(dep => {
-            dep.institucion = {
-              sigla: this.institucion.sigla,
-              _id: this.institucion.id_institucion
-            }
-            this.dialogRef.close(dep);
-          });
-      }
+    if (this.data) {
+      this.dependenciasService.edit(
+        this.data._id, this.Form_Dependencia.value
+      ).subscribe(dep => this.dialogRef.close(dep));
+    } else {
+      this.dependenciasService.add(this.Form_Dependencia.value)
+        .subscribe(dep => {
+          this.dialogRef.close(dep);
+        });
     }
   }
 }

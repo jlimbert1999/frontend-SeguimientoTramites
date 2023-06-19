@@ -42,7 +42,11 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return
     }
-    this.authService.login(this.loginForm.value!, this.loginForm.get('remember')?.value!).subscribe(data => {
+    this.authService.login({
+      login: this.loginForm.get('login')?.value!,
+      password: this.loginForm.get('password')?.value!
+    }, this.loginForm.get('remember')?.value!).subscribe(data => {
+
       // if (data.imbox > 0) {
       //   this.notificationService.addNotificationEvent('Debe revisar su bandeja de entrada', `USTED TIENE ${data.number_mails} TRAMITES PENDIENTES`)
       // }

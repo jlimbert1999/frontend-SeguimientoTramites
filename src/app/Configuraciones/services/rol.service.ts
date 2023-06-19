@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Rol, RolDto } from '../models/rol.model';
 import { map } from 'rxjs';
+import { role } from '../interfaces/role.interface';
 const base_url = environment.base_url
 
 @Injectable({
@@ -12,16 +13,19 @@ export class RolService {
 
   constructor(private http: HttpClient) { }
   add(Rol: RolDto) {
-    return this.http.post<{ ok: boolean, Rol: Rol }>(`${base_url}/configuraciones/roles`, Rol).pipe(
+    return this.http.post<{ ok: boolean, Rol: Rol }>(`${base_url}/roles`, Rol).pipe(
       map(resp => {
         return resp.Rol
       })
     )
   }
-  get() {
-    return this.http.get<{ ok: boolean, Roles: Rol[] }>(`${base_url}/configuraciones/roles`).pipe(
+  get(limit: number, offset: number) {
+    const params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset)
+    return this.http.get<{ roles: role[], length: number }>(`${base_url}/roles`, { params }).pipe(
       map(resp => {
-        return resp.Roles
+        return { roles: resp.roles, length: resp.length }
       })
     )
   }

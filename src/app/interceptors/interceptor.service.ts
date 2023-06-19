@@ -21,6 +21,7 @@ export class InterceptorService {
     this.loadingService.show()
     return next.handle(reqClone).pipe(
       catchError((Error: HttpErrorResponse) => {
+        console.log('new Error', Error);
         this.handleErrors(Error)
         return throwError(() => Error);
       }),

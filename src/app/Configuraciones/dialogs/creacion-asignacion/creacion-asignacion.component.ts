@@ -51,10 +51,10 @@ export class CreacionAsignacionComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    forkJoin([this.cuentaService.getInstituciones(), this.rolService.get()]).subscribe(
+    forkJoin([this.cuentaService.getInstituciones()]).subscribe(
       data => {
         this.instituciones = data[0]
-        this.roles = data[1]
+        // this.roles = data[1]
       }
     )
 

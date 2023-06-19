@@ -3,10 +3,11 @@ import { HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpHeaders, Htt
 import { environment } from 'src/environments/environment';
 import { Observable, tap, throwError, of, BehaviorSubject, Subject, concat } from 'rxjs';
 import { catchError, map } from 'rxjs/operators'
-import jwt_decode from "jwt-decode";
 import { Router } from '@angular/router';
 import { account } from '../models/account.model';
 import { NotificationService } from 'src/app/home/services/notification.service';
+import { loginData } from '../interfaces/auth.interface';
+import jwtDecode from 'jwt-decode';
 const base_url = environment.base_url
 
 @Injectable({
@@ -27,17 +28,14 @@ export class AuthService {
     return localStorage.getItem('token') || ''
   }
 
-  login(formData: any, recordar: boolean) {
-    if (recordar) {
-      localStorage.setItem('login', formData.login)
-    }
-    else {
-      localStorage.removeItem('login')
-    }
-    return this.http.post<{ ok: boolean, token: string, resources: string[], imbox: number }>(`${base_url}/login`, formData).pipe(
-      map(res => {
-        localStorage.setItem('token', res.token)
-        return { resources: res.resources, imbox: res.imbox }
+  login(formData: loginData, recordar: boolean) {
+    recordar ? localStorage.setItem('login', formData.login) : localStorage.removeItem('login')
+    return this.http.post<{ token: string, resources: string[], imbox?: number }>(`${base_url}/auth`, formData).pipe(
+      map(resp => {
+        this.account = jwtDecode(resp.token)
+        this.resources = resp.resources
+        localStorage.setItem('token', resp.token)
+        return { resources: resp.resources, imbox: resp.imbox }
       })
     )
   }
@@ -47,15 +45,16 @@ export class AuthService {
     this.router.navigate(['/login'])
   }
 
-  verifyToken(): Observable<boolean> {
-    return this.http.get<{ ok: boolean, token: string, resources: string[], code: string, imbox?: number, menu: any[] }>(`${base_url}/login/verify`).pipe(
+  checkAuthStatus(): Observable<boolean> {
+    return this.http.get<{ token: string, resources: string[], code: string, imbox?: number, menu: any[] }>(`${base_url}/auth`).pipe(
       map(resp => {
-        localStorage.setItem('token', resp.token)
-        this.account = jwt_decode(resp.token)
+        console.log(resp);
+        this.account = jwtDecode(resp.token)
         this.resources = resp.resources
+        localStorage.setItem('token', resp.token)
         this.code = resp.code
         this.menu = resp.menu
-        resp.imbox ? this.notificationService.showNotificationPendingMails(resp.imbox) : null
+        // resp.imbox ? this.notificationService.showNotificationPendingMails(resp.imbox) : null
         return true
       }), catchError(err => {
         return of(false)

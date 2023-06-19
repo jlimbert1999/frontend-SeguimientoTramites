@@ -2,60 +2,60 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Dependencia } from '../models/dependencia.interface';
-import { DependenciaModel } from '../models/dependencia.model';
+import { dependency } from '../interfaces/dependency.interface';
+import { institution } from '../interfaces/institution.interface';
+import { CreateDependencyDto } from '../dto/dependency.dto';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
 })
 export class DependenciasService {
-
-  termino_busqueda: string = ""
-  busqueda: boolean = false
-
-
-
   constructor(private http: HttpClient) { }
-  add(dependencia: Dependencia) {
-    return this.http.post<{ ok: boolean, dependencia: Dependencia }>(`${base_url}/dependencias`, dependencia).pipe(
-      map(resp => {
-        return resp.dependencia
-      })
+  getInstitutions() {
+    return this.http.get<institution[]>(`${base_url}/dependencies/institutions`).pipe(
+      map(resp => resp)
     )
   }
-  getInstituciones() {
-    return this.http.get<{ ok: boolean, instituciones: { id_institucion: string, nombre: string, sigla: string }[] }>(`${base_url}/dependencias/instituciones`).pipe(
-      map(resp => resp.instituciones)
-    )
-  }
+
   get(limit: number, offset: number) {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, dependencias: Dependencia[], length: number }>(`${base_url}/dependencias`, { params }).pipe(
+    return this.http.get<{ dependencies: dependency[], length: number }>(`${base_url}/dependencies`, { params }).pipe(
       map(resp => {
-        return { dependencias: resp.dependencias, length: resp.length }
+        return { dependencies: resp.dependencies, length: resp.length }
       })
     )
   }
-  edit(id_dependencia: string, dependencia: { nombre: string, sigla: string }) {
-    return this.http.put<{ ok: boolean, dependencia: DependenciaModel }>(`${base_url}/dependencias/${id_dependencia}`, dependencia).pipe(
-      map(resp => resp.dependencia)
-    )
-  }
-  delete(id_dependencia: string) {
-    return this.http.delete<{ ok: boolean, dependencia: Dependencia }>(`${base_url}/dependencias/${id_dependencia}`).pipe(
-      map(resp => resp.dependencia)
-    )
-  }
-  search(limit: number, offset: number, termino: string) {
+  search(limit: number, offset: number, text: string) {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, dependencias: Dependencia[], length: number }>(`${base_url}/dependencias/search/${termino}`, { params }).pipe(
+    return this.http.get<{ dependencies: dependency[], length: number }>(`${base_url}/dependencies/search/${text}`, { params }).pipe(
       map(resp => {
-        return { dependencias: resp.dependencias, length: resp.length }
+        return { dependencies: resp.dependencies, length: resp.length }
       })
     )
   }
+  add(dependencia: CreateDependencyDto) {
+    return this.http.post<dependency>(`${base_url}/dependencies`, dependencia).pipe(
+      map(resp => {
+        console.log(resp);
+        return resp
+      })
+    )
+  }
+
+  edit(id_dependency: string, { institucion, ...updateDependencyData }: CreateDependencyDto) {
+    return this.http.put<dependency>(`${base_url}/dependencies/${id_dependency}`, updateDependencyData).pipe(
+      map(resp => resp)
+    )
+  }
+
+  delete(id_dependency: string) {
+    return this.http.delete<boolean>(`${base_url}/dependencies/${id_dependency}`).pipe(
+      map(resp => resp)
+    )
+  }
+
 }

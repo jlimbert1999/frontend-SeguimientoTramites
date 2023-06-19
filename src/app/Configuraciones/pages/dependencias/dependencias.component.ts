@@ -1,13 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { Dependencia } from '../../models/dependencia.interface';
-import { DependenciaModel } from '../../models/dependencia.model';
 import { DependenciasService } from '../../services/dependencias.service';
-
 import { DependenciaDialogComponent } from './dependencia-dialog/dependencia-dialog.component';
+import { dependency } from '../../interfaces/dependency.interface';
 
 @Component({
   selector: 'app-dependencias',
@@ -19,9 +16,8 @@ import { DependenciaDialogComponent } from './dependencia-dialog/dependencia-dia
 })
 export class DependenciasComponent implements OnInit {
   text: string = ''
-  dataSource: Dependencia[] = []
-  displayedColumns = ['sigla', 'nombre', 'codigo', 'institucion', 'activo', 'opciones']
-  @ViewChild("txtSearch") private searchInput: ElementRef;
+  dataSource: dependency[] = []
+  displayedColumns = ['sigla', 'nombre', 'codigo', 'institucion', 'activo', 'options']
   constructor(
     public dialog: MatDialog,
     public dependenciasService: DependenciasService,
@@ -34,13 +30,13 @@ export class DependenciasComponent implements OnInit {
   Get() {
     if (this.text !== '') {
       this.dependenciasService.search(this.paginatorService.limit, this.paginatorService.offset, this.text).subscribe(data => {
-        this.dataSource = data.dependencias
+        this.dataSource = data.dependencies
         this.paginatorService.length = data.length
       })
     }
     else {
       this.dependenciasService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-        this.dataSource = data.dependencias
+        this.dataSource = data.dependencies
         this.paginatorService.length = data.length
       })
     }
@@ -50,9 +46,9 @@ export class DependenciasComponent implements OnInit {
 
   Add() {
     const dialogRef = this.dialog.open(DependenciaDialogComponent, {
-      width: '700px'
+      width: '900px'
     });
-    dialogRef.afterClosed().subscribe((result: Dependencia) => {
+    dialogRef.afterClosed().subscribe((result: dependency) => {
       if (result) {
         if (this.dataSource.length === this.paginatorService.limit) {
           this.dataSource.pop()
@@ -62,27 +58,26 @@ export class DependenciasComponent implements OnInit {
       }
     });
   }
-  Edit(data: Dependencia) {
+  Edit(data: dependency) {
     const dialogRef = this.dialog.open(DependenciaDialogComponent, {
-      width: '700px',
+      width: '900px',
       data
     });
-    dialogRef.afterClosed().subscribe((result: Dependencia) => {
+    dialogRef.afterClosed().subscribe((result: dependency) => {
       if (result) {
-        let newData = [...this.dataSource]
-        const indexFound = newData.findIndex(element => element.id_dependencia === data.id_dependencia)
-        newData[indexFound] = result
-        this.dataSource = newData
+        console.log(result);
+        const indexFound = this.dataSource.findIndex(element => element._id === result._id)
+        this.dataSource[indexFound] = result
+        this.dataSource = [...this.dataSource]
       }
     });
   }
 
-  Delete(data: Dependencia) {
-    this.dependenciasService.delete(data.id_dependencia).subscribe(dependencia => {
-      let newData = [...this.dataSource]
-      const indexFound = newData.findIndex(element => element.id_dependencia === data.id_dependencia)
-      newData[indexFound] = dependencia
-      this.dataSource = newData
+  Delete(data: dependency) {
+    this.dependenciasService.delete(data._id).subscribe(isActive => {
+      const indexFound = this.dataSource.findIndex(element => element._id === data._id)
+      this.dataSource[indexFound].activo = isActive
+      this.dataSource = [...this.dataSource]
     })
   }
   applyFilter(event: Event) {

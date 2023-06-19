@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot) {
-    return this.authService.verifyToken().pipe(
+    return this.authService.checkAuthStatus().pipe(
       tap(isAuthenticated => {
         if (!isAuthenticated) {
           localStorage.removeItem('token');

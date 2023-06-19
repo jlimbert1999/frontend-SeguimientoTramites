@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { Institucion } from '../../models/institucion.model';
 import { InstitucionesService } from '../../services/instituciones.service';
 import { InstitucionDialogComponent } from './institucion-dialog/institucion-dialog.component';
+import { institution } from '../../interfaces/institution.interface';
 
 @Component({
   selector: 'app-instituciones',
@@ -15,8 +15,8 @@ import { InstitucionDialogComponent } from './institucion-dialog/institucion-dia
   ]
 })
 export class InstitucionesComponent implements OnInit {
-  displayedColumns: string[] = ['sigla', 'nombre', 'situacion', 'opciones'];
-  dataSource: Institucion[] = []
+  displayedColumns: string[] = ['sigla', 'nombre', 'situacion', 'options'];
+  dataSource: institution[] = []
   text: string = ''
 
   constructor(
@@ -27,14 +27,13 @@ export class InstitucionesComponent implements OnInit {
 
   ngOnInit(): void {
     this.Get()
-
   }
 
   Add() {
     const dialogRef = this.dialog.open(InstitucionDialogComponent, {
       width: '700px'
     });
-    dialogRef.afterClosed().subscribe((result: Institucion) => {
+    dialogRef.afterClosed().subscribe((result: institution) => {
       if (result) {
         if (this.dataSource.length === this.paginatorService.limit) {
           this.dataSource.pop()
@@ -44,46 +43,45 @@ export class InstitucionesComponent implements OnInit {
       }
     });
   }
-  Edit(data: Institucion) {
+  Edit(data: institution) {
     const dialogRef = this.dialog.open(InstitucionDialogComponent, {
       width: '700px',
       data
     });
-    dialogRef.afterClosed().subscribe((result: Institucion) => {
+    dialogRef.afterClosed().subscribe((result: institution) => {
       if (result) {
-        let newData = [...this.dataSource]
-        const foundIndex = newData.findIndex(int => int.id_institucion === data.id_institucion);
-        newData[foundIndex] = result;
-        this.dataSource = newData
+        const foundIndex = this.dataSource.findIndex(inst => inst._id === result._id);
+        if (foundIndex >= 0) {
+          this.dataSource[foundIndex] = result
+          this.dataSource = [...this.dataSource]
+        }
       }
     });
   }
-  Delete(data: Institucion) {
-    this.institucionesService.delete(data.id_institucion!).subscribe(inst => {
-      let newData = [...this.dataSource]
-      const foundIndex = newData.findIndex(int => int.id_institucion === data.id_institucion);
-      newData[foundIndex] = inst
-      this.dataSource = newData
+  Delete(data: institution) {
+    this.institucionesService.delete(data._id).subscribe(newState => {
+      const foundIndex = this.dataSource.findIndex(inst => inst._id === data._id);
+      if (foundIndex >= 0) {
+        this.dataSource[foundIndex].activo = newState
+        this.dataSource = [...this.dataSource]
+      }
     })
   }
 
   Get() {
     if (this.text !== '') {
       this.institucionesService.search(this.paginatorService.limit, this.paginatorService.offset, this.text).subscribe(data => {
-        this.dataSource = data.instituciones
+        this.dataSource = data.institutions
         this.paginatorService.length = data.length
       })
     }
     else {
       this.institucionesService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-        this.dataSource = data.instituciones
+        this.dataSource = data.institutions
         this.paginatorService.length = data.length
       })
     }
-
   }
-
-
 
   applyFilter(event: Event) {
     this.paginatorService.offset = 0

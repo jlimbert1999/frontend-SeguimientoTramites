@@ -63,10 +63,10 @@ export class CuentaDialogComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    forkJoin([this.cuentasService.getInstituciones(), this.rolService.get()]).subscribe(
+    forkJoin([this.cuentasService.getInstituciones()]).subscribe(
       data => {
         this.instituciones = data[0]
-        this.roles = data[1]
+        // this.roles = data[1]
       }
     )
 

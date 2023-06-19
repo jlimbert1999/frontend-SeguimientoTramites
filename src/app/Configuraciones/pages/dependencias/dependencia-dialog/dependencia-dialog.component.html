@@ -1,17 +1,15 @@
-<h2 mat-dialog-title>{{titulo}} de dependencia</h2>
+<h2 mat-dialog-title>{{data?'Edicion':'Registro'}} de dependencia</h2>
 <mat-dialog-content class="mat-typography">
     <form [formGroup]="Form_Dependencia">
         <div *ngIf="!data" class="row">
             <mat-form-field appearance="fill">
                 <mat-label>Seleccione la institucion</mat-label>
                 <mat-select formControlName="institucion">
-                    <mat-option (onSelectionChange)="institucion=inst" *ngFor="let inst of Instituciones"
-                        [value]="inst.id_institucion">
+                    <mat-option *ngFor="let inst of institutions" [value]="inst._id">
                         {{inst.nombre}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-
         </div>
         <div class="row">
             <div class="col-8">
@@ -41,6 +39,6 @@
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button class="close-button" mat-button mat-dialog-close>Cancelar</button>
-    <button class="save-button" mat-button [disabled]="Form_Dependencia.invalid" (click)="guardar()">Guardar</button>
+    <button mat-flat-button color="warn" mat-dialog-close>Cancelar</button>
+    <button mat-flat-button color="primary" [disabled]="Form_Dependencia.invalid" (click)="guardar()">Guardar</button>
 </mat-dialog-actions>

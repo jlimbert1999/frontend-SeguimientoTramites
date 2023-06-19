@@ -46,10 +46,10 @@ export class EdicionCuentaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    forkJoin([this.cuentaService.getDetails(this.data._id), this.rolService.get()]).subscribe(
+    forkJoin([this.cuentaService.getDetails(this.data._id)]).subscribe(
       data => {
         this.details = data[0]
-        this.roles = data[1]
+        // this.roles = data[1]
         this.Form_Cuenta.patchValue(this.data)
       }
     )

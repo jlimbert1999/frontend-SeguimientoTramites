@@ -54,29 +54,29 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.themeService.startTheme()
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
-    this.socketService.setupSocketConnection(this.authService.token)
+    // this.socketService.setupSocketConnection(this.authService.token)
   }
   ngOnDestroy(): void {
     this.mobileQuery!.removeListener(this._mobileQueryListener);
   }
 
   ngOnInit(): void {
-    this.socketService.listenUserConection().subscribe(users => {
-      this.socketService.onlineUsers = users
-    })
-    this.socketService.listenMails().subscribe(mail => {
-      this.bandejaService.Mails = [mail, ...this.bandejaService.Mails]
-      this.notificationService.showNotificationNewMail(mail.emisor.funcionario)
-    })
-    this.socketService.listenExpel().subscribe(message => {
-      Swal.fire({
-        icon: 'info',
-        title: 'USTED HA SIDO EXPULSADO DEL GRUPO DE TRABAJO',
-        text: message,
-        confirmButtonText: 'Aceptar'
-      })
-      this.logout()
-    })
+    // this.socketService.listenUserConection().subscribe(users => {
+    //   this.socketService.onlineUsers = users
+    // })
+    // this.socketService.listenMails().subscribe(mail => {
+    //   this.bandejaService.Mails = [mail, ...this.bandejaService.Mails]
+    //   this.notificationService.showNotificationNewMail(mail.emisor.funcionario)
+    // })
+    // this.socketService.listenExpel().subscribe(message => {
+    //   Swal.fire({
+    //     icon: 'info',
+    //     title: 'USTED HA SIDO EXPULSADO DEL GRUPO DE TRABAJO',
+    //     text: message,
+    //     confirmButtonText: 'Aceptar'
+    //   })
+    //   this.logout()
+    // })
   }
   editAccount() {
     this.router.navigate(['home/perfil', this.authService.account.id_account])
