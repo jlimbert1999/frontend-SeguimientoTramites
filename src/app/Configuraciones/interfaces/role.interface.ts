@@ -1,8 +1,13 @@
 export interface role {
-    _id: string;
-    role: string;
-    privileges: {
-        resource: string
-        actions: string[]
-    }[];
+    _id:        string;
+    role:       string;
+    privileges: privilege[];
+}
+
+export interface privilege {
+    resource: string;
+    create:   boolean;
+    update:   boolean;
+    read:     boolean;
+    delete:   boolean;
 }

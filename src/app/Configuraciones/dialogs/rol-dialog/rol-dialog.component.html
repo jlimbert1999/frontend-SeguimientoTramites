@@ -2,66 +2,72 @@
 <div mat-dialog-content>
     <form [formGroup]="Form_Role">
         <div class="row">
-            <div class="col-sm-10">
-                <mat-form-field appearance="fill" class="example-full-width">
-                    <input matInput formControlName="role" placeholder="Nombre del rol">
-                    <mat-error *ngIf="Form_Role.controls['role'].invalid">Ingrese el nombre del rol</mat-error>
-                </mat-form-field>
+            <div class="col-sm-4">
+                <div class="row">
+                    <div class="col-12">
+                        <mat-form-field appearance="fill" class="example-full-width">
+                            <input matInput formControlName="role" placeholder="Nombre del rol">
+                            <mat-error *ngIf="Form_Role.controls['role'].invalid">Ingrese el nombre del rol</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-12">
+                        <button mat-stroked-button (click)="addPrivilege()">
+                            Agregar
+                            <mat-icon class="add-course-btn">add</mat-icon>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-2">
-                <button mat-mini-fab (click)="addPrivilege()">
-                    <mat-icon class="add-course-btn">add</mat-icon>
-                </button>
+            <div class="col-sm-8">
+                <div class="container-privileges">
+                    <table class="table text-center">
+                        <thead>
+                            <tr>
+                                <th scope="col">Modulo</th>
+                                <th scope="col">Leer</th>
+                                <th scope="col">Crear</th>
+                                <th scope="col">Editar</th>
+                                <th scope="col">Eliminar</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            <ng-container formArrayName="privileges"
+                                *ngFor="let privilege of privileges.controls; let i = index">
+                                <tr [formGroupName]="i">
+                                    <td>
+                                        <mat-form-field appearance="fill" class="example-full-width">
+                                            <mat-select (selectionChange)="disableSelectedModules()"
+                                                formControlName="resource" placeholder="Seleccione el modulo">
+                                                <mat-optgroup *ngFor="let module of modules" [label]="module.group">
+                                                    <mat-option *ngFor="let resource of module.resources"
+                                                        [value]="resource.value" [disabled]="resource.disabled">
+                                                        {{resource.viewValue}}
+                                                    </mat-option>
+                                                </mat-optgroup>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                    <td> <mat-checkbox formControlName="read"></mat-checkbox></td>
+                                    <td> <mat-checkbox formControlName="create"> </mat-checkbox></td>
+                                    <td> <mat-checkbox formControlName="update"></mat-checkbox></td>
+                                    <td> <mat-checkbox formControlName="delete"></mat-checkbox></td>
+                                    <td>
+                                        <button (click)="removePrivilege(i)" mat-icon-button>
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <div class="container-privileges">
-            <table class="table table-bordered text-center w-100">
-                <thead>
-                    <tr>
-                        <th scope="col">Modulo</th>
-                        <th scope="col">Leer</th>
-                        <th scope="col">Crear</th>
-                        <th scope="col">Editar</th>
-                        <th scope="col">Eliminar</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                    <ng-container formArrayName="privileges"
-                        *ngFor="let privilege of privileges.controls; let i = index">
-                        <tr [formGroupName]="i">
-                            <td>
-                                <mat-form-field appearance="fill" class="example-full-width">
-                                    <mat-select (selectionChange)="disableModule($event.value, true)"
-                                        formControlName="resource" placeholder="Lesson level">
-                                        <mat-optgroup *ngFor="let module of modules" [label]="module.group">
-                                            <mat-option *ngFor="let resource of module.resources"
-                                                [value]="resource.value" [disabled]="resource.disabled">
-                                                {{resource.viewValue}}
-                                            </mat-option>
-                                        </mat-optgroup>
-                                    </mat-select>
-                                </mat-form-field>
-                            </td>
-                            <td> <mat-checkbox formControlName="read"></mat-checkbox></td>
-                            <td> <mat-checkbox formControlName="create"> </mat-checkbox></td>
-                            <td> <mat-checkbox formControlName="update"></mat-checkbox></td>
-                            <td> <mat-checkbox formControlName="delete"></mat-checkbox></td>
-                            <td>
-                                <button (click)="removePrivilege(i)" mat-icon-button>
-                                    <mat-icon>delete</mat-icon>
-                                </button>
-                            </td>
-                        </tr>
-                    </ng-container>
-                </tbody>
-            </table>
-        </div>
-
     </form>
 </div>
 
 <div mat-dialog-actions align="end">
     <button mat-button [mat-dialog-close]="">CANCELAR</button>
-    <button mat-button [disabled]="Form_Role.invalid" (click)="Save()">ACEPTAR</button>
+    <button mat-button [disabled]="Form_Role.invalid" (click)="save()">ACEPTAR</button>
 </div>

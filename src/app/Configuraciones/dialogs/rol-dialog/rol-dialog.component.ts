@@ -1,8 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { RolService } from '../../services/rol.service';
 import { Rol, RolDto } from '../../models/rol.model';
+import { privilege, role } from '../../interfaces/role.interface';
 
 @Component({
   selector: 'app-rol-dialog',
@@ -10,10 +11,6 @@ import { Rol, RolDto } from '../../models/rol.model';
   styleUrls: ['./rol-dialog.component.scss']
 })
 export class RolDialogComponent implements OnInit {
-  Form_Role: FormGroup = this.fb.group({
-    role: ['', Validators.required],
-    privileges: this.fb.array([])
-  });
   modules = [
     {
       group: 'Administracion tramites',
@@ -51,24 +48,24 @@ export class RolDialogComponent implements OnInit {
         { value: 'instituciones', viewValue: 'Instituciones', disabled: false },
         { value: 'dependencias', viewValue: 'Dependencias', disabled: false },
       ],
-    },
+    }
   ]
-
-
+  Form_Role: FormGroup = this.fb.group({
+    role: ['', Validators.required],
+    privileges: this.fb.array<privilege>([], this.minLengthFormGroupArray(1))
+  });
 
   constructor(
     public dialogRef: MatDialogRef<RolDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Rol,
+    @Inject(MAT_DIALOG_DATA) public data: role,
     private fb: FormBuilder,
     private rolService: RolService
   ) {
-
-
   }
+
   ngOnInit(): void {
     if (this.data) {
-      // create form for charge data
-      for (let index = 0; index < this.data.privileges.length; index++) {
+      this.data.privileges.forEach(privilege => {
         const priviligeForm = this.fb.group({
           resource: ['', Validators.required],
           create: false,
@@ -76,10 +73,10 @@ export class RolDialogComponent implements OnInit {
           read: false,
           delete: false
         });
-        this.privileges.push(priviligeForm);
-        this.disableModule(this.data.privileges[index].resource, true)
-      }
+        this.privileges.push(priviligeForm)
+      })
       this.Form_Role.patchValue(this.data)
+      this.disableSelectedModules()
     }
   }
   get privileges() {
@@ -94,39 +91,50 @@ export class RolDialogComponent implements OnInit {
       read: false,
       delete: false
     });
-    // this.privileges.(priviligeForm);
+    this.privileges.insert(0, priviligeForm);
   }
 
   removePrivilege(lessonIndex: number) {
-    const value = this.privileges.at(lessonIndex).value
-    this.disableModule(value.resource, false)
     this.privileges.removeAt(lessonIndex);
+    this.disableSelectedModules()
   }
 
 
-  disableModule(value: string, disable: boolean) {
-    // disable or enable modules if selected
+  disableSelectedModules() {
+    const selectedPrivileges: privilege[] = this.privileges.value
+    const selectedResources = selectedPrivileges.map(el => el.resource)
     this.modules.map(module => {
-      const pos = module.resources.findIndex(resource => resource.value === value)
-      if (pos !== -1) module.resources[pos].disabled = disable
+      module.resources.forEach((element, index) => {
+        if (selectedResources.includes(element.value)) {
+          module.resources[index].disabled = true
+        }
+        else {
+          module.resources[index].disabled = false
+        }
+      })
       return module
     })
   }
 
 
 
-  Save() {
-    console.log(this.Form_Role.value);
-    // if (this.data) {
-    //   this.rolService.edit(this.data._id, this.Form_Role.value).subscribe(Rol => {
-    //     this.dialogRef.close(Rol)
-    //   })
-    // }
-    // else {
-    //   this.rolService.add(this.Form_Role.value).subscribe(Rol => {
-    //     this.dialogRef.close(Rol)
-    //   })
-    // }
+  save() {
+    if (this.data) {
+      this.rolService.edit(this.data._id, this.Form_Role.value).subscribe(role => {
+        this.dialogRef.close(role)
+      })
+    }
+    else {
+      this.rolService.add(this.Form_Role.value).subscribe(role => {
+        this.dialogRef.close(role)
+      })
+    }
+  }
 
+  minLengthFormGroupArray(min: number): ValidatorFn | any {
+    return (control: AbstractControl[]) => {
+      if (!(control instanceof FormArray)) return;
+      return control.length < min ? { minLength: true } : null;
+    }
   }
 }

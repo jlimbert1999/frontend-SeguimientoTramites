@@ -16,7 +16,7 @@ import { role } from '../../interfaces/role.interface';
   ]
 })
 export class RolesComponent {
-  displayedColumns: string[] = ['position', 'rol', 'privilegios', 'opciones'];
+  displayedColumns: string[] = ['rol', 'privilegios', 'opciones'];
   dataSource: role[] = [];
 
   constructor(
@@ -25,15 +25,14 @@ export class RolesComponent {
     private paginationService: PaginatorService
   ) {
     this.rolService.get(this.paginationService.limit, this.paginationService.offset).subscribe(data => {
-      console.log(data);
       this.dataSource = data.roles
     })
   }
   Add(): void {
     const dialogRef = this.dialog.open(RolDialogComponent, {
-      width: '1000px'
+      width: '1200px'
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: role) => {
       if (result) {
         this.dataSource = [result, ...this.dataSource]
       }
@@ -41,18 +40,15 @@ export class RolesComponent {
   }
   Edit(role: role) {
     const dialogRef = this.dialog.open(RolDialogComponent, {
-      width: '1000px',
+      width: '1200px',
       data: role
     });
-    dialogRef.afterClosed().subscribe((result: Rol) => {
-      // if (result) {
-      //   this.dataSource = this.dataSource.map(element => {
-      //     if (element._id === result._id) {
-      //       element = result
-      //     }
-      //     return element
-      //   })
-      // }
+    dialogRef.afterClosed().subscribe((result: role) => {
+      if (result) {
+        const index = this.dataSource.findIndex(element => element._id === result._id);
+        this.dataSource[index] = result
+        this.dataSource = [...this.dataSource]
+      }
     });
   }
 }

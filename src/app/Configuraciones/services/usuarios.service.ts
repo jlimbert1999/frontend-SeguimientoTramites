@@ -20,6 +20,7 @@ export class UsuariosService {
       })
     )
   }
+
   agregar_multiples_funcionarios(funcionarios: Funcionario[]) {
     return this.http.post<{ ok: boolean, funcionarios: Funcionario }>(`${base_url}/usuarios/cargar`, { funcionarios }).pipe(
       map(resp => {
@@ -51,6 +52,7 @@ export class UsuariosService {
       map(resp => {
         return { funcionarios: resp.funcionarios, length: resp.length }
       })
+      
     )
   }
   delete(id_funcionario: string) {

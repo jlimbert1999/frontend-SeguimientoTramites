@@ -1,19 +1,12 @@
 <app-toolbar [title]="'ROLES'" [showAdd]="true" (add)="Add()"></app-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
-
-        <ng-container matColumnDef="position">
-            <th mat-header-cell *matHeaderCellDef> No. </th>
-            <td mat-cell *matCellDef="let element; let i=index"> {{i+1}}</td>
-        </ng-container>
-
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="rol">
             <th mat-header-cell *matHeaderCellDef> Rol </th>
             <td mat-cell *matCellDef="let element">
                 {{element.role}}
             </td>
         </ng-container>
-
 
         <ng-container matColumnDef="privilegios">
             <th mat-header-cell *matHeaderCellDef> Privilegios</th>

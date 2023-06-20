@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Rol, RolDto } from '../models/rol.model';
 import { map } from 'rxjs';
 import { role } from '../interfaces/role.interface';
+import { rolDto } from '../dto/role.dto';
 const base_url = environment.base_url
 
 @Injectable({
@@ -12,13 +13,6 @@ const base_url = environment.base_url
 export class RolService {
 
   constructor(private http: HttpClient) { }
-  add(Rol: RolDto) {
-    return this.http.post<{ ok: boolean, Rol: Rol }>(`${base_url}/roles`, Rol).pipe(
-      map(resp => {
-        return resp.Rol
-      })
-    )
-  }
   get(limit: number, offset: number) {
     const params = new HttpParams()
       .set('limit', limit)
@@ -29,11 +23,15 @@ export class RolService {
       })
     )
   }
-  edit(id: string, Rol: Rol) {
-    return this.http.put<{ ok: boolean, Rol: Rol }>(`${base_url}/configuraciones/roles/${id}`, Rol).pipe(
-      map(resp => {
-        return resp.Rol
-      })
+  add(role: rolDto) {
+    return this.http.post<role>(`${base_url}/roles`, role).pipe(
+      map(resp => resp)
+    )
+  }
+
+  edit(id: string, role: rolDto) {
+    return this.http.put<role>(`${base_url}/roles/${id}`, role).pipe(
+      map(resp => resp)
     )
   }
 }
