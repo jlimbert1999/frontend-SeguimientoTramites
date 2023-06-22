@@ -33,9 +33,9 @@ export class UsuariosService {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, funcionarios: Funcionario[], length: number }>(`${base_url}/funcionarios`, { params }).pipe(
+    return this.http.get<{ ok: boolean, officers: Funcionario[], length: number }>(`${base_url}/officer`, { params }).pipe(
       map(resp => {
-        return { funcionarios: resp.funcionarios, length: resp.length }
+        return { funcionarios: resp.officers, length: resp.length }
       })
     )
   }
@@ -52,7 +52,7 @@ export class UsuariosService {
       map(resp => {
         return { funcionarios: resp.funcionarios, length: resp.length }
       })
-      
+
     )
   }
   delete(id_funcionario: string) {

@@ -9,6 +9,7 @@ import { InstitucionesComponent } from './pages/instituciones/instituciones.comp
 import { TiposTramitesComponent } from './pages/tipos-tramites/tipos-tramites.component';
 import { RolesComponent } from './pages/roles/roles.component';
 import { RoleGuard } from '../guards/role.guard';
+import { CargosComponent } from './pages/cargos/cargos.component';
 
 
 const routes: Routes = [
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'cuentas', component: CuentasComponent, canActivate: [RoleGuard], data: { resource: 'cuentas' } },
   { path: 'tipos', component: TiposTramitesComponent, canActivate: [RoleGuard], data: { resource: 'tipos' } },
   { path: 'roles', component: RolesComponent, canActivate: [RoleGuard], data: { resource: 'roles' } },
+  { path: 'cargos', component: CargosComponent, canActivate: [RoleGuard], data: { resource: 'cargos' } },
   { path: 'groupware', component: GroupwareComponent },
   { path: 'organigrama', component: OrganizationChartComponent },
 ];

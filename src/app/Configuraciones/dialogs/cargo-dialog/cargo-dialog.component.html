@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Cargo</h2>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="FormJob">
+        <div class="row">
+            <mat-form-field>
+                <mat-label>Input</mat-label>
+                <input formControlName="nombre" matInput>
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <app-server-mat-select-search [placeholder]="'Buscar superior'" [data]="superior"
+                (eventSelectedOption)="selectSuperior($event)" [pathPropertyOfObjectDisplay]="'nombre'"
+                (eventSearch)="searchSuperior($event)"></app-server-mat-select-search>
+        </div>
+    </form>
+
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="true" (click)="save()">Install</button>
+</mat-dialog-actions>

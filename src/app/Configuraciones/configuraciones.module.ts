@@ -21,6 +21,9 @@ import { TiposTramitesComponent } from './pages/tipos-tramites/tipos-tramites.co
 import { DialogTiposComponent } from './pages/tipos-tramites/dialog-tipos/dialog-tipos.component';
 import { RolesComponent } from './pages/roles/roles.component';
 import { RolDialogComponent } from './dialogs/rol-dialog/rol-dialog.component';
+import { CargosComponent } from './pages/cargos/cargos.component';
+import { CargoDialogComponent } from './dialogs/cargo-dialog/cargo-dialog.component';
+import { OrganizationComponent } from './pages/organization/organization.component';
 
 
 
@@ -41,7 +44,10 @@ import { RolDialogComponent } from './dialogs/rol-dialog/rol-dialog.component';
     DetallesMovilidadComponent,
     EdicionCuentaComponent,
     RolesComponent,
-    RolDialogComponent
+    RolDialogComponent,
+    CargosComponent,
+    CargoDialogComponent,
+    OrganizationComponent
   ],
   imports: [
     CommonModule,
@@ -50,7 +56,8 @@ import { RolDialogComponent } from './dialogs/rol-dialog/rol-dialog.component';
     MaterialModule,
     HttpClientModule,
     SharedModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    
   ]
 })
 export class ConfiguracionesModule { }

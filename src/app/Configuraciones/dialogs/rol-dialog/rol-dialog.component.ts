@@ -43,6 +43,7 @@ export class RolDialogComponent implements OnInit {
       resources: [
         { value: 'tipos', viewValue: 'Tipos de Tramites', disabled: false },
         { value: 'usuarios', viewValue: 'Funcionarios', disabled: false },
+        { value: 'cargos', viewValue: 'Cargos', disabled: false },
         { value: 'roles', viewValue: 'Roles', disabled: false },
         { value: 'cuentas', viewValue: 'Cuentas', disabled: false },
         { value: 'instituciones', viewValue: 'Instituciones', disabled: false },
@@ -115,8 +116,6 @@ export class RolDialogComponent implements OnInit {
       return module
     })
   }
-
-
 
   save() {
     if (this.data) {
