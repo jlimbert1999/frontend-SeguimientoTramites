@@ -38,7 +38,7 @@ export class CargoService {
     )
   }
   edit(id: string, job: job) {
-    return this.http.put<job>(`${base_url}/jobs/${id}`, { job }).pipe(
+    return this.http.put<job>(`${base_url}/jobs/${id}`, job).pipe(
       map(resp => resp)
     )
   }

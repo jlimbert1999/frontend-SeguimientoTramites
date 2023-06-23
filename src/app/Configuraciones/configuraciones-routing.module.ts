@@ -10,6 +10,7 @@ import { TiposTramitesComponent } from './pages/tipos-tramites/tipos-tramites.co
 import { RolesComponent } from './pages/roles/roles.component';
 import { RoleGuard } from '../guards/role.guard';
 import { CargosComponent } from './pages/cargos/cargos.component';
+import { OrganizationComponent } from './pages/organization/organization.component';
 
 
 const routes: Routes = [

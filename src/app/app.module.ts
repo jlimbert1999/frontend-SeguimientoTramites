@@ -23,7 +23,6 @@ import { TramitesModule } from './Tramites/tramites.module';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { HomeModule } from './home/home.module';
 import { SharedModule } from "./shared/shared.module";
-
 registerLocaleData(localeEs, 'es');
 
 @NgModule({

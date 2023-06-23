@@ -2,15 +2,34 @@
 <mat-dialog-content class="mat-typography">
     <form [formGroup]="FormJob">
         <div class="row">
-            <mat-form-field>
-                <mat-label>Input</mat-label>
-                <input formControlName="nombre" matInput>
-            </mat-form-field>
+            <div class="col-sm-8">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Input</mat-label>
+                    <input formControlName="nombre" matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-sm-4">
+                <mat-checkbox class="example-margin">Superior</mat-checkbox>
+            </div>
         </div>
         <div class="row">
             <app-server-mat-select-search [placeholder]="'Buscar superior'" [data]="superior"
                 (eventSelectedOption)="selectSuperior($event)" [pathPropertyOfObjectDisplay]="'nombre'"
-                (eventSearch)="searchSuperior($event)"></app-server-mat-select-search>
+                (eventSearch)="searchDependents($event)"></app-server-mat-select-search>
+        </div>
+        <div class="row">
+            <mat-list>
+                <div mat-subheader>Cargos</div>
+                <mat-list-item *ngFor="let folder of dependents">
+                    <mat-icon matListItemIcon>folder</mat-icon>
+                    <div matListItemTitle>{{folder.nombre}}</div>
+                    <button mat-icon-button matListItemMeta>
+                        <mat-icon>info</mat-icon>
+                    </button>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+
+            </mat-list>
         </div>
     </form>
 

@@ -57,7 +57,7 @@ import { OrganizationComponent } from './pages/organization/organization.compone
     HttpClientModule,
     SharedModule,
     NgxMatSelectSearchModule,
-    
+
   ]
 })
 export class ConfiguracionesModule { }

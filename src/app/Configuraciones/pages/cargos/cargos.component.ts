@@ -43,7 +43,7 @@ export class CargosComponent {
 
   Edit(cargo: any) {
     const dialogRef = this.dialog.open(CargoDialogComponent, {
-      width: '1200px',
+      width: '800px',
       data: cargo
     });
     // dialogRef.afterClosed().subscribe((result: role) => {

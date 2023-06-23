@@ -11,6 +11,7 @@ import { job } from '../../interfaces/job.interface';
 })
 export class CargoDialogComponent {
   superior: any[] = []
+  dependents: job[] = []
   FormJob: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
     superior: ['', Validators.required]
@@ -20,12 +21,12 @@ export class CargoDialogComponent {
     private cargoService: CargoService,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<CargoDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: job,) {
+    @Inject(MAT_DIALOG_DATA) public data: job) {
     this.FormJob.patchValue(data)
 
   }
 
-  searchSuperior(text: string) {
+  searchDependents(text: string) {
     this.cargoService.searchSuperior(text).subscribe(jobs => {
       this.superior = jobs
     })
@@ -33,10 +34,11 @@ export class CargoDialogComponent {
 
   save() {
     if (this.data) {
-      this.cargoService.edit(this.data._id, this.FormJob.value).subscribe(data=>{
+      this.cargoService.edit(this.data._id, this.FormJob.value).subscribe(data => {
         console.log(data);
       })
       console.log('update');
+
     }
   }
 
