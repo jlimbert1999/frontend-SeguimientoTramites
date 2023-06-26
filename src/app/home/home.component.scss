@@ -31,15 +31,6 @@ h1.example-app-name {
 }
 
 
-
-
-/* .mat-mdc-list-item.active {
-    background-color: #64B5F6;
-    color: white;
-    border-left: 8px solid #1E88E5;
-    width: calc(100% - 8px) !important;
-} */
-
 .load-spiner {
     position: absolute;
     top: 50%;
@@ -121,34 +112,14 @@ mat-card-subtitle {
     padding-left: 15px !important;
 }
 
-// .active {
-//     background-color: #3A86FF;
-// }
-
-.active a {
+.active {
+    background-color: #3A86FF;
+}
+.active span {
     color: white;
 }
 
-.active {
-    background-color: #126782;
-}
 
 .mat-badge-medium.mat-badge-above .mat-badge-content {
     top: unset;
-}
-
-.panel {
-    background-color: #002c48;
-    background-image: url(../../assets/img/logoo.png);
-    background-size: 250px;
-    background-repeat: no-repeat;
-    background-position: 10px 500px;
-}
-
-.panel .mat-icon {
-    color: white;
-}
-
-.my-toolbar {
-    background-color: #002c48;
 }

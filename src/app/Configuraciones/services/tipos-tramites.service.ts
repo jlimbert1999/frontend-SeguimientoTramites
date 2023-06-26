@@ -29,9 +29,9 @@ export class TiposTramitesService {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, tipos: TipoTramite[], length: number }>(`${base_url}/configuraciones/tipos`, { params }).pipe(
+    return this.http.get<{ typesProcedures: TipoTramite[], length: number }>(`${base_url}/type-procedure`, { params }).pipe(
       map(resp => {
-        return { tipos: resp.tipos, length: resp.length }
+        return { tipos: resp.typesProcedures, length: resp.length }
       })
     )
   }

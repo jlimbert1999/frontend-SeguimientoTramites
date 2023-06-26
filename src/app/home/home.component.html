@@ -2,7 +2,7 @@
   <mat-sidenav-container class="example-sidenav-container" [ngClass]="">
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
       [opened]="mobileQuery.matches ===false" class="panel">
-      
+
       <mat-card class="card-profile footer">
         <mat-card-header>
           <div mat-card-avatar class="card-profile-image"></div>
@@ -11,7 +11,7 @@
           <mat-card-subtitle>{{authService.account.officer.jobtitle|slice:0:25}}</mat-card-subtitle>
           <div style="flex-grow: 1"></div>
           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-            <mat-icon style="color: black;">more_vert</mat-icon>
+            <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item [matMenuTriggerFor]="themes">
@@ -22,7 +22,7 @@
               <mat-icon>dataset</mat-icon>
               <span>Recursos</span>
             </button>
-            
+
             <button (click)="editAccount()" mat-menu-item>
               <mat-icon>manage_accounts</mat-icon>
               <span>Configurar cuenta</span>
@@ -56,10 +56,11 @@
 
       <ng-template #parentMenu let-menu="menu">
         <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="active">
-          <mat-icon *ngIf="menu.routerLink.includes('entrada'); else item" matListItemIcon [matBadge]="(numberMails$|async)!|badge"
-            matBadgeColor="warn" [matBadgeHidden]="(numberMails$|async)===0">{{menu.icon}}</mat-icon>
+          <mat-icon *ngIf="menu.routerLink.includes('entrada'); else item" matListItemIcon
+            [matBadge]="(numberMails$|async)!|badge" matBadgeColor="warn"
+            [matBadgeHidden]="(numberMails$|async)===0">{{menu.icon}}</mat-icon>
           <ng-template #item> <mat-icon matListItemIcon>{{menu.icon}}</mat-icon></ng-template>
-          <a style="color:white" matListItemTitle>{{ menu.text }}</a>
+          <span matListItemTitle>{{ menu.text }}</span>
         </mat-list-item>
         <mat-divider></mat-divider>
       </ng-template>
@@ -67,13 +68,15 @@
       <ng-template #childMenu let-menu="menu">
         <mat-expansion-panel [class.mat-elevation-z0]="true">
           <mat-expansion-panel-header>
-            <mat-icon  mat-list-icon>{{menu.icon}}</mat-icon>{{menu.text}}
+            <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>{{menu.text}}
           </mat-expansion-panel-header>
           <mat-nav-list>
-            <mat-list-item [routerLink]="submenu.routerLink" *ngFor="let submenu of menu.children" routerLinkActive="active">
-              <mat-icon>{{submenu.icon}}</mat-icon> {{submenu.text}}
+            <mat-list-item [routerLink]="submenu.routerLink" *ngFor="let submenu of menu.children"
+              routerLinkActive="active">
+              <mat-icon matListItemIcon>{{submenu.icon}}</mat-icon>
+              <span matListItemTitle>{{ submenu.text }}</span>
+             
             </mat-list-item>
-            <mat-divider></mat-divider>
           </mat-nav-list>
         </mat-expansion-panel>
       </ng-template>

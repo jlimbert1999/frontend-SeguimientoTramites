@@ -12,6 +12,7 @@ import { UsuariosService } from 'src/app/Configuraciones/services/usuarios.servi
 })
 export class UsuarioDialogComponent implements OnInit {
   titulo: string
+  imageURL: string;
   Form_Funcionario: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
     paterno: ['', Validators.required],
@@ -19,7 +20,8 @@ export class UsuarioDialogComponent implements OnInit {
     dni: ['', Validators.required],
     telefono: ['', [Validators.required, Validators.maxLength(8)]],
     cargo: ['', Validators.required],
-    direccion: ['', Validators.required]
+    direccion: ['', Validators.required],
+    linkUrl: [null]
   });
 
 
@@ -62,5 +64,18 @@ export class UsuarioDialogComponent implements OnInit {
 
   }
 
+  // Image Preview
+  showPreview(event: any) {
+    const file = event.target.files[0];
+    this.Form_Funcionario.patchValue({
+      imgUrl: file
+    });
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imageURL = reader.result as string;
+    }
+    reader.readAsDataURL(file)
+  }
 
 }

@@ -34,7 +34,7 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
   }
   Add() {
     const dialogRef = this.dialog.open(UsuarioDialogComponent, {
-      width: '900px'
+      width: '1200px'
     });
     dialogRef.afterClosed().subscribe((result: Funcionario) => {
       if (result) {
@@ -64,7 +64,7 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
   }
   Edit(data: Funcionario) {
     const dialogRef = this.dialog.open(UsuarioDialogComponent, {
-      width: '900px',
+      width: '1200px',
       data
     });
     dialogRef.afterClosed().subscribe((result: Funcionario) => {
