@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: 'funcionarios', component: FuncionariosComponent, canActivate: [RoleGuard], data: { resource: 'usuarios' } },
   { path: 'dependencias', component: DependenciasComponent, canActivate: [RoleGuard], data: { resource: 'dependencias' } },
   { path: 'cuentas', component: CuentasComponent, canActivate: [RoleGuard], data: { resource: 'cuentas' } },
-  { path: 'tipos', component: TiposTramitesComponent, canActivate: [RoleGuard], data: { resource: 'tipos' } },
+  { path: 'tipos', component: OrganizationComponent, canActivate: [RoleGuard], data: { resource: 'tipos' } },
   { path: 'roles', component: RolesComponent, canActivate: [RoleGuard], data: { resource: 'roles' } },
   { path: 'cargos', component: CargosComponent, canActivate: [RoleGuard], data: { resource: 'cargos' } },
   { path: 'groupware', component: GroupwareComponent },

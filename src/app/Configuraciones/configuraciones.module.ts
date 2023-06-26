@@ -22,8 +22,8 @@ import { DialogTiposComponent } from './pages/tipos-tramites/dialog-tipos/dialog
 import { RolesComponent } from './pages/roles/roles.component';
 import { RolDialogComponent } from './dialogs/rol-dialog/rol-dialog.component';
 import { CargosComponent } from './pages/cargos/cargos.component';
-import { CargoDialogComponent } from './dialogs/cargo-dialog/cargo-dialog.component';
 import { OrganizationComponent } from './pages/organization/organization.component';
+import { JobDialogComponent } from './dialogs/job-dialog/job-dialog.component';
 
 
 
@@ -46,8 +46,8 @@ import { OrganizationComponent } from './pages/organization/organization.compone
     RolesComponent,
     RolDialogComponent,
     CargosComponent,
-    CargoDialogComponent,
-    OrganizationComponent
+    OrganizationComponent,
+    JobDialogComponent
   ],
   imports: [
     CommonModule,

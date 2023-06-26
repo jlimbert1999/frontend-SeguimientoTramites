@@ -1,8 +1,8 @@
-<app-toolbar title="FUNCIONARIOS" [showAdd]="true"></app-toolbar>
+<app-toolbar title="CARGOS" (add)="add()" [showAdd]="true"></app-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
-    <mat-form-field>
+    <mat-form-field class="example-full-width">
         <mat-label>Buscar cargos</mat-label>
-        <input matInput [(ngModel)]="text" (keyup)="applyFilter($event)" placeholder="Nombre / Sigla" #input>
+        <input matInput [(ngModel)]="text" (keyup)="applyFilter($event)" placeholder="Nombre del cargo" #input>
         <button *ngIf="text" matSuffix mat-icon-button aria-label="Clear" (click)="cancelSearch()">
             <mat-icon>close</mat-icon>
         </button>
@@ -16,7 +16,7 @@
                     <td mat-cell *matCellDef="let element"> {{element|fullname}} </td>
                 </ng-container>
 
-                <ng-container matColumnDef="opciones">
+                <ng-container matColumnDef="options">
                     <th mat-header-cell *matHeaderCellDef> </th>
                     <td mat-cell *matCellDef="let element">
                         <button (click)="Edit(element)" mat-icon-button>

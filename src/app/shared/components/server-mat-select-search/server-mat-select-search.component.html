@@ -1,11 +1,13 @@
 <mat-form-field class="example-full-width">
-    <mat-select (selectionChange)="selectOption($event.value)" [formControl]="bankServerSideCtrl" [placeholder]="placeholder">
-      <!-- place ngx-mat-select-search inside mat-option to allow opening without initial selection -->
-      <mat-option>
-        <ngx-mat-select-search placeholderLabel="Buscar" [formControl]="bankServerSideFilteringCtrl" [searching]="searching"></ngx-mat-select-search>
-      </mat-option>
-      <mat-option *ngFor="let bank of filteredServerSideBanks | async" [value]="bank">
-        {{accessToPropertyObject(pathPropertyOfObjectDisplay, bank)|titlecase}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <mat-select (selectionChange)="selectOption($event.value)" [formControl]="bankServerSideCtrl"
+    [placeholder]="placeholder">
+    <!-- place ngx-mat-select-search inside mat-option to allow opening without initial selection -->
+    <mat-option>
+      <ngx-mat-select-search [noEntriesFoundLabel]="'No se encontraron resultados'"
+        [formControl]="bankServerSideFilteringCtrl" [searching]="searching"></ngx-mat-select-search>
+    </mat-option>
+    <mat-option *ngFor="let bank of filteredServerSideBanks | async" [value]="bank">
+      {{accessToPropertyObject(pathPropertyOfObjectDisplay, bank)|titlecase}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

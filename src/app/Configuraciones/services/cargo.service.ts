@@ -2,7 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { job } from '../interfaces/job.interface';
+import { job, orgChartData } from '../interfaces/job.interface';
+import { jobDto } from '../dto/job.dto';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,17 @@ export class CargoService {
   constructor(private http: HttpClient) { }
 
   searchSuperior(text: string) {
-    return this.http.get<job[]>(`${base_url}/jobs/superiors/${text}`).pipe(
+    return this.http.get<job[]>(`${base_url}/jobs/search/dependents/${text}`).pipe(
+      map(resp => resp)
+    )
+  }
+  getDependentsOfSuperior(id_superior: string) {
+    return this.http.get<job[]>(`${base_url}/jobs/dependents/${id_superior}`).pipe(
+      map(resp => resp)
+    )
+  }
+  removeDependent(id_dependent: string) {
+    return this.http.delete<job>(`${base_url}/jobs/dependent/${id_dependent}`).pipe(
       map(resp => resp)
     )
   }
@@ -37,9 +48,29 @@ export class CargoService {
       })
     )
   }
-  edit(id: string, job: job) {
+  add(job: jobDto) {
+    return this.http.post<job>(`${base_url}/jobs`, job).pipe(
+      map(resp => resp)
+    )
+  }
+  edit(id: string, job: jobDto) {
     return this.http.put<job>(`${base_url}/jobs/${id}`, job).pipe(
       map(resp => resp)
+    )
+  }
+
+  getOrganization() {
+    return this.http.get<orgChartData[]>(`${base_url}/jobs/organization`).pipe(
+      map(resp => {
+        return resp.map(el => {
+          el.data.forEach((item, index) => {
+            if (item.name === 'Sin funcionario') {
+              el.data[index].tags = ["no-user"];
+            }
+          })
+          return el
+        })
+      })
     )
   }
 }

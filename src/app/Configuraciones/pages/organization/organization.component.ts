@@ -1,50 +1,53 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import OrgChart from "@balkangraph/orgchart.js";
+import { CargoService } from '../../services/cargo.service';
+import { orgChartData } from '../../interfaces/job.interface';
+
+
+OrgChart.templates['ula'].size = [450, 150];
+OrgChart.templates['ula']['field_0'] = '<text style="font-size: 18px;" x="120" y="40" class="field_0">{val}</text>';
+OrgChart.templates['ula']['field_1'] = '<text style="font-size: 12px;" class="field_1" x="120" y="80">{val}</text>';
+OrgChart.templates['ula'].node = '<rect filter="url(#cool-shadow)"  x="0" y="0" height="150" width="450" fill="#ffffff" stroke-width="1" stroke="#eeeeee" rx="10" ry="10"></rect>';
 
 @Component({
   selector: 'app-organization',
   templateUrl: './organization.component.html',
   styleUrls: ['./organization.component.scss']
 })
-export class OrganizationComponent implements AfterViewInit {
+export class OrganizationComponent implements AfterViewInit, OnInit {
+  organizationData: orgChartData[] = []
+  orgCharts: any[] = []
+  constructor(private readonly cargoService: CargoService) {
 
-  constructor() {
-
+  }
+  ngOnInit(): void {
+   
   }
   ngAfterViewInit(): void {
-    const tree = document.getElementById('tree');
-    if (tree) {
-      var chart = new OrgChart(tree, {
-        nodeBinding: {
-          field_0: "name",
-          img_0: "img"
-        },
-        tags: {
-          "subLevels0": {
-            subLevels: 0
-          },
-          "subLevels1": {
-            subLevels: 1
-          },
-          "subLevels2": {
-            subLevels: 2
-          },
-          "level3": {
-            subLevels: 3
-          }
-        }
-      });
-
-      chart.load([
-        { id: 1, name: "Alcalde municipal", title: "CEO" },
-        { id: 2, pid: 1, name: "Cargo 1", tags: ["level3"] },
-        { id: 3, pid: 1, name: "Cargo 2", },
-        { id: 4, pid: 2, name: "Cargo 3", },
-        { id: 5, pid: 2, name: "Cargo 4", },
-        { id: 6, pid: 3, name: "Cargo 5", },
-        { id: 7, pid: 3, name: "Cargo 6", }
-      ]);
-    }
+    this.cargoService.getOrganization().subscribe(data => {
+      this.organizationData = data
+      this.createCharts()
+    })
   }
+  createCharts() {
+    this.organizationData.forEach((element, index) => {
+      const tree = document.getElementById(`orgchart${index}`);
+      if (tree) {
+        var chart = new OrgChart(tree, {
+          template: "ula",
+          miniMap: true,
+          nodeBinding: {
+            field_0: "name",
+            field_1: "title",
+            img_0: "img",
+            size: 'small'
+          },
+        });
+       
+        chart.load(element.data)
+      }
+    })
+  }
+  
 
 }

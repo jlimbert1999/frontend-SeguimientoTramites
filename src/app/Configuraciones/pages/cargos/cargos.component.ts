@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { CargoService } from '../../services/cargo.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { fadeInOnEnterAnimation } from 'angular-animations';
-import { CargoDialogComponent } from '../../dialogs/cargo-dialog/cargo-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { job } from '../../interfaces/job.interface';
+import { JobDialogComponent } from '../../dialogs/job-dialog/job-dialog.component';
 
 @Component({
   selector: 'app-cargos',
@@ -17,7 +17,7 @@ import { job } from '../../interfaces/job.interface';
 export class CargosComponent {
   text: string = ''
   dataSource: job[] = []
-  displayedColumns = ['nombre', 'opciones']
+  displayedColumns = ['nombre','options']
   constructor(
     private cargoService: CargoService,
     private paginatorService: PaginatorService,
@@ -41,18 +41,33 @@ export class CargosComponent {
     }
   }
 
-  Edit(cargo: any) {
-    const dialogRef = this.dialog.open(CargoDialogComponent, {
+  Edit(item: job) {
+    const dialogRef = this.dialog.open(JobDialogComponent, {
       width: '800px',
-      data: cargo
+      data: item
     });
-    // dialogRef.afterClosed().subscribe((result: role) => {
-    //   if (result) {
-    //     const index = this.dataSource.findIndex(element => element._id === result._id);
-    //     this.dataSource[index] = result
-    //     this.dataSource = [...this.dataSource]
-    //   }
-    // });
+    dialogRef.afterClosed().subscribe((result: job) => {
+      if (result) {
+        console.log(result);
+        const index = this.dataSource.findIndex(element => element._id === result._id);
+        this.dataSource[index] = result
+        this.dataSource = [...this.dataSource]
+      }
+    });
+  }
+  add() {
+    const dialogRef = this.dialog.open(JobDialogComponent, {
+      width: '800px'
+    });
+    dialogRef.afterClosed().subscribe((result: job) => {
+      if (result) {
+        console.log(result);
+        if (this.dataSource.length === this.paginatorService.limit) {
+          this.dataSource.pop()
+        }
+        this.dataSource = [result, ...this.dataSource]
+      }
+    })
   }
 
   applyFilter(event: Event) {

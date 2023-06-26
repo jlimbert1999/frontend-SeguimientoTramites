@@ -1,1 +1,6 @@
-<div id="tree"></div>
+<!-- <mat-tab-group (selectedTabChange)="onTabChange($event)" mat-stretch-tabs="false" mat-align-tabs="center">
+    <mat-tab *ngFor="let item of organizationData;let i=index" label="Organigrama {{i+1}}">
+        <div id="orgchart{{i}}"></div>
+    </mat-tab>
+</mat-tab-group> -->
+<div *ngFor="let item of organizationData;let i=index" id="orgchart{{i}}"></div>
