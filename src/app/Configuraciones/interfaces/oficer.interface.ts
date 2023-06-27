@@ -1,3 +1,5 @@
+import { job } from "./job.interface";
+
 export interface Officer {
     _id: string;
     nombre: string;
@@ -6,7 +8,7 @@ export interface Officer {
     dni: number;
     telefono: number;
     direccion: string;
-    cargo: string;
     activo: boolean;
     cuenta: boolean;
+    cargo?: job;
 }

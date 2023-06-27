@@ -12,6 +12,12 @@ export class CargoService {
 
   constructor(private http: HttpClient) { }
 
+  searchJobForOfficer(text: string) {
+    return this.http.get<job[]>(`${base_url}/jobs/search/job/officer/${text}`).pipe(
+      map(resp => resp)
+    )
+  }
+
   searchSuperior(text: string) {
     return this.http.get<job[]>(`${base_url}/jobs/search/dependents/${text}`).pipe(
       map(resp => resp)

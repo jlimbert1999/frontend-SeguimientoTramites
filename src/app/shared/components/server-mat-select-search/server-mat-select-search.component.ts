@@ -11,6 +11,7 @@ export class ServerMatSelectSearchComponent implements OnChanges {
 
   @Output() eventSearch: EventEmitter<any> = new EventEmitter();
   @Output() eventSelectedOption: EventEmitter<any> = new EventEmitter();
+  @Input() initialValue?: any
   @Input() data: any[] = []
   @Input() pathPropertyOfObjectDisplay: string
   @Input() placeholder: string
@@ -33,6 +34,10 @@ export class ServerMatSelectSearchComponent implements OnChanges {
   protected _onDestroy = new Subject<void>();
 
   ngOnInit() {
+    if (this.initialValue) {
+      this.filteredServerSideBanks.next([this.initialValue])
+      this.bankServerSideCtrl.patchValue(this.initialValue)
+    }
     // listen for search field value changes
     this.bankServerSideFilteringCtrl.valueChanges
       .pipe(
@@ -64,6 +69,9 @@ export class ServerMatSelectSearchComponent implements OnChanges {
   }
   selectOption(data: any) {
     this.eventSelectedOption.emit(data)
+  }
+  openedChange(value:any){
+    console.log(value);
   }
 
 }
