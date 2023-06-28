@@ -1,7 +1,6 @@
 <mat-form-field class="example-full-width">
   <mat-select (selectionChange)="selectOption($event.value)" [formControl]="bankServerSideCtrl"
-    [placeholder]="placeholder" (openedChange)="openedChange($event)">
-    <!-- place ngx-mat-select-search inside mat-option to allow opening without initial selection -->
+    [placeholder]="placeholder">
     <mat-option>
       <ngx-mat-select-search [placeholderLabel]="'Texto a buscar'"
         [noEntriesFoundLabel]="'No se encontraron resultados'" [formControl]="bankServerSideFilteringCtrl"

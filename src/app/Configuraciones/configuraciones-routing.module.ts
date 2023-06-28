@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { OrganizationChartComponent } from '../shared/organization-chart/organization-chart.component';
 import { CuentasComponent } from './pages/cuentas/cuentas.component';
 import { DependenciasComponent } from './pages/dependencias/dependencias.component';
 import { FuncionariosComponent } from './pages/funcionarios/funcionarios.component';
@@ -23,7 +22,6 @@ const routes: Routes = [
   { path: 'organigrama', component: OrganizationComponent, canActivate: [RoleGuard], data: { resource: 'cargos' } },
   { path: 'cargos', component: CargosComponent, canActivate: [RoleGuard], data: { resource: 'cargos' } },
   { path: 'groupware', component: GroupwareComponent },
-  { path: 'organigrama', component: OrganizationChartComponent },
 ];
 
 

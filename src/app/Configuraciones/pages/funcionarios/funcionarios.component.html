@@ -11,10 +11,6 @@
     <div class="example-container mat-elevation-z8">
         <div class="example-table-container">
             <table mat-table [dataSource]="dataSource">
-                <ng-container matColumnDef="cuenta">
-                    <th mat-header-cell *matHeaderCellDef> Cuenta </th>
-                    <td mat-cell *matCellDef="let element"> {{element.cuenta}} </td>
-                </ng-container>
                 <ng-container matColumnDef="nombre">
                     <th mat-header-cell *matHeaderCellDef> Nombre </th>
                     <td mat-cell *matCellDef="let element"> {{element|fullname}} </td>
@@ -27,7 +23,14 @@
 
                 <ng-container matColumnDef="cargo">
                     <th mat-header-cell *matHeaderCellDef> Cargo </th>
-                    <td mat-cell *matCellDef="let element"> {{element.cargo.nombre}} </td>
+                    <td mat-cell *matCellDef="let element">
+                        <ng-container *ngIf="element.cargo; else noJobTemplate">
+                            {{element.cargo.nombre}}
+                        </ng-container>
+                        <ng-template #noJobTemplate>
+                            <span style="color: red;">SIN CARGO</span>
+                        </ng-template>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="telefono">
@@ -43,17 +46,28 @@
                     </td>
                 </ng-container>
 
-
                 <ng-container matColumnDef="opciones">
                     <th mat-header-cell *matHeaderCellDef> </th>
                     <td mat-cell *matCellDef="let element">
-                        <button (click)="Edit(element)" mat-icon-button>
-                            <mat-icon style="color: royalblue;">edit</mat-icon>
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                            <mat-icon>more_vert</mat-icon>
                         </button>
-                        <button (click)="Delete(element)" mat-icon-button>
-                            <mat-icon style="color: rgb(241, 74, 55);">{{element.activo?'delete':'restart_alt'}}
-                            </mat-icon>
-                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="Edit(element)">
+                                <mat-icon>edit</mat-icon>
+                                <span>Editar funcionario</span>
+                            </button>
+                            <button mat-menu-item (click)="Delete(element)">
+                                <ng-container *ngIf="element.activo; else inactivoTemplate">
+                                    <mat-icon style="vertical-align: middle;">delete</mat-icon>
+                                    <span>Eliminar funcionario</span>
+                                </ng-container>
+                                <ng-template #inactivoTemplate>
+                                    <mat-icon>restart_alt</mat-icon>
+                                    <span>Habilitar funcionario</span>
+                                </ng-template>
+                            </button>
+                        </mat-menu>
                     </td>
                 </ng-container>
 

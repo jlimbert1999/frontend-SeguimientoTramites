@@ -18,7 +18,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SolicitantePipe } from './pipes/solicitante.pipe';
 import { TableComponent } from './table/table.component';
 import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
-import { OrganizationChartComponent } from './organization-chart/organization-chart.component';
 import { TableReportPreceduresComponent } from './table-report-precedures/table-report-precedures.component';
 import { SimpleMatSelectSearchComponent } from './components/simple-mat-select-search/simple-mat-select-search.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
@@ -42,7 +41,6 @@ import { BadgePipe } from './pipes/badge.pipe';
     ToolbarComponent,
     SolicitantePipe,
     TableComponent,
-    OrganizationChartComponent,
     TableReportPreceduresComponent,
     SimpleMatSelectSearchComponent,
     ServerMatSelectSearchComponent,

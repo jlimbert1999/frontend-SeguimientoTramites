@@ -10,7 +10,7 @@ import { CuentaService } from '../../services/cuenta.service';
 import { CreacionAsignacionComponent } from '../../dialogs/creacion-asignacion/creacion-asignacion.component';
 import { CuentaDialogComponent } from '../../dialogs/cuenta-dialog/cuenta-dialog.component';
 import { EdicionCuentaComponent } from '../../dialogs/edicion-cuenta/edicion-cuenta.component';
-import { UsuarioDialogComponent } from './usuario-dialog/usuario-dialog.component';
+import { UsuarioDialogComponent } from './officer-dialog/usuario-dialog.component';
 
 
 @Component({

@@ -1,6 +1,6 @@
 import { job } from "./job.interface";
 
-export interface Officer {
+export interface officer {
     _id: string;
     nombre: string;
     paterno: string;

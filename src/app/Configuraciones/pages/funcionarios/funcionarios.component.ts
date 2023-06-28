@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { UsuarioDialogComponent } from '../cuentas/usuario-dialog/usuario-dialog.component';
+import { UsuarioDialogComponent } from '../cuentas/officer-dialog/usuario-dialog.component';
 import { read, utils } from "xlsx";
 import Swal from 'sweetalert2';
 import { UsuariosService } from '../../services/usuarios.service';
 import { Funcionario, FuncionarioDto } from '../../models/funcionario.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { fadeInOnEnterAnimation } from 'angular-animations';
+import { officer } from '../../interfaces/oficer.interface';
 
 @Component({
   selector: 'app-funcionarios',
@@ -17,8 +18,8 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
   ]
 })
 export class FuncionariosComponent implements OnInit, OnDestroy {
-  dataSource: Funcionario[] = []
-  displayedColumns = ['cuenta', 'nombre', 'dni', 'cargo', 'telefono', 'activo', 'opciones']
+  dataSource: officer[] = []
+  displayedColumns = ['nombre', 'dni', 'cargo', 'telefono', 'activo', 'opciones']
   text: string = ''
 
   constructor(
@@ -36,13 +37,14 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(UsuarioDialogComponent, {
       width: '1200px'
     });
-    dialogRef.afterClosed().subscribe((result: Funcionario) => {
+    dialogRef.afterClosed().subscribe((result: officer) => {
       if (result) {
         if (this.dataSource.length === this.paginatorService.limit) {
           this.dataSource.pop()
         }
         this.paginatorService.length++
         this.dataSource = [result, ...this.dataSource]
+        console.log(this.dataSource);
       }
     });
 
@@ -50,24 +52,24 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
   Get() {
     if (this.text !== '') {
       this.funcionariosService.search(this.paginatorService.limit, this.paginatorService.offset, this.text).subscribe(data => {
-        this.dataSource = data.funcionarios
+        this.dataSource = data.officers
         this.paginatorService.length = data.length
       })
     }
     else {
       this.funcionariosService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-        this.dataSource = data.funcionarios
+        this.dataSource = data.officers
         this.paginatorService.length = data.length
       })
     }
-
   }
+
   Edit(data: Funcionario) {
     const dialogRef = this.dialog.open(UsuarioDialogComponent, {
       width: '1200px',
       data
     });
-    dialogRef.afterClosed().subscribe((result: Funcionario) => {
+    dialogRef.afterClosed().subscribe((result: officer) => {
       if (result) {
         const indexFound = this.dataSource.findIndex(funcionario => funcionario._id === data._id)
         this.dataSource[indexFound] = result
@@ -76,12 +78,12 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
     });
   }
 
-  Delete(data: Funcionario) {
-    this.funcionariosService.delete(data._id).subscribe(funcionario => {
-      const indexFound = this.dataSource.findIndex(funcionario => funcionario._id === data._id)
-      this.dataSource[indexFound] = funcionario
-      this.dataSource = [...this.dataSource]
-    })
+  Delete(data: officer) {
+    // this.funcionariosService.delete(data._id).subscribe(funcionario => {
+    //   const indexFound = this.dataSource.findIndex(funcionario => funcionario._id === data._id)
+    //   this.dataSource[indexFound] = 
+    //   this.dataSource = [...this.dataSource]
+    // })
   }
 
   async cargar_usuarios() {

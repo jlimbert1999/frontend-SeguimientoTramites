@@ -9,8 +9,8 @@
                         <div class="imagePreview">
                             <img class="img-account-profile rounded-circle mb-2" [src]="imageURL" alt="">
                         </div>
-                        <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
-                        <input type="file" accept="image/*" (change)="showPreview($event)" />
+                        <div class="small font-italic text-muted mb-4">La imagen debe ser cuadrada</div>
+                        <input type="file" accept="image/*" (change)="changeImage($event)" />
                     </div>
                 </div>
             </div>
@@ -78,23 +78,14 @@
                                         [data]="availableJobs" (eventSelectedOption)="selectJob($event)"
                                         (eventSearch)="searchJob($event)"></app-server-mat-select-search>
                                 </div>
-                                <!-- <div class="col-sm-2">
-                                    <button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon">
-                                        <mat-icon>manage_history</mat-icon>
-                                    </button>
-                                </div> -->
                                 <div class="col-sm-3">
-                                    <mat-checkbox (change)="removeJob()" [(ngModel)]="noJob" class="example-margin">Sin cargo</mat-checkbox>
+                                    <mat-checkbox (change)="removeJob()" [(ngModel)]="noJob" class="example-margin">Sin
+                                        cargo</mat-checkbox>
                                 </div>
-                               
                             </div>
-                           
                         </div>
                     </div>
-
-
                 </div>
-
             </div>
         </div>
     </div>

@@ -4,6 +4,7 @@ export interface job {
     superior: string | null
     isRoot: boolean
 }
+
 export interface orgChartData {
     name: string;
     data: {

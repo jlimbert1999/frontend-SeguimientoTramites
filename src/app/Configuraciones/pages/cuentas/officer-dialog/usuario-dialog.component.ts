@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
 })
 export class UsuarioDialogComponent implements OnInit {
   imageURL?: string;
-  fileUpload: File;
+  fileUpload?: File;
   availableJobs: job[] = []
   noJob: boolean = false
   Form_Funcionario: FormGroup = this.fb.group({
@@ -26,7 +26,7 @@ export class UsuarioDialogComponent implements OnInit {
     telefono: ['', [Validators.required, Validators.maxLength(8)]],
     cargo: ['', Validators.required],
     direccion: ['', Validators.required],
-    linkUrl: [null]
+
   });
 
 
@@ -52,35 +52,34 @@ export class UsuarioDialogComponent implements OnInit {
   }
 
   guardar() {
-    // if (this.Form_Funcionario.valid) {
-    //   if (this.data) {
-    //     this.usuariosService.edit(this.data._id!, this.Form_Funcionario.value).subscribe(user => {
-    //       this.dialogRef.close(user)
-    //     })
-    //   }
-    //   else {
-    //     this.usuariosService.add(this.Form_Funcionario.value).subscribe(user => {
-    //       this.dialogRef.close(user)
-    //     })
-    //   }
+    if (this.data) {
+      this.usuariosService.edit(this.data._id!, this.Form_Funcionario.value).subscribe(user => {
+        this.dialogRef.close(user)
+      })
+    }
+    else {
+      this.usuariosService.add(this.Form_Funcionario.value, this.fileUpload).subscribe(user => {
+        
+      })
+      // console.log(this.Form_Funcionario.value, this.fileUpload);
+    }
 
-    // }
-    console.log(this.Form_Funcionario.value);
 
   }
 
-  // Image Preview
-  showPreview(event: any) {
-    const file = event.target.files[0];
-    this.Form_Funcionario.patchValue({
-      imgUrl: file
-    });
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file)
-    reader.onload = () => {
-      this.imageURL = reader.result as string;
+  changeImage(event: any) {
+    this.fileUpload = event.target.files[0];
+    if (!this.fileUpload) {
+      this.imageURL = undefined
     }
+    else {
+      const reader = new FileReader();
+      reader.readAsDataURL(this.fileUpload)
+      reader.onloadend = () => {
+        this.imageURL = reader.result as string;
+      }
+    }
+
   }
   searchJob(value: any) {
     this.cargoService.searchJobForOfficer(value).subscribe(data => {
@@ -88,24 +87,8 @@ export class UsuarioDialogComponent implements OnInit {
     })
   }
   selectJob(job: job) {
-    Swal.fire({
-      title: 'Cambiar de cargo?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire(
-          'Deleted!',
-          'Your file has been deleted.',
-          'success'
-        )
-      }
-    })
     this.Form_Funcionario.get('cargo')?.setValue(job._id)
+
   }
   restartOldJob() {
     // this.f

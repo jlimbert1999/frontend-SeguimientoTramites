@@ -70,8 +70,5 @@ export class ServerMatSelectSearchComponent implements OnChanges {
   selectOption(data: any) {
     this.eventSelectedOption.emit(data)
   }
-  openedChange(value:any){
-    console.log(value);
-  }
 
 }
