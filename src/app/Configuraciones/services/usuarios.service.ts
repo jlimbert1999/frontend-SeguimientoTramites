@@ -42,9 +42,9 @@ export class UsuariosService {
       map(resp => {
         return { officers: resp.officers, length: resp.length }
       })
-
     )
   }
+
   get(limit: number, offset: number) {
     const params = new HttpParams()
       .set('limit', limit)
@@ -56,10 +56,9 @@ export class UsuariosService {
     )
   }
 
-
   edit(id_funcionario: string, funcionario: Funcionario) {
-    return this.http.put<{ ok: boolean, funcionario: Funcionario }>(`${base_url}/funcionarios/${id_funcionario}`, funcionario).pipe(
-      map(resp => resp.funcionario)
+    return this.http.put<officer>(`${base_url}/officer/${id_funcionario}`, funcionario).pipe(
+      map(resp => resp)
     )
   }
 
@@ -68,8 +67,4 @@ export class UsuariosService {
       map(resp => resp.funcionario)
     )
   }
-
-
-
-
 }

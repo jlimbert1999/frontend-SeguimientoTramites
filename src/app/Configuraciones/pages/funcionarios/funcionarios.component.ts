@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { UsuarioDialogComponent } from '../cuentas/officer-dialog/usuario-dialog.component';
 import { read, utils } from "xlsx";
 import Swal from 'sweetalert2';
-import { UsuariosService } from '../../services/usuarios.service';
-import { Funcionario, FuncionarioDto } from '../../models/funcionario.interface';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { fadeInOnEnterAnimation } from 'angular-animations';
+import { UsuariosService } from '../../services/usuarios.service';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
+import { UsuarioDialogComponent } from '../cuentas/officer-dialog/usuario-dialog.component';
+import { Funcionario, FuncionarioDto } from '../../models/funcionario.interface';
 import { officer } from '../../interfaces/oficer.interface';
 
 @Component({
@@ -25,7 +25,7 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
   constructor(
     private funcionariosService: UsuariosService,
     private paginatorService: PaginatorService,
-    public dialog: MatDialog,) {
+    public dialog: MatDialog) {
   }
   ngOnDestroy(): void {
   }
@@ -33,6 +33,21 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.Get()
   }
+  Get() {
+    if (this.text !== '') {
+      this.funcionariosService.search(this.paginatorService.limit, this.paginatorService.offset, this.text).subscribe(data => {
+        this.dataSource = data.officers
+        this.paginatorService.length = data.length
+      })
+    }
+    else {
+      this.funcionariosService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+        this.dataSource = data.officers
+        this.paginatorService.length = data.length
+      })
+    }
+  }
+
   Add() {
     const dialogRef = this.dialog.open(UsuarioDialogComponent, {
       width: '1200px'
@@ -48,20 +63,6 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
       }
     });
 
-  }
-  Get() {
-    if (this.text !== '') {
-      this.funcionariosService.search(this.paginatorService.limit, this.paginatorService.offset, this.text).subscribe(data => {
-        this.dataSource = data.officers
-        this.paginatorService.length = data.length
-      })
-    }
-    else {
-      this.funcionariosService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-        this.dataSource = data.officers
-        this.paginatorService.length = data.length
-      })
-    }
   }
 
   Edit(data: Funcionario) {

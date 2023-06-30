@@ -9,7 +9,6 @@ import {
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ReplaySubject, Subject, forkJoin, takeUntil } from 'rxjs';
-import Swal from 'sweetalert2';
 import { CuentaService } from 'src/app/Configuraciones/services/cuenta.service';
 import { Cuenta } from 'src/app/Configuraciones/models/cuenta.interface';
 import { HojaUsuarios } from 'src/app/Configuraciones/pdfs/usuarios';
