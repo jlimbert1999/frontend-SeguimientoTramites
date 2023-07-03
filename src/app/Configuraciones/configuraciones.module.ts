@@ -18,12 +18,13 @@ import { CreacionAsignacionComponent } from './dialogs/creacion-asignacion/creac
 import { DetallesMovilidadComponent } from './pages/funcionarios/detalles-movilidad/detalles-movilidad.component';
 import { EdicionCuentaComponent } from './dialogs/edicion-cuenta/edicion-cuenta.component';
 import { TiposTramitesComponent } from './pages/tipos-tramites/tipos-tramites.component';
-import { DialogTiposComponent } from './pages/tipos-tramites/dialog-tipos/dialog-tipos.component';
 import { RolesComponent } from './pages/roles/roles.component';
 import { RolDialogComponent } from './dialogs/rol-dialog/rol-dialog.component';
 import { CargosComponent } from './pages/cargos/cargos.component';
 import { OrganizationComponent } from './pages/organization/organization.component';
 import { JobDialogComponent } from './dialogs/job-dialog/job-dialog.component';
+import { WorkHistoryComponent } from './dialogs/work-history/work-history.component';
+import { TypeProcedureDialogComponent } from './dialogs/type-procedure-dialog/type-procedure-dialog.component';
 
 
 
@@ -37,7 +38,6 @@ import { JobDialogComponent } from './dialogs/job-dialog/job-dialog.component';
     CuentasComponent,
     CuentaDialogComponent,
     TiposTramitesComponent,
-    DialogTiposComponent,
     FuncionariosComponent,
     GroupwareComponent,
     CreacionAsignacionComponent,
@@ -47,7 +47,9 @@ import { JobDialogComponent } from './dialogs/job-dialog/job-dialog.component';
     RolDialogComponent,
     CargosComponent,
     OrganizationComponent,
-    JobDialogComponent
+    JobDialogComponent,
+    WorkHistoryComponent,
+    TypeProcedureDialogComponent
   ],
   imports: [
     CommonModule,

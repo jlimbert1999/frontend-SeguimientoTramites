@@ -2,6 +2,10 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { FormControl } from '@angular/forms';
 import { ReplaySubject, Subject, filter, takeUntil, tap } from 'rxjs';
 
+interface MatSelectSearchData {
+  _id: string;
+  [key: string]: any;
+}
 @Component({
   selector: 'app-server-mat-select-search',
   templateUrl: './server-mat-select-search.component.html',
@@ -16,7 +20,7 @@ export class ServerMatSelectSearchComponent implements OnChanges {
   @Input() pathPropertyOfObjectDisplay: string
   @Input() placeholder: string
   /** list of banks */
-  protected banks: any[] = [];
+  protected banks: MatSelectSearchData[] = [];
 
   /** control for the selected bank for server side filtering */
   public bankServerSideCtrl: FormControl = new FormControl();
@@ -60,14 +64,13 @@ export class ServerMatSelectSearchComponent implements OnChanges {
     this._onDestroy.next();
     this._onDestroy.complete();
   }
-
   accessToPropertyObject(path: string, object: any) {
     return path.split('.').reduce((o, i) => o[i], object)
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.filteredServerSideBanks.next(this.data)
   }
-  selectOption(data: any) {
+  selectOption(data: MatSelectSearchData) {
     this.eventSelectedOption.emit(data)
   }
 

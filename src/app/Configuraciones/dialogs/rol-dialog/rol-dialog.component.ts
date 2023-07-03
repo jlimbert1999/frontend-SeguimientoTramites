@@ -2,7 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { RolService } from '../../services/rol.service';
-import { Rol, RolDto } from '../../models/rol.model';
 import { privilege, role } from '../../interfaces/role.interface';
 
 @Component({

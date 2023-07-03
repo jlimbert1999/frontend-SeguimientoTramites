@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { PaginationService } from './pagination.service';
 import { TipoTramiteDto } from '../models/tipoTramite.dto';
 import { Requerimiento, TipoTramite } from '../models/tipoTramite.interface';
+import { typeProcedure } from '../interfaces/typeProcedure.interface';
 
 const base_url = environment.base_url
 @Injectable({
@@ -29,7 +30,7 @@ export class TiposTramitesService {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ typesProcedures: TipoTramite[], length: number }>(`${base_url}/type-procedure`, { params }).pipe(
+    return this.http.get<{ typesProcedures: typeProcedure[], length: number }>(`${base_url}/type-procedure`, { params }).pipe(
       map(resp => {
         return { tipos: resp.typesProcedures, length: resp.length }
       })

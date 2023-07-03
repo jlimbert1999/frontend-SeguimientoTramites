@@ -1,0 +1,86 @@
+<h2 mat-dialog-title>{{data?'EDICION':'CREACION'}} TIPO DE TRAMITE</h2>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="Form_TipoTramite">
+        <div class="row">
+            <div class="col-sm-6">
+                <mat-form-field appearance="fill">
+                    <mat-label>Nombre del tramite</mat-label>
+                    <input formControlName="nombre" matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-sm-2">
+                <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Segmento</mat-label>
+                    <input type="text" placeholder="Ingrese el segmento" matInput formControlName="segmento">
+                </mat-form-field>
+            </div>
+            <div class="col-sm-2">
+                <mat-form-field appearance="fill">
+                    <mat-label>Grupo </mat-label>
+                    <mat-select formControlName="tipo">
+                        <mat-option value="EXTERNO">Externo</mat-option>
+                        <mat-option value="INTERNO">Interno</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-1">
+                <button matTooltip="Cargar" (click)="cargar_requerimientos()" mat-icon-button>
+                    <mat-icon>upload_file</mat-icon>
+                </button>
+            </div>
+            <div class="col-1">
+                <button matTooltip="Agregar" (click)="addRequeriment()" mat-icon-button>
+                    <mat-icon>add</mat-icon>
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 table-wrapper">
+                <div *ngIf="requeriments.length===0" class="alert alert-warning" role="alert">
+                    EL TRAMITE NO TIENE REQUERIMIENTOS
+                </div>
+
+                <table *ngIf="requeriments.length>0" class="table table-bordered align-middle text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">Requerimientos</th>
+                            <th scope="col" style="width: 15%">Situacion</th>
+                            <th scope="col" style="width: 5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr formArrayName="requerimientos"
+                            *ngFor="let requeriment of requeriments.controls; let i=index">
+                            <td [formGroupName]="i">
+                                <mat-form-field>
+                                    <mat-label>Nombre del requerimiento</mat-label>
+                                    <input formControlName="nombre" matInput>
+                                </mat-form-field>
+                            </td>
+                            <td>
+                                <span class="c-pill" [class.c-pill--success]="requeriment.value.activo"
+                                    [class.c-pill--danger]="!requeriment.value.activo">
+                                    {{requeriment.value.activo?'HABILITADO':'NO HABILITADO'}}
+                                </span>
+                            </td>
+                            <td>
+                                <button mat-icon-button color="accent"
+                                    aria-label="Example icon button with a menu icon">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+
+    </div>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-flat-button mat-dialog-close color="warn">Cancelar</button>
+    <button mat-flat-button color="primary" [disabled]="Form_TipoTramite.invalid" (click)="guardar()">Guardar</button>
+</mat-dialog-actions>

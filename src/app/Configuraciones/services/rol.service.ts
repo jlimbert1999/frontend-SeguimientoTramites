@@ -1,7 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { Rol, RolDto } from '../models/rol.model';
 import { map } from 'rxjs';
 import { role } from '../interfaces/role.interface';
 import { rolDto } from '../dto/role.dto';

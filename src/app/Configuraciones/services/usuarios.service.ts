@@ -7,6 +7,7 @@ import { CuentaService } from './cuenta.service';
 import { PaginationService } from './pagination.service';
 import { CreateOfficerDto } from '../dto/officer.dto';
 import { officer } from '../interfaces/oficer.interface';
+import { workHistory } from '../interfaces/workHistory.interface';
 
 const base_url = environment.base_url
 
@@ -56,15 +57,23 @@ export class UsuariosService {
     )
   }
 
-  edit(id_funcionario: string, funcionario: Funcionario) {
-    return this.http.put<officer>(`${base_url}/officer/${id_funcionario}`, funcionario).pipe(
+  edit(id_officer: string, officer: officer) {
+    return this.http.put<officer>(`${base_url}/officer/${id_officer}`, officer).pipe(
       map(resp => resp)
     )
   }
 
-  delete(id_funcionario: string) {
-    return this.http.delete<{ ok: boolean, funcionario: Funcionario }>(`${base_url}/funcionarios/${id_funcionario}`).pipe(
-      map(resp => resp.funcionario)
+  delete(id_officer: string) {
+    return this.http.delete<officer>(`${base_url}/officer/${id_officer}`).pipe(
+      map(resp => resp))
+  }
+
+  getWorkHistory(id_officer: string, limit: number, offset: number) {
+    const params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset)
+    return this.http.get<workHistory[]>(`${base_url}/officer/history/${id_officer}`, { params }).pipe(
+      map(resp => resp)
     )
   }
 }

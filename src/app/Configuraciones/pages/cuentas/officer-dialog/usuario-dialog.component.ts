@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { job } from 'src/app/Configuraciones/interfaces/job.interface';
-import { Funcionario } from 'src/app/Configuraciones/models/funcionario.interface';
+import { officer } from 'src/app/Configuraciones/interfaces/oficer.interface';
 import { CargoService } from 'src/app/Configuraciones/services/cargo.service';
 import { UsuariosService } from 'src/app/Configuraciones/services/usuarios.service';
 
@@ -27,12 +27,9 @@ export class UsuarioDialogComponent implements OnInit {
     direccion: ['', Validators.required]
   });
 
-
-
-
   constructor(
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: Funcionario,
+    @Inject(MAT_DIALOG_DATA) public data: officer,
     public dialogRef: MatDialogRef<UsuarioDialogComponent>,
     private usuariosService: UsuariosService,
     private cargoService: CargoService
@@ -41,21 +38,27 @@ export class UsuarioDialogComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.data) {
-      this.Form_Funcionario.patchValue(this.data)
+      const { cargo, ...values } = this.data
+      if (!cargo) {
+        this.noJob = true
+        this.Form_Funcionario.patchValue(values)
+      }
+      else {
+        this.Form_Funcionario.patchValue({ ...values, cargo: cargo._id })
+      }
     }
   }
 
 
   guardar() {
     if (this.data) {
-      this.usuariosService.edit(this.data._id!, this.Form_Funcionario.value).subscribe(user => {
-        console.log(user);
-        // this.dialogRef.close(user);
+      this.usuariosService.edit(this.data._id, this.Form_Funcionario.value).subscribe(officer => {
+        this.dialogRef.close(officer);
       })
     }
     else {
-      this.usuariosService.add(this.Form_Funcionario.value, this.fileUpload).subscribe(user => {
-        // console.log(this.Form_Funcionario.value, this.fileUpload);
+      this.usuariosService.add(this.Form_Funcionario.value, this.fileUpload).subscribe(officer => {
+        this.dialogRef.close(officer)
       })
     }
   }
@@ -81,16 +84,13 @@ export class UsuarioDialogComponent implements OnInit {
   selectJob(job: job) {
     this.Form_Funcionario.get('cargo')?.setValue(job._id)
   }
-  restartOldJob() {
-    // this.f
-  }
   removeJob() {
     if (this.noJob) {
       this.Form_Funcionario.removeControl('cargo')
       this.availableJobs = []
     }
     else {
-      this.Form_Funcionario.addControl('cargo', new FormControl('', Validators.required));
+      this.Form_Funcionario.addControl('cargo', new FormControl(this.data?.cargo ? this.data.cargo._id : '', Validators.required))
     }
   }
 

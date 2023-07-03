@@ -8,6 +8,7 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { UsuarioDialogComponent } from '../cuentas/officer-dialog/usuario-dialog.component';
 import { Funcionario, FuncionarioDto } from '../../models/funcionario.interface';
 import { officer } from '../../interfaces/oficer.interface';
+import { WorkHistoryComponent } from '../../dialogs/work-history/work-history.component';
 
 @Component({
   selector: 'app-funcionarios',
@@ -59,32 +60,37 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
         }
         this.paginatorService.length++
         this.dataSource = [result, ...this.dataSource]
-        console.log(this.dataSource);
       }
     });
 
   }
 
-  Edit(data: Funcionario) {
+  Edit(officer: officer) {
     const dialogRef = this.dialog.open(UsuarioDialogComponent, {
       width: '1200px',
-      data
+      data: officer
     });
     dialogRef.afterClosed().subscribe((result: officer) => {
       if (result) {
-        const indexFound = this.dataSource.findIndex(funcionario => funcionario._id === data._id)
+        const indexFound = this.dataSource.findIndex(officer => officer._id === result._id)
         this.dataSource[indexFound] = result
         this.dataSource = [...this.dataSource]
       }
     });
   }
 
-  Delete(data: officer) {
-    // this.funcionariosService.delete(data._id).subscribe(funcionario => {
-    //   const indexFound = this.dataSource.findIndex(funcionario => funcionario._id === data._id)
-    //   this.dataSource[indexFound] = 
-    //   this.dataSource = [...this.dataSource]
-    // })
+  delete(officer: officer) {
+    this.funcionariosService.delete(officer._id).subscribe(newOfficer => {
+      const indexFound = this.dataSource.findIndex(element => element._id === officer._id)
+      this.dataSource[indexFound].activo = newOfficer.activo
+      this.dataSource = [...this.dataSource]
+    })
+  }
+
+  viewWorkHistory(officer: officer) {
+    this.dialog.open(WorkHistoryComponent,
+      { width: '800px', data: officer }
+    );
   }
 
   async cargar_usuarios() {

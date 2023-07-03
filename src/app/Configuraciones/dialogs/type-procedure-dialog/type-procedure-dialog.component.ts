@@ -1,58 +1,61 @@
-import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Component, Inject, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Requerimiento, TipoTramite } from '../../models/tipoTramite.interface';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
-import { read, writeFileXLSX, utils } from "xlsx";
-import { elementAt, map, Observable, startWith } from 'rxjs';
-import { TiposTramitesService } from 'src/app/Configuraciones/services/tipos-tramites.service';
-import { TipoTramiteDto } from 'src/app/Configuraciones/models/tipoTramite.dto';
-import { Requerimiento, TipoTramite } from 'src/app/Configuraciones/models/tipoTramite.interface';
+import { read, utils } from 'xlsx';
+import { TiposTramitesService } from '../../services/tipos-tramites.service';
+import { requirement, typeProcedure } from '../../interfaces/typeProcedure.interface';
+import { privilege } from '../../interfaces/role.interface';
 
 @Component({
-  selector: 'app-dialog-tipos',
-  templateUrl: './dialog-tipos.component.html',
-  styleUrls: ['./dialog-tipos.component.scss'],
+  selector: 'app-type-procedure-dialog',
+  templateUrl: './type-procedure-dialog.component.html',
+  styleUrls: ['./type-procedure-dialog.component.scss']
 })
-export class DialogTiposComponent implements OnInit, AfterViewInit {
-  titulo: string;
+export class TypeProcedureDialogComponent {
   Form_TipoTramite: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
     segmento: ['', Validators.required],
-    tipo: ['', Validators.required]
+    tipo: ['', Validators.required],
+    requerimientos: this.fb.array<privilege>([])
   });
 
 
-  displayedColumns = ['nombre', 'situacion', 'opciones'];
-  dataSource: MatTableDataSource<Requerimiento> = new MatTableDataSource()
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-  isLoadingResults = false;
+  displayedColumns = ['nombre', 'situacion', 'options'];
+  dataSource: MatTableDataSource<requirement> = new MatTableDataSource()
 
   constructor(
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: TipoTramite,
-    public dialogRef: MatDialogRef<DialogTiposComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: typeProcedure,
+    public dialogRef: MatDialogRef<TypeProcedureDialogComponent>,
     private tiposTramitesService: TiposTramitesService
   ) { }
 
   ngAfterViewInit(): void {
-    if (this.data) {
-      this.dataSource.paginator = this.paginator;
-    }
   }
 
   ngOnInit(): void {
     if (this.data) {
-      this.titulo = 'Edicion';
+      this.data.requerimientos.forEach(element => {
+        const requerimentForm = this.fb.group({
+          nombre: ['', Validators.required],
+          activo: [true]
+        });
+        this.requeriments.push(requerimentForm)
+      })
       this.Form_TipoTramite.patchValue(this.data);
-      this.dataSource = new MatTableDataSource(this.data.requerimientos)
-    } else {
-      this.titulo = 'Registro';
+
+
     }
 
+  }
+
+  get requeriments() {
+    return this.Form_TipoTramite.controls["requerimientos"] as FormArray;
   }
 
   guardar() {
@@ -60,7 +63,7 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
       if (this.data) {
         let data = this.Form_TipoTramite.value
         data['requerimientos'] = this.dataSource.data
-        this.tiposTramitesService.edit(this.data.id_tipoTramite!, data).subscribe(tipoTramite => {
+        this.tiposTramitesService.edit(this.data._id, data).subscribe(tipoTramite => {
           this.dialogRef.close(tipoTramite)
         })
       } else {
@@ -80,6 +83,14 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+  addRequeriment() {
+    const requerimentForm = this.fb.group({
+      nombre: ['', Validators.required],
+      activo: [true]
+    });
+    this.requeriments.insert(0, requerimentForm);
+    this.dataSource.data = [...this.Form_TipoTramite.get('requerimientos')?.value]
   }
   agregar_requerimiento() {
     Swal.fire({
@@ -101,8 +112,8 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        this.dataSource.data = [{ nombre: result.value!, activo: true }, ...this.dataSource.data]
-        this.dataSource.paginator = this.paginator
+        // this.dataSource.data = [{ nombre: result.value!, activo: true }, ...this.dataSource.data]
+
       }
     })
 
@@ -124,19 +135,19 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
 
   }
   quitar_requerimiento(requerimiento: Requerimiento, pos: number) {
-    if (requerimiento._id) {
-      this.tiposTramitesService.deleteRequirement(this.data.id_tipoTramite, requerimiento._id!).subscribe(data => {
-        const indexFound = this.dataSource.data.findIndex(element => requerimiento._id === element._id)
-        this.dataSource.data[indexFound] = data
-        this.dataSource = new MatTableDataSource(this.dataSource.data)
-        this.dataSource.paginator = this.paginator
-      })
-    }
-    else {
-      this.dataSource.data.splice(pos, 1)
-      this.dataSource = new MatTableDataSource(this.dataSource.data)
-      this.dataSource.paginator = this.paginator
-    }
+    // if (requerimiento._id) {
+    //   this.tiposTramitesService.deleteRequirement(this.data.id_tipoTramite, requerimiento._id!).subscribe(data => {
+    //     const indexFound = this.dataSource.data.findIndex(element => requerimiento._id === element._id)
+    //     this.dataSource.data[indexFound] = data
+    //     this.dataSource = new MatTableDataSource(this.dataSource.data)
+    //     this.dataSource.paginator = this.paginator
+    //   })
+    // }
+    // else {
+    //   this.dataSource.data.splice(pos, 1)
+    //   this.dataSource = new MatTableDataSource(this.dataSource.data)
+    //   this.dataSource.paginator = this.paginator
+    // }
   }
   editar_requerimiento(requerimiento: Requerimiento) {
     Swal.fire({
@@ -160,12 +171,12 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        this.tiposTramitesService.editRequirement(this.data.id_tipoTramite, requerimiento._id!, result.value!).subscribe(data => {
-          const indexFound = this.dataSource.data.findIndex(element => requerimiento._id === element._id)
-          this.dataSource.data[indexFound] = data
-          this.dataSource = new MatTableDataSource(this.dataSource.data)
-          this.dataSource.paginator = this.paginator
-        })
+        // this.tiposTramitesService.editRequirement(this.data.id_tipoTramite, requerimiento._id!, result.value!).subscribe(data => {
+        //   const indexFound = this.dataSource.data.findIndex(element => requerimiento._id === element._id)
+        //   this.dataSource.data[indexFound] = data
+        //   this.dataSource = new MatTableDataSource(this.dataSource.data)
+        //   this.dataSource.paginator = this.paginator
+        // })
       }
     })
   }
@@ -182,12 +193,10 @@ export class DialogTiposComponent implements OnInit, AfterViewInit {
       let keysData
       ExcelData.forEach((data: any) => {
         keysData = Object.keys(data)
-        this.dataSource.data.push({ nombre: data[keysData[0]], activo: true })
+        // this.dataSource.data.push({ nombre: data[keysData[0]], activo: true })
       });
       this.dataSource = new MatTableDataSource(this.dataSource.data)
-      this.dataSource.paginator = this.paginator;
     }
 
   }
-
 }

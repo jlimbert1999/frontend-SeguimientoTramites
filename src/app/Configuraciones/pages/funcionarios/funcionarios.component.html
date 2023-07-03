@@ -57,7 +57,7 @@
                                 <mat-icon>edit</mat-icon>
                                 <span>Editar funcionario</span>
                             </button>
-                            <button mat-menu-item (click)="Delete(element)">
+                            <button mat-menu-item (click)="delete(element)">
                                 <ng-container *ngIf="element.activo; else inactivoTemplate">
                                     <mat-icon style="vertical-align: middle;">delete</mat-icon>
                                     <span>Eliminar funcionario</span>
@@ -66,6 +66,10 @@
                                     <mat-icon>restart_alt</mat-icon>
                                     <span>Habilitar funcionario</span>
                                 </ng-template>
+                            </button>
+                            <button mat-menu-item (click)="viewWorkHistory(element)">
+                                <mat-icon>recent_actors</mat-icon>
+                                <span>Historial de trabajo</span>
                             </button>
                         </mat-menu>
                     </td>

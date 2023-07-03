@@ -73,7 +73,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div *ngIf="!noJob" class="col-sm-8">
-                                    <app-server-mat-select-search [initialValue]="Form_Funcionario.get('cargo')?.value"
+                                    <app-server-mat-select-search [initialValue]="data?data.cargo:null"
                                         [placeholder]="'Buscar cargo'" [pathPropertyOfObjectDisplay]="'nombre'"
                                         [data]="availableJobs" (eventSelectedOption)="selectJob($event)"
                                         (eventSearch)="searchJob($event)"></app-server-mat-select-search>

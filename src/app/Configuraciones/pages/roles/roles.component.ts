@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { RolDialogComponent } from '../../dialogs/rol-dialog/rol-dialog.component';
 import { RolService } from '../../services/rol.service';
-import { Rol } from '../../models/rol.model';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { role } from '../../interfaces/role.interface';

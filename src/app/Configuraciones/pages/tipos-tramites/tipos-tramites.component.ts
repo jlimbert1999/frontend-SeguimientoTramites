@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogTiposComponent } from './dialog-tipos/dialog-tipos.component';
 import { TiposTramitesService } from '../../services/tipos-tramites.service';
-import { TipoTramite } from '../../models/tipoTramite.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { fadeInOnEnterAnimation } from 'angular-animations';
+import { typeProcedure } from '../../interfaces/typeProcedure.interface';
+import { TypeProcedureDialogComponent } from '../../dialogs/type-procedure-dialog/type-procedure-dialog.component';
 
 
 @Component({
@@ -16,8 +16,8 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
   ]
 })
 export class TiposTramitesComponent implements OnInit {
-  dataSource: TipoTramite[] = []
-  displayedColumns = ['nombre', 'segmento', 'activo', 'opciones']
+  dataSource: typeProcedure[] = []
+  displayedColumns = ['nombre', 'segmento', 'activo', 'options']
   text: string = ''
 
   constructor(
@@ -32,25 +32,25 @@ export class TiposTramitesComponent implements OnInit {
   }
 
   Add() {
-    const dialogRef = this.dialog.open(DialogTiposComponent, {
+    const dialogRef = this.dialog.open(TypeProcedureDialogComponent, {
       width: '1200px'
     });
-    dialogRef.afterClosed().subscribe((result: TipoTramite) => {
+    dialogRef.afterClosed().subscribe((result: typeProcedure) => {
       if (result) {
         let data = [result, ...this.dataSource]
         this.dataSource = data
       }
     });
   }
-  Edit(tipoTramite: TipoTramite) {
-    const dialogRef = this.dialog.open(DialogTiposComponent, {
+  Edit(tipoTramite: typeProcedure) {
+    const dialogRef = this.dialog.open(TypeProcedureDialogComponent, {
       width: '1200px',
       data: tipoTramite
     });
-    dialogRef.afterClosed().subscribe((result: TipoTramite) => {
+    dialogRef.afterClosed().subscribe((result: typeProcedure) => {
       if (result) {
         let newData = [...this.dataSource]
-        const foundIndex = newData.findIndex(tipo => tipo.id_tipoTramite === result.id_tipoTramite);
+        const foundIndex = newData.findIndex(tipo => tipo._id === result._id);
         newData[foundIndex] = result;
         this.dataSource = newData
       }
@@ -58,26 +58,27 @@ export class TiposTramitesComponent implements OnInit {
   }
   Get() {
     if (this.text !== '') {
-      this.tiposTramitesService.search(this.paginatorService.limit, this.paginatorService.offset, this.text).subscribe(data => {
-        this.dataSource = data.tipos
-        this.paginatorService.length = data.length
-      })
+      // this.tiposTramitesService.search(this.paginatorService.limit, this.paginatorService.offset, this.text).subscribe(data => {
+      //   this.dataSource = data.tipos
+      //   this.paginatorService.length = data.length
+      // })
     }
     else {
       this.tiposTramitesService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+        console.log(data);
         this.dataSource = data.tipos
         this.paginatorService.length = data.length
       })
     }
   }
 
-  Delete(data: TipoTramite) {
-    this.tiposTramitesService.delete(data.id_tipoTramite).subscribe(inst => {
-      let newData = [...this.dataSource]
-      const foundIndex = newData.findIndex(tipo => tipo.id_tipoTramite === data.id_tipoTramite);
-      newData[foundIndex] = inst
-      this.dataSource = newData
-    })
+  Delete(data: typeProcedure) {
+    // this.tiposTramitesService.delete(data._id).subscribe(inst => {
+    //   let newData = [...this.dataSource]
+    //   const foundIndex = newData.findIndex(tipo => tipo._id === data._id);
+    //   newData[foundIndex] = inst
+    //   this.dataSource = newData
+    // })
   }
 
   applyFilter(event: Event) {
