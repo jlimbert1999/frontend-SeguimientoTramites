@@ -9,22 +9,27 @@
                 </mat-form-field>
             </div>
             <div class="col-sm-2">
-                <mat-form-field class="example-full-width" appearance="fill">
+                <mat-form-field class="example-full-width">
                     <mat-label>Segmento</mat-label>
-                    <input type="text" placeholder="Ingrese el segmento" matInput formControlName="segmento">
+                    <input formControlName="segmento" matInput [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete">
+                        <mat-option *ngFor="let segment of filteredSegments | async" [value]="segment">
+                            {{segment}}
+                        </mat-option>
+                    </mat-autocomplete>
                 </mat-form-field>
             </div>
             <div class="col-sm-2">
                 <mat-form-field appearance="fill">
                     <mat-label>Grupo </mat-label>
-                    <mat-select formControlName="tipo">
-                        <mat-option value="EXTERNO">Externo</mat-option>
-                        <mat-option value="INTERNO">Interno</mat-option>
+                    <mat-select (selectionChange)="selectGroupOfTypesProcedure($event.value)" formControlName="tipo">
+                        <mat-option value="EXTERNO">EXTERNO</mat-option>
+                        <mat-option value="INTERNO">INTERNO</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
             <div class="col-1">
-                <button matTooltip="Cargar" (click)="cargar_requerimientos()" mat-icon-button>
+                <button matTooltip="Cargar" (click)="loadExcelFile()" mat-icon-button>
                     <mat-icon>upload_file</mat-icon>
                 </button>
             </div>
@@ -39,7 +44,6 @@
                 <div *ngIf="requeriments.length===0" class="alert alert-warning" role="alert">
                     EL TRAMITE NO TIENE REQUERIMIENTOS
                 </div>
-
                 <table *ngIf="requeriments.length>0" class="table table-bordered align-middle text-center">
                     <thead>
                         <tr>
@@ -64,7 +68,7 @@
                                 </span>
                             </td>
                             <td>
-                                <button mat-icon-button color="accent"
+                                <button (click)="removeRequeriment(i)" mat-icon-button color="accent"
                                     aria-label="Example icon button with a menu icon">
                                     <mat-icon>delete</mat-icon>
                                 </button>

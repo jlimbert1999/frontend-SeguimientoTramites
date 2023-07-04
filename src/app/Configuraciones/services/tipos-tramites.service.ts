@@ -26,6 +26,13 @@ export class TiposTramitesService {
     )
   }
 
+  getSegments() {
+    return this.http.get<{ _id: string }[]>(`${base_url}/type-procedure/segments`,).pipe(
+      map(resp => {
+        return resp.map(element => element._id)
+      })
+    )
+  }
   get(limit: number, offset: number) {
     const params = new HttpParams()
       .set('limit', limit)
