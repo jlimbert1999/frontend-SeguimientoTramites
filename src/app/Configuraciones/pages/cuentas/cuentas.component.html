@@ -28,20 +28,11 @@
 <div class="container-fluid" [@fadeInOnEnter]>
     <div class="row">
         <div class="col-sm-3">
-            <mat-form-field appearance="fill" class="example-full-width">
-                <mat-label>Institucion</mat-label>
-                <mat-select [(ngModel)]="id_institucion" (selectionChange)="getDependencias($event.value)">
-                    <mat-option [value]="null">
-                        -
-                    </mat-option>
-                    <mat-option *ngFor="let institucion of instituciones" [value]="institucion.id_institucion">
-                        {{institucion.nombre}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+            <app-simple-mat-select-search [placehorder]="'Institucion'" [data]="institutions" (eventSelectedOption)="getDependencias($event.value)" [pathPropertyOfObjectDisplay]="'nombre'"></app-simple-mat-select-search>
         </div>
         <div class="col-sm-5">
-            <mat-form-field appearance="fill" class="example-full-width">
+            <app-simple-mat-select-search [placehorder]="'Dependencia'" [data]="dependencies" (eventSelectedOption)="getAccountsOfDependency($event.value)" [pathPropertyOfObjectDisplay]="'nombre'"></app-simple-mat-select-search>
+            <!-- <mat-form-field appearance="fill" class="example-full-width">
                 <mat-select (selectionChange)="applyFilterbySelect()" [formControl]="bankCtrl" placeholder="Dependencia"
                     #singleSelect>
                     <mat-option>
@@ -54,7 +45,7 @@
                         {{bank.nombre}}
                     </mat-option>
                 </mat-select>
-            </mat-form-field>
+            </mat-form-field> -->
         </div>
         <div class="col-sm-4">
             <mat-form-field class="example-full-width">
@@ -68,7 +59,7 @@
     </div>
     <div class="example-container mat-elevation-z8">
         <div class="example-table-container">
-            <table mat-table [dataSource]="Cuentas">
+            <table mat-table [dataSource]="accounts">
                 <ng-container matColumnDef="login">
                     <th mat-header-cell *matHeaderCellDef> Login </th>
                     <td mat-cell *matCellDef="let element">

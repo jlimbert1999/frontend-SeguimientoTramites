@@ -1,11 +1,11 @@
 import { Component, Inject } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable, map, startWith } from 'rxjs';
 import { read, utils } from 'xlsx';
 import Swal from 'sweetalert2';
 import { TiposTramitesService } from '../../services/tipos-tramites.service';
-import { requirement, typeProcedure } from '../../interfaces/typeProcedure.interface';
+import { typeProcedure } from '../../interfaces/typeProcedure.interface';
 
 @Component({
   selector: 'app-type-procedure-dialog',
@@ -17,7 +17,7 @@ export class TypeProcedureDialogComponent {
     nombre: ['', Validators.required],
     segmento: ['', Validators.required],
     tipo: ['', Validators.required],
-    requerimientos: this.fb.array<requirement>([])
+    requerimientos: this.fb.array<string[]>([])
   });
   segments: string[] = []
   filteredSegments: Observable<string[]>;
@@ -40,10 +40,10 @@ export class TypeProcedureDialogComponent {
       );
     })
     if (this.data) {
+      this.Form_TipoTramite.removeControl('tipo')
       this.data.requerimientos.forEach(element => {
         const requerimentForm = this.fb.group({
-          nombre: [element.nombre, Validators.required],
-          activo: [element.activo]
+          nombre: [element, Validators.required]
         });
         this.requeriments.push(requerimentForm)
       })
@@ -55,27 +55,22 @@ export class TypeProcedureDialogComponent {
     return this.Form_TipoTramite.controls["requerimientos"] as FormArray;
   }
 
-  guardar() {
-    // if (this.Form_TipoTramite.valid) {
-    //   if (this.data) {
-    //     let data = this.Form_TipoTramite.value
-    //     this.tiposTramitesService.edit(this.data._id, data).subscribe(tipoTramite => {
-    //       this.dialogRef.close(tipoTramite)
-    //     })
-    //   } else {
-    //     // this.tiposTramitesService
-    //     //   .agregar_tipoTramite(this.Form_TipoTramite.value, this.dataSource.data)
-    //     //   .subscribe((tipo) => {
-    //     //     this.dialogRef.close(tipo);
-    //     //   });
-
-    //   }
-    // }
+  save() {
+    if (this.data) {
+      this.tiposTramitesService.edit(this.data._id, this.Form_TipoTramite.value).subscribe(typeProcedure => {
+        this.dialogRef.close(typeProcedure)
+      })
+    } else {
+      // this.tiposTramitesService
+      //   .agregar_tipoTramite(this.Form_TipoTramite.value, this.dataSource.data)
+      //   .subscribe((tipo) => {
+      //     this.dialogRef.close(tipo);
+      //   });
+    }
   }
   addRequeriment() {
     const requerimentForm = this.fb.group({
-      nombre: ['', Validators.required],
-      activo: [true]
+      nombre: ['', Validators.required]
     });
     this.requeriments.insert(0, requerimentForm);
   }
@@ -111,8 +106,7 @@ export class TypeProcedureDialogComponent {
         data.forEach(element => {
           if (element['REQUERIMIENTOS']) {
             const requerimentForm = this.fb.group({
-              nombre: [element['REQUERIMIENTOS'], Validators.required],
-              activo: [true]
+              nombre: [element['REQUERIMIENTOS'], Validators.required]
             });
             this.requeriments.insert(0, requerimentForm);
           }
@@ -126,18 +120,4 @@ export class TypeProcedureDialogComponent {
     const filterValue = value.toLowerCase();
     return this.segments.filter(option => option.toLowerCase().includes(filterValue));
   }
-
-  selectGroupOfTypesProcedure(group: string) {
-    this.requeriments.setValue([])
-    if (this.data) {
-      this.data.requerimientos.forEach(element => {
-        const requerimentForm = this.fb.group({
-          nombre: [element.nombre, Validators.required],
-          activo: [element.activo]
-        });
-        this.requeriments.push(requerimentForm)
-      })
-    }
-  }
-
 }

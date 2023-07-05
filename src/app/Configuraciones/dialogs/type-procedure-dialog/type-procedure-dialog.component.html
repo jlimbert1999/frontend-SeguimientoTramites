@@ -19,10 +19,10 @@
                     </mat-autocomplete>
                 </mat-form-field>
             </div>
-            <div class="col-sm-2">
+            <div *ngIf="!data" class="col-sm-2">
                 <mat-form-field appearance="fill">
                     <mat-label>Grupo </mat-label>
-                    <mat-select (selectionChange)="selectGroupOfTypesProcedure($event.value)" formControlName="tipo">
+                    <mat-select formControlName="tipo">
                         <mat-option value="EXTERNO">EXTERNO</mat-option>
                         <mat-option value="INTERNO">INTERNO</mat-option>
                     </mat-select>
@@ -48,7 +48,6 @@
                     <thead>
                         <tr>
                             <th scope="col">Requerimientos</th>
-                            <th scope="col" style="width: 15%">Situacion</th>
                             <th scope="col" style="width: 5%"></th>
                         </tr>
                     </thead>
@@ -62,12 +61,6 @@
                                 </mat-form-field>
                             </td>
                             <td>
-                                <span class="c-pill" [class.c-pill--success]="requeriment.value.activo"
-                                    [class.c-pill--danger]="!requeriment.value.activo">
-                                    {{requeriment.value.activo?'HABILITADO':'NO HABILITADO'}}
-                                </span>
-                            </td>
-                            <td>
                                 <button (click)="removeRequeriment(i)" mat-icon-button color="accent"
                                     aria-label="Example icon button with a menu icon">
                                     <mat-icon>delete</mat-icon>
@@ -79,12 +72,8 @@
             </div>
         </div>
     </form>
-    <div class="row">
-
-    </div>
-
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <button mat-flat-button mat-dialog-close color="warn">Cancelar</button>
-    <button mat-flat-button color="primary" [disabled]="Form_TipoTramite.invalid" (click)="guardar()">Guardar</button>
+    <button mat-flat-button color="primary" [disabled]="Form_TipoTramite.invalid" (click)="save()">Guardar</button>
 </mat-dialog-actions>

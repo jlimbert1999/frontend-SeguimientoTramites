@@ -5,16 +5,13 @@ import { dependency } from 'src/app/Configuraciones/interfaces/dependency.interf
 import { institution } from 'src/app/Configuraciones/interfaces/institution.interface';
 import { DependenciasService } from 'src/app/Configuraciones/services/dependencias.service';
 
-
 @Component({
   selector: 'app-dependencia-dialog',
   templateUrl: './dependencia-dialog.component.html',
   styleUrls: ['./dependencia-dialog.component.scss'],
 })
 export class DependenciaDialogComponent implements OnInit {
-
   institutions: institution[] = []
-
   Form_Dependencia: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
     sigla: ['', [Validators.required, Validators.maxLength(10)]],

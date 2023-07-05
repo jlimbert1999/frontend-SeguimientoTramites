@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TablaComponent } from './tabla/tabla.component';
 import { MaterialModule } from '../angular-material/material.module';
-import { MailHeaderComponent } from './mail-header/mail-header.component';
 import { GraphWorkflowComponent } from './components/graph-workflow/graph-workflow.component';
 import { ListWorkflowComponent } from './components/list-workflow/list-workflow.component';
 import { ObservacionesComponent } from './observaciones/observaciones.component';
@@ -27,8 +25,6 @@ import { BadgePipe } from './pipes/badge.pipe';
 
 @NgModule({
   declarations: [
-    TablaComponent,
-    MailHeaderComponent,
     GraphWorkflowComponent,
     ListWorkflowComponent,
     ObservacionesComponent,
@@ -58,7 +54,6 @@ import { BadgePipe } from './pipes/badge.pipe';
     FormsModule
   ],
   exports: [
-    TablaComponent,
     GraphWorkflowComponent,
     ListWorkflowComponent,
     ObservacionesComponent,
@@ -66,7 +61,6 @@ import { BadgePipe } from './pipes/badge.pipe';
     StatePipe,
     SolicitantePipe,
     PaginatorComponent,
-    MailHeaderComponent,
     InfoTramiteExternoComponent,
     InfoTramiteInternoComponent,
     ToolbarComponent,

@@ -62,7 +62,7 @@ export class CuentaDialogComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    forkJoin([this.cuentasService.getInstituciones()]).subscribe(
+    forkJoin([this.cuentasService.getInstitutions()]).subscribe(
       data => {
         this.instituciones = data[0]
         // this.roles = data[1]
@@ -78,29 +78,18 @@ export class CuentaDialogComponent implements OnInit, OnDestroy {
 
   guardar() {
     this.cuentasService.add(this.Form_Cuenta.value, this.Form_Funcionario.value).subscribe(cuenta => {
-      HojaUsuarios(
-        cuenta,
-        this.Form_Cuenta.get('login')?.value,
-        this.Form_Cuenta.get('password')?.value
-      )
+      // HojaUsuarios(
+      //   cuenta,
+      //   this.Form_Cuenta.get('login')?.value,
+      //   this.Form_Cuenta.get('password')?.value
+      // )
       this.dialogRef.close(cuenta)
     })
   }
 
 
 
-  selectInstitucion(id_institucion: string) {
-    this.cuentasService.getDependencias(id_institucion).subscribe(dep => {
-      this.dependencias = dep
-      this.bankCtrl.setValue(this.dependencias);
-      this.filteredBanks.next(this.dependencias.slice());
-      this.bankFilterCtrl.valueChanges
-        .pipe(takeUntil(this._onDestroy))
-        .subscribe(() => {
-          this.filterBanks();
-        });
-    });
-  }
+ 
   generar_credenciales() {
     let name = this.Form_Funcionario.get('nombre')?.value.split(' ')[0]
     let firstName = this.Form_Funcionario.get('paterno')?.value[0] ? this.Form_Funcionario.get('paterno')?.value[0] : ''
@@ -123,6 +112,19 @@ export class CuentaDialogComponent implements OnInit, OnDestroy {
     this.filteredBanks.next(
       this.dependencias.filter(bank => bank.nombre.toLowerCase().indexOf(search) > -1)
     );
+  }
+
+  selectInstitucion(id_institucion: string) {
+    // this.cuentasService.getDependencias(id_institucion).subscribe(dep => {
+    //   this.dependencias = dep
+    //   this.bankCtrl.setValue(this.dependencias);
+    //   this.filteredBanks.next(this.dependencias.slice());
+    //   this.bankFilterCtrl.valueChanges
+    //     .pipe(takeUntil(this._onDestroy))
+    //     .subscribe(() => {
+    //       this.filterBanks();
+    //     });
+    // });
   }
 
 

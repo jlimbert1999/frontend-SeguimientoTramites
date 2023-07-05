@@ -17,7 +17,7 @@ import { RolService } from '../../services/rol.service';
 })
 export class CreacionAsignacionComponent implements OnInit {
   dependencias: { id_dependencia: string, nombre: string }[] = [];
-  instituciones: { id_institucion: string, nombre: string }[] = [];
+  instituciones: any[] = [];
   roles: any[] = []
   Funcionarios: { _id: string, nombre: string, cargo: string, dni: string }[] = []
 
@@ -51,7 +51,7 @@ export class CreacionAsignacionComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    forkJoin([this.cuentaService.getInstituciones()]).subscribe(
+    forkJoin([this.cuentaService.getInstitutions()]).subscribe(
       data => {
         this.instituciones = data[0]
         // this.roles = data[1]
@@ -70,16 +70,16 @@ export class CreacionAsignacionComponent implements OnInit {
   }
 
   seleccionar_institucion(id_institucion: string) {
-    this.cuentaService.getDependencias(id_institucion).subscribe(dep => {
-      this.dependencias = dep
-      this.bankCtrl.setValue(this.dependencias);
-      this.filteredBanks.next(this.dependencias.slice());
-      this.bankFilterCtrl.valueChanges
-        .pipe(takeUntil(this._onDestroy))
-        .subscribe(() => {
-          this.filterBanks();
-        });
-    });
+    // this.cuentaService.ge(id_institucion).subscribe(dep => {
+    //   this.dependencias = dep
+    //   this.bankCtrl.setValue(this.dependencias);
+    //   this.filteredBanks.next(this.dependencias.slice());
+    //   this.bankFilterCtrl.valueChanges
+    //     .pipe(takeUntil(this._onDestroy))
+    //     .subscribe(() => {
+    //       this.filterBanks();
+    //     });
+    // });
   }
 
 

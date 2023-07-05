@@ -1,11 +1,11 @@
-import { Officer } from "src/app/shared/components/list-workflow/list-workflow.component";
-import { Dependency } from "./dependency.interface";
+import { dependency } from "./dependency.interface";
+import { officer } from "./oficer.interface";
 
 export interface account {
     _id: string;
-    dependencia: Dependency
+    dependencia: dependency;
     login: string;
     rol: string;
-    funcionario: Officer;
+    funcionario: officer;
     activo: boolean;
 }

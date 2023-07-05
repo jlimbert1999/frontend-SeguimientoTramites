@@ -3,8 +3,11 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Cuenta, CuentaDto } from '../models/cuenta.interface';
-import { Funcionario, FuncionarioDto } from '../models/funcionario.interface';
+import { FuncionarioDto } from '../models/funcionario.interface';
 import { myAccount } from 'src/app/home/models/myAccount.interface';
+import { institution } from '../interfaces/institution.interface';
+import { dependency } from '../interfaces/dependency.interface';
+import { account } from '../interfaces/account.interface';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -14,16 +17,15 @@ export class CuentaService {
   resultsLength: number = 0
 
   constructor(private http: HttpClient) { }
-  getInstituciones() {
-    return this.http.get<{ ok: boolean, instituciones: { id_institucion: string, nombre: string, sigla: string }[] }>(`${base_url}/cuentas/instituciones`).pipe(
-      map(resp => resp.instituciones)
+  getInstitutions() {
+    return this.http.get<institution[]>(`${base_url}/accounts/institutions`).pipe(
+      map(resp => resp)
     )
   }
-
-  getDependencias(id_institucion: string) {
-    return this.http.get<{ ok: boolean, dependencias: { id_dependencia: string, nombre: string }[] }>(`${base_url}/cuentas/dependencias/${id_institucion}`).pipe(
+  getDependencies(id_institution: string) {
+    return this.http.get<dependency[]>(`${base_url}/accounts/institution-dependencie/${id_institution}`).pipe(
       map(resp => {
-        return resp.dependencias
+        return resp
       })
     )
   }
@@ -34,11 +36,28 @@ export class CuentaService {
       })
     )
   }
+  search(limit: number, offset: number, text: string, id_institucion: string | null, id_dependency: string | null) {
+    let params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset)
+    if (id_institucion) {
+      params = params.set('institution', id_institucion)
+      if (id_dependency) {
+        params = params.set('dependency', id_dependency)
+      }
+    }
+    if (text !== '') {
+      params = params.set('text', text)
+    }
+    return this.http.get<{ accounts: account[], length: number }>(`${base_url}/accounts/search`, { params }).pipe(
+      map(resp => ({ accounts: resp.accounts, length: resp.length }))
+    )
+  }
 
   add(cuenta: CuentaDto, funcionario: FuncionarioDto) {
-    return this.http.post<{ ok: boolean, cuenta: Cuenta }>(`${base_url}/cuentas`, { cuenta, funcionario }).pipe(
+    return this.http.post<account[]>(`${base_url}/cuentas`, { cuenta, funcionario }).pipe(
       map(resp => {
-        return resp.cuenta
+        return resp
       })
     )
   }
@@ -52,10 +71,10 @@ export class CuentaService {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ accounts: Cuenta[], length: number }>(`${base_url}/account`, { params }).pipe(
+    return this.http.get<{ accounts: account[], length: number }>(`${base_url}/accounts`, { params }).pipe(
       map(resp => {
         console.log(resp.accounts);
-        return { cuentas: resp.accounts, length: resp.length }
+        return { accounts: resp.accounts, length: resp.length }
       })
     )
   }
@@ -64,25 +83,7 @@ export class CuentaService {
       map(resp => resp.activo)
     )
   }
-  search(limit: number, offset: number, text: string, id_institucion: string | null, id_dependencia: string | null) {
-    let params = new HttpParams()
-      .set('limit', limit)
-      .set('offset', offset)
-    if (id_institucion) {
-      params = params.set('institucion', id_institucion)
-      if (id_dependencia) {
-        params = params.set('dependencia', id_dependencia)
-      }
-    }
-    if (text !== '') {
-      params = params.set('text', text)
-    }
-    return this.http.get<{ ok: boolean, cuentas: Cuenta[], length: number }>(`${base_url}/cuentas/search`, { params }).pipe(
-      map(resp => {
-        return { cuentas: resp.cuentas, length: resp.length }
-      })
-    )
-  }
+
   getDetails(id_cuenta: string) {
     return this.http.get<{ ok: boolean, details: { externos?: number, internos?: number, entrada?: number, salida?: number } }>(`${base_url}/cuentas/details/${id_cuenta}`).pipe(
       map(resp => {
