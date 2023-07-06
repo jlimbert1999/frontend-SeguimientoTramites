@@ -28,30 +28,20 @@
 <div class="container-fluid" [@fadeInOnEnter]>
     <div class="row">
         <div class="col-sm-3">
-            <app-simple-mat-select-search [placehorder]="'Institucion'" [data]="institutions" (eventSelectedOption)="getDependencias($event.value)" [pathPropertyOfObjectDisplay]="'nombre'"></app-simple-mat-select-search>
+            <app-simple-mat-select-search [placehorder]="'Institucion'" [data]="institutions"
+                (eventSelectedOption)="getDependencias($event.value)"
+                [pathPropertyOfObjectDisplay]="'nombre'"></app-simple-mat-select-search>
         </div>
         <div class="col-sm-5">
-            <app-simple-mat-select-search [placehorder]="'Dependencia'" [data]="dependencies" (eventSelectedOption)="getAccountsOfDependency($event.value)" [pathPropertyOfObjectDisplay]="'nombre'"></app-simple-mat-select-search>
-            <!-- <mat-form-field appearance="fill" class="example-full-width">
-                <mat-select (selectionChange)="applyFilterbySelect()" [formControl]="bankCtrl" placeholder="Dependencia"
-                    #singleSelect>
-                    <mat-option>
-                        <ngx-mat-select-search [formControl]="bankFilterCtrl"></ngx-mat-select-search>
-                    </mat-option>
-                    <mat-option [value]="null">
-                        -
-                    </mat-option>
-                    <mat-option *ngFor="let bank of filteredBanks | async" [value]="bank.id_dependencia">
-                        {{bank.nombre}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field> -->
+            <app-simple-mat-select-search [placehorder]="'Dependencia'" [data]="dependencies"
+                (eventSelectedOption)="getAccountsOfDependency($event.value)"
+                [pathPropertyOfObjectDisplay]="'nombre'"></app-simple-mat-select-search>
         </div>
         <div class="col-sm-4">
             <mat-form-field class="example-full-width">
                 <mat-label>Buscar funcionario</mat-label>
-                <input matInput (keyup)="applyFilter($event)" placeholder="Nombre / Cargo / DNI" #input>
-                <button *ngIf="text!==''" matSuffix mat-icon-button aria-label="Clear" (click)="cancelSearch()">
+                <input [(ngModel)]="text" matInput #myInput (keyup)="applyFilter($event)" placeholder="Nombre / Cargo / DNI">
+                <button *ngIf="text" matSuffix mat-icon-button aria-label="Clear" (click)="cancelSearch()">
                     <mat-icon>close</mat-icon>
                 </button>
             </mat-form-field>

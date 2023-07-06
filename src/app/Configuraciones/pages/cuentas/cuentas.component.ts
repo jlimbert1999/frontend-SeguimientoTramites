@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
@@ -12,6 +12,7 @@ import { UsuarioDialogComponent } from './officer-dialog/usuario-dialog.componen
 import { institution } from '../../interfaces/institution.interface';
 import { dependency } from '../../interfaces/dependency.interface';
 import { account } from '../../interfaces/account.interface';
+import { MatInput } from '@angular/material/input';
 
 
 @Component({
@@ -28,8 +29,9 @@ export class CuentasComponent implements OnInit {
   institutions: institution[] = []
   dependencies: dependency[] = []
   text: string = ""
-  id_institucion: string
-  id_dependencia: string
+  id_institucion: string | null
+  id_dependencia: string | null
+  @ViewChild('myInput') myInput: MatInput;
 
   constructor(
     public dialog: MatDialog,
@@ -139,30 +141,33 @@ export class CuentasComponent implements OnInit {
 
 
 
-  getDependencias(institution: institution) {
-    this.id_institucion = institution._id
+  getDependencias(institution: institution | null) {
+    if (institution) {
+      this.id_institucion = institution._id
+      this.accountService.getDependencies(institution._id).subscribe(data => {
+        this.dependencies = data
+      })
+    }
+    else {
+      this.id_institucion = null
+      this.id_dependencia = null
+      this.dependencies = []
+    }
     this.paginatorService.offset = 0
-    this.accountService.getDependencies(institution._id).subscribe(data => {
-      this.dependencies = data
-    })
     this.Get()
   }
-  getAccountsOfDependency(dependency: dependency) {
-    this.id_dependencia = dependency._id
-    this.Get()
-  }
-
-
-  applyFilterbyText(event: Event) {
-    this.text = (event.target as HTMLInputElement).value;
-    this.Get()
-  }
-  applyFilterbySelect() {
-    this.paginatorService.offset = 0
+  getAccountsOfDependency(dependency: dependency | null) {
+    if (dependency) {
+      this.id_dependencia = dependency._id
+    }
+    else {
+      this.id_dependencia = null
+    }
     this.Get()
   }
 
   applyFilter(event: Event) {
+    console.log(this.myInput);
     this.paginatorService.offset = 0
     this.text = (event.target as HTMLInputElement).value;
     this.Get()

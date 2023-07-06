@@ -36,12 +36,12 @@ export class CuentaService {
       })
     )
   }
-  search(limit: number, offset: number, text: string, id_institucion: string | null, id_dependency: string | null) {
+  search(limit: number, offset: number, text: string, id_institution: string | null, id_dependency: string | null) {
     let params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    if (id_institucion) {
-      params = params.set('institution', id_institucion)
+    if (id_institution) {
+      params = params.set('institution', id_institution)
       if (id_dependency) {
         params = params.set('dependency', id_dependency)
       }
