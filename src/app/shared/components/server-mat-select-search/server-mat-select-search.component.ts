@@ -19,6 +19,7 @@ export class ServerMatSelectSearchComponent implements OnChanges {
   @Input() data: any[] = []
   @Input() pathPropertyOfObjectDisplay: string
   @Input() placeholder: string
+  @Input() allowNullValue: boolean = false
   /** list of banks */
   protected banks: MatSelectSearchData[] = [];
 

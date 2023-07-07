@@ -5,10 +5,10 @@ import Swal from 'sweetalert2';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { UsuariosService } from '../../services/usuarios.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { UsuarioDialogComponent } from '../cuentas/officer-dialog/usuario-dialog.component';
 import { Funcionario, FuncionarioDto } from '../../models/funcionario.interface';
 import { officer } from '../../interfaces/oficer.interface';
 import { WorkHistoryComponent } from '../../dialogs/work-history/work-history.component';
+import { OfficerDialogComponent } from '../../dialogs/officer-dialog/officer-dialog.component';
 
 @Component({
   selector: 'app-funcionarios',
@@ -50,7 +50,7 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
   }
 
   Add() {
-    const dialogRef = this.dialog.open(UsuarioDialogComponent, {
+    const dialogRef = this.dialog.open(OfficerDialogComponent, {
       width: '1200px'
     });
     dialogRef.afterClosed().subscribe((result: officer) => {
@@ -66,7 +66,7 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
   }
 
   Edit(officer: officer) {
-    const dialogRef = this.dialog.open(UsuarioDialogComponent, {
+    const dialogRef = this.dialog.open(OfficerDialogComponent, {
       width: '1200px',
       data: officer
     });

@@ -8,6 +8,8 @@ import { myAccount } from 'src/app/home/models/myAccount.interface';
 import { institution } from '../interfaces/institution.interface';
 import { dependency } from '../interfaces/dependency.interface';
 import { account } from '../interfaces/account.interface';
+import { role } from '../interfaces/role.interface';
+import { job } from '../interfaces/job.interface';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -17,6 +19,16 @@ export class CuentaService {
   resultsLength: number = 0
 
   constructor(private http: HttpClient) { }
+  getJobForOfficer(text: string) {
+    return this.http.get<job[]>(`${base_url}/accounts/jobs/${text}`).pipe(
+      map(resp => resp)
+    )
+  }
+  getRoles() {
+    return this.http.get<role[]>(`${base_url}/accounts/roles`).pipe(
+      map(resp => resp)
+    )
+  }
   getInstitutions() {
     return this.http.get<institution[]>(`${base_url}/accounts/institutions`).pipe(
       map(resp => resp)
@@ -26,13 +38,6 @@ export class CuentaService {
     return this.http.get<dependency[]>(`${base_url}/accounts/institution-dependencie/${id_institution}`).pipe(
       map(resp => {
         return resp
-      })
-    )
-  }
-  getRoles() {
-    return this.http.get<{ ok: boolean, roles: { role: string, _id: string }[] }>(`${base_url}/cuentas/roles`).pipe(
-      map(resp => {
-        return resp.roles
       })
     )
   }
@@ -50,7 +55,15 @@ export class CuentaService {
       params = params.set('text', text)
     }
     return this.http.get<{ accounts: account[], length: number }>(`${base_url}/accounts/search`, { params }).pipe(
-      map(resp => ({ accounts: resp.accounts, length: resp.length }))
+      map(resp => {
+        resp.accounts.map(account => {
+          if (account.funcionario) {
+            Object.keys(account.funcionario).length <= 1 ? delete account.funcionario : null
+          }
+          return account
+        })
+        return { accounts: resp.accounts, length: resp.length }
+      })
     )
   }
 

@@ -8,10 +8,10 @@ import { UsuariosService } from 'src/app/Configuraciones/services/usuarios.servi
 
 @Component({
   selector: 'app-usuario-dialog',
-  templateUrl: './usuario-dialog.component.html',
-  styleUrls: ['./usuario-dialog.component.scss']
+  templateUrl: './officer-dialog.component.html',
+  styleUrls: ['./officer-dialog.component.scss']
 })
-export class UsuarioDialogComponent implements OnInit {
+export class OfficerDialogComponent implements OnInit {
   imageURL?: string;
   fileUpload?: File;
   availableJobs: job[] = []
@@ -30,7 +30,7 @@ export class UsuarioDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: officer,
-    public dialogRef: MatDialogRef<UsuarioDialogComponent>,
+    public dialogRef: MatDialogRef<OfficerDialogComponent>,
     private usuariosService: UsuariosService,
     private cargoService: CargoService
   ) { }

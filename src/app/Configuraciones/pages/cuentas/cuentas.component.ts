@@ -1,18 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { Cuenta } from '../../models/cuenta.interface';
-import { Funcionario } from '../../models/funcionario.interface';
 import { CuentaService } from '../../services/cuenta.service';
 import { CreacionAsignacionComponent } from '../../dialogs/creacion-asignacion/creacion-asignacion.component';
 import { CuentaDialogComponent } from '../../dialogs/cuenta-dialog/cuenta-dialog.component';
 import { EdicionCuentaComponent } from '../../dialogs/edicion-cuenta/edicion-cuenta.component';
-import { UsuarioDialogComponent } from './officer-dialog/usuario-dialog.component';
 import { institution } from '../../interfaces/institution.interface';
 import { dependency } from '../../interfaces/dependency.interface';
 import { account } from '../../interfaces/account.interface';
-import { MatInput } from '@angular/material/input';
+import { OfficerDialogComponent } from '../../dialogs/officer-dialog/officer-dialog.component';
 
 
 @Component({
@@ -31,7 +28,6 @@ export class CuentasComponent implements OnInit {
   text: string = ""
   id_institucion: string | null
   id_dependencia: string | null
-  @ViewChild('myInput') myInput: MatInput;
 
   constructor(
     public dialog: MatDialog,
@@ -47,8 +43,7 @@ export class CuentasComponent implements OnInit {
     this.Get()
   }
 
-  ngAfterViewInit() {
-  }
+
 
   Get() {
     if (this.text !== '' || this.id_institucion) {
@@ -85,7 +80,7 @@ export class CuentasComponent implements OnInit {
       }
     });
   }
-  Edit(cuenta: Cuenta) {
+  Edit(cuenta: account) {
     const dialogRef = this.dialog.open(EdicionCuentaComponent, {
       width: '1600px',
       data: cuenta
@@ -114,11 +109,11 @@ export class CuentasComponent implements OnInit {
 
 
   AddUser() {
-    this.dialog.open(UsuarioDialogComponent, {
+    this.dialog.open(OfficerDialogComponent, {
       width: '900px'
     });
   }
-  EditUser(account: Cuenta) {
+  EditUser(account: account) {
     // const dialogRef = this.dialog.open(UsuarioDialogComponent, {
     //   data: account.funcionario
     // });
@@ -167,7 +162,6 @@ export class CuentasComponent implements OnInit {
   }
 
   applyFilter(event: Event) {
-    console.log(this.myInput);
     this.paginatorService.offset = 0
     this.text = (event.target as HTMLInputElement).value;
     this.Get()

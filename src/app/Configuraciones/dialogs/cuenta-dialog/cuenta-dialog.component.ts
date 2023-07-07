@@ -1,18 +1,14 @@
-import {
-  AfterViewInit,
-  Component,
-  Inject,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ReplaySubject, Subject, forkJoin, takeUntil } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { CuentaService } from 'src/app/Configuraciones/services/cuenta.service';
-import { Cuenta } from 'src/app/Configuraciones/models/cuenta.interface';
 import { HojaUsuarios } from 'src/app/Configuraciones/pdfs/usuarios';
-import { RolService } from '../../services/rol.service';
+import { institution } from '../../interfaces/institution.interface';
+import { dependency } from '../../interfaces/dependency.interface';
+import { account } from '../../interfaces/account.interface';
+import { role } from '../../interfaces/role.interface';
+import { job } from '../../interfaces/job.interface';
 
 
 
@@ -21,10 +17,12 @@ import { RolService } from '../../services/rol.service';
   templateUrl: './cuenta-dialog.component.html',
   styleUrls: ['./cuenta-dialog.component.scss'],
 })
-export class CuentaDialogComponent implements OnInit, OnDestroy {
-  dependencias: any[] = [];
-  instituciones: any[] = [];
-  roles: any[] = []
+export class CuentaDialogComponent implements OnInit {
+  dependencias: dependency[] = [];
+  instituciones: institution[] = [];
+  roles: role[] = []
+  jobs: job[] = []
+  noJob: boolean = false
 
   Form_Funcionario: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
@@ -33,7 +31,7 @@ export class CuentaDialogComponent implements OnInit, OnDestroy {
     dni: ['', Validators.required],
     telefono: ['', [Validators.required, Validators.maxLength(8)]],
     cargo: ['', Validators.required],
-    direccion: ['', Validators.required],
+    direccion: ['', Validators.required]
   });
 
   Form_Cuenta: FormGroup = this.fb.group({
@@ -43,37 +41,26 @@ export class CuentaDialogComponent implements OnInit, OnDestroy {
     dependencia: ['', Validators.required],
   });
 
-
-
-
-
-  public bankCtrl: FormControl = new FormControl();
-  public bankFilterCtrl: FormControl = new FormControl();
-  public filteredBanks: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-  protected _onDestroy = new Subject<void>();
-
-
   constructor(
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: Cuenta,
+    @Inject(MAT_DIALOG_DATA) public data: account,
     public dialogRef: MatDialogRef<CuentaDialogComponent>,
-    private cuentasService: CuentaService,
-    private rolService: RolService
+    private cuentasService: CuentaService
   ) { }
 
   ngOnInit(): void {
-    forkJoin([this.cuentasService.getInstitutions()]).subscribe(
+    forkJoin([
+      this.cuentasService.getInstitutions(),
+      this.cuentasService.getRoles()
+    ]).subscribe(
       data => {
         this.instituciones = data[0]
-        // this.roles = data[1]
+        this.roles = data[1]
       }
     )
 
   }
-  ngOnDestroy() {
-    this._onDestroy.next();
-    this._onDestroy.complete();
-  }
+
 
 
   guardar() {
@@ -89,51 +76,35 @@ export class CuentaDialogComponent implements OnInit, OnDestroy {
 
 
 
- 
-  generar_credenciales() {
+
+  changeTab() {
     let name = this.Form_Funcionario.get('nombre')?.value.split(' ')[0]
     let firstName = this.Form_Funcionario.get('paterno')?.value[0] ? this.Form_Funcionario.get('paterno')?.value[0] : ''
     let lasttName = this.Form_Funcionario.get('materno')?.value[0] ? this.Form_Funcionario.get('materno')?.value[0] : ''
     this.Form_Cuenta.get('login')?.setValue(name + firstName + lasttName)
     this.Form_Cuenta.get('password')?.setValue(this.Form_Funcionario.get('dni')?.value)
   }
-
-  protected filterBanks() {
-    if (!this.dependencias) {
-      return;
+  getDependencies(institution: institution | null) {
+    this.Form_Cuenta.get('institucion')?.setValue(institution ? institution._id : '')
+    if (institution) {
+      this.cuentasService.getDependencies(institution._id).subscribe(data => {
+        this.dependencias = data
+      })
     }
-    let search = this.bankFilterCtrl.value;
-    if (!search) {
-      this.filteredBanks.next(this.dependencias.slice());
-      return;
-    } else {
-      search = search.toLowerCase();
+  }
+  selectDependency(dependency: dependency) {
+    this.Form_Cuenta.get('dependencia')?.setValue(dependency ? dependency._id : '')
+  }
+  searchJob(value: string) {
+    this.cuentasService.getJobForOfficer(value).subscribe(data => {
+      this.jobs = data
+    })
+  }
+  selectJob(job: job | null) {
+    if (job) {
+      this.Form_Funcionario.get('cargo')?.setValue(job._id)
     }
-    this.filteredBanks.next(
-      this.dependencias.filter(bank => bank.nombre.toLowerCase().indexOf(search) > -1)
-    );
   }
-
-  selectInstitucion(id_institucion: string) {
-    // this.cuentasService.getDependencias(id_institucion).subscribe(dep => {
-    //   this.dependencias = dep
-    //   this.bankCtrl.setValue(this.dependencias);
-    //   this.filteredBanks.next(this.dependencias.slice());
-    //   this.bankFilterCtrl.valueChanges
-    //     .pipe(takeUntil(this._onDestroy))
-    //     .subscribe(() => {
-    //       this.filterBanks();
-    //     });
-    // });
-  }
-
-
-
-
-
-
-
-
 
 
 

@@ -6,6 +6,6 @@ export interface account {
     dependencia: dependency;
     login: string;
     rol: string;
-    funcionario: officer;
+    funcionario?: officer;
     activo: boolean;
 }
