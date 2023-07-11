@@ -5,8 +5,7 @@ import { GraphWorkflowComponent } from './components/graph-workflow/graph-workfl
 import { ListWorkflowComponent } from './components/list-workflow/list-workflow.component';
 import { ObservacionesComponent } from './observaciones/observaciones.component';
 import { FullnamePipe } from './pipes/fullname.pipe';
-import { PanelNotificationComponent } from './panel-notification/panel-notification.component';
-import { PaginatorComponent } from './paginator/paginator.component';
+import { PaginatorComponent } from './components/paginator/paginator.component';
 import { InfoTramiteInternoComponent } from './info-tramite-interno/info-tramite-interno.component';
 import { InfoTramiteExternoComponent } from './info-tramite-externo/info-tramite-externo.component';
 import { StatePipe } from './pipes/state.pipe';
@@ -14,7 +13,6 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SolicitantePipe } from './pipes/solicitante.pipe';
-import { TableComponent } from './table/table.component';
 import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
 import { TableReportPreceduresComponent } from './table-report-precedures/table-report-precedures.component';
 import { SimpleMatSelectSearchComponent } from './components/simple-mat-select-search/simple-mat-select-search.component';
@@ -29,20 +27,17 @@ import { BadgePipe } from './pipes/badge.pipe';
     ListWorkflowComponent,
     ObservacionesComponent,
     FullnamePipe,
-    PanelNotificationComponent,
     PaginatorComponent,
     InfoTramiteInternoComponent,
     InfoTramiteExternoComponent,
     StatePipe,
     ToolbarComponent,
     SolicitantePipe,
-    TableComponent,
     TableReportPreceduresComponent,
     SimpleMatSelectSearchComponent,
     ServerMatSelectSearchComponent,
     EventsProcedureComponent,
     BadgePipe,
-
   ],
   imports: [
     CommonModule,
@@ -64,7 +59,6 @@ import { BadgePipe } from './pipes/badge.pipe';
     InfoTramiteExternoComponent,
     InfoTramiteInternoComponent,
     ToolbarComponent,
-    TableComponent,
     TableReportPreceduresComponent,
     SimpleMatSelectSearchComponent,
     ServerMatSelectSearchComponent,

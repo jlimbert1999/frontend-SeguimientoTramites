@@ -14,9 +14,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { LayoutModule } from '@angular/cdk/layout';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 
-import { ConfiguracionesModule } from '../Configuraciones/configuraciones.module';
+import { AdministrationModule } from '../administration/administration.module';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MenuComponent } from './pages/menu/menu.component';
 import { ReportFichaOptionsComponent } from './components/report-ficha-options/report-ficha-options.component';
@@ -53,12 +52,11 @@ import { ReportUsuarioOptionsComponent } from './components/report-usuario-optio
     MatMenuModule,
     MatIconModule,
     LayoutModule,
-    NgxChartsModule,
-    ConfiguracionesModule,
+    AdministrationModule,
     NgxMatSelectSearchModule
   ],
   providers: [
-    
+
   ]
 })
 export class ReportesModule { }

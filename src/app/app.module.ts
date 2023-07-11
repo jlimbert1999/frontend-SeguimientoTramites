@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
-import { ConfiguracionesModule } from './Configuraciones/configuraciones.module';
+import { AdministrationModule } from './administration/administration.module';
 import { MaterialModule } from './angular-material/material.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InterceptorService } from './interceptors/interceptor.service';
@@ -45,7 +45,7 @@ registerLocaleData(localeEs, 'es');
         AppRoutingModule,
         BrowserAnimationsModule,
         ToastrModule.forRoot(),
-        ConfiguracionesModule,
+        AdministrationModule,
         AuthModule,
         ArchivosModule,
         ReportesModule,

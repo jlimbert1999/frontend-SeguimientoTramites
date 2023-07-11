@@ -8,7 +8,6 @@ import { PerfilComponent } from './pages/perfil/perfil.component';
 import { RecursosComponent } from './pages/recursos/recursos.component';
 import { NotificacionsComponent } from './pages/notificacions/notificacions.component';
 
-
 const routes: Routes = [
     {
         path: 'home', component: HomeComponent, canActivate: [AuthGuard],
@@ -16,14 +15,13 @@ const routes: Routes = [
             {
                 path: 'configuraciones',
                 loadChildren: () =>
-                    import(`../Configuraciones/configuraciones-routing.module`).then((m) => m.ConfiguracionesRoutingModule),
+                    import(`../administration/administration-routing.module`).then((m) => m.AdministrationRoutingModule),
             },
             {
                 path: 'tramites',
                 loadChildren: () =>
                     import(`../Tramites/tramites-routing.module`).then((m) => m.TramitesRoutingModule),
             },
-
             {
                 path: 'archivos',
                 loadChildren: () =>

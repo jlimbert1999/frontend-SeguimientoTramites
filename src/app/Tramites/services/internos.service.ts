@@ -6,8 +6,8 @@ import { environment } from 'src/environments/environment';
 import { InternoDto } from '../models/interno.dto';
 import { Interno } from '../models/Interno.interface';
 import { LocationProcedure, WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
-import { TypesProceduresGrouped } from 'src/app/Configuraciones/models/tipoTramite.interface';
 import { Observacion } from '../models/Externo.interface';
+import { TypesProceduresGrouped } from 'src/app/administration/models/tipoTramite.interface';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'

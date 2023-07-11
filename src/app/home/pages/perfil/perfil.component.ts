@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CuentaService } from 'src/app/Configuraciones/services/cuenta.service';
+import { CuentaService } from 'src/app/administration/services/cuenta.service';
 import { Location } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { myAccount } from '../../models/myAccount.interface';

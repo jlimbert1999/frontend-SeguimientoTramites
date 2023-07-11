@@ -71,7 +71,12 @@ export class InterceptorService {
       Swal.fire({ title: "El recurso solicitado no existe", text: error.error.message, icon: 'info', confirmButtonText: 'Aceptar' })
     }
     else if (error.status >= 500) {
-      Swal.fire("Error en el sevidor", error.error.message, 'error')
+      Swal.fire({
+        icon: 'error',
+        title: "Error en el servidor",
+        text: 'La operacion no se pudo completar',
+        confirmButtonText: 'Aceptar'
+      })
     }
     else if (error.status < 500 && error.status >= 400 && error.status !== 401 && error.status !== 404) {
       Swal.fire({

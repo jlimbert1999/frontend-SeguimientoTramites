@@ -3,11 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Externo, Representante, Solicitante } from '../../models/Externo.interface';
 import { ExternosService } from '../../services/externos.service';
-import { TipoTramite } from 'src/app/Configuraciones/models/tipoTramite.interface';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
 import { closeLoadingRequets, showLoadingRequest } from 'src/app/helpers/loading.helper';
+import { TipoTramite } from 'src/app/administration/models/tipoTramite.interface';
 
 
 @Component({

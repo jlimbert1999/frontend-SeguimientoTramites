@@ -4,8 +4,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map, Observable, startWith, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { InternosService } from '../../services/internos.service';
-import { TypesProceduresGrouped } from 'src/app/Configuraciones/models/tipoTramite.interface';
 import { closeLoadingRequets, showLoadingRequest } from 'src/app/helpers/loading.helper';
+import { TypesProceduresGrouped } from 'src/app/administration/models/tipoTramite.interface';
 @Component({
   selector: 'app-dialog-internos',
   templateUrl: './dialog-internos.component.html',

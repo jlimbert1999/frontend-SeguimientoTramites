@@ -5,9 +5,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FullnamePipe implements PipeTransform {
 
-  transform(funcionario: { nombre: string, paterno: string, materno: string }): string {
-    return [funcionario.nombre, funcionario.paterno, funcionario.materno].filter(Boolean).join(" ");
-
+  transform(officer: { nombre: string, paterno: string, materno: string }): string {
+    if (!officer) return '--SIN FUNCIONARIO--'
+    return [officer.nombre, officer.paterno, officer.materno].filter(Boolean).join(" ");
   }
 
 }

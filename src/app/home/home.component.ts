@@ -6,7 +6,6 @@ import { LoaderService } from '../auth/services/loader.service';
 import { Router } from '@angular/router';
 
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { PanelNotificationComponent } from '../shared/panel-notification/panel-notification.component';
 import { BandejaEntradaService } from '../Bandejas/services/bandeja-entrada.service';
 import { SidenavService } from '../shared/services/sidenav.service';
 import { MatSidenav } from '@angular/material/sidenav';
@@ -88,9 +87,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.socketService.disconnect()
   }
 
-  openBottomSheet(): void {
-    this.bottomSheet.open(PanelNotificationComponent);
-  }
+ 
 
 
 }

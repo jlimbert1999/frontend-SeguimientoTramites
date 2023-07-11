@@ -5,7 +5,8 @@ import { LocationProcedure, WorkflowData } from 'src/app/Bandejas/models/workflo
 import { environment } from 'src/environments/environment';
 import { ExternoDto, RepresentanteDto, SolicitanteDto } from '../models/Externo.dto';
 import { Externo, Observacion } from '../models/Externo.interface';
-import { TipoTramite } from 'src/app/Configuraciones/models/tipoTramite.interface';
+import { TipoTramite } from 'src/app/administration/models/tipoTramite.interface';
+
 
 const base_url = environment.base_url
 @Injectable({
