@@ -1,122 +1,96 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSelect } from '@angular/material/select';
-import { MatTableDataSource } from '@angular/material/table';
-import { forkJoin, ReplaySubject, Subject, takeUntil } from 'rxjs';
-import { Funcionario } from 'src/app/Configuraciones/models/funcionario.interface';
-import { HojaUsuarios } from 'src/app/Configuraciones/pdfs/usuarios';
+import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { forkJoin } from 'rxjs';
 import { CuentaService } from 'src/app/Configuraciones/services/cuenta.service';
-import Swal from 'sweetalert2';
-import { RolService } from '../../services/rol.service';
+import { Officer } from '../../models/officer.model';
+import { institution } from '../../interfaces/institution.interface';
+import { dependency } from '../../interfaces/dependency.interface';
+import { role } from '../../interfaces/role.interface';
+
 @Component({
   selector: 'app-creacion-asignacion',
   templateUrl: './creacion-asignacion.component.html',
   styleUrls: ['./creacion-asignacion.component.scss']
 })
 export class CreacionAsignacionComponent implements OnInit {
-  dependencias: { id_dependencia: string, nombre: string }[] = [];
-  instituciones: any[] = [];
-  roles: any[] = []
-  Funcionarios: { _id: string, nombre: string, cargo: string, dni: string }[] = []
-
-
+  dependencias: dependency[] = [];
+  institutions: institution[] = [];
+  roles: role[] = []
+  officers: Officer[] = []
+  hidePassword = true;
 
   Form_Cuenta: FormGroup = this.fb.group({
-    login: ['', Validators.required],
-    password: ['', Validators.required],
+    funcionario: [null, Validators.required],
+    login: ['', [Validators.required, Validators.pattern(/^\S+$/), Validators.minLength(4), Validators.maxLength(10)]],
+    password: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
     rol: ['', Validators.required],
-    dependencia: ['', Validators.required]
+    dependencia: ['', Validators.required],
   });
-
-
-  public bankCtrl: FormControl = new FormControl();
-  public bankFilterCtrl: FormControl = new FormControl();
-  public filteredBanks: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-  @ViewChild('singleSelect') singleSelect: MatSelect;
-  protected _onDestroy = new Subject<void>();
-
-  public userCtrl: FormControl = new FormControl();
-  public userFilterCtrl: FormControl = new FormControl();
-  public filteredUsers: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-  @ViewChild('userSelect') userSelect: MatSelect;
-  protected _onDestroy_users = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<CreacionAsignacionComponent>,
-    private cuentaService: CuentaService,
-    private rolService: RolService
+    private cuentaService: CuentaService
   ) { }
 
   ngOnInit(): void {
-    forkJoin([this.cuentaService.getInstitutions()]).subscribe(
+    forkJoin([
+      this.cuentaService.getInstitutions(),
+      this.cuentaService.getRoles()
+    ]).subscribe(
       data => {
-        this.instituciones = data[0]
-        // this.roles = data[1]
+        this.institutions = data[0]
+        this.roles = data[1]
       }
     )
-
-    this.userFilterCtrl.valueChanges
-      .pipe(takeUntil(this._onDestroy))
-      .subscribe((value) => {
-        if (value !== '') {
-          this.cuentaService.getUsersForAssign(value).subscribe(users => {
-            this.filteredUsers.next(users)
-          })
-        }
-      });
   }
-
-  seleccionar_institucion(id_institucion: string) {
-    // this.cuentaService.ge(id_institucion).subscribe(dep => {
-    //   this.dependencias = dep
-    //   this.bankCtrl.setValue(this.dependencias);
-    //   this.filteredBanks.next(this.dependencias.slice());
-    //   this.bankFilterCtrl.valueChanges
-    //     .pipe(takeUntil(this._onDestroy))
-    //     .subscribe(() => {
-    //       this.filterBanks();
-    //     });
-    // });
-  }
-
-
-
-  guardar() {
-    this.cuentaService.addAccountLink(this.Form_Cuenta.value, this.userCtrl.value).subscribe(cuenta => {
-      this.dialogRef.close(cuenta)
-      HojaUsuarios(
-        cuenta,
-        this.Form_Cuenta.get('login')?.value,
-        this.Form_Cuenta.get('password')?.value
-      )
-
+  save() {
+    this.Form_Cuenta
+    this.cuentaService.addAccountWithAssign(this.Form_Cuenta.value).subscribe(account => {
+      this.dialogRef.close(account)
     })
   }
 
-  selectUserAssign(value: Funcionario) {
-    this.Form_Cuenta.get('login')?.setValue(`${value.nombre}${value.paterno[0]}${value.materno[0]}`.replace(/\s/g, ''))
-    this.Form_Cuenta.get('password')?.setValue(value.dni)
+  searchOfficer(text: string) {
+    this.cuentaService.getOfficersForAssign(text).subscribe(data => {
+      this.officers = data
+    })
+  }
+  selectOfficer(officer: Officer) {
+    this.Form_Cuenta.get('funcionario')?.setValue(officer._id)
+    const login = officer.nombre.charAt(0) + officer.paterno + officer.materno.charAt(0);
+    this.Form_Cuenta.get('login')?.setValue(login.replace(/\s/g, "").toUpperCase())
+    this.Form_Cuenta.get('password')?.setValue(officer.dni.toString().replace(/\s/g, ""))
+
+  }
+  getDependencies(institution: institution) {
+    this.Form_Cuenta.get('institucion')?.setValue(institution ? institution._id : '')
+    this.cuentaService.getDependencies(institution._id).subscribe(data => {
+      this.dependencias = data
+    })
+  }
+  selectDependency(dependency: dependency) {
+    this.Form_Cuenta.get('dependencia')?.setValue(dependency ? dependency._id : '')
+  }
+
+  getErrorMessagesForm(control: AbstractControl) {
+    if (control.hasError('required')) {
+      return 'Este campo es requerido';
+    }
+    if (control.hasError('pattern')) {
+      return 'El campo no puede contener espacios en blanco';
+    }
+    if (control.hasError('minlength')) {
+      return 'El campo debe tener al menos 4 caracteres';
+    }
+    if (control.hasError('maxlength')) {
+      return 'El campo no puede tener más de 10 caracteres';
+    }
+    return '';
   }
 
 
-  protected filterBanks() {
-    if (!this.dependencias) {
-      return;
-    }
-    let search = this.bankFilterCtrl.value;
-    if (!search) {
-      this.filteredBanks.next(this.dependencias.slice());
-      return;
-    } else {
-      search = search.toLowerCase();
-    }
-    this.filteredBanks.next(
-      this.dependencias.filter(bank => bank.nombre.toLowerCase().indexOf(search) > -1)
-    );
-  }
 
 
 }

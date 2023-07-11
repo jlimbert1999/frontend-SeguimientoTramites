@@ -2,11 +2,11 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ReplaySubject, Subject, forkJoin, takeUntil } from 'rxjs';
-import { Cuenta } from 'src/app/Configuraciones/models/cuenta.interface';
-import { HojaUsuarios } from 'src/app/Configuraciones/pdfs/usuarios';
 import { CuentaService } from 'src/app/Configuraciones/services/cuenta.service';
 import Swal from 'sweetalert2';
 import { RolService } from '../../services/rol.service';
+import { account } from '../../interfaces/account.interface';
+import { role } from '../../interfaces/role.interface';
 
 @Component({
   selector: 'app-edicion-cuenta',
@@ -18,8 +18,8 @@ export class EdicionCuentaComponent implements OnInit {
     login: ['', Validators.required],
     rol: ['', Validators.required]
   });
-  cambiar_password: boolean = false;
-  roles: any[] = []
+  updatePassword: boolean = false;
+  roles: role[] = []
 
 
 
@@ -38,31 +38,31 @@ export class EdicionCuentaComponent implements OnInit {
 
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: Cuenta,
+    @Inject(MAT_DIALOG_DATA) public data: account,
     private fb: FormBuilder,
     private cuentaService: CuentaService,
-    public dialogRef: MatDialogRef<EdicionCuentaComponent>,
-    private rolService: RolService
+    public dialogRef: MatDialogRef<EdicionCuentaComponent>
   ) { }
 
   ngOnInit(): void {
-    forkJoin([this.cuentaService.getDetails(this.data._id)]).subscribe(
+    this.Form_Cuenta.patchValue(this.data)
+    forkJoin([
+      this.cuentaService.getRoles()
+    ]).subscribe(
       data => {
-        this.details = data[0]
-        // this.roles = data[1]
-        this.Form_Cuenta.patchValue(this.data)
+        this.roles = data[0]
       }
     )
-
   }
 
   changeForm(value: boolean) {
-    this.cambiar_password = value;
+    this.updatePassword = value;
     if (value) {
+      const password = this.data.funcionario ? this.data.funcionario.dni : '000000'
       this.Form_Cuenta = this.fb.group({
         login: [this.data.login, Validators.required],
         rol: [this.data.rol, Validators.required],
-        password: [this.data.funcionario ? this.data.funcionario.dni : '0000', Validators.required],
+        password: [password, Validators.required],
       });
     } else {
       this.Form_Cuenta = this.fb.group({
@@ -73,17 +73,17 @@ export class EdicionCuentaComponent implements OnInit {
   }
 
   changeUser() {
-    this.show_selectUser = true
-    this.filteredUsers.next(this.users);
-    this.userFilterCtrl.valueChanges
-      .pipe(takeUntil(this._onDestroy))
-      .subscribe((text) => {
-        if (text !== '') {
-          this.cuentaService.getUsersForAssign(text).subscribe(users => {
-            this.filteredUsers.next(users)
-          })
-        }
-      });
+    // this.show_selectUser = true
+    // this.filteredUsers.next(this.users);
+    // this.userFilterCtrl.valueChanges
+    //   .pipe(takeUntil(this._onDestroy))
+    //   .subscribe((text) => {
+    //     if (text !== '') {
+    //       this.cuentaService.getUsersForAssign(text).subscribe(users => {
+    //         this.filteredUsers.next(users)
+    //       })
+    //     }
+    //   });
   }
   cancelChangeUser() {
     this.show_selectUser = false
@@ -146,12 +146,12 @@ export class EdicionCuentaComponent implements OnInit {
 
   save() {
     this.cuentaService.edit(this.data._id, this.Form_Cuenta.value).subscribe(cuenta => {
-      if (this.cambiar_password && this.data.funcionario) {
-        HojaUsuarios(
-          cuenta,
-          this.Form_Cuenta.get('login')?.value,
-          this.Form_Cuenta.get('password')?.value
-        )
+      if (this.updatePassword && this.data.funcionario) {
+        // HojaUsuarios(
+        //   cuenta,
+        //   this.Form_Cuenta.get('login')?.value,
+        //   this.Form_Cuenta.get('password')?.value
+        // )
       }
       this.dialogRef.close(cuenta)
     })

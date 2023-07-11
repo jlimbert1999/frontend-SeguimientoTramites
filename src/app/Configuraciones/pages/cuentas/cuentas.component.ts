@@ -4,12 +4,12 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { CuentaService } from '../../services/cuenta.service';
 import { CreacionAsignacionComponent } from '../../dialogs/creacion-asignacion/creacion-asignacion.component';
+import { OfficerDialogComponent } from '../../dialogs/officer-dialog/officer-dialog.component';
 import { CuentaDialogComponent } from '../../dialogs/cuenta-dialog/cuenta-dialog.component';
 import { EdicionCuentaComponent } from '../../dialogs/edicion-cuenta/edicion-cuenta.component';
 import { institution } from '../../interfaces/institution.interface';
 import { dependency } from '../../interfaces/dependency.interface';
 import { account } from '../../interfaces/account.interface';
-import { OfficerDialogComponent } from '../../dialogs/officer-dialog/officer-dialog.component';
 
 
 @Component({
@@ -69,33 +69,7 @@ export class CuentasComponent implements OnInit {
 
   Add() {
     const dialogRef = this.dialog.open(CuentaDialogComponent, {
-      width: '1200px'
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        if (this.paginatorService.limit === this.accounts.length) {
-          this.accounts.pop()
-        }
-        this.accounts = [...result, this.accounts]
-      }
-    });
-  }
-  Edit(cuenta: account) {
-    const dialogRef = this.dialog.open(EdicionCuentaComponent, {
-      width: '1600px',
-      data: cuenta
-    });
-    dialogRef.afterClosed().subscribe((result: account) => {
-      if (result) {
-        const indexFound = this.accounts.findIndex(cuenta => cuenta._id === result._id)
-        this.accounts[indexFound] = result
-        this.accounts = [...this.accounts]
-      }
-    });
-  }
-  AddAccountLink() {
-    const dialogRef = this.dialog.open(CreacionAsignacionComponent, {
-      width: '1200px'
+      width: '900px'
     });
     dialogRef.afterClosed().subscribe((result: account) => {
       if (result) {
@@ -106,6 +80,34 @@ export class CuentasComponent implements OnInit {
       }
     });
   }
+  addAccountWithAssign() {
+    const dialogRef = this.dialog.open(CreacionAsignacionComponent, {
+      width: '900px'
+    });
+    dialogRef.afterClosed().subscribe((result: account) => {
+      if (result) {
+        if (this.paginatorService.limit === this.accounts.length) {
+          this.accounts.pop()
+        }
+        this.accounts = [result, ...this.accounts]
+      }
+    });
+  }
+  Edit(cuenta: account) {
+    const dialogRef = this.dialog.open(EdicionCuentaComponent, {
+      width: '1200px',
+      disableClose: true,
+      data: cuenta,
+    });
+    dialogRef.afterClosed().subscribe((result: account) => {
+      if (result) {
+        const indexFound = this.accounts.findIndex(cuenta => cuenta._id === result._id)
+        this.accounts[indexFound] = result
+        this.accounts = [...this.accounts]
+      }
+    });
+  }
+
 
 
   AddUser() {

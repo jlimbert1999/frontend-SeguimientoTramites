@@ -1,14 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { forkJoin } from 'rxjs';
 import { CuentaService } from 'src/app/Configuraciones/services/cuenta.service';
-import { HojaUsuarios } from 'src/app/Configuraciones/pdfs/usuarios';
 import { institution } from '../../interfaces/institution.interface';
 import { dependency } from '../../interfaces/dependency.interface';
 import { account } from '../../interfaces/account.interface';
 import { role } from '../../interfaces/role.interface';
 import { job } from '../../interfaces/job.interface';
+import { createAccountPDF } from '../../helpers/pdfs/pdf-account';
 
 
 
@@ -22,7 +22,7 @@ export class CuentaDialogComponent implements OnInit {
   instituciones: institution[] = [];
   roles: role[] = []
   jobs: job[] = []
-  noJob: boolean = false
+  hidePassword = true;
 
   Form_Funcionario: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
@@ -30,13 +30,13 @@ export class CuentaDialogComponent implements OnInit {
     materno: [''],
     dni: ['', Validators.required],
     telefono: ['', [Validators.required, Validators.maxLength(8)]],
-    cargo: ['', Validators.required],
-    direccion: ['', Validators.required]
+    cargo: [null],
+    direccion: ['SACABA', Validators.required]
   });
 
   Form_Cuenta: FormGroup = this.fb.group({
-    login: ['', Validators.required],
-    password: ['', Validators.required],
+    login: ['', [Validators.required, Validators.pattern(/^\S+$/), Validators.minLength(4), Validators.maxLength(10)]],
+    password: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
     rol: ['', Validators.required],
     dependencia: ['', Validators.required],
   });
@@ -58,31 +58,26 @@ export class CuentaDialogComponent implements OnInit {
         this.roles = data[1]
       }
     )
-
   }
 
-
-
-  guardar() {
-    this.cuentasService.add(this.Form_Cuenta.value, this.Form_Funcionario.value).subscribe(cuenta => {
-      // HojaUsuarios(
-      //   cuenta,
-      //   this.Form_Cuenta.get('login')?.value,
-      //   this.Form_Cuenta.get('password')?.value
-      // )
-      this.dialogRef.close(cuenta)
+  save() {
+    this.cuentasService.add(this.Form_Funcionario.value, this.Form_Cuenta.value).subscribe(result => {
+      createAccountPDF(result, this.Form_Cuenta.get('password')?.value)
+      this.dialogRef.close(result)
     })
   }
 
 
 
 
-  changeTab() {
-    let name = this.Form_Funcionario.get('nombre')?.value.split(' ')[0]
-    let firstName = this.Form_Funcionario.get('paterno')?.value[0] ? this.Form_Funcionario.get('paterno')?.value[0] : ''
-    let lasttName = this.Form_Funcionario.get('materno')?.value[0] ? this.Form_Funcionario.get('materno')?.value[0] : ''
-    this.Form_Cuenta.get('login')?.setValue(name + firstName + lasttName)
-    this.Form_Cuenta.get('password')?.setValue(this.Form_Funcionario.get('dni')?.value)
+  eventChangeTab() {
+    const nombre: string = this.Form_Funcionario.get('nombre')?.value;
+    const materno: string = this.Form_Funcionario.get('materno')?.value;
+    const paterno: string = this.Form_Funcionario.get('paterno')?.value;
+    const dni: string = this.Form_Funcionario.get('dni')?.value;
+    const login = nombre.charAt(0) + paterno + materno.charAt(0);
+    this.Form_Cuenta.get('login')?.setValue(login.trim().toUpperCase())
+    this.Form_Cuenta.get('password')?.setValue(dni.trim())
   }
   getDependencies(institution: institution | null) {
     this.Form_Cuenta.get('institucion')?.setValue(institution ? institution._id : '')
@@ -101,9 +96,23 @@ export class CuentaDialogComponent implements OnInit {
     })
   }
   selectJob(job: job | null) {
-    if (job) {
-      this.Form_Funcionario.get('cargo')?.setValue(job._id)
+    this.Form_Funcionario.get('cargo')?.setValue(job ? job._id : null)
+  }
+
+  getErrorMessagesForm(control: AbstractControl) {
+    if (control.hasError('required')) {
+      return 'Este campo es requerido';
     }
+    if (control.hasError('pattern')) {
+      return 'El campo no puede contener espacios en blanco';
+    }
+    if (control.hasError('minlength')) {
+      return 'El campo debe tener al menos 4 caracteres';
+    }
+    if (control.hasError('maxlength')) {
+      return 'El campo no puede tener más de 10 caracteres';
+    }
+    return '';
   }
 
 

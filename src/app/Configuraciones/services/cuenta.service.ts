@@ -2,14 +2,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Cuenta, CuentaDto } from '../models/cuenta.interface';
-import { FuncionarioDto } from '../models/funcionario.interface';
 import { myAccount } from 'src/app/home/models/myAccount.interface';
 import { institution } from '../interfaces/institution.interface';
 import { dependency } from '../interfaces/dependency.interface';
 import { account } from '../interfaces/account.interface';
 import { role } from '../interfaces/role.interface';
 import { job } from '../interfaces/job.interface';
+import { CreateOfficerDto } from '../dto/officer.dto';
+import { CreateAccountDto } from '../dto/account.dto';
+import { officer } from '../interfaces/oficer.interface';
+import { Officer } from '../models/officer.model';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -41,6 +43,16 @@ export class CuentaService {
       })
     )
   }
+  getOfficersForAssign(text: string) {
+    return this.http.get<officer[]>(`${base_url}/accounts/officers/assign/${text}`).pipe(
+      map(resp => {
+        return resp.map(el => {
+          return Officer.officerFromJson(el)
+        })
+      })
+    )
+  }
+
   search(limit: number, offset: number, text: string, id_institution: string | null, id_dependency: string | null) {
     let params = new HttpParams()
       .set('limit', limit)
@@ -66,16 +78,16 @@ export class CuentaService {
       })
     )
   }
-
-  add(cuenta: CuentaDto, funcionario: FuncionarioDto) {
-    return this.http.post<account[]>(`${base_url}/cuentas`, { cuenta, funcionario }).pipe(
-      map(resp => {
-        return resp
-      })
+  addAccountWithAssign(account: CreateAccountDto) {
+    return this.http.post<account>(`${base_url}/accounts/assign`, account).pipe(
+      map(resp => resp)
     )
   }
+  add(officer: CreateOfficerDto, account: CreateAccountDto) {
+    return this.http.post<account>(`${base_url}/accounts`, { officer, account })
+  }
   edit(id_cuenta: string, cuenta: { login: string, password?: string, rol: string }) {
-    return this.http.put<{ ok: boolean, cuenta: Cuenta }>(`${base_url}/cuentas/${id_cuenta}`, cuenta).pipe(
+    return this.http.put<{ ok: boolean, cuenta: any }>(`${base_url}/cuentas/${id_cuenta}`, cuenta).pipe(
       map(resp => resp.cuenta)
     )
   }
@@ -86,7 +98,6 @@ export class CuentaService {
       .set('offset', offset)
     return this.http.get<{ accounts: account[], length: number }>(`${base_url}/accounts`, { params }).pipe(
       map(resp => {
-        console.log(resp.accounts);
         return { accounts: resp.accounts, length: resp.length }
       })
     )
@@ -105,11 +116,7 @@ export class CuentaService {
     )
   }
 
-  getUsersForAssign(text: string) {
-    return this.http.get<{ ok: boolean, funcionarios: any[] }>(`${base_url}/cuentas/funcionarios/${text}`).pipe(
-      map(resp => resp.funcionarios)
-    )
-  }
+
   unlinkUser(id_cuenta: string) {
     return this.http.put<{ ok: boolean, message: string }>(`${base_url}/cuentas/unlink/${id_cuenta}`, {}).pipe(
       map(resp => resp.message)
@@ -120,11 +127,7 @@ export class CuentaService {
       map(resp => resp.message)
     )
   }
-  addAccountLink(cuenta: CuentaDto, id_funcionario: string) {
-    return this.http.post<{ ok: boolean, cuenta: Cuenta }>(`${base_url}/cuentas/link`, { cuenta, id_funcionario }).pipe(
-      map(resp => resp.cuenta)
-    )
-  }
+
   getMyAccount(id_account: string) {
     return this.http.get<{ ok: boolean, account: myAccount }>(`${base_url}/shared/my-account/${id_account}`).pipe(
       map(resp => resp.account)

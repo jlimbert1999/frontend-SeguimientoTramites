@@ -2,9 +2,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Funcionario } from '../models/funcionario.interface';
-import { CuentaService } from './cuenta.service';
-import { PaginationService } from './pagination.service';
 import { CreateOfficerDto } from '../dto/officer.dto';
 import { officer } from '../interfaces/oficer.interface';
 import { workHistory } from '../interfaces/workHistory.interface';
@@ -27,8 +24,8 @@ export class UsuariosService {
     )
   }
 
-  agregar_multiples_funcionarios(funcionarios: Funcionario[]) {
-    return this.http.post<{ ok: boolean, funcionarios: Funcionario }>(`${base_url}/usuarios/cargar`, { funcionarios }).pipe(
+  agregar_multiples_funcionarios(funcionarios: any[]) {
+    return this.http.post<{ ok: boolean, funcionarios: any }>(`${base_url}/usuarios/cargar`, { funcionarios }).pipe(
       map(resp => {
         return resp.funcionarios
       })

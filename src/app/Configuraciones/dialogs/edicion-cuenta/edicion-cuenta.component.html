@@ -1,9 +1,9 @@
-<h2 mat-dialog-title>Edicion cuenta</h2>
+<h2 mat-dialog-title>EDICION CUENTA</h2>
 <mat-dialog-content>
-    <div class="container-fluid px-4 mt-4">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-xl-5">
-                <div class="card">
+            <div class="col-md-4">
+                <div class="card bg-transparent">
                     <div class="card-header">Detalles funcionario</div>
                     <div class="card-body">
                         <div class="account-settings">
@@ -12,9 +12,10 @@
                                     <img src="../../../../assets/img/account.png">
                                 </div>
                                 <div *ngIf="data.funcionario">
-                                    <h3 class="fw-bold">{{data.funcionario|fullname|titlecase}} -
-                                        {{data.funcionario.dni}} </h3>
-                                    <h4>{{data.funcionario.cargo|uppercase}}</h4>
+                                    <p class="fw-bold">
+                                        {{data.funcionario|fullname|titlecase}} -
+                                        {{data.funcionario.dni}}
+                                    </p>
                                 </div>
                                 <div *ngIf="!data.funcionario">
                                     <h2 style="color: red;">SIN ASIGNAR</h2>
@@ -23,9 +24,11 @@
                         </div>
                     </div>
                     <div class="card-footer example-button-row" align="center">
-                        <button mat-stroked-button color="warn" (click)="unlinkUser()"
-                            [disabled]="!data.funcionario">Quitar</button>
-                        <button mat-stroked-button color="primary" (click)="changeUser()">Cambiar</button>
+                        <button mat-fab extended color="warn" (click)="unlinkUser()" [disabled]="!data.funcionario">
+                            <mat-icon>person_off</mat-icon>
+                            Desvincular
+                        </button>
+                        <!-- <button mat-stroked-button color="primary" (click)="changeUser()">Cambiar</button> -->
                     </div>
                 </div>
                 <div class="row g-0 text-center" *ngIf="show_selectUser">
@@ -48,15 +51,65 @@
                     </mat-form-field>
                 </div>
             </div>
-            <div class="col-xl-7">
-                <div class="card mb-4">
+            <div class="col-md-8">
+                <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" dynamicHeight>
+                    <mat-tab label="Cuenta">
+                        <form [formGroup]="Form_Cuenta">
+                            <div class="row mt-4">
+                                <div class="col-md-3">
+                                    <label for="textInstitution" class="form-label">Institucion</label>
+                                    <input type="email" class="form-control" id="textInstitution"
+                                        [value]="data.dependencia.institucion.sigla" readonly>
+                                </div>
+                                <div class="col-md-9">
+                                    <label for="textDependency" class="form-label">Dependencia</label>
+                                    <input type="email" class="form-control" id="textDependency"
+                                        [value]="data.dependencia.nombre" readonly>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-sm-6">
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>Login</mat-label>
+                                        <input formControlName="login" matInput>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-6" *ngIf="updatePassword">
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>Password</mat-label>
+                                        <input formControlName="password" matInput>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-6">
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>Permisos</mat-label>
+                                        <mat-select formControlName="rol">
+                                            <mat-option *ngFor="let rol of roles" [value]="rol._id">
+                                                {{rol.role}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <mat-checkbox [checked]="updatePassword" (change)='changeForm($event.checked)'>
+                                        Actualizar contraseña
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                        </form>
+                    </mat-tab>
+                    <mat-tab label="">Content 2</mat-tab>
+                    <mat-tab label="Third">Content 3</mat-tab>
+                </mat-tab-group>
+                <!-- <div class="card mb-4">
                     <div class="card-header">Detalles cuenta</div>
                     <div class="card-body" *ngIf="details">
                         <div class="row gx-3 mb-3">
                             <div class="mb-3">
                                 <label class="form-label">Dependencia</label>
-                                <input type="text" [value]="data.dependencia.nombre"
-                                    disabled class="form-control">
+                                <input type="text" [value]="data.dependencia.nombre" disabled class="form-control">
                             </div>
                             <div class="col-md-3" *ngIf="details.externos">
                                 <label class="small mb-1" for="inputFirstName">Tramites externos</label>
@@ -112,12 +165,12 @@
                             Actualizar password
                         </mat-checkbox>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <button mat-raised-button color="warn" mat-dialog-close [disabled]="lock_cancel">Cancelar</button>
-    <button mat-raised-button color="primary" (click)="save()">Guardar</button>
+    <button mat-raised-button color="primary" [disabled]="Form_Cuenta.invalid" (click)="save()">Guardar</button>
 </mat-dialog-actions>

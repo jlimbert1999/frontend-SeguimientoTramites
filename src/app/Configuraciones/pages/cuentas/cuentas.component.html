@@ -1,40 +1,27 @@
 <p>
     <mat-toolbar color="primary">
-        <ng-container>
-            <span>CUENTAS
-            </span>
-            <span class="example-spacer"></span>
-            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-                <button (click)="Add()" mat-menu-item>
-                    <mat-icon>account_circle</mat-icon>
-                    <span>CREAR CUENTA</span>
-                </button>
-                <button (click)="AddUser()" mat-menu-item>
-                    <mat-icon>person_add</mat-icon>
-                    <span>CREAR FUNCIONARIO</span>
-                </button>
-                <button (click)="AddAccountLink()" mat-menu-item>
-                    <mat-icon>contacts</mat-icon>
-                    <span>ASIGNAR CUENTA</span>
-                </button>
-            </mat-menu>
-        </ng-container>
+        <span>CUENTAS
+        </span>
+        <span class="example-spacer"></span>
+        <button (click)="Add()" mat-icon-button matTooltip="Crear cuenta">
+            <mat-icon>account_circle</mat-icon>
+        </button>
+        <button (click)="addAccountWithAssign()" mat-icon-button matTooltip="Asignar cuenta">
+            <mat-icon>contact_emergency</mat-icon>
+        </button>
     </mat-toolbar>
 </p>
 
 <div class="container-fluid" [@fadeInOnEnter]>
     <div class="row">
         <div class="col-sm-3">
-            <app-simple-mat-select-search [placehorder]="'Institucion'" [data]="institutions"
-                (eventSelectedOption)="getDependencias($event.value)"
+            <app-simple-mat-select-search [placehorder]="'Institucion'" [allowNullValue]="true" [data]="institutions"
+                (eventSelectedOption)="getDependencias($event)"
                 [pathPropertyOfObjectDisplay]="'nombre'"></app-simple-mat-select-search>
         </div>
         <div class="col-sm-5">
-            <app-simple-mat-select-search [placehorder]="'Dependencia'" [data]="dependencies"
-                (eventSelectedOption)="getAccountsOfDependency($event.value)"
+            <app-simple-mat-select-search [placehorder]="'Dependencia'" [allowNullValue]="true" [data]="dependencies"
+                (eventSelectedOption)="getAccountsOfDependency($event)"
                 [pathPropertyOfObjectDisplay]="'nombre'"></app-simple-mat-select-search>
         </div>
         <div class="col-sm-4">

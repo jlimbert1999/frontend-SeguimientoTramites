@@ -5,7 +5,6 @@ import Swal from 'sweetalert2';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { UsuariosService } from '../../services/usuarios.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { Funcionario, FuncionarioDto } from '../../models/funcionario.interface';
 import { officer } from '../../interfaces/oficer.interface';
 import { WorkHistoryComponent } from '../../dialogs/work-history/work-history.component';
 import { OfficerDialogComponent } from '../../dialogs/officer-dialog/officer-dialog.component';
@@ -108,8 +107,8 @@ export class FuncionariosComponent implements OnInit, OnDestroy {
     }
   }
   ReadExcel(File: File) {
-    let usersDB: FuncionarioDto[] = []
-    let user: FuncionarioDto
+    let usersDB: any[] = []
+    let user: any
     let fileReader = new FileReader()
     fileReader.readAsBinaryString(File)
     fileReader.onload = (e) => {

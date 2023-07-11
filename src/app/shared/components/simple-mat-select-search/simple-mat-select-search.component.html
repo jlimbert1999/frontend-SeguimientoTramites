@@ -1,11 +1,11 @@
 <mat-form-field class="example-full-width">
-    <mat-select (selectionChange)="selectOption($event)" [formControl]="bankCtrl" [placeholder]="placehorder"
+    <mat-select (selectionChange)="selectOption($event.value)" [formControl]="bankCtrl" [placeholder]="placehorder"
         #singleSelect>
         <mat-option>
             <ngx-mat-select-search noEntriesFoundLabel="No hay resultados" placeholderLabel="Buscar"
                 [formControl]="bankFilterCtrl"></ngx-mat-select-search>
         </mat-option>
-        <mat-option [value]="null">
+        <mat-option *ngIf="allowNullValue" [value]="null">
             -
         </mat-option>
         <mat-option *ngFor="let bank of filteredBanks | async" [value]="bank">

@@ -16,6 +16,7 @@ export class SimpleMatSelectSearchComponent implements OnInit, OnDestroy, OnChan
   @Input() pathPropertyOfObjectDisplay: string
   @Output() eventSelectedOption: EventEmitter<any> = new EventEmitter();
   @Input() isRequired: boolean
+  @Input() allowNullValue: boolean = false
 
 
 
