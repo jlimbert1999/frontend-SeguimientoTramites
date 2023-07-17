@@ -15,7 +15,7 @@ import { CuentaDialogComponent } from './dialogs/cuenta-dialog/cuenta-dialog.com
 import { OfficersComponent } from './pages/officers/officers.component';
 import { GroupwareComponent } from './pages/groupware/groupware.component';
 import { CreacionAsignacionComponent } from './dialogs/creacion-asignacion/creacion-asignacion.component';
-import { EdicionCuentaComponent } from './dialogs/edicion-cuenta/edicion-cuenta.component';
+import { EditAccountDialogComponent } from './dialogs/edit-account-dialog/edit-account-dialog.component';
 import { TiposTramitesComponent } from './pages/tipos-tramites/tipos-tramites.component';
 import { RolesComponent } from './pages/roles/roles.component';
 import { RolDialogComponent } from './dialogs/rol-dialog/rol-dialog.component';
@@ -38,7 +38,7 @@ import { TypeProcedureDialogComponent } from './dialogs/type-procedure-dialog/ty
     OfficersComponent,
     GroupwareComponent,
     CreacionAsignacionComponent,
-    EdicionCuentaComponent,
+    EditAccountDialogComponent,
     RolesComponent,
     RolDialogComponent,
     JobsComponent,

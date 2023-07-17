@@ -69,7 +69,7 @@ export class CuentaService {
       map(resp => {
         resp.accounts.map(account => {
           if (account.funcionario) {
-            Object.keys(account.funcionario).length <= 1 ? delete account.funcionario : null
+            Object.keys(account.funcionario).length === 0 ? delete account.funcionario : null
           }
           return account
         })

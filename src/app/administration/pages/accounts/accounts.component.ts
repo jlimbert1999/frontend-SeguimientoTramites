@@ -6,7 +6,7 @@ import { CuentaService } from '../../services/cuenta.service';
 import { CreacionAsignacionComponent } from '../../dialogs/creacion-asignacion/creacion-asignacion.component';
 import { OfficerDialogComponent } from '../../dialogs/officer-dialog/officer-dialog.component';
 import { CuentaDialogComponent } from '../../dialogs/cuenta-dialog/cuenta-dialog.component';
-import { EdicionCuentaComponent } from '../../dialogs/edicion-cuenta/edicion-cuenta.component';
+import { EditAccountDialogComponent } from '../../dialogs/edit-account-dialog/edit-account-dialog.component';
 import { institution } from '../../interfaces/institution.interface';
 import { dependency } from '../../interfaces/dependency.interface';
 import { account } from '../../interfaces/account.interface';
@@ -94,7 +94,7 @@ export class AccountsComponent implements OnInit {
     });
   }
   Edit(cuenta: account) {
-    const dialogRef = this.dialog.open(EdicionCuentaComponent, {
+    const dialogRef = this.dialog.open(EditAccountDialogComponent, {
       width: '1200px',
       disableClose: true,
       data: cuenta,

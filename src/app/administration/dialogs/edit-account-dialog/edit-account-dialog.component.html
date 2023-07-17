@@ -31,7 +31,7 @@
                     </div>
                     <div class="card-footer example-button-row" align="center">
                         <ng-container *ngIf="data.funcionario; else elseTemplate">
-                            <button mat-fab extended color="warn" (click)="unlinkUser()" [disabled]="!data.funcionario">
+                            <button mat-fab extended color="warn" (click)="unlinkUser()">
                                 <mat-icon>person_off</mat-icon>
                                 Desvincular
                             </button>

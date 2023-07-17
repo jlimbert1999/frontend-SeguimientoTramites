@@ -2,21 +2,19 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { forkJoin } from 'rxjs';
-import { CuentaService } from 'src/app/administration/services/cuenta.service';
 import Swal from 'sweetalert2';
-import { RolService } from '../../services/rol.service';
+import { CuentaService } from 'src/app/administration/services/cuenta.service';
 import { account } from '../../interfaces/account.interface';
 import { role } from '../../interfaces/role.interface';
 import { createAccountPDF } from '../../helpers/pdfs/pdf-account';
-import { officer } from '../../interfaces/oficer.interface';
 import { Officer } from '../../models/officer.model';
 
 @Component({
-  selector: 'app-edicion-cuenta',
-  templateUrl: './edicion-cuenta.component.html',
-  styleUrls: ['./edicion-cuenta.component.scss']
+  selector: 'app-edit-account-dialog',
+  templateUrl: './edit-account-dialog.component.html',
+  styleUrls: ['./edit-account-dialog.component.scss']
 })
-export class EdicionCuentaComponent implements OnInit {
+export class EditAccountDialogComponent implements OnInit {
   Form_Cuenta: FormGroup = this.fb.group({
     login: ['', Validators.required],
     rol: ['', Validators.required]
@@ -33,7 +31,7 @@ export class EdicionCuentaComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: account,
     private fb: FormBuilder,
     private cuentaService: CuentaService,
-    public dialogRef: MatDialogRef<EdicionCuentaComponent>
+    public dialogRef: MatDialogRef<EditAccountDialogComponent>
   ) { }
 
   ngOnInit(): void {
