@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { CuentaService } from 'src/app/administration/services/cuenta.service';
 import { Location } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { myAccount } from '../../models/myAccount.interface';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import Swal from 'sweetalert2';
 
@@ -19,7 +18,7 @@ export class PerfilComponent {
   Form_Cuenta: FormGroup = this.fb.group({
     login: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(4), Validators.maxLength(15), Validators.pattern(/^[A-Za-z0-9]*$/)]]
   })
-  Account: myAccount
+  Account: any
   hide = true;
   changePassword: boolean = false
 

@@ -8,6 +8,7 @@ import { account } from '../models/account.model';
 import { NotificationService } from 'src/app/home/services/notification.service';
 import { loginData } from '../interfaces/auth.interface';
 import jwtDecode from 'jwt-decode';
+import { myAccount } from '../interfaces/my-account.interface';
 const base_url = environment.base_url
 
 @Injectable({
@@ -37,6 +38,16 @@ export class AuthService {
         localStorage.setItem('token', resp.token)
         return { resources: resp.resources, imbox: resp.imbox }
       })
+    )
+  }
+  getMyAuthDetalis() {
+    return this.http.get<myAccount>(`${base_url}/auth/${this.account.id_account}`).pipe(
+      map(resp => resp)
+    )
+  }
+  updateMyAccount(password: string) {
+    return this.http.put<myAccount>(`${base_url}/auth/${this.account.id_account}`, { password }).pipe(
+      map(resp => resp)
     )
   }
 

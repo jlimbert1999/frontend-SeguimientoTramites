@@ -12,7 +12,7 @@ export class SocketService {
   onlineUsers: userSocket[] = []
   constructor() { }
   setupSocketConnection(token: string) {
-    this.socket = io(environment.base_url, { auth: { token } });
+    this.socket = io(`${environment.base_url}`, { auth: { token } });
   }
   disconnect() {
     if (this.socket) {
@@ -70,7 +70,7 @@ export class SocketService {
   emitCancelAllMails(ids_receivers: string[]) {
     this.socket.emit('mail-all-cancel', ids_receivers)
   }
-  emitCancelMail(id_receiver: string){
+  emitCancelMail(id_receiver: string) {
     this.socket.emit('mail-one-cancel', id_receiver)
   }
 

@@ -23,12 +23,14 @@ import { TramitesModule } from './Tramites/tramites.module';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { HomeModule } from './home/home.module';
 import { SharedModule } from "./shared/shared.module";
+import { PresentationComponent } from './presentation/presentation.component';
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
     declarations: [
         AppComponent,
         HomeComponent,
+        PresentationComponent,
     ],
     providers: [
         {

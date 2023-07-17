@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
         this.router.navigateByUrl('/home/tramites/internos')
       }
       else {
-        this.router.navigateByUrl('/home')
+        this.router.navigateByUrl('/home/main')
       }
     })
   }

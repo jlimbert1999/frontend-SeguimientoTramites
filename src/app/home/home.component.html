@@ -14,34 +14,19 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item [matMenuTriggerFor]="themes">
-              <mat-icon>palette</mat-icon>
-              <span>Tema</span>
-            </button>
             <button routerLink="/home/recursos" mat-menu-item>
               <mat-icon>dataset</mat-icon>
               <span>Recursos</span>
             </button>
 
-            <button (click)="editAccount()" mat-menu-item>
+            <button routerLink="/home/configuraciones/sistema" mat-menu-item>
               <mat-icon>manage_accounts</mat-icon>
-              <span>Configurar cuenta</span>
+              <span>Configuraciones</span>
             </button>
             <button (click)="logout()" mat-menu-item>
               <mat-icon>logout</mat-icon>
               <span>Cerrar sesion</span>
             </button>
-
-            <mat-menu #themes="matMenu">
-              <button mat-menu-item (click)="themeService.isDarkTheme(false)">
-                <mat-icon aria-hidden="false" aria-label="Example home icon">light_mode</mat-icon>
-                <span>Tema claro</span>
-              </button>
-              <button mat-menu-item (click)="themeService.isDarkTheme(true)">
-                <mat-icon aria-hidden="false" aria-label="Example home icon">dark_mode</mat-icon>
-                <span>Tema oscuro</span>
-              </button>
-            </mat-menu>
           </mat-menu>
         </mat-card-header>
       </mat-card>
@@ -74,7 +59,7 @@
               routerLinkActive="active">
               <mat-icon matListItemIcon>{{submenu.icon}}</mat-icon>
               <span matListItemTitle>{{ submenu.text }}</span>
-             
+
             </mat-list-item>
           </mat-nav-list>
         </mat-expansion-panel>
@@ -82,12 +67,7 @@
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <ng-container *ngIf="loading$ | async">
-        <div class="overlay"></div>
-        <mat-progress-spinner class="load-spiner" [mode]="'indeterminate'"></mat-progress-spinner>
-      </ng-container>
       <router-outlet></router-outlet>
-
     </mat-sidenav-content>
 
 

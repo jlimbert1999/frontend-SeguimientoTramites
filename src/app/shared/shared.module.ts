@@ -20,6 +20,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ServerMatSelectSearchComponent } from './components/server-mat-select-search/server-mat-select-search.component';
 import { EventsProcedureComponent } from './events-procedure/events-procedure.component';
 import { BadgePipe } from './pipes/badge.pipe';
+import { HomeComponent } from './components/home/home.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,7 @@ import { BadgePipe } from './pipes/badge.pipe';
     ServerMatSelectSearchComponent,
     EventsProcedureComponent,
     BadgePipe,
+    HomeComponent,
   ],
   imports: [
     CommonModule,
@@ -46,7 +49,8 @@ import { BadgePipe } from './pipes/badge.pipe';
     ReactiveFormsModule,
     AngularSignaturePadModule,
     NgxMatSelectSearchModule,
-    FormsModule
+    FormsModule,
+    RouterModule
   ],
   exports: [
     GraphWorkflowComponent,

@@ -24,6 +24,7 @@ import { OrganizationComponent } from './pages/organization/organization.compone
 import { JobDialogComponent } from './dialogs/job-dialog/job-dialog.component';
 import { WorkHistoryComponent } from './dialogs/work-history/work-history.component';
 import { TypeProcedureDialogComponent } from './dialogs/type-procedure-dialog/type-procedure-dialog.component';
+import { SettingsComponent } from './pages/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { TypeProcedureDialogComponent } from './dialogs/type-procedure-dialog/ty
     OrganizationComponent,
     JobDialogComponent,
     WorkHistoryComponent,
-    TypeProcedureDialogComponent
+    TypeProcedureDialogComponent,
+    SettingsComponent
   ],
   imports: [
     CommonModule,
