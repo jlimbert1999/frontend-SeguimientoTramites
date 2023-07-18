@@ -10,9 +10,9 @@ import { HojaRutaInterna } from '../../pdfs/hora-ruta-interna';
 import { InternosService } from '../../services/internos.service';
 import { Router } from '@angular/router';
 import { Interno } from '../../models/Interno.interface';
-import { SocketService } from 'src/app/home/services/socket.service';
 import { paramsNavigation } from '../../models/ProceduresProperties';
 import { internalRouteMap } from '../../pdfs/roadMap';
+import { SocketService } from 'src/app/home-old/services/socket.service';
 
 @Component({
   selector: 'app-internos',

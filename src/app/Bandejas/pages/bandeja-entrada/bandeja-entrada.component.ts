@@ -14,12 +14,12 @@ import { HojaRutaExterna } from 'src/app/Tramites/pdfs/hoja-ruta-externa';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
 import { Entrada } from '../../models/entrada.interface';
-import { SocketService } from 'src/app/home/services/socket.service';
 import { HojaRutaInterna } from 'src/app/Tramites/pdfs/hora-ruta-interna';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { showToast } from 'src/app/helpers/toats.helper';
-import { NotificationService } from 'src/app/home/services/notification.service';
 import { externalRouteMap, internalRouteMap } from 'src/app/Tramites/pdfs/roadMap';
+import { NotificationService } from 'src/app/home-old/services/notification.service';
+import { SocketService } from 'src/app/home-old/services/socket.service';
 
 
 @Component({

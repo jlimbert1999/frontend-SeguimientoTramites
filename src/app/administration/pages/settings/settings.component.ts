@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormGroupDirective, Validators } from '@angular
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Location } from '@angular/common';
 import { myAccount } from 'src/app/auth/interfaces/my-account.interface';
-import { ThemeService } from 'src/app/home/services/theme.service';
+import { ThemeService } from 'src/app/home-old/services/theme.service';
 
 @Component({
   selector: 'app-settings',

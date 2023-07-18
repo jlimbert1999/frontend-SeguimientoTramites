@@ -5,7 +5,7 @@ import { Observable, tap, throwError, of, BehaviorSubject, Subject, concat } fro
 import { catchError, map } from 'rxjs/operators'
 import { Router } from '@angular/router';
 import { account } from '../models/account.model';
-import { NotificationService } from 'src/app/home/services/notification.service';
+
 import { loginData } from '../interfaces/auth.interface';
 import jwtDecode from 'jwt-decode';
 import { myAccount } from '../interfaces/my-account.interface';
@@ -22,7 +22,6 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private notificationService: NotificationService
   ) { }
 
   get token() {

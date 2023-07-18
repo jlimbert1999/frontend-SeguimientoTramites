@@ -2,12 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from '../auth/login/login.component';
 import { AuthGuard } from '../guards/auth.guard';
-import { HomeComponent } from './home.component';
+import { HomeOldComponent } from './home-old.component';
 import { BusquedaComponent } from '../Reportes/pages/busqueda/busqueda.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
 import { RecursosComponent } from './pages/recursos/recursos.component';
 import { NotificacionsComponent } from './pages/notificacions/notificacions.component';
-import { PresentationComponent } from '../presentation/presentation.component';
+import { PresentationComponent } from '../pages/presentation/presentation.component';
 
 const routes: Routes = [
     // {

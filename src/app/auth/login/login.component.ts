@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { fadeInDownOnEnterAnimation } from 'angular-animations';
-import { NotificationService } from 'src/app/home/services/notification.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -25,7 +24,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private fb: FormBuilder,
-    private notificationService: NotificationService) { }
+  ) { }
 
   ngOnInit(): void {
     if (localStorage.getItem('token')) {
@@ -57,10 +56,8 @@ export class LoginComponent implements OnInit {
         this.router.navigateByUrl('/home/tramites/internos')
       }
       else {
-        this.router.navigateByUrl('/home/main')
+        this.router.navigateByUrl('')
       }
     })
   }
-
-
 }

@@ -13,8 +13,8 @@ import { HojaRutaExterna } from '../../pdfs/hoja-ruta-externa';
 import { Ficha } from '../../pdfs/ficha';
 import { externalRouteMap } from '../../pdfs/roadMap';
 import { showToast } from 'src/app/helpers/toats.helper';
-import { SocketService } from 'src/app/home/services/socket.service';
 import { paramsNavigation } from '../../models/ProceduresProperties';
+import { SocketService } from 'src/app/home-old/services/socket.service';
 
 
 @Component({

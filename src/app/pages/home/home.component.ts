@@ -1,25 +1,22 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { AuthService } from '../auth/services/auth.service';
-import { ToastrService } from 'ngx-toastr';
-import { LoaderService } from '../auth/services/loader.service';
-import { Router } from '@angular/router';
-
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { BandejaEntradaService } from '../Bandejas/services/bandeja-entrada.service';
-import { SidenavService } from '../shared/services/sidenav.service';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
-import { SocketService } from './services/socket.service';
-import { NotificationService } from './services/notification.service';
-import Swal from 'sweetalert2';
-import { ThemeService } from './services/theme.service';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { BandejaEntradaService } from 'src/app/Bandejas/services/bandeja-entrada.service';
+import { AuthService } from 'src/app/auth/services/auth.service';
+import { LoaderService } from 'src/app/auth/services/loader.service';
+import { NotificationService } from 'src/app/home-old/services/notification.service';
+import { SocketService } from 'src/app/home-old/services/socket.service';
+import { ThemeService } from 'src/app/home-old/services/theme.service';
+import { SidenavService } from 'src/app/shared/services/sidenav.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
+export class HomeComponent {
   mobileQuery: MediaQueryList;
   Menu: any = this.authService.menu
   loading$ = this.loader.loading$;
@@ -45,7 +42,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     public loader: LoaderService,
     private router: Router,
     private notificationService: NotificationService,
-    private bottomSheet: MatBottomSheet,
     private sidenavService: SidenavService,
     public themeService: ThemeService
   ) {
@@ -87,8 +83,4 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.authService.logout()
     this.socketService.disconnect()
   }
-
-
-
-
 }

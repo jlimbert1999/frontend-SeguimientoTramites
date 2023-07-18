@@ -1,26 +1,34 @@
-import { Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, Inject, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable, map, startWith } from 'rxjs';
 import { read, utils } from 'xlsx';
 import Swal from 'sweetalert2';
 import { TiposTramitesService } from '../../services/tipos-tramites.service';
-import { typeProcedure } from '../../interfaces/typeProcedure.interface';
+import { groupTypeProcedure, requirement, typeProcedure } from '../../interfaces/typeProcedure.interface';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+interface elementTable {
+  value: string
+}
 
 @Component({
   selector: 'app-type-procedure-dialog',
   templateUrl: './type-procedure-dialog.component.html',
   styleUrls: ['./type-procedure-dialog.component.scss']
 })
-export class TypeProcedureDialogComponent {
+export class TypeProcedureDialogComponent implements AfterViewInit {
   Form_TipoTramite: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
     segmento: ['', Validators.required],
-    tipo: ['', Validators.required],
-    requerimientos: this.fb.array<string[]>([])
+    tipo: ['', Validators.required]
   });
   segments: string[] = []
+  requeriments: string[] = []
   filteredSegments: Observable<string[]>;
+  displayedColumns: string[] = ['name', 'options'];
+  dataSource: MatTableDataSource<requirement> = new MatTableDataSource();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     private fb: FormBuilder,
@@ -28,6 +36,9 @@ export class TypeProcedureDialogComponent {
     public dialogRef: MatDialogRef<TypeProcedureDialogComponent>,
     private tiposTramitesService: TiposTramitesService
   ) { }
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+  }
 
 
 
@@ -41,19 +52,11 @@ export class TypeProcedureDialogComponent {
     })
     if (this.data) {
       this.Form_TipoTramite.removeControl('tipo')
-      this.data.requerimientos.forEach(element => {
-        const requerimentForm = this.fb.group({
-          nombre: [element, Validators.required]
-        });
-        this.requeriments.push(requerimentForm)
-      })
       this.Form_TipoTramite.patchValue(this.data);
     }
   }
 
-  get requeriments() {
-    return this.Form_TipoTramite.controls["requerimientos"] as FormArray;
-  }
+
 
   save() {
     if (this.data) {
@@ -68,20 +71,7 @@ export class TypeProcedureDialogComponent {
       //   });
     }
   }
-  addRequeriment() {
-    const requerimentForm = this.fb.group({
-      nombre: ['', Validators.required]
-    });
-    this.requeriments.insert(0, requerimentForm);
-  }
-  removeRequeriment(position: number) {
-    if (!this.data) {
-      this.requeriments.removeAt(position)
-    } else {
-      const { nombre, activo } = this.requeriments.at(position).value
-      this.requeriments.controls[position].setValue({ nombre, activo: !activo })
-    }
-  }
+
 
   async loadExcelFile() {
     const { value: file } = await Swal.fire({
@@ -104,14 +94,91 @@ export class TypeProcedureDialogComponent {
         const wb = read(reader.result, { type: 'binary', cellDates: true });
         const data = utils.sheet_to_json<any>(wb.Sheets[wb.SheetNames[0]]);
         data.forEach(element => {
-          if (element['REQUERIMIENTOS']) {
-            const requerimentForm = this.fb.group({
-              nombre: [element['REQUERIMIENTOS'], Validators.required]
-            });
-            this.requeriments.insert(0, requerimentForm);
-          }
+
         })
       }
+    }
+  }
+  addRequeriment() {
+    Swal.fire({
+      icon: 'info',
+      title: `Registro de requerimiento`,
+      text: `Ingrese la descripcion del requerimiento`,
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        validationMessage: 'my-validation-message'
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Ingrese la descripcion del requerimiento'
+          )
+        }
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (!result.value) return
+        // const requeriment: requirement = {
+        //   nombre: result.value,
+        //   activo:
+        // }
+        // this.dataSource.data.push({ value: result.value })
+        this.dataSource = new MatTableDataSource(this.dataSource.data)
+        this.dataSource.paginator = this.paginator
+      }
+    })
+  }
+  editRequeriment(pos: number) {
+    Swal.fire({
+      icon: 'info',
+      title: `Edicion de requerimiento`,
+      text: `Ingrese la descripcion del requerimiento`,
+      input: 'textarea',
+      // inputValue: requerimiento.nombre,
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        validationMessage: 'my-validation-message'
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Debe ingresar el requerimiento'
+          )
+        }
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // this.tiposTramitesService.editRequirement(this.data.id_tipoTramite, requerimiento._id!, result.value!).subscribe(data => {
+        //   const indexFound = this.dataSource.data.findIndex(element => requerimiento._id === element._id)
+        //   this.dataSource.data[indexFound] = data
+        //   this.dataSource = new MatTableDataSource(this.dataSource.data)
+        //   this.dataSource.paginator = this.paginator
+        // })
+      }
+    })
+  }
+  quitar_requerimiento(pos: number) {
+    this.dataSource.data.splice(pos, 1)
+    this.dataSource = new MatTableDataSource(this.dataSource.data)
+    this.dataSource.paginator = this.paginator
+  }
+
+  selectGroupProcedure(group: groupTypeProcedure) {
+    if (this.data) {
+
+    }
+
+  }
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
     }
   }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { userSocket } from 'src/app/auth/models/account.model';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { SocketService } from 'src/app/home/services/socket.service';
+import { SocketService } from 'src/app/home-old/services/socket.service';
 import Swal from 'sweetalert2';
 
 @Component({

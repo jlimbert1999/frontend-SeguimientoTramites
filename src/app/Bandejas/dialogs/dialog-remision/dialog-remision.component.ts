@@ -4,9 +4,9 @@ import { ReplaySubject, Subject, takeUntil, tap } from 'rxjs';
 import Swal from 'sweetalert2';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BandejaEntradaService } from '../../services/bandeja-entrada.service';
-import { SocketService } from 'src/app/home/services/socket.service';
 import { AccountForSend, ImboxData } from '../../models/entrada.interface';
 import { EntradaDto } from '../../models/entrada.dto';
+import { SocketService } from 'src/app/home-old/services/socket.service';
 
 @Component({
   selector: 'app-dialog-remision',

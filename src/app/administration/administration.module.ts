@@ -25,6 +25,7 @@ import { JobDialogComponent } from './dialogs/job-dialog/job-dialog.component';
 import { WorkHistoryComponent } from './dialogs/work-history/work-history.component';
 import { TypeProcedureDialogComponent } from './dialogs/type-procedure-dialog/type-procedure-dialog.component';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { AdministrationRoutingModule } from './administration-routing.module';
 
 @NgModule({
   declarations: [
@@ -51,13 +52,13 @@ import { SettingsComponent } from './pages/settings/settings.component';
   ],
   imports: [
     CommonModule,
+    AdministrationRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
     HttpClientModule,
     SharedModule,
     NgxMatSelectSearchModule,
-
   ]
 })
 export class AdministrationModule { }

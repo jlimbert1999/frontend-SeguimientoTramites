@@ -1,25 +1,25 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { AuthService } from '../auth/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { LoaderService } from '../auth/services/loader.service';
 import { Router } from '@angular/router';
 
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import Swal from 'sweetalert2';
+import { BandejaEntradaService } from '../Bandejas/services/bandeja-entrada.service';
+import { SidenavService } from '../shared/services/sidenav.service';
 import { MatSidenav } from '@angular/material/sidenav';
-import { AuthService } from 'src/app/auth/services/auth.service';
-import { SocketService } from 'src/app/home/services/socket.service';
-import { BandejaEntradaService } from 'src/app/Bandejas/services/bandeja-entrada.service';
-import { LoaderService } from 'src/app/auth/services/loader.service';
-import { NotificationService } from 'src/app/home/services/notification.service';
-import { SidenavService } from '../../services/sidenav.service';
-import { ThemeService } from 'src/app/home/services/theme.service';
+import { SocketService } from './services/socket.service';
+import { NotificationService } from './services/notification.service';
+import Swal from 'sweetalert2';
+import { ThemeService } from './services/theme.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  selector: 'app-home-old',
+  templateUrl: './home-old.component.html',
+  styleUrls: ['./home-old.component.scss']
 })
-export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
+export class HomeOldComponent implements OnInit, OnDestroy, AfterViewInit {
   mobileQuery: MediaQueryList;
   Menu: any = this.authService.menu
   loading$ = this.loader.loading$;
@@ -45,6 +45,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     public loader: LoaderService,
     private router: Router,
     private notificationService: NotificationService,
+    private bottomSheet: MatBottomSheet,
     private sidenavService: SidenavService,
     public themeService: ThemeService
   ) {
@@ -59,7 +60,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // this.socketService.setupSocketConnection(this.authService.token)
+    this.socketService.setupSocketConnection(this.authService.token)
     // this.socketService.listenUserConection().subscribe(users => {
     //   this.socketService.onlineUsers = users
     // })
