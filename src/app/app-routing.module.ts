@@ -14,6 +14,9 @@ const routes: Routes = [
       { path: 'main', component: PresentationComponent },
       {
         path: 'configuraciones', loadChildren: () => import(`./administration/administration.module`).then((m) => m.AdministrationModule),
+      },
+      {
+        path: 'tramites', loadChildren: () => import(`./Tramites/tramites.module`).then((m) => m.TramitesModule),
       }
     ]
   },

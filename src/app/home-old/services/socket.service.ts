@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
 export class SocketService {
   socket: Socket;
   onlineUsers: userSocket[] = []
+  isOnline: boolean = false
   constructor() { }
   setupSocketConnection(token: string) {
     this.socket = io(`${environment.base_url}`, { auth: { token } });
@@ -18,6 +19,7 @@ export class SocketService {
     if (this.socket) {
       this.socket.removeAllListeners()
       this.socket.disconnect();
+      this.isOnline = false
     }
   }
   listenUserConection(): Observable<userSocket[]> {

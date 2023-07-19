@@ -11,6 +11,7 @@ import { DialogInternosComponent } from './dialogs/dialog-internos/dialog-intern
 import { DialogExternoComponent } from './dialogs/dialog-externo/dialog-externo.component';
 import { SharedModule } from '../shared/shared.module';
 import { MaterialModule } from '../angular-material/material.module';
+import { TramitesRoutingModule } from './tramites-routing.module';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { MaterialModule } from '../angular-material/material.module';
   ],
   imports: [
     CommonModule,
+    TramitesRoutingModule,
     SharedModule,
     MaterialModule,
     FormsModule,

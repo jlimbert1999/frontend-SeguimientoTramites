@@ -36,7 +36,7 @@ export class HomeComponent {
   constructor(
     changeDetectorRef: ChangeDetectorRef, media: MediaMatcher,
     public authService: AuthService,
-    private socketService: SocketService,
+    public socketService: SocketService,
     public bandejaService: BandejaEntradaService,
     private toastr: ToastrService,
     public loader: LoaderService,
@@ -57,9 +57,9 @@ export class HomeComponent {
 
   ngOnInit(): void {
     this.socketService.setupSocketConnection(this.authService.token)
-    // this.socketService.listenUserConection().subscribe(users => {
-    //   this.socketService.onlineUsers = users
-    // })
+    this.socketService.listenUserConection().subscribe(users => {
+      this.socketService.onlineUsers = users
+    })
     // this.socketService.listenMails().subscribe(mail => {
     //   this.bandejaService.Mails = [mail, ...this.bandejaService.Mails]
     //   this.notificationService.showNotificationNewMail(mail.emisor.funcionario)

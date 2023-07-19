@@ -1,23 +1,39 @@
-class TypeProcedureDto {
-    nombre: string;
-    segmento: string;
-    requerimientos: { nombre: string }[];
-    constructor({ nombre, segmento, requerimientos }: any) {
-        this.nombre = nombre
-        this.segmento = segmento
-        this.requerimientos = requerimientos
+
+
+export class CreateTypeProcedureDto {
+    static typeProdecureFromJson(obj: any, requeriments: { nombre: string, activo: boolean }[]) {
+        return new CreateTypeProcedureDto(
+            obj['nombre'],
+            obj['segmento'],
+            obj['tipo'],
+            requeriments
+        )
+    }
+    constructor(
+        public nombre: string,
+        public segmento: string,
+        public tipo: string,
+        public requerimientos: { nombre: string, activo: boolean }[]
+    ) {
+
     }
 }
 
-export class CreateTypeProcedureDto extends TypeProcedureDto {
-    tipo: string;
-    constructor({ tipo, ...values }: any) {
-        super(values);
-        this.tipo = tipo
+export class UpdateTypeProcedureDto {
+    static typeProdecureFromJson(obj: any, requeriments: { nombre: string, activo: boolean }[]) {
+        requeriments = requeriments.map(el => ({ nombre: el.nombre, activo: el.activo }))
+        return new UpdateTypeProcedureDto(
+            obj['nombre'],
+            obj['segmento'],
+            requeriments
+        )
     }
-}
-
-export class UpdateTypeProcedureDto extends TypeProcedureDto {
+    constructor(
+        public nombre: string,
+        public segmento: string,
+        public requerimientos: { nombre: string, activo: boolean }[]
+    ) {
+    }
 }
 
 

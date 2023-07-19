@@ -12,6 +12,7 @@
                 <mat-form-field class="example-full-width">
                     <mat-label>Segmento</mat-label>
                     <input formControlName="segmento" matInput [matAutocomplete]="auto">
+                    <mat-icon matSuffix>warning</mat-icon>
                     <mat-autocomplete #auto="matAutocomplete">
                         <mat-option *ngFor="let segment of filteredSegments | async" [value]="segment">
                             {{segment}}
@@ -22,90 +23,60 @@
             <div *ngIf="!data" class="col-sm-2">
                 <mat-form-field appearance="fill">
                     <mat-label>Grupo </mat-label>
-                    <mat-select formControlName="tipo">
+                    <mat-select (selectionChange)="selectGroupProcedure($event.value)" formControlName="tipo">
                         <mat-option value="EXTERNO">EXTERNO</mat-option>
                         <mat-option value="INTERNO">INTERNO</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
             <div class="col-1">
-                <button matTooltip="Cargar" (click)="loadExcelFile()" mat-icon-button>
+                <button [disabled]="denieRequirements" matTooltip="Cargar" (click)="loadExcelFile()" mat-icon-button>
                     <mat-icon>upload_file</mat-icon>
                 </button>
             </div>
             <div class="col-1">
-                <button matTooltip="Agregar" (click)="addRequeriment()" mat-icon-button>
+                <button [disabled]="denieRequirements" matTooltip="Agregar" (click)="addRequeriment()" mat-icon-button>
                     <mat-icon>add</mat-icon>
                 </button>
             </div>
         </div>
         <div class="row">
             <div class="col-12">
-
-                <div *ngIf="requeriments.length===0" class="alert alert-warning" role="alert">
+                <div *ngIf="dataSource.length===0;else templateTable" class="alert alert-warning" role="alert">
                     EL TRAMITE NO TIENE REQUERIMIENTOS
                 </div>
-                <mat-form-field>
-                    <mat-label>Filter</mat-label>
-                    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-                </mat-form-field>
-                <div class="mat-elevation-z8">
-                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-                        <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef> Requerimiento </th>
-                            <td mat-cell *matCellDef="let element"> {{element.value}} </td>
-                        </ng-container>
-                        <ng-container matColumnDef="options">
-                            <th mat-header-cell *matHeaderCellDef> Opciones </th>
-                            <td mat-cell *matCellDef="let element;  let i=index">
-                                <button mat-icon-button aria-label="Example icon button with a vertical three dot icon">
-                                    <mat-icon>edit</mat-icon>
-                                </button>
-                                <button (click)="quitar_requerimiento(i)" mat-icon-button color="primary"
-                                    aria-label="Example icon button with a home icon">
-                                    <mat-icon>delete</mat-icon>
-                                </button>
-                            </td>
-                        </ng-container>
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-                        <tr class="mat-row" *matNoDataRow>
-                            <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-                        </tr>
+                <ng-template #templateTable>
+                    <table class="table text-reset table-bordered align-middle text-center table-wrapper">
+                        <thead>
+                            <tr>
+                                <th scope="col">Requerimientos</th>
+                                <th scope="col" style="width: 20%">Situacion</th>
+                                <th scope="col" style="width: 15%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let requeriment of dataSource; let i=index">
+                                <td> {{requeriment.nombre}} </td>
+                                <td> <span [ngClass]="requeriment.activo?'c-pill--success':'c-pill--danger'"
+                                        class="c-pill">{{requeriment.activo?'HABILITADO':'NO HABILITADO'}} </span> </td>
+                                <td>
+                                    <button (click)="editRequeriment(i, requeriment)" mat-icon-button
+                                        aria-label="edit one requirement">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button (click)="deleteRequiremet(i)" mat-icon-button
+                                        aria-label="delete one requirement">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                    <button (click)="removeRequeriment(i)" mat-icon-button
+                                        aria-label="disable one requirement">
+                                        <mat-icon>disabled_by_default</mat-icon>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
-                    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
-                        aria-label="Select page of periodic elements">
-                    </mat-paginator>
-                </div>
-
-
-
-                <!-- <table *ngIf="requeriments.length>0" class="table table-bordered align-middle text-center">
-                    <thead>
-                        <tr>
-                            <th scope="col">Requerimientos</th>
-                            <th scope="col" style="width: 5%"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr formArrayName="requerimientos"
-                            *ngFor="let requeriment of requeriments.controls; let i=index">
-                            <td [formGroupName]="i">
-                                <mat-form-field>
-                                    <mat-label>Nombre del requerimiento</mat-label>
-                                    <input formControlName="nombre" matInput>
-                                </mat-form-field>
-                            </td>
-                            <td>
-                                <button (click)="removeRequeriment(i)" mat-icon-button color="accent"
-                                    aria-label="Example icon button with a menu icon">
-                                    <mat-icon>delete</mat-icon>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table> -->
+                </ng-template>
             </div>
         </div>
     </form>

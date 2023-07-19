@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Requerimiento, TipoTramite } from '../models/tipoTramite.interface';
 import { typeProcedure } from '../interfaces/typeProcedure.interface';
 import { CreateTypeProcedureDto, UpdateTypeProcedureDto } from '../dto/typeProcedure.dto';
 
@@ -24,9 +23,9 @@ export class TiposTramitesService {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, tipos: TipoTramite[], length: number }>(`${base_url}/configuraciones/tipos/search/${text}`, { params }).pipe(
+    return this.http.get<{ typesProcedures: typeProcedure[], length: number }>(`${base_url}/type-procedure/search/${text}`, { params }).pipe(
       map(resp => {
-        return { tipos: resp.tipos, length: resp.length }
+        return { typesProcedures: resp.typesProcedures, length: resp.length }
       })
     )
   }
@@ -51,19 +50,10 @@ export class TiposTramitesService {
     )
   }
   delete(id_tipoTramite: string) {
-    return this.http.delete<{ ok: boolean, tipo: TipoTramite }>(`${base_url}/configuraciones/tipos/${id_tipoTramite}`).pipe(
-      map(resp => resp.tipo)
+    return this.http.delete<typeProcedure>(`${base_url}/type-procedure/${id_tipoTramite}`).pipe(
+      map(resp => resp)
     )
   }
 
-
-  editRequirement(id_tipo: string, id_requisito: string, nombre: string) {
-    return this.http.put<{ ok: boolean, requisito: Requerimiento }>(`${base_url}/configuraciones/tipos/requerimientos/${id_tipo}/${id_requisito}`, { nombre })
-      .pipe(map(resp => resp.requisito))
-  }
-  deleteRequirement(id_tipoTramite: string, id_requerimiento: string) {
-    return this.http.delete<{ ok: boolean, requisito: Requerimiento }>(`${base_url}/configuraciones/tipos/requerimientos/${id_tipoTramite}/${id_requerimiento}`)
-      .pipe(map(resp => resp.requisito))
-  }
 
 }

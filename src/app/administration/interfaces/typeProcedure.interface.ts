@@ -7,8 +7,7 @@ export interface typeProcedure {
     activo: boolean;
 }
 export interface requirement {
-    _id?: string,
     nombre: string
     activo: boolean
 }
-export type groupTypeProcedure = 'INTERNOS' | 'EXTERNOS'
+export type groupTypeProcedure = 'INTERNO' | 'EXTERNO'

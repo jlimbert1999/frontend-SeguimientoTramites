@@ -6,7 +6,6 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 import { typeProcedure } from '../../interfaces/typeProcedure.interface';
 import { TypeProcedureDialogComponent } from '../../dialogs/type-procedure-dialog/type-procedure-dialog.component';
 
-
 @Component({
   selector: 'app-tipos-tramites',
   templateUrl: './tipos-tramites.component.html',
@@ -37,8 +36,11 @@ export class TiposTramitesComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result: typeProcedure) => {
       if (result) {
-        let data = [result, ...this.dataSource]
-        this.dataSource = data
+        if (this.dataSource.length === this.paginatorService.limit) {
+          this.dataSource.pop()
+        }
+        this.paginatorService.length++
+        this.dataSource = [result, ...this.dataSource]
       }
     });
   }
@@ -49,36 +51,33 @@ export class TiposTramitesComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result: typeProcedure) => {
       if (result) {
-        let newData = [...this.dataSource]
-        const foundIndex = newData.findIndex(tipo => tipo._id === result._id);
-        newData[foundIndex] = result;
-        this.dataSource = newData
+        const indexFound = this.dataSource.findIndex(officer => officer._id === result._id)
+        this.dataSource[indexFound] = result
+        this.dataSource = [...this.dataSource]
       }
     });
   }
   Get() {
     if (this.text !== '') {
-      // this.tiposTramitesService.search(this.paginatorService.limit, this.paginatorService.offset, this.text).subscribe(data => {
-      //   this.dataSource = data.tipos
-      //   this.paginatorService.length = data.length
-      // })
+      this.tiposTramitesService.search(this.paginatorService.limit, this.paginatorService.offset, this.text).subscribe(data => {
+        this.dataSource = data.typesProcedures
+        this.paginatorService.length = data.length
+      })
     }
     else {
       this.tiposTramitesService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-        console.log(data);
         this.dataSource = data.tipos
         this.paginatorService.length = data.length
       })
     }
   }
 
-  Delete(data: typeProcedure) {
-    // this.tiposTramitesService.delete(data._id).subscribe(inst => {
-    //   let newData = [...this.dataSource]
-    //   const foundIndex = newData.findIndex(tipo => tipo._id === data._id);
-    //   newData[foundIndex] = inst
-    //   this.dataSource = newData
-    // })
+  delete(typeProcedure: typeProcedure) {
+    this.tiposTramitesService.delete(typeProcedure._id).subscribe(newTypeProcedure => {
+      const indexFound = this.dataSource.findIndex(element => element._id === typeProcedure._id)
+      this.dataSource[indexFound] = newTypeProcedure
+      this.dataSource = [...this.dataSource]
+    })
   }
 
   applyFilter(event: Event) {
@@ -91,5 +90,4 @@ export class TiposTramitesComponent implements OnInit {
     this.text = ''
     this.Get()
   }
-
 }

@@ -1,7 +1,7 @@
 <app-toolbar title="TIPOS DE TRAMITES" [showAdd]="true" (add)="Add()"></app-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
     <mat-form-field class="example-full-width">
-        <mat-label>Buscar tipo</mat-label>
+        <mat-label>Buscar tipo de tramite</mat-label>
         <input matInput [(ngModel)]="text" (keyup)="applyFilter($event)" placeholder="Nombre / Segmento" #input>
         <button *ngIf="text" matSuffix mat-icon-button aria-label="Clear" (click)="cancelSearch()">
             <mat-icon>close</mat-icon>
@@ -31,7 +31,7 @@
                         <button (click)="Edit(element)" mat-icon-button>
                             <mat-icon style="color: royalblue;">edit</mat-icon>
                         </button>
-                        <button (click)="Delete(element)" mat-icon-button>
+                        <button (click)="delete(element)" mat-icon-button>
                             <mat-icon style="color: rgb(241, 74, 55);">{{element.activo?'delete':'restart_alt'}}
                             </mat-icon>
                         </button>
