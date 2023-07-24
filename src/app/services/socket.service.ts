@@ -11,6 +11,8 @@ export class SocketService {
   socket: Socket;
   onlineUsers: userSocket[] = []
   isOnline: boolean = false
+  private onlineUsersSubject: BehaviorSubject<userSocket[]> = new BehaviorSubject<userSocket[]>([]);
+  public onlineUsers$: Observable<userSocket[]> = this.onlineUsersSubject.asObservable();
   constructor() { }
   setupSocketConnection(token: string) {
     this.socket = io(`${environment.base_url}`, { auth: { token } });
@@ -22,11 +24,9 @@ export class SocketService {
       this.isOnline = false
     }
   }
-  listenUserConection(): Observable<userSocket[]> {
-    return new Observable((observable) => {
-      this.socket.on('listar', data => {
-        observable.next(data)
-      })
+  listenUserConection() {
+    this.socket.on('listar', data => {
+      this.onlineUsersSubject.next(data)
     })
   }
   listenMails(): Observable<Entrada> {

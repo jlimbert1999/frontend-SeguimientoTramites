@@ -7,7 +7,7 @@ import { BandejaEntradaService } from 'src/app/Bandejas/services/bandeja-entrada
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { LoaderService } from 'src/app/auth/services/loader.service';
 import { NotificationService } from 'src/app/home-old/services/notification.service';
-import { SocketService } from 'src/app/home-old/services/socket.service';
+import { SocketService } from 'src/app/services/socket.service';
 import { ThemeService } from 'src/app/home-old/services/theme.service';
 import { SidenavService } from 'src/app/shared/services/sidenav.service';
 
@@ -57,9 +57,11 @@ export class HomeComponent {
 
   ngOnInit(): void {
     this.socketService.setupSocketConnection(this.authService.token)
-    this.socketService.listenUserConection().subscribe(users => {
-      this.socketService.onlineUsers = users
-    })
+    this.socketService.listenUserConection()
+    // this.socketService.listenUserConection().subscribe(users => {
+    //   this.socketService.onlineUsers = users
+    // })
+
     // this.socketService.listenMails().subscribe(mail => {
     //   this.bandejaService.Mails = [mail, ...this.bandejaService.Mails]
     //   this.notificationService.showNotificationNewMail(mail.emisor.funcionario)

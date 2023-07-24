@@ -8,7 +8,7 @@ import { WorkflowData } from '../../models/workflow.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Mail } from '../../models/entrada.interface';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { Observacion } from 'src/app/Tramites/models/Externo.interface';
+import { Observacion } from 'src/app/procedures/models/Externo.interface';
 import { showToast } from 'src/app/helpers/toats.helper';
 import { DialogRemisionComponent } from '../../dialogs/dialog-remision/dialog-remision.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,9 +16,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { createListWorkflow } from '../../helpers/ListWorkflow';
 import { PDF_FichaExterno, PDF_FichaInterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
-import { ExternosService } from 'src/app/Tramites/services/externos.service';
-import { InternosService } from 'src/app/Tramites/services/internos.service';
-import { externalRouteMap, internalRouteMap } from 'src/app/Tramites/pdfs/roadMap';
+import { externalRouteMap, internalRouteMap } from 'src/app/procedures/pdfs/roadMap';
+import { ExternosService } from 'src/app/procedures/services/externos.service';
+import { InternosService } from 'src/app/procedures/services/internos.service';
 
 @Component({
   selector: 'app-mail',

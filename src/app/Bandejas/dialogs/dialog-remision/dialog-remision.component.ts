@@ -6,7 +6,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BandejaEntradaService } from '../../services/bandeja-entrada.service';
 import { AccountForSend, ImboxData } from '../../models/entrada.interface';
 import { EntradaDto } from '../../models/entrada.dto';
-import { SocketService } from 'src/app/home-old/services/socket.service';
+import { SocketService } from 'src/app/services/socket.service';
 
 @Component({
   selector: 'app-dialog-remision',

@@ -6,6 +6,8 @@ import { environment } from 'src/environments/environment';
 import { ExternoDto, RepresentanteDto, SolicitanteDto } from '../models/Externo.dto';
 import { Externo, Observacion } from '../models/Externo.interface';
 import { TipoTramite } from 'src/app/administration/models/tipoTramite.interface';
+import { external } from '../interfaces/external.interface';
+import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
 
 
 const base_url = environment.base_url
@@ -15,6 +17,19 @@ const base_url = environment.base_url
 export class ExternosService {
 
   constructor(private http: HttpClient) { }
+
+  getSegments() {
+    return this.http.get<{ _id: string }[]>(`${base_url}/external/segments`).pipe(
+      map(resp => {
+        return resp.map(element => element._id)
+      })
+    )
+  }
+  getTypesProceduresBySegment(segment: string) {
+    return this.http.get<typeProcedure[]>(`${base_url}/external/segments/${segment}`).pipe(
+      map(resp => resp)
+    )
+  }
 
   getTypesProcedures() {
     return this.http.get<{ ok: boolean, types: TipoTramite[] }>(`${base_url}/externos/tipos`).pipe(
@@ -41,10 +56,10 @@ export class ExternosService {
     let params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, tramites: Externo[], total: number }>(`${base_url}/externos`, { params }).pipe(
+    return this.http.get<{ procedures: external[], total: number }>(`${base_url}/external`, { params }).pipe(
       map(resp => {
-
-        return { tramites: resp.tramites, length: resp.total }
+        console.log(resp);
+        return { procedures: resp.procedures, length: resp.total }
       })
     )
   }

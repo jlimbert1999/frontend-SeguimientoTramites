@@ -9,7 +9,7 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { BandejaEntradaService } from '../Bandejas/services/bandeja-entrada.service';
 import { SidenavService } from '../shared/services/sidenav.service';
 import { MatSidenav } from '@angular/material/sidenav';
-import { SocketService } from './services/socket.service';
+import { SocketService } from '../services/socket.service';
 import { NotificationService } from './services/notification.service';
 import Swal from 'sweetalert2';
 import { ThemeService } from './services/theme.service';

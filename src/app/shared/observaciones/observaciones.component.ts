@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { BandejaEntradaService } from 'src/app/Bandejas/services/bandeja-entrada.service';
-import { Observacion } from 'src/app/Tramites/models/Externo.interface';
+import { Observacion } from 'src/app/procedures/models/Externo.interface';
 import Swal from 'sweetalert2';
 
 @Component({

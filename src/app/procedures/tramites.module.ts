@@ -12,6 +12,7 @@ import { DialogExternoComponent } from './dialogs/dialog-externo/dialog-externo.
 import { SharedModule } from '../shared/shared.module';
 import { MaterialModule } from '../angular-material/material.module';
 import { TramitesRoutingModule } from './tramites-routing.module';
+import { SolicitantePipe } from './pipes/solicitante.pipe';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { TramitesRoutingModule } from './tramites-routing.module';
     ExternosComponent,
     InternosComponent,
     DialogInternosComponent,
-    DialogExternoComponent
+    DialogExternoComponent,
+    SolicitantePipe
   ],
   imports: [
     CommonModule,

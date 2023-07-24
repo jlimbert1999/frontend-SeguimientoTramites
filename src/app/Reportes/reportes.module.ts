@@ -17,12 +17,12 @@ import { LayoutModule } from '@angular/cdk/layout';
 
 import { AdministrationModule } from '../administration/administration.module';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { MenuComponent } from './pages/menu/menu.component';
 import { ReportFichaOptionsComponent } from './components/report-ficha-options/report-ficha-options.component';
 import { ReportUnidadOptionsComponent } from './components/report-unidad-options/report-unidad-options.component';
 import { ReportSolicitanteOptionsComponent } from './components/report-solicitante-options/report-solicitante-options.component';
 import { ReportTipoOptionsComponent } from './components/report-tipo-options/report-tipo-options.component';
 import { ReportUsuarioOptionsComponent } from './components/report-usuario-options/report-usuario-options.component';
+import { MenuComponent } from './pages/menu/menu.component';
 
 @NgModule({
   declarations: [

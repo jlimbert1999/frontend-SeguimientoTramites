@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ReporteService } from '../../services/reporte.service';
 import { SendDataReportEvent } from '../../models/sendData.model';
-import { groupProcedure, statesProcedure } from 'src/app/Tramites/models/ProceduresProperties';
+import { groupProcedure, statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
 import { FormControl, FormBuilder, Validators } from '@angular/forms';
 
 @Component({

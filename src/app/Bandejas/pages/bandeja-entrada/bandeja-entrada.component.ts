@@ -8,18 +8,16 @@ import Swal from 'sweetalert2';
 import { LoaderService } from 'src/app/auth/services/loader.service';
 import { BandejaEntradaService } from '../../services/bandeja-entrada.service';
 import { DialogRemisionComponent } from '../../dialogs/dialog-remision/dialog-remision.component';
-import { InternosService } from 'src/app/Tramites/services/internos.service';
-import { ExternosService } from 'src/app/Tramites/services/externos.service';
-import { HojaRutaExterna } from 'src/app/Tramites/pdfs/hoja-ruta-externa';
+import { InternosService } from 'src/app/procedures/services/internos.service';
+import { ExternosService } from 'src/app/procedures/services/externos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
 import { Entrada } from '../../models/entrada.interface';
-import { HojaRutaInterna } from 'src/app/Tramites/pdfs/hora-ruta-interna';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { showToast } from 'src/app/helpers/toats.helper';
-import { externalRouteMap, internalRouteMap } from 'src/app/Tramites/pdfs/roadMap';
+import { externalRouteMap, internalRouteMap } from 'src/app/procedures/pdfs/roadMap';
 import { NotificationService } from 'src/app/home-old/services/notification.service';
-import { SocketService } from 'src/app/home-old/services/socket.service';
+import { SocketService } from 'src/app/services/socket.service';
 
 
 @Component({

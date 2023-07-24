@@ -1,8 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
-import { Externo } from 'src/app/Tramites/models/Externo.interface';
-import { Interno } from 'src/app/Tramites/models/Interno.interface';
+import { Interno } from 'src/app/procedures/models/Interno.interface';
 
 @Component({
   selector: 'app-info-tramite-interno',

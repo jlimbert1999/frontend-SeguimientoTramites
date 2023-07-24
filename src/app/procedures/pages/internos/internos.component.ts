@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 import { Interno } from '../../models/Interno.interface';
 import { paramsNavigation } from '../../models/ProceduresProperties';
 import { internalRouteMap } from '../../pdfs/roadMap';
-import { SocketService } from 'src/app/home-old/services/socket.service';
+import { SocketService } from 'src/app/services/socket.service';
 
 @Component({
   selector: 'app-internos',

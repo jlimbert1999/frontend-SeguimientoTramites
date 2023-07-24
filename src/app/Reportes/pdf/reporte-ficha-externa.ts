@@ -4,8 +4,8 @@ import { Content, ContentOrderedList, ContentUnorderedList, Table, TableCell, Ta
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
-import { Externo } from "src/app/Tramites/models/Externo.interface";
-import { Interno } from "src/app/Tramites/models/Interno.interface";
+import { Externo } from "src/app/procedures/models/Externo.interface";
+import { Interno } from "src/app/procedures/models/Interno.interface";
 import { ListWorkflow, LocationProcedure } from "src/app/Bandejas/models/workflow.interface";
 
 export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkflow[], Location: LocationProcedure[]) {

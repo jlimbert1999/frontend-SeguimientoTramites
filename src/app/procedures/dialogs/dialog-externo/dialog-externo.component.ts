@@ -3,11 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Externo, Representante, Solicitante } from '../../models/Externo.interface';
 import { ExternosService } from '../../services/externos.service';
-import { AuthService } from 'src/app/auth/services/auth.service';
 import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
 import { closeLoadingRequets, showLoadingRequest } from 'src/app/helpers/loading.helper';
 import { TipoTramite } from 'src/app/administration/models/tipoTramite.interface';
+import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
 
 
 @Component({
@@ -16,9 +16,8 @@ import { TipoTramite } from 'src/app/administration/models/tipoTramite.interface
   styleUrls: ['./dialog-externo.component.scss']
 })
 export class DialogExternoComponent implements OnInit {
-  Segmentos: string[] = []
-  TypesProcedures: TipoTramite[] = []
-  TypesProceduresSegmented: TipoTramite[] = []
+  segments: string[] = []
+  typesProcedures: typeProcedure[] = []
   SelectedType: TipoTramite | null
   tipos_documento: string[] = [
     'Carnet de identidad',
@@ -49,7 +48,6 @@ export class DialogExternoComponent implements OnInit {
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<DialogExternoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Externo,
-    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -71,15 +69,15 @@ export class DialogExternoComponent implements OnInit {
       }
     }
     else {
-      this.externoService.getTypesProcedures().subscribe(data => {
-        this.Segmentos = data.segments
-        this.TypesProcedures = data.types
+      this.externoService.getSegments().subscribe(data => {
+        this.segments = data
       })
     }
   }
-  segmentProcedures(segment: string) {
-    this.TypesProceduresSegmented = []
-    this.TypesProceduresSegmented = this.TypesProcedures.filter(type => type.segmento === segment)
+  getTypesProceduresBySegment(segment: string) {
+    this.externoService.getTypesProceduresBySegment(segment).subscribe(data => {
+      this.typesProcedures = data
+    })
   }
 
 
@@ -88,8 +86,6 @@ export class DialogExternoComponent implements OnInit {
     this.TramiteFormGroup.get('tipo_tramite')?.setValue(type.id_tipoTramite)
     this.TramiteFormGroup.get('requerimientos')?.setValue(this.SelectedType?.requerimientos.map(requerimiento => requerimiento.nombre))
   }
-
-
 
 
   guardar() {
@@ -121,7 +117,7 @@ export class DialogExternoComponent implements OnInit {
           nombre: ['', Validators.required],
           paterno: ['', Validators.required],
           materno: [''],
-          telefono: [''],
+          telefono: ['', Validators.required],
           tipo: [type, Validators.required],
           dni: ['', Validators.required],
           documento: ['', Validators.required],

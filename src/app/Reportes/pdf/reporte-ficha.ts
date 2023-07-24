@@ -4,9 +4,9 @@ import { Content, ContentOrderedList, ContentUnorderedList, Table, TableCell, Ta
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
-import { Externo } from "src/app/Tramites/models/Externo.interface";
+import { Externo } from "src/app/procedures/models/Externo.interface";
 import { ListWorkflow, LocationProcedure } from "src/app/Bandejas/models/workflow.interface";
-import { Interno } from "src/app/Tramites/models/Interno.interface";
+import { Interno } from "src/app/procedures/models/Interno.interface";
 
 export async function PDF_FichaExterno(tramite: any, ListWorkflow: ListWorkflow[], Location: LocationProcedure[], group: 'tramites_externos' | 'tramites_internos') {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')

@@ -26,6 +26,7 @@ import { WorkHistoryComponent } from './dialogs/work-history/work-history.compon
 import { TypeProcedureDialogComponent } from './dialogs/type-procedure-dialog/type-procedure-dialog.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { AdministrationRoutingModule } from './administration-routing.module';
+import { FilterUsersSocketPipe } from './pipes/filter-users-socket.pipe';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { AdministrationRoutingModule } from './administration-routing.module';
     JobDialogComponent,
     WorkHistoryComponent,
     TypeProcedureDialogComponent,
-    SettingsComponent
+    SettingsComponent,
+    FilterUsersSocketPipe
   ],
   imports: [
     CommonModule,

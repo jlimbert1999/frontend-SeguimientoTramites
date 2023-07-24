@@ -3,10 +3,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Externo } from 'src/app/Tramites/models/Externo.interface';
 import { WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
-import { Interno } from 'src/app/Tramites/models/Interno.interface';
-import { groupProcedure } from 'src/app/Tramites/models/ProceduresProperties';
+import { groupProcedure } from 'src/app/procedures/models/ProceduresProperties';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'

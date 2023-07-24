@@ -16,7 +16,7 @@ const routes: Routes = [
         path: 'configuraciones', loadChildren: () => import(`./administration/administration.module`).then((m) => m.AdministrationModule),
       },
       {
-        path: 'tramites', loadChildren: () => import(`./Tramites/tramites.module`).then((m) => m.TramitesModule),
+        path: 'tramites', loadChildren: () => import(`./procedures/tramites.module`).then((m) => m.TramitesModule),
       }
     ]
   },

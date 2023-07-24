@@ -5,7 +5,7 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ReporteService } from '../../services/reporte.service';
 import { Router } from '@angular/router';
 import { MatAccordion } from '@angular/material/expansion';
-import { groupProcedure, paramsNavigation, statesProcedure } from 'src/app/Tramites/models/ProceduresProperties';
+import { groupProcedure, paramsNavigation, statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { forkJoin } from 'rxjs';
 

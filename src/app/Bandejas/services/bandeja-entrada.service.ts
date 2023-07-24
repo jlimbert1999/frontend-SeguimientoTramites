@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AccountForSend, Entrada, Mail } from '../models/entrada.interface';
-import { Observacion } from 'src/app/Tramites/models/Externo.interface';
+import { Observacion } from 'src/app/procedures/models/Externo.interface';
 import { LocationProcedure, WorkflowData } from '../models/workflow.interface';
 import { EntradaDto } from '../models/entrada.dto';
 

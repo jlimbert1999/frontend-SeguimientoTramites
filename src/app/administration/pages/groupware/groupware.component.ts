@@ -1,15 +1,21 @@
 import { Component, OnInit } from '@angular/core';
+import { fadeInOnEnterAnimation } from 'angular-animations';
+import { Observable } from 'rxjs';
 import { userSocket } from 'src/app/auth/models/account.model';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { SocketService } from 'src/app/home-old/services/socket.service';
+import { SocketService } from 'src/app/services/socket.service';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-groupware',
   templateUrl: './groupware.component.html',
-  styleUrls: ['./groupware.component.scss']
+  styleUrls: ['./groupware.component.scss'],
+  animations:[
+    fadeInOnEnterAnimation(),
+  ]
 })
 export class GroupwareComponent implements OnInit {
+  textSearch: string = ''
   constructor(public socketService: SocketService, private authService: AuthService) {
   }
 

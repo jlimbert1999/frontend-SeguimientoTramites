@@ -4,7 +4,7 @@ import { SendDataReportEvent } from '../../models/sendData.model';
 import { forkJoin } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { searchParamsReportUnit } from '../../models/repot-unidad.model';
-import { groupProcedure, statesProcedure } from 'src/app/Tramites/models/ProceduresProperties';
+import { groupProcedure, statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
 @Component({
   selector: 'app-report-unidad-options',
   templateUrl: './report-unidad-options.component.html',

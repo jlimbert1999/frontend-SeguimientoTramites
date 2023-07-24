@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import { ArchivoService } from './services/archivo.service';
 import { PaginatorService } from '../shared/services/paginator.service';
 import { Router } from '@angular/router';
-import { SocketService } from '../home-old/services/socket.service';
+import { SocketService } from '../services/socket.service';
 import { Archive } from './services/models/archive.interface';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { closeLoadingRequets, showLoadingRequest } from '../helpers/loading.helper';

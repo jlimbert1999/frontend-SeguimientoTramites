@@ -81,6 +81,7 @@ export class SimpleMatSelectSearchComponent implements OnInit, OnDestroy, OnChan
   }
 
   accessToPropertyObject(path: string, object: any) {
+    if (path === '') return object
     return path.split('.').reduce((o, i) => o[i], object)
   }
 

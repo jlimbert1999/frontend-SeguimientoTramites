@@ -9,10 +9,11 @@ import { createPDFUnidad } from '../../pdf/reporte-unidad';
 import { fadeInDownAnimation, fadeInDownOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { createPDFFicha } from '../../pdf/reporte-fichas';
 import { createPDFUsuario } from '../../pdf/reporte-usuario';
-import { ExternosService } from 'src/app/Tramites/services/externos.service';
-import { InternosService } from 'src/app/Tramites/services/internos.service';
+
 import { PDF_FichaExterno, PDF_FichaInterno } from '../../pdf/reporte-ficha-externa';
 import { createListWorkflow } from 'src/app/Bandejas/helpers/ListWorkflow';
+import { ExternosService } from 'src/app/procedures/services/externos.service';
+import { InternosService } from 'src/app/procedures/services/internos.service';
 
 @Component({
   selector: 'app-menu',

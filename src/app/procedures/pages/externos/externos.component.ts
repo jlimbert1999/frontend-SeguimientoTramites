@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { AuthService } from 'src/app/auth/services/auth.service';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { Externo } from '../../models/Externo.interface';
 import { ExternosService } from '../../services/externos.service';
@@ -14,7 +13,8 @@ import { Ficha } from '../../pdfs/ficha';
 import { externalRouteMap } from '../../pdfs/roadMap';
 import { showToast } from 'src/app/helpers/toats.helper';
 import { paramsNavigation } from '../../models/ProceduresProperties';
-import { SocketService } from 'src/app/home-old/services/socket.service';
+import { SocketService } from 'src/app/services/socket.service';
+import { external } from '../../interfaces/external.interface';
 
 
 @Component({
@@ -27,15 +27,13 @@ import { SocketService } from 'src/app/home-old/services/socket.service';
 
 })
 export class ExternosComponent implements OnInit {
-  Data: Externo[] = []
+  dataSource: external[] = []
   displayedColumns: string[] = ['alterno', 'detalle', 'estado', 'solicitante', 'fecha_registro', 'enviado', 'opciones'];
   constructor(
     public dialog: MatDialog,
-    public authService: AuthService,
     public externoService: ExternosService,
     public paginatorService: PaginatorService,
     private router: Router,
-    private socket: SocketService
   ) {
   }
   ngOnInit(): void {
@@ -44,15 +42,15 @@ export class ExternosComponent implements OnInit {
 
   Get() {
     if (this.paginatorService.text !== '') {
-      this.externoService.GetSearch(this.paginatorService.limit, this.paginatorService.offset, this.paginatorService.text).subscribe(data => {
-        this.paginatorService.length = data.length
-        this.Data = data.tramites
-      })
+      // this.externoService.GetSearch(this.paginatorService.limit, this.paginatorService.offset, this.paginatorService.text).subscribe(data => {
+      //   this.paginatorService.length = data.length
+      //   this.dataSource = data.tramites
+      // })
     }
     else {
       this.externoService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
         this.paginatorService.length = data.length
-        this.Data = data.tramites
+        this.dataSource = data.procedures
       })
     }
   }
@@ -64,14 +62,14 @@ export class ExternosComponent implements OnInit {
       width: '1000px',
       disableClose: true
     });
-    dialogRef.afterClosed().subscribe((result: Externo) => {
+    dialogRef.afterClosed().subscribe((result: external) => {
       if (result) {
-        if (this.Data.length === this.paginatorService.limit) {
-          this.Data.pop()
+        if (this.dataSource.length === this.paginatorService.limit) {
+          this.dataSource.pop()
         }
-        this.Data = [result, ...this.Data]
+        this.dataSource = [result, ...this.dataSource]
         this.paginatorService.length++
-        this.Send(result)
+        // this.Send(result)
       }
     });
   }
@@ -81,11 +79,11 @@ export class ExternosComponent implements OnInit {
       data: tramite,
       disableClose: true
     });
-    dialogRef.afterClosed().subscribe((result: Externo) => {
+    dialogRef.afterClosed().subscribe((result: external) => {
       if (result) {
-        const indexFound = this.Data.findIndex(element => element._id === tramite._id)
-        this.Data[indexFound] = result
-        this.Data = [...this.Data]
+        const indexFound = this.dataSource.findIndex(element => element._id === tramite._id)
+        this.dataSource[indexFound] = result
+        this.dataSource = [...this.dataSource]
         // showToast('success', 'Tramite guardado')
       }
     });
@@ -107,9 +105,9 @@ export class ExternosComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        const indexFound = this.Data.findIndex(element => element._id === tramite._id)
-        this.Data[indexFound].enviado = true
-        this.Data = [...this.Data]
+        const indexFound = this.dataSource.findIndex(element => element._id === tramite._id)
+        // this.dataSource[indexFound].enviado = true
+        this.dataSource = [...this.dataSource]
         this.Add()
       }
     });
@@ -145,13 +143,13 @@ export class ExternosComponent implements OnInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        this.externoService.conclude(tramite._id, result.value!).subscribe(message => {
-          const index = this.Data.findIndex(element => element._id === tramite._id)
-          this.socket.socket.emit('archive', this.authService.account.id_dependencie)
-          this.Data[index].estado = 'CONCLUIDO'
-          this.Data = [...this.Data]
-          showToast('success', message)
-        })
+        // this.externoService.conclude(tramite._id, result.value!).subscribe(message => {
+        //   const index = this.Data.findIndex(element => element._id === tramite._id)
+        //   this.socket.socket.emit('archive', this.authService.account.id_dependencie)
+        //   this.Data[index].estado = 'CONCLUIDO'
+        //   this.Data = [...this.Data]
+        //   showToast('success', message)
+        // })
       }
     })
   }

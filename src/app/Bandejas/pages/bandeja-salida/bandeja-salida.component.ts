@@ -3,20 +3,18 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/services/auth.service';
 
 import { fadeInOnEnterAnimation } from 'angular-animations';
-import { ExternosService } from '../../../Tramites/services/externos.service';
 
 import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 import { BandejaSalidaService } from '../../services/bandeja-salida.service';
-import { InternosService } from 'src/app/Tramites/services/internos.service';
+import { InternosService } from 'src/app/procedures/services/internos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
 import { GroupedMails, Salida } from '../../models/salida.interface';
-import { HojaRutaInterna } from 'src/app/Tramites/pdfs/hora-ruta-interna';
-import { HojaRutaExterna } from 'src/app/Tramites/pdfs/hoja-ruta-externa';
-import { externalRouteMap, internalRouteMap } from 'src/app/Tramites/pdfs/roadMap';
+import { externalRouteMap, internalRouteMap } from 'src/app/procedures/pdfs/roadMap';
 import { createFullName } from 'src/app/helpers/fullname.helper';
-import { SocketService } from 'src/app/home-old/services/socket.service';
+import { SocketService } from 'src/app/services/socket.service';
+import { ExternosService } from 'src/app/procedures/services/externos.service';
 
 
 @Component({
