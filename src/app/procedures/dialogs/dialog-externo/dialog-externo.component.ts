@@ -1,14 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Externo, Representante, Solicitante } from '../../models/Externo.interface';
 import { ExternosService } from '../../services/externos.service';
 import { Observable } from 'rxjs';
-import Swal from 'sweetalert2';
-import { closeLoadingRequets, showLoadingRequest } from 'src/app/helpers/loading.helper';
-import { TipoTramite } from 'src/app/administration/models/tipoTramite.interface';
+import { closeLoadingRequets } from 'src/app/helpers/loading.helper';
 import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
-
+import { ExternalProcedureDto } from '../../dtos/external.dto';
+import { external } from '../../interfaces/external.interface';
 
 @Component({
   selector: 'app-dialog-externo',
@@ -18,7 +17,8 @@ import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.i
 export class DialogExternoComponent implements OnInit {
   segments: string[] = []
   typesProcedures: typeProcedure[] = []
-  SelectedType: TipoTramite | null
+  typeAplicant: 'NATURAL' | 'JURIDICO' = 'NATURAL'
+  requeriments: string[] = []
   tipos_documento: string[] = [
     'Carnet de identidad',
     'Libreta servicio militar',
@@ -28,26 +28,17 @@ export class DialogExternoComponent implements OnInit {
     cantidad: ['', Validators.required],
     detalle: ['', Validators.required],
     tipo_tramite: ['', Validators.required],
-    requerimientos: [''],
     cite: ['']
   });
-  SolicitanteFormGroup: FormGroup = this.fb.group({
-    nombre: ['', Validators.required],
-    paterno: ['', Validators.required],
-    materno: [''],
-    telefono: [''],
-    tipo: ['', Validators.required],
-    dni: ['', Validators.required],
-    documento: ['', Validators.required],
-  });
-  RepresentanteFormGroup: FormGroup | null = null;
+  SolicitanteFormGroup: FormGroup
+  RepresentanteFormGroup: FormGroup;
 
 
   constructor(
     private externoService: ExternosService,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<DialogExternoComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Externo,
+    @Inject(MAT_DIALOG_DATA) public data: external,
   ) { }
 
   ngOnInit(): void {
@@ -60,6 +51,7 @@ export class DialogExternoComponent implements OnInit {
       this.TramiteFormGroup.patchValue(this.data)
       this.changeFormSolicitante(this.data.solicitante.tipo)
       this.SolicitanteFormGroup.patchValue(this.data.solicitante)
+      this.requeriments = this.data.requerimientos
       if (this.data.representante) {
         this.changeFormRepresentante(true)
         this.RepresentanteFormGroup?.patchValue(this.data.representante)
@@ -69,27 +61,29 @@ export class DialogExternoComponent implements OnInit {
       }
     }
     else {
+      this.changeFormSolicitante('NATURAL')
+      this.changeFormRepresentante(false)
       this.externoService.getSegments().subscribe(data => {
         this.segments = data
       })
     }
   }
   getTypesProceduresBySegment(segment: string) {
+    this.requeriments = []
+    this.TramiteFormGroup.get('tipo_tramite')?.setValue('')
     this.externoService.getTypesProceduresBySegment(segment).subscribe(data => {
       this.typesProcedures = data
     })
   }
 
 
-  selectTypeProcedure(type: TipoTramite) {
-    this.SelectedType = type
-    this.TramiteFormGroup.get('tipo_tramite')?.setValue(type.id_tipoTramite)
-    this.TramiteFormGroup.get('requerimientos')?.setValue(this.SelectedType?.requerimientos.map(requerimiento => requerimiento.nombre))
+  selectTypeProcedure(type: typeProcedure) {
+    this.TramiteFormGroup.get('tipo_tramite')?.setValue(type._id)
+    this.requeriments = type.requerimientos.filter(el => el.activo).map(el => el.nombre)
   }
 
 
   guardar() {
-    showLoadingRequest()
     if (this.data) {
       let obeservable: Observable<Externo> = this.RepresentanteFormGroup
         ? this.externoService.Edit(this.data._id, this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup.value)
@@ -100,34 +94,32 @@ export class DialogExternoComponent implements OnInit {
       })
     }
     else {
-      let obeservable: Observable<Externo> = this.RepresentanteFormGroup
-        ? this.externoService.Add(this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup.value)
-        : this.externoService.Add(this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, null)
-      obeservable.subscribe(externo => {
-        closeLoadingRequets('Tramite guardado')
-        this.dialogRef.close(externo)
+      const procedure = ExternalProcedureDto.fromForm(this.TramiteFormGroup.value, this.requeriments, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup.value)
+      this.externoService.Add(procedure).subscribe(procedure => {
+        this.dialogRef.close(procedure)
       })
     }
   }
 
   changeFormSolicitante(type: 'NATURAL' | 'JURIDICO') {
+    this.typeAplicant = type
     switch (type) {
       case 'NATURAL':
         this.SolicitanteFormGroup = this.fb.group({
-          nombre: ['', Validators.required],
-          paterno: ['', Validators.required],
-          materno: [''],
-          telefono: ['', Validators.required],
-          tipo: [type, Validators.required],
-          dni: ['', Validators.required],
+          nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
+          paterno: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
+          materno: ['', Validators.pattern('^[a-zA-Z ]*$')],
+          telefono: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')]],
+          dni: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern('^[0-9]*$')]],
           documento: ['', Validators.required],
+          tipo: ['NATURAL'],
         });
         break;
       case 'JURIDICO':
         this.SolicitanteFormGroup = this.fb.group({
-          nombre: ['', Validators.required],
-          telefono: [''],
-          tipo: [type, Validators.required],
+          nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
+          telefono: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')]],
+          tipo: ['JURIDICO'],
         });
         break;
     }
@@ -135,30 +127,52 @@ export class DialogExternoComponent implements OnInit {
   changeFormRepresentante(register: boolean) {
     register
       ? this.RepresentanteFormGroup = this.fb.group({
-        nombre: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
-        paterno: ['', Validators.required],
-        materno: [''],
+        nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
+        paterno: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
+        materno: ['', Validators.pattern('^[a-zA-Z ]*$')],
         documento: ['', Validators.required],
-        dni: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-        telefono: ['', [Validators.required, Validators.pattern('^[0-9]*$')]]
+        dni: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern('^[0-9]*$')]],
+        telefono: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')]]
       })
-      : this.RepresentanteFormGroup = null
+      : this.RepresentanteFormGroup = this.fb.group({});
   }
 
-  ValidForms() {
-    let disabled: boolean = true
-    switch (this.RepresentanteFormGroup) {
-      case null:
-        if (this.TramiteFormGroup.valid && this.SolicitanteFormGroup.valid) {
-          disabled = false
-        }
-        break;
-      default:
-        if (this.TramiteFormGroup.valid && this.SolicitanteFormGroup.valid && this.RepresentanteFormGroup.valid) {
-          disabled = false
-        }
-        break;
+  get registerRepresentative(): boolean {
+    return Object.keys(this.RepresentanteFormGroup.value).length > 0 ? true : false
+  }
+
+  get validForms(): boolean {
+    const isTramiteValid = this.TramiteFormGroup.valid;
+    const isSolicitanteValid = this.SolicitanteFormGroup.valid;
+    const isRepresentanteValid = this.RepresentanteFormGroup.valid
+    const disabled = !(isTramiteValid && isSolicitanteValid && isRepresentanteValid);
+    return disabled;
+  }
+
+  getErrorMessageFormAplicant(controlName: string) {
+    const control = this.SolicitanteFormGroup.get(controlName);
+    if (control?.hasError('required')) {
+      return 'Este campo es obligatorio';
     }
-    return disabled
+    else if (control?.hasError('pattern')) {
+      const patternError = control.getError('pattern');
+      switch (patternError?.requiredPattern) {
+        case '^[a-zA-Z ]*$':
+          return 'Solo letras';
+        case '^[0-9]*$':
+          return 'Solo numeros';
+        default:
+          break;
+      }
+    }
+    else if (control?.hasError('minlength')) {
+      const minLengthRequired = control.getError('minlength').requiredLength;
+      return `Ingrese al menos ${minLengthRequired} caracteres`;
+    }
+    else if (control?.hasError('maxlength')) {
+      const maxLengthRequired = control.getError('maxlength').requiredLength;
+      return `Solo ${maxLengthRequired} caracteres`;
+    }
+    return '';
   }
 }

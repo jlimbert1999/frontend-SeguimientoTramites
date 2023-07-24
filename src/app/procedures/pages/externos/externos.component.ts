@@ -73,7 +73,7 @@ export class ExternosComponent implements OnInit {
       }
     });
   }
-  Edit(tramite: Externo) {
+  Edit(tramite: external) {
     const dialogRef = this.dialog.open(DialogExternoComponent, {
       width: '1000px',
       data: tramite,

@@ -13,6 +13,7 @@ import { SharedModule } from '../shared/shared.module';
 import { MaterialModule } from '../angular-material/material.module';
 import { TramitesRoutingModule } from './tramites-routing.module';
 import { SolicitantePipe } from './pipes/solicitante.pipe';
+import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,12 @@ import { SolicitantePipe } from './pipes/solicitante.pipe';
     NgxMatSelectSearchModule,
     RouterModule,
 
+  ],
+  providers: [
+    {
+      provide: STEPPER_GLOBAL_OPTIONS,
+      useValue: { showError: true }
+    }
   ]
 })
 export class TramitesModule { }

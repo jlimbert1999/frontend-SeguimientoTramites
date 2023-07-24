@@ -15,6 +15,7 @@ export interface external {
     cite: string;
     observaciones: any[];
     solicitante: applicant;
+    representante?: representative;
 }
 
 export enum typeApplicant {
@@ -22,7 +23,6 @@ export enum typeApplicant {
     juridico = 'JURIDICO'
 }
 export interface applicant {
-    _id: string;
     nombre: string;
     telefono: string;
     tipo: typeApplicant;
@@ -30,4 +30,13 @@ export interface applicant {
     materno?: string;
     documento?: string;
     dni?: string;
+}
+export interface representative {
+    nombre: string;
+    telefono: string;
+    tipo: typeApplicant;
+    paterno: string;
+    materno: string;
+    documento: string;
+    dni: string;
 }

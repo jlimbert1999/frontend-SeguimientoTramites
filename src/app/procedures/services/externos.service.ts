@@ -8,6 +8,7 @@ import { Externo, Observacion } from '../models/Externo.interface';
 import { TipoTramite } from 'src/app/administration/models/tipoTramite.interface';
 import { external } from '../interfaces/external.interface';
 import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
+import { ExternalProcedureDto } from '../dtos/external.dto';
 
 
 const base_url = environment.base_url
@@ -45,11 +46,10 @@ export class ExternosService {
     )
   }
 
-  Add(tramite: ExternoDto, solicitante: SolicitanteDto, representante: RepresentanteDto | null) {
-    return this.http.post<{ ok: boolean, tramite: Externo }>(`${base_url}/externos`, { tramite, solicitante, representante }).pipe(
-      map(resp => {
-        return resp.tramite
-      })
+  Add(procedure: ExternalProcedureDto) {
+    procedure.representante = undefined
+    return this.http.post<external>(`${base_url}/external`, procedure).pipe(
+      map(resp => resp)
     )
   }
   Get(limit: number, offset: number) {
