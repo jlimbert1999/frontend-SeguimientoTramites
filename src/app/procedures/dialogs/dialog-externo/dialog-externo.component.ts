@@ -54,7 +54,7 @@ export class DialogExternoComponent implements OnInit {
       this.requeriments = this.data.requerimientos
       if (this.data.representante) {
         this.changeFormRepresentante(true)
-        this.RepresentanteFormGroup?.patchValue(this.data.representante)
+        this.RepresentanteFormGroup.patchValue(this.data.representante)
       }
       else {
         this.changeFormRepresentante(false)
@@ -76,7 +76,6 @@ export class DialogExternoComponent implements OnInit {
     })
   }
 
-
   selectTypeProcedure(type: typeProcedure) {
     this.TramiteFormGroup.get('tipo_tramite')?.setValue(type._id)
     this.requeriments = type.requerimientos.filter(el => el.activo).map(el => el.nombre)
@@ -85,12 +84,12 @@ export class DialogExternoComponent implements OnInit {
 
   guardar() {
     if (this.data) {
-      let obeservable: Observable<Externo> = this.RepresentanteFormGroup
-        ? this.externoService.Edit(this.data._id, this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup.value)
-        : this.externoService.Edit(this.data._id, this.TramiteFormGroup.value, this.SolicitanteFormGroup.value, null)
-      obeservable.subscribe(externo => {
-        closeLoadingRequets('Tramite editado')
-        this.dialogRef.close(externo)
+      const updateProcedure = { ...this.TramiteFormGroup.value, solicitante: this.SolicitanteFormGroup.value }
+      if (this.data.representante) {
+        updateProcedure['representante'] = this.RepresentanteFormGroup.value
+      }
+      this.externoService.Edit(this.data._id, updateProcedure).subscribe(procedure => {
+        this.dialogRef.close(procedure)
       })
     }
     else {

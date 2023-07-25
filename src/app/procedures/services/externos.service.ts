@@ -47,7 +47,6 @@ export class ExternosService {
   }
 
   Add(procedure: ExternalProcedureDto) {
-    procedure.representante = undefined
     return this.http.post<external>(`${base_url}/external`, procedure).pipe(
       map(resp => resp)
     )
@@ -58,16 +57,13 @@ export class ExternosService {
       .set('offset', offset)
     return this.http.get<{ procedures: external[], total: number }>(`${base_url}/external`, { params }).pipe(
       map(resp => {
-        console.log(resp);
         return { procedures: resp.procedures, length: resp.total }
       })
     )
   }
-  Edit(id_tramite: string, tramite: any, solicitante: any, representante: any | null) {
-    return this.http.put<{ ok: boolean, tramite: Externo }>(`${base_url}/externos/${id_tramite}`, { tramite, solicitante, representante }).pipe(
-      map(resp => {
-        return resp.tramite
-      })
+  Edit(id_procedure: string, procedure: any) {
+    return this.http.put<external>(`${base_url}/external/${id_procedure}`, procedure).pipe(
+      map(resp => resp)
     )
   }
   GetSearch(limit: number, offset: number, text: string) {

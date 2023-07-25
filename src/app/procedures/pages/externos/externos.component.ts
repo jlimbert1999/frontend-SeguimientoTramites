@@ -173,7 +173,7 @@ export class ExternosComponent implements OnInit {
       offset: this.paginatorService.offset
     }
     if (this.paginatorService.text !== '') params.text = this.paginatorService.text
-    this.router.navigate(['home/tramites/externos/ficha-externa', procedure._id], { queryParams: params })
+    this.router.navigate(['tramites/ficha/ficha-externa', procedure._id], { queryParams: params })
   }
 }
 

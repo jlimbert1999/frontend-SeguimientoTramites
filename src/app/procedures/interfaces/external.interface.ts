@@ -34,7 +34,6 @@ export interface applicant {
 export interface representative {
     nombre: string;
     telefono: string;
-    tipo: typeApplicant;
     paterno: string;
     materno: string;
     documento: string;
