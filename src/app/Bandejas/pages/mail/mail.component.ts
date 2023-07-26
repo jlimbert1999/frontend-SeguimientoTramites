@@ -87,7 +87,7 @@ export class MailComponent implements OnInit {
   generateRouteMap() {
     this.Mail.tipo === 'tramites_externos'
       ? this.externoService.getAllDataExternalProcedure(this.Mail.tramite).subscribe(data => {
-        externalRouteMap(data.procedure, data.workflow)
+        // externalRouteMap(data.procedure, data.workflow)
       })
       : this.internoService.getAllDataInternalProcedure(this.Mail.tramite).subscribe(data => {
         internalRouteMap(data.procedure, data.workflow)

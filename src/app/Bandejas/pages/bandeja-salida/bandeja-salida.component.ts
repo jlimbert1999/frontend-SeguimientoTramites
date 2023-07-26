@@ -73,7 +73,7 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
   generar_hoja_ruta(id_tramite: string, tipo_hoja: 'tramites_externos' | 'tramites_internos') {
     if (tipo_hoja === 'tramites_externos') {
       this.externoService.getAllDataExternalProcedure(id_tramite).subscribe(data => {
-        externalRouteMap(data.procedure, data.workflow)
+        // externalRouteMap(data.procedure, data.workflow)
         // HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
       })
     }

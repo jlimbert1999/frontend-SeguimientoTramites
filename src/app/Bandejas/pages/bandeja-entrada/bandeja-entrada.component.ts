@@ -213,7 +213,7 @@ export class BandejaEntradaComponent implements OnInit {
   generateRouteMap(mail: Entrada) {
     mail.tipo === 'tramites_externos'
       ? this.externoService.getAllDataExternalProcedure(mail.tramite._id).subscribe(data => {
-        externalRouteMap(data.procedure, data.workflow)
+        // externalRouteMap(data.procedure, data.workflow)
       })
       : this.internoService.getAllDataInternalProcedure(mail.tramite._id).subscribe(data => {
         internalRouteMap(data.procedure, data.workflow)

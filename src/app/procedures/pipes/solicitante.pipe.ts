@@ -7,7 +7,7 @@ import { applicant, typeApplicant } from '../interfaces/external.interface';
 export class SolicitantePipe implements PipeTransform {
 
   transform(applicant: applicant): string {
-    return applicant.tipo === typeApplicant.natural
+    return applicant.tipo === 'NATURAL'
       ? `${applicant.nombre} ${applicant.paterno} ${applicant.materno}`
       : applicant.nombre
   }

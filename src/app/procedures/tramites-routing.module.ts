@@ -7,7 +7,7 @@ import { FichaComponent } from './pages/ficha/ficha.component';
 const routes: Routes = [
   { path: 'internos', component: InternosComponent },
   { path: 'externos', component: ExternosComponent },
-  { path: 'ficha/:tipo/:id', component: FichaComponent },
+  { path: 'externos/:tipo/:id', component: FichaComponent },
   { path: 'internos/:tipo/:id', component: FichaComponent },
 ];
 

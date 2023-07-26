@@ -146,13 +146,13 @@
   transition: transform .6s cubic-bezier(0.645, 0.045, 0.355, 1), -webkit-transform .6s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
-label,
+.option-theme,
 .toggle {
   height: 2.8rem;
   border-radius: 100px;
 }
 
-label {
+.option-theme {
   width: 100%;
   background-color: rgba(0, 0, 0, .1);
   border-radius: 100px;

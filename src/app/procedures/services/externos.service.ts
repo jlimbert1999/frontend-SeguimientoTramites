@@ -9,6 +9,7 @@ import { TipoTramite } from 'src/app/administration/models/tipoTramite.interface
 import { external } from '../interfaces/external.interface';
 import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
 import { ExternalProcedureDto } from '../dtos/external.dto';
+import { ExternalDetail } from '../models/externo.model';
 
 
 const base_url = environment.base_url
@@ -52,7 +53,7 @@ export class ExternosService {
     )
   }
   Get(limit: number, offset: number) {
-    let params = new HttpParams()
+    const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
     return this.http.get<{ procedures: external[], total: number }>(`${base_url}/external`, { params }).pipe(
@@ -67,38 +68,40 @@ export class ExternosService {
     )
   }
   GetSearch(limit: number, offset: number, text: string) {
-    let params = new HttpParams()
+    const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, tramites: Externo[], length: number }>(`${base_url}/externos/buscar/${text}`, { params }).pipe(
+    return this.http.get<{ procedures: external[], length: number }>(`${base_url}/external/search/${text}`, { params }).pipe(
       map(resp => {
-        return { tramites: resp.tramites, length: resp.length }
+        return { procedures: resp.procedures, length: resp.length }
       })
     )
   }
   getAllDataExternalProcedure(id_procedure: string) {
-    return this.http.get<{ ok: boolean, procedure: Externo, workflow: WorkflowData[], location: LocationProcedure[], observations: Observacion[], events: any[] }>(`${base_url}/shared/procedure/tramites_externos/${id_procedure}`).pipe(
+    return this.http.get<{ procedure: any, workflow: any[] }>(`${base_url}/external/${id_procedure}`).pipe(
       map(resp => {
-        resp.workflow.map(element => {
-          if (element.receptor.funcionario === undefined) {
-            element.receptor.funcionario = {
-              nombre: element.receptor.usuario,
-              paterno: '',
-              materno: '',
-              cargo: element.receptor.cargo
-            }
-          }
-          if (element.emisor.funcionario === undefined) {
-            element.emisor.funcionario = {
-              nombre: element.emisor.usuario,
-              paterno: '',
-              materno: '',
-              cargo: element.emisor.cargo
-            }
-          }
-          return element
-        })
-        return { procedure: resp.procedure, workflow: resp.workflow, location: resp.location, observations: resp.observations, events: resp.events }
+        const { procedure } = resp
+        return { procedure: ExternalDetail.frmJson(resp.procedure), workflow: resp.workflow }
+        // resp.workflow.map(element => {
+        //   if (element.receptor.funcionario === undefined) {
+        //     element.receptor.funcionario = {
+        //       nombre: element.receptor.usuario,
+        //       paterno: '',
+        //       materno: '',
+        //       cargo: element.receptor.cargo
+        //     }
+        //   }
+        //   if (element.emisor.funcionario === undefined) {
+        //     element.emisor.funcionario = {
+        //       nombre: element.emisor.usuario,
+        //       paterno: '',
+        //       materno: '',
+        //       cargo: element.emisor.cargo
+        //     }
+        //   }
+        //   return element
+        // })
+        // return { procedure: resp.procedure, workflow: resp.workflow, location: resp.location, observations: resp.observations, events: resp.events }
       })
     )
   }

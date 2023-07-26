@@ -43,10 +43,7 @@ export class FichaComponent implements OnInit {
       if (this.tipo == 'ficha-externa') {
         this.externoService.getAllDataExternalProcedure(params['id']).subscribe(data => {
           this.Tramite = data.procedure
-          this.Workflow = data.workflow
-          this.Location = data.location
-          this.Observations = data.observations
-          this.Events = data.events
+          console.log(data);
         })
       }
       else if (this.tipo == 'ficha-interna') {

@@ -42,10 +42,10 @@ export class ExternosComponent implements OnInit {
 
   Get() {
     if (this.paginatorService.text !== '') {
-      // this.externoService.GetSearch(this.paginatorService.limit, this.paginatorService.offset, this.paginatorService.text).subscribe(data => {
-      //   this.paginatorService.length = data.length
-      //   this.dataSource = data.tramites
-      // })
+      this.externoService.GetSearch(this.paginatorService.limit, this.paginatorService.offset, this.paginatorService.text).subscribe(data => {
+        this.paginatorService.length = data.length
+        this.dataSource = data.procedures
+      })
     }
     else {
       this.externoService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
@@ -116,7 +116,7 @@ export class ExternosComponent implements OnInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getAllDataExternalProcedure(id_tramite).subscribe(data => {
-      externalRouteMap(data.procedure, data.workflow)
+      // externalRouteMap(data.procedure, data.workflow)
     })
   }
   GenerateFicha(tramite: Externo) {
@@ -154,7 +154,7 @@ export class ExternosComponent implements OnInit {
     })
   }
 
-  applyFilter(event: Event) {
+  async applyFilter(event: Event) {
     this.paginatorService.offset = 0
     const filterValue = (event.target as HTMLInputElement).value;
     this.paginatorService.text = filterValue;
@@ -173,7 +173,7 @@ export class ExternosComponent implements OnInit {
       offset: this.paginatorService.offset
     }
     if (this.paginatorService.text !== '') params.text = this.paginatorService.text
-    this.router.navigate(['tramites/ficha/ficha-externa', procedure._id], { queryParams: params })
+    this.router.navigate(['tramites/externos/ficha-externa', procedure._id], { queryParams: params })
   }
 }
 

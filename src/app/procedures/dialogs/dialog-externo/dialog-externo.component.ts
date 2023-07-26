@@ -1,10 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Externo, Representante, Solicitante } from '../../models/Externo.interface';
 import { ExternosService } from '../../services/externos.service';
-import { Observable } from 'rxjs';
-import { closeLoadingRequets } from 'src/app/helpers/loading.helper';
 import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
 import { ExternalProcedureDto } from '../../dtos/external.dto';
 import { external } from '../../interfaces/external.interface';
@@ -51,7 +48,6 @@ export class DialogExternoComponent implements OnInit {
       this.TramiteFormGroup.patchValue(this.data)
       this.changeFormSolicitante(this.data.solicitante.tipo)
       this.SolicitanteFormGroup.patchValue(this.data.solicitante)
-      this.requeriments = this.data.requerimientos
       if (this.data.representante) {
         this.changeFormRepresentante(true)
         this.RepresentanteFormGroup.patchValue(this.data.representante)

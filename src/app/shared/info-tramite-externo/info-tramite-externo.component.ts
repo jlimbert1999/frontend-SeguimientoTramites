@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import * as moment from 'moment';
 import { Externo } from 'src/app/procedures/models/Externo.interface';
 import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
+import { ExternalDetail } from 'src/app/procedures/models/externo.model';
 
 
 @Component({
@@ -11,7 +12,7 @@ import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
   styleUrls: ['./info-tramite-externo.component.scss']
 })
 export class InfoTramiteExternoComponent implements OnInit, OnDestroy {
-  @Input() Tramite: Externo
+  @Input() Tramite: ExternalDetail
   @Input() Location: LocationProcedure[] = []
   timer: any;
   count: any
@@ -20,13 +21,14 @@ export class InfoTramiteExternoComponent implements OnInit, OnDestroy {
 
   }
   ngOnInit(): void {
-    this.createTimer(this.Tramite.fecha_registro, this.Tramite.fecha_finalizacion, this.Tramite.estado)
+    // this.createTimer(this.Tramite.fecha_registro, this.Tramite.fecha_finalizacion, this.Tramite.estado)
+    console.log(this.Tramite);
   }
 
 
 
   ngOnDestroy(): void {
-    clearInterval(this.timer);
+    // clearInterval(this.timer);
   }
 
   createTimer(fecha_inicio: any, fecha_fin: any | undefined, estado: string,) {
@@ -35,6 +37,7 @@ export class InfoTramiteExternoComponent implements OnInit, OnDestroy {
     this.count = this.duration(fecha_inicio, fecha_fin)
     if (estado !== "CONCLUIDO") {
       this.timer = setInterval(() => {
+        console.log('timer');
         fecha_fin = moment(new Date())
         this.count = this.duration(fecha_inicio, fecha_fin)
       }, 1000)

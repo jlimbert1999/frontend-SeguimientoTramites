@@ -1,186 +1,45 @@
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-7">
-            <div class="row">
-                <form>
-                    <fieldset disabled>
-                        <legend>Informacion tramite</legend>
-                        <div class="mb-3">
-                            <label class="form-label">Tipo de tramite</label>
-                            <input type="text" class="form-control" [value]="Tramite.tipo_tramite.nombre|uppercase">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Referencia</label>
-                            <textarea class="form-control" disabled [value]="Tramite.detalle"></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <div class="mb-3">
-                                    <label class="form-label">Fecha registro</label>
-                                    <input type="text" class="form-control"
-                                        [value]="Tramite.fecha_registro|date:'short'">
-                                </div>
+    <div class="row g-2">
+        <div class="col-sm-8">
+            <div class="shadow rounded">
+                <div class="card bg-transparent">
+                    <div class="card-body">
+                        <h5 class="card-title">{{Tramite.alterno}}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Registrado: {{Tramite.fecha_registro|date:'short'}}
+                        </h6>
+                        <form class="row g-3">
+                            <div class="col-12">
+                                <label for="txtDescription" class="form-label">Descripcion</label>
+                                <textarea class="form-control" id="txtDescription"
+                                    readonly>{{Tramite.detalle}}</textarea>
                             </div>
-                            <div class="col-sm-2">
-                                <div class="mb-3">
-                                    <label class="form-label">Cite</label>
-                                    <input type="text" class="form-control"
-                                        [value]="Tramite.cite!=''?Tramite.cite:' - - - - '">
-                                </div>
+                            <div class="col-md-4">
+                                <label for="txtCantidad" class="form-label">Cantidad</label>
+                                <input type="text" class="form-control" id="txtCantidad" [value]="Tramite.cantidad"
+                                    readonly>
                             </div>
-                            <div class="col-sm-2">
-                                <div class="mb-3">
-                                    <label class="form-label">Cantidad</label>
-                                    <input type="text" class="form-control" [value]="Tramite.cantidad">
-                                </div>
+                            <div class="col-md-4">
+                                <label for="txtCite" class="form-label">Cite</label>
+                                <input type="text" class="form-control" id="txtCite" [value]="Tramite.cite" readonly>
                             </div>
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
-
-        </div>
-        <div class="col-sm-5">
-            <form>
-                <fieldset disabled>
-                    <legend>Informacion flujo</legend>
-                    <div class="mb-3">
-                        <label class="form-label">Responsable registro</label>
-                        <div class="card bg-transparent">
-                            <div class="card-body">
-                                <p class="card-text fw-bold">{{Tramite.cuenta.funcionario|fullname|titlecase}}</p>
-                                <p class="card-text">{{Tramite.cuenta.funcionario.cargo|titlecase}}</p>
+                            <div class="col-md-4">
+                                <label for="txtPin" class="form-label">Pin</label>
+                                <input type="text" class="form-control" id="txtPin" [value]="Tramite.pin" readonly>
                             </div>
-                        </div>
+                        </form>
                     </div>
-                    <div [ngSwitch]="Tramite.estado" class="col-md-4">
-                        <div *ngSwitchCase="'CONCLUIDO'">
-                            <label class="form-label">Duracion proceso</label>
-                            <h2> <span class="badge text-bg-light">{{count}}</span> </h2>
-                        </div>
-                        <div *ngSwitchDefault>
-                            <label class="form-label">Tiempo transcurrido</label>
-                            <h2> <span class="badge text-bg-success">{{count}}</span></h2>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Estado</label>
-                        <h2>
-                            <span class="badge" [ngClass]="Tramite.estado|state">
-                                {{Tramite.estado|uppercase}}
-                            </span>
-                        </h2>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-6">
-            <fieldset disabled>
-                <legend>Informacion solicitante</legend>
-                <ng-container *ngIf="Tramite.solicitante.tipo==='NATURAL'">
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <div class="mb-3">
-                                <label class="form-label">Nombre</label>
-                                <input type="text" class="form-control" [value]="Tramite.solicitante|fullname">
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="mb-3">
-                                <label class="form-label">Dni</label>
-                                <input type="text" class="form-control" [value]="Tramite.solicitante.dni">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <div class="mb-3">
-                                <label class="form-label">Telefono</label>
-                                <input type="text" class="form-control" [value]="Tramite.solicitante.telefono">
-                            </div>
-                        </div>
-
-                    </div>
-                </ng-container>
-                <ng-container *ngIf="Tramite.solicitante.tipo==='JURIDICO'">
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <div class="mb-3">
-                                <label class="form-label">Nombre</label>
-                                <input type="text" class="form-control" [value]="Tramite.solicitante.nombre">
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="mb-3">
-                                <label class="form-label">Telefono</label>
-                                <input type="text" class="form-control" [value]="Tramite.solicitante.telefono">
-                            </div>
-                        </div>
-                    </div>
-                </ng-container>
-            </fieldset>
-        </div>
-        <div class="col-sm-6">
-            <fieldset disabled>
-                <legend>Informacion representante</legend>
-                <ng-container *ngIf="Tramite.representante">
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <div class="mb-3">
-                                <label class="form-label">Nombre</label>
-                                <input type="text" class="form-control" [value]="Tramite.representante|fullname">
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="mb-3">
-                                <label class="form-label">Dni</label>
-                                <input type="text" class="form-control" [value]="Tramite.representante.dni">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <div class="mb-3">
-                                <label class="form-label">Telefono</label>
-                                <input type="text" class="form-control" [value]="Tramite.representante.telefono">
-                            </div>
-                        </div>
-
-                    </div>
-                </ng-container>
-                <ng-container *ngIf="!Tramite.representante">
-                    <h3>Sin representante</h3>
-                </ng-container>
-            </fieldset>
-        </div>
-    </div>
-    <br>
-    <div class="row border  p-3" *ngIf="Location.length>0">
-        <legend>Ubicacion tramite</legend>
-        <mat-list>
-            <mat-list-item *ngFor="let manager of Location">
-                <img matListItemAvatar src="../../../assets/img/account.png" alt="...">
-                <h3 matListItemTitle>{{manager.cuenta.dependencia.nombre}}</h3>
-                <p matListItemLine>
-                    <span>{{manager.cuenta.funcionario.nombre}} {{manager.cuenta.funcionario.paterno}}
-                        {{manager.cuenta.funcionario.materno}}</span>
-                    <span class="demo-2"> -- {{manager.cuenta.funcionario.cargo}}</span>
-                </p>
-            </mat-list-item>
-        </mat-list>
-    </div>
-    <br>
-    <div class="row">
-        <legend>Requisitos presentados</legend>
-        <div class="mb-3">
-            <ul *ngIf="Tramite.requerimientos.length>0" class="list-group list-group-flush panel-requerimientos ">
-                <li class="list-group-item" *ngFor="let requisito of Tramite.requerimientos">{{requisito}}</li>
-            </ul>
-            <div *ngIf="Tramite.requerimientos.length===0" class="alert alert-primary" role="alert">
-                No se presentaron requerimientos
+                </div>
             </div>
         </div>
+        <div class="col-2">
+            <div class="shadow p-3 rounded">col-sm-8</div>
+        </div>
+        <div class="col-6">
+            <div class="shadow p-3 rounded">col-sm-8</div>
+        </div>
+        <div class="col-6">
+            <div class="shadow p-3 rounded">col-sm-8</div>
+        </div>
     </div>
+
 </div>

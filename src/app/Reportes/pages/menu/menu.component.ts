@@ -90,10 +90,10 @@ export class MenuComponent implements OnDestroy {
   generateFicha(data: any) {
     if (this.group === 'tramites_externos') {
       this.externoService.getAllDataExternalProcedure(data._id).subscribe(data => {
-        const List = data.workflow.length > 0
-          ? createListWorkflow(data.workflow, [{ id_root: data.workflow[0].emisor.cuenta._id, startDate: data.procedure.fecha_registro }], [])
-          : []
-        PDF_FichaExterno(data.procedure, List, data.location)
+        // const List = data.workflow.length > 0
+        //   ? createListWorkflow(data.workflow, [{ id_root: data.workflow[0].emisor.cuenta._id, startDate: data.procedure.fecha_registro }], [])
+        //   : []
+        // PDF_FichaExterno(data.procedure, List, data.location)
       })
     }
     else {

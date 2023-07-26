@@ -4,13 +4,11 @@ export interface external {
     _id: string;
     tipo_tramite: typeProcedure;
     cuenta: string;
-    ubicacion: string;
     estado: string;
     alterno: string;
     pin: number;
     detalle: string;
     cantidad: string;
-    requerimientos: string[];
     fecha_registro: string;
     cite: string;
     observaciones: any[];
@@ -18,10 +16,7 @@ export interface external {
     representante?: representative;
 }
 
-export enum typeApplicant {
-    natural = 'NATURAL',
-    juridico = 'JURIDICO'
-}
+export type typeApplicant = 'NATURAL' | 'JURIDICO';
 export interface applicant {
     nombre: string;
     telefono: string;
@@ -39,3 +34,4 @@ export interface representative {
     documento: string;
     dni: string;
 }
+
