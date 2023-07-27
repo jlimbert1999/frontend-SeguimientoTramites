@@ -21,7 +21,7 @@ export class BandejaEntradaService {
       .set('offset', offset)
       .set('limit', limit);
     return this.http.get<{ ok: boolean; mails: Entrada[]; length: number }>(
-      `${base_url}/entradas`,
+      `${base_url}/imbox`,
       { params }
     ).pipe(map((resp) => {
       this.Mails = resp.mails;

@@ -97,7 +97,7 @@ export async function internalRouteMap(procedure: Interno, workflow: WorkflowDat
 
 
 
-function createRouteMap(content: Content[]) {
+export function createRouteMap(content: Content[]) {
     const docDefinition: TDocumentDefinitions = {
         pageSize: 'LETTER',
         pageMargins: [30, 30, 30, 30],

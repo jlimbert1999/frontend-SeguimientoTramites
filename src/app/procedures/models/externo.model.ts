@@ -16,14 +16,13 @@ export class ExternalDetail {
             obj['detalle'],
             obj['cantidad'],
             new Date(obj['fecha_registro']),
-            obj['cite'],
+            obj['cite'] !== '' ? obj['cite'] : 'SIN CITE',
             obj['solicitante'],
             obj['representante'],
             obj['fecha_finalizacion']
         )
     }
     fecha_finalizacion: Date
-    cite: string
     constructor(
         public _id: string,
         public tipo_tramite: typeProcedure,
@@ -34,13 +33,12 @@ export class ExternalDetail {
         public detalle: string,
         public cantidad: string,
         public fecha_registro: Date,
-        cite: string,
+        public cite: string,
         public solicitante: applicant,
         public representante?: representative,
         fecha_finalizacion?: string
     ) {
         if (fecha_finalizacion) this.fecha_finalizacion = new Date(fecha_finalizacion)
-        cite = cite !== '' ? cite : 'SIN CITE'
     }
     get fullNameApplicant() {
         return this.solicitante.tipo === 'NATURAL'

@@ -15,6 +15,7 @@ import { showToast } from 'src/app/helpers/toats.helper';
 import { paramsNavigation } from '../../models/ProceduresProperties';
 import { SocketService } from 'src/app/services/socket.service';
 import { external } from '../../interfaces/external.interface';
+import { createExternalRouteMap } from '../../helpers/external-route-map';
 
 
 @Component({
@@ -116,6 +117,8 @@ export class ExternosComponent implements OnInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getAllDataExternalProcedure(id_tramite).subscribe(data => {
+      console.log(data);
+      createExternalRouteMap(data.procedure, [])
       // externalRouteMap(data.procedure, data.workflow)
     })
   }

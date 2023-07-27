@@ -10,6 +10,7 @@ import { MaterialModule } from '../angular-material/material.module';
 import { MailComponent } from './pages/mail/mail.component';
 import { BandejaEntradaComponent } from './pages/bandeja-entrada/bandeja-entrada.component';
 import { BandejaSalidaComponent } from './pages/bandeja-salida/bandeja-salida.component';
+import { BandejasRoutingModule } from './bandejas-routing.module';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { BandejaSalidaComponent } from './pages/bandeja-salida/bandeja-salida.co
   ],
   imports: [
     CommonModule,
+    BandejasRoutingModule,
     SharedModule,
     RouterModule,
     FormsModule,
