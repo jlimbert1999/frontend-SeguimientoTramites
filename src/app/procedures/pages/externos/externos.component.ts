@@ -117,8 +117,7 @@ export class ExternosComponent implements OnInit {
 
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getAllDataExternalProcedure(id_tramite).subscribe(data => {
-      console.log(data);
-      createExternalRouteMap(data.procedure, [])
+      createExternalRouteMap(data.procedure, data.workflow)
       // externalRouteMap(data.procedure, data.workflow)
     })
   }

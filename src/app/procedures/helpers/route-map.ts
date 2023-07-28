@@ -4,6 +4,7 @@ import { external } from "../interfaces/external.interface"
 import * as moment from "moment"
 import { ExternalDetail } from "../models/externo.model"
 import * as pdfMake from "pdfmake/build/pdfmake"
+import { newWorkflow, sending } from "src/app/Bandejas/interfaces/workflow.interface"
 const ordinales = require("ordinales-js");
 
 export async function createHeader(): Promise<Content> {
@@ -24,7 +25,7 @@ export async function createHeader(): Promise<Content> {
 
                 },
                 {
-                    image: await convertirImagenABase64('../../../assets/img/logo_alcaldia.png'),
+                    image: await convertirImagenABase64('../../../assets/img/logo_sacaba.jpeg'),
                     width: 70,
                     height: 70,
                 },
@@ -34,10 +35,10 @@ export async function createHeader(): Promise<Content> {
 }
 
 
-export function createFirstContainerExternal(procedure: ExternalDetail, destinatarios: { nombre_completo: string, cargo: string }[], salida: [string, string, string, string]): ContentTable {
+export function createFirstContainerExternal(procedure: ExternalDetail, firstSend: newWorkflow): ContentTable {
     let sectionReceiver: TableCell[] = []
-    destinatarios.forEach(dest => {
-        sectionReceiver.push([`DESTINATARIO: ${dest.nombre_completo}`, `CARGO: ${dest.cargo}`])
+    firstSend.sendings.forEach(dest => {
+        sectionReceiver.push([`DESTINATARIO: ${dest.receptor.fullname}`, `CARGO: ${dest.receptor.jobtitle}`])
     })
     return {
         fontSize: 7,
@@ -156,7 +157,7 @@ export function createFirstContainerExternal(procedure: ExternalDetail, destinat
                                             [
                                                 { text: '', border: [false, false, false, false] },
                                                 { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                                { text: `${salida[3]}`, fontSize: 9, alignment: 'center' },
+                                                { text: `${firstSend.sendings[0].numero_interno}`, fontSize: 9, alignment: 'center' },
                                             ]
                                         ]
                                     },
@@ -193,9 +194,9 @@ export function createFirstContainerExternal(procedure: ExternalDetail, destinat
                                         ],
                                         [
                                             { text: 'SALIDA', border: [false, false, false, false], fontSize: 7 },
-                                            { text: `${salida[0]}`, border: [true, true, true, true], fontSize: 8 },
-                                            { text: `${salida[1]}`, border: [true, true, true, true], fontSize: 8 },
-                                            { text: `${salida[2]}`, border: [true, true, true, true], fontSize: 6 }
+                                            { text: `${moment(firstSend._id.fecha_envio).format('DD-MM-YYYY')}`, border: [true, true, true, true], fontSize: 8 },
+                                            { text: `${moment(firstSend._id.fecha_envio).format(' HH:mm A')}`, border: [true, true, true, true], fontSize: 8 },
+                                            { text: `${firstSend.sendings[0].cantidad}`, border: [true, true, true, true], fontSize: 6 }
                                         ]
                                     ]
                                 },
@@ -213,6 +214,129 @@ export function createFirstContainerExternal(procedure: ExternalDetail, destinat
             ]
         }
     }
+}
+
+export function createContainers(data: newWorkflow[]) {
+    const cuadros: ContentTable[] = []
+    for (let index = 0; index < data.length; index++) {
+        if (data[index].sendings.length > 1) {
+            break;
+        }
+        const sectionDates: TableCell[][] = []
+        let sectionNumbers: TableCell[][] = []
+        let destinatarios: string[] = []
+        data[index].sendings.forEach((element) => {
+            const nextSend = data.slice(index, data.length).find(send => send._id.cuenta === element.receptor.cuenta._id)
+            const inDate = element.fecha_recibido
+                ? { date: `${moment(element.fecha_recibido).format('DD-MM-YYYY')}`, hour: `${moment(element.fecha_recibido).format('HH:mm A')}` }
+                : { date: '', hour: '' }
+            const outDate = nextSend
+                ? { date: `${moment(nextSend._id.fecha_envio).format('DD-MM-YYYY')}`, hour: `${moment(nextSend._id.fecha_envio).format('HH:mm A')}` }
+                : { date: '', hour: '' }
+            destinatarios.push(`${element.receptor.fullname} (${element.receptor.jobtitle})`)
+            sectionDates.push(
+                [
+                    '',
+                    'FECHA',
+                    'HORA',
+                    'CANTIDAD DE HOJAS / ANEXOS',
+                    '',
+                    'FECHA',
+                    'HORA',
+                    'CANTIDAD DE HOJAS / ANEXOS'
+                ],
+                [
+                    { text: `INGRESO `, border: [false, false, false, false], fontSize: 7 },
+                    { text: `${inDate.date}`, fontSize: 8, border: [true, true, true, true] },
+                    { text: `${inDate.hour}`, fontSize: 8, border: [true, true, true, true] },
+                    { text: `${element.cantidad}`, fontSize: 6, border: [true, true, true, true] },
+                    { text: `SALIDA`, border: [false, false, false, false], fontSize: 7 },
+                    { text: `${outDate.date}`, border: [true, true, true, true], fontSize: 8 },
+                    { text: `${outDate.hour}`, border: [true, true, true, true], fontSize: 8 },
+                    { text: `${nextSend ? nextSend.sendings[0].cantidad : ''}`, border: [true, true, true, true], fontSize: 6 }
+                ]
+            )
+            sectionNumbers.push(
+                [
+                    { text: `NRO. REGISTRO INTERNO (Correlativo)`, border: [false, false, false, false] },
+                    { text: `${nextSend ? nextSend.sendings[0].numero_interno : ''}` }
+                ],
+            )
+        });
+        sectionNumbers = [...sectionNumbers,
+        [
+            { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
+        ],
+        [
+            { text: 'FIRMA Y SELLO', colSpan: 2, border: [false, false, false, false], alignment: 'right' },
+        ]]
+        cuadros.push(
+            {
+                fontSize: 7,
+                unbreakable: true,
+                table: {
+                    dontBreakRows: true,
+                    widths: [360, '*'],
+                    body: [
+                        [{ margin: [0, 0, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(index + 1)} (NOMBRE Y CARGO): ${destinatarios.join(' // ')}`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
+                        [
+                            {
+                                border: [true, false, false, false],
+                                table: {
+                                    widths: [80, 300],
+                                    body: [
+                                        [
+                                            {
+                                                table: {
+                                                    heights: 70,
+                                                    widths: [70],
+                                                    body: [
+                                                        [{ text: 'SELLO DE RECEPCION', fontSize: 4, alignment: 'center' }]
+                                                    ]
+                                                },
+                                            },
+                                            [
+                                                { text: 'INSTRUCCION / PROVEIDO' },
+                                                { text: `\n\n${data[index].sendings[0].motivo}`, bold: true, alignment: 'center' }
+                                            ]
+                                        ]
+                                    ]
+                                },
+                                layout: {
+                                    defaultBorder: false,
+                                }
+                            },
+                            {
+                                rowSpan: 1,
+                                border: [false, false, true, false],
+                                table: {
+                                    widths: [100, 40],
+                                    body: sectionNumbers
+                                }
+                            }
+                        ],
+                        [
+                            {
+                                colSpan: 2,
+                                border: [true, false, true, true],
+                                alignment: 'center',
+                                fontSize: 5,
+                                table: {
+                                    widths: [30, 45, 35, '*', 30, 45, 35, '*'],
+                                    body: sectionDates
+                                },
+                                layout: {
+                                    defaultBorder: false,
+                                }
+                            }
+                        ]
+                    ]
+                }
+            }
+        )
+    }
+    cuadros[0].table.body.push([{ text: `SEGUNDA PARTE`, fontSize: 7, bold: true, alignment: 'left', border: [true, false, true, true], colSpan: 2 }, ''])
+    return cuadros
 }
 
 export function createWhiteContainers(initRange: number, endRange: number) {

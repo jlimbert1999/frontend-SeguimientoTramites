@@ -112,7 +112,7 @@ export class DialogExternoComponent implements OnInit {
         break;
       case 'JURIDICO':
         this.SolicitanteFormGroup = this.fb.group({
-          nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
+          nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
           telefono: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')]],
           tipo: ['JURIDICO'],
         });
@@ -156,6 +156,8 @@ export class DialogExternoComponent implements OnInit {
           return 'Solo letras';
         case '^[0-9]*$':
           return 'Solo numeros';
+        case '^[a-zA-Z0-9]*$':
+          return 'Solo letras y numeros';
         default:
           break;
       }

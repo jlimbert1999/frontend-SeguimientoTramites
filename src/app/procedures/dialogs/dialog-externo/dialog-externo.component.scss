@@ -4,18 +4,17 @@
     font-size: 13px;
 }
 
-.example-radio-group {
-    display: flex;
-    flex-direction: column;
-    margin: 15px 0;
-    align-items: flex-start;
-}
-
-
-.example-radio-button {
-    margin: 5px;
-}
-
 .mat-mdc-select {
     font-size: 12px;
+}
+
+.example-section {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+.example-margin {
+    margin: 0 10px;
 }

@@ -1,37 +1,31 @@
 import { Content } from "pdfmake/interfaces"
 import { ExternalDetail } from "../models/externo.model"
-import { createFirstContainerExternal, createHeader, createRouteMap, createWhiteContainers } from "./route-map"
+import { createContainers, createFirstContainerExternal, createHeader, createRouteMap, createWhiteContainers } from "./route-map"
+import { newWorkflow } from "src/app/Bandejas/interfaces/workflow.interface"
 
-
-export async function createExternalRouteMap(procedure: ExternalDetail, workflow: any[]) {
-    workflow = workflow.filter(element => element.recibido !== false)
+export async function createExternalRouteMap(procedure: ExternalDetail, workflow: newWorkflow[]) {
+    workflow = workflow.map(element => {
+        const { sendings, ...values } = element
+        const filteredItems = sendings.filter(send => send.recibido === true || send.recibido === undefined)
+        return { sendings: filteredItems, ...values }
+    }).filter(elemet => elemet.sendings.length > 0)
     let content: Content[] = []
     if (workflow.length > 0) {
-        // const data = createRoadMapData(workflow)
-        // content = [
-        //     createTitleSheet(logo1, logo2),
-        //     createFirstContainerExternal(
-        //         procedure,
-        //         [{ nombre_completo: createFullName(workflow[0].receptor.funcionario), cargo: workflow[0].receptor.funcionario.cargo }],
-        //         [
-        //             moment(workflow[0].fecha_envio).format('DD-MM-YYYY'),
-        //             moment(workflow[0].fecha_envio).format('HH:mm A'),
-        //             workflow[0].cantidad,
-        //             workflow[0].numero_interno
-        //         ]
-        //     ),
-        //     createAprovedRouteMap(data),
-        //     createWhiteContainers(data.length + 1, 8)
-        // ]
+        content = [
+            await createHeader(),
+            createFirstContainerExternal(procedure, workflow[0]),
+            createContainers(workflow),
+            // createWhiteContainers(data.length + 1, 8)
+        ]
     }
     else {
         content = [
             await createHeader(),
-            createFirstContainerExternal(
-                procedure,
-                [{ nombre_completo: '', cargo: '' }],
-                ['', '', '', '']
-            ),
+            // createFirstContainerExternal(
+            //     procedure,
+            //     [{ nombre_completo: '', cargo: '' }],
+            //     ['', '', '', '']
+            // ),
             createWhiteContainers(1, 8)
         ]
     }

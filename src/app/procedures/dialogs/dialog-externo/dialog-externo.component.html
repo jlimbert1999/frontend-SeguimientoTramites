@@ -157,17 +157,16 @@
                     </form>
                 </div>
             </div>
-            <div class="col-sm-6" *ngIf="!data">
-                <label id="example-radio-group-label">Tipo de registro</label>
-                <mat-radio-group [value]="false" (change)="changeFormRepresentante($event.value)"
-                    aria-labelledby="example-radio-group-label" class="example-radio-group">
-                    <mat-radio-button class="example-radio-button" [value]="false">
-                        SIN REPRESENTANTE LEGAL
-                    </mat-radio-button>
-                    <mat-radio-button class="example-radio-button" [value]="true">
-                        CON REPRESENTANTE LEGAL
-                    </mat-radio-button>
-                </mat-radio-group>
+            <div class="col-12" *ngIf="!data">
+                <section class="example-section">
+                    <label class="example-margin">Tipo de registro:</label>
+                    <mat-radio-group [value]="false" (change)="changeFormRepresentante($event.value)">
+                        <mat-radio-button class="example-margin" [value]="false"> SIN REPRESENTANTE
+                            LEGAL</mat-radio-button>
+                        <mat-radio-button class="example-margin" [value]="true">CON REPRESENTANTE
+                            LEGAL</mat-radio-button>
+                    </mat-radio-group>
+                </section>
             </div>
         </mat-step>
         <mat-step *ngIf="registerRepresentative" [stepControl]="RepresentanteFormGroup"

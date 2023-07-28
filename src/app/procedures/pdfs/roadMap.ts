@@ -480,7 +480,7 @@ function createAprovedRouteMap(data: RoadMap[]) {
                                             'CANTIDAD DE HOJAS / ANEXOS'
                                         ],
                                         [
-                                            { text: `INGRESO `, border: [false, false, false, false], fontSize: 7 },
+                                            { text: `INGRESO`, border: [false, false, false, false], fontSize: 7 },
                                             { text: ``, fontSize: 8, border: [true, true, true, true] },
                                             { text: ``, fontSize: 8, border: [true, true, true, true] },
                                             { text: ``, fontSize: 6, border: [true, true, true, true] },
@@ -862,6 +862,7 @@ function createFirstContainerInternal(tramite: Interno, salida: [string, string,
         }
     }
 }
+
 function createWhiteContainers(initRange: number, endRange: number) {
     const cuadros: ContentTable[] = []
     for (let index = initRange; index < endRange + 1; index++) {
