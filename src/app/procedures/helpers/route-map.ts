@@ -35,11 +35,27 @@ export async function createHeader(): Promise<Content> {
 }
 
 
-export function createFirstContainerExternal(procedure: ExternalDetail, firstSend: newWorkflow): ContentTable {
-    let sectionReceiver: TableCell[] = []
-    firstSend.sendings.forEach(dest => {
-        sectionReceiver.push([`DESTINATARIO: ${dest.receptor.fullname}`, `CARGO: ${dest.receptor.jobtitle}`])
-    })
+export function createFirstContainerExternal(procedure: ExternalDetail, firstSend?: newWorkflow): ContentTable {
+    const sectionReceiver: TableCell[] = []
+    const firstSendDetails = {
+        date: '',
+        hour: '',
+        quantity: '',
+        inNumber: ''
+    }
+    if (firstSend) {
+        // firstSend.sendings.forEach(dest => {
+        //     sectionReceiver.push([`DESTINATARIO: ${dest.receptor.fullname}`, `CARGO: ${dest.receptor.jobtitle}`])
+        // })
+        sectionReceiver.push([`DESTINATARIO: ${firstSend.sendings[0].receptor.fullname}`, `CARGO: ${firstSend.sendings[0].receptor.jobtitle}`])
+        firstSendDetails.quantity = firstSend.sendings[0].cantidad
+        firstSendDetails.inNumber = firstSend.sendings[0].numero_interno
+        firstSendDetails.date = moment(firstSend._id.fecha_envio).format('DD-MM-YYYY')
+        firstSendDetails.hour = moment(firstSend._id.fecha_envio).format('HH:mm A')
+    }
+    else {
+        sectionReceiver.push([`DESTINATARIO:`, `CARGO:`])
+    }
     return {
         fontSize: 7,
         table: {
@@ -157,7 +173,7 @@ export function createFirstContainerExternal(procedure: ExternalDetail, firstSen
                                             [
                                                 { text: '', border: [false, false, false, false] },
                                                 { text: 'NRO. REGISTRO INTERNO (Correlativo)', border: [false, false, false, false] },
-                                                { text: `${firstSend.sendings[0].numero_interno}`, fontSize: 9, alignment: 'center' },
+                                                { text: `${firstSendDetails.inNumber}`, fontSize: 9, alignment: 'center' },
                                             ]
                                         ]
                                     },
@@ -194,9 +210,9 @@ export function createFirstContainerExternal(procedure: ExternalDetail, firstSen
                                         ],
                                         [
                                             { text: 'SALIDA', border: [false, false, false, false], fontSize: 7 },
-                                            { text: `${moment(firstSend._id.fecha_envio).format('DD-MM-YYYY')}`, border: [true, true, true, true], fontSize: 8 },
-                                            { text: `${moment(firstSend._id.fecha_envio).format(' HH:mm A')}`, border: [true, true, true, true], fontSize: 8 },
-                                            { text: `${firstSend.sendings[0].cantidad}`, border: [true, true, true, true], fontSize: 6 }
+                                            { text: `${firstSendDetails.date}`, border: [true, true, true, true], fontSize: 8 },
+                                            { text: `${firstSendDetails.hour}`, border: [true, true, true, true], fontSize: 8 },
+                                            { text: `${firstSendDetails.quantity}`, border: [true, true, true, true], fontSize: 6 }
                                         ]
                                     ]
                                 },
@@ -219,21 +235,33 @@ export function createFirstContainerExternal(procedure: ExternalDetail, firstSen
 export function createContainers(data: newWorkflow[]) {
     const cuadros: ContentTable[] = []
     for (let index = 0; index < data.length; index++) {
+        const receivers: string[] = []
+        const sectionDates: TableCell[][] = []
+        const sectionNumbers: TableCell[][] = []
         if (data[index].sendings.length > 1) {
+            data[index].sendings.forEach((element) => {
+                receivers.push(`${element.receptor.fullname} (${element.receptor.jobtitle})`)
+            })
             break;
         }
-        const sectionDates: TableCell[][] = []
-        let sectionNumbers: TableCell[][] = []
-        let destinatarios: string[] = []
         data[index].sendings.forEach((element) => {
+            receivers.push(`${element.receptor.fullname} (${element.receptor.jobtitle})`)
+            const inDetails = element.fecha_recibido
+                ? {
+                    date: `${moment(element.fecha_recibido).format('DD-MM-YYYY')}`,
+                    hour: `${moment(element.fecha_recibido).format('HH:mm A')}`,
+                    quantity: element.cantidad
+                }
+                : { date: '', hour: '', quantity: '' }
             const nextSend = data.slice(index, data.length).find(send => send._id.cuenta === element.receptor.cuenta._id)
-            const inDate = element.fecha_recibido
-                ? { date: `${moment(element.fecha_recibido).format('DD-MM-YYYY')}`, hour: `${moment(element.fecha_recibido).format('HH:mm A')}` }
-                : { date: '', hour: '' }
-            const outDate = nextSend
-                ? { date: `${moment(nextSend._id.fecha_envio).format('DD-MM-YYYY')}`, hour: `${moment(nextSend._id.fecha_envio).format('HH:mm A')}` }
-                : { date: '', hour: '' }
-            destinatarios.push(`${element.receptor.fullname} (${element.receptor.jobtitle})`)
+            const outDetails = nextSend
+                ? {
+                    date: `${moment(nextSend._id.fecha_envio).format('DD-MM-YYYY')}`,
+                    hour: `${moment(nextSend._id.fecha_envio).format('HH:mm A')}`,
+                    quantity: nextSend.sendings[0].cantidad,
+                    inNumber: nextSend.sendings[0].numero_interno
+                }
+                : { date: '', hour: '', quantity: '', inNumber: '' }
             sectionDates.push(
                 [
                     '',
@@ -247,29 +275,29 @@ export function createContainers(data: newWorkflow[]) {
                 ],
                 [
                     { text: `INGRESO `, border: [false, false, false, false], fontSize: 7 },
-                    { text: `${inDate.date}`, fontSize: 8, border: [true, true, true, true] },
-                    { text: `${inDate.hour}`, fontSize: 8, border: [true, true, true, true] },
-                    { text: `${element.cantidad}`, fontSize: 6, border: [true, true, true, true] },
+                    { text: `${inDetails.date}`, fontSize: 8, border: [true, true, true, true] },
+                    { text: `${inDetails.hour}`, fontSize: 8, border: [true, true, true, true] },
+                    { text: `${inDetails.quantity}`, fontSize: 6, border: [true, true, true, true] },
                     { text: `SALIDA`, border: [false, false, false, false], fontSize: 7 },
-                    { text: `${outDate.date}`, border: [true, true, true, true], fontSize: 8 },
-                    { text: `${outDate.hour}`, border: [true, true, true, true], fontSize: 8 },
-                    { text: `${nextSend ? nextSend.sendings[0].cantidad : ''}`, border: [true, true, true, true], fontSize: 6 }
+                    { text: `${outDetails.date}`, border: [true, true, true, true], fontSize: 8 },
+                    { text: `${outDetails.hour}`, border: [true, true, true, true], fontSize: 8 },
+                    { text: `${outDetails.quantity}`, border: [true, true, true, true], fontSize: 6 }
                 ]
             )
             sectionNumbers.push(
                 [
                     { text: `NRO. REGISTRO INTERNO (Correlativo)`, border: [false, false, false, false] },
-                    { text: `${nextSend ? nextSend.sendings[0].numero_interno : ''}` }
+                    { text: `${outDetails.inNumber}`, alignment: 'center' }
                 ],
             )
         });
-        sectionNumbers = [...sectionNumbers,
-        [
+        sectionNumbers.push([
             { text: '\n\n\n\n-----------------------------------------', colSpan: 2, border: [false, false, false, false], alignment: 'right' }
         ],
-        [
-            { text: 'FIRMA Y SELLO', colSpan: 2, border: [false, false, false, false], alignment: 'right' },
-        ]]
+            [
+                { text: 'FIRMA Y SELLO', colSpan: 2, border: [false, false, false, false], alignment: 'right' },
+            ]
+        )
         cuadros.push(
             {
                 fontSize: 7,
@@ -278,7 +306,7 @@ export function createContainers(data: newWorkflow[]) {
                     dontBreakRows: true,
                     widths: [360, '*'],
                     body: [
-                        [{ margin: [0, 0, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(index + 1)} (NOMBRE Y CARGO): ${destinatarios.join(' // ')}`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
+                        [{ margin: [0, 0, 0, 0], text: `DESTINATARIO ${ordinales.toOrdinal(index + 1)} (NOMBRE Y CARGO): ${receivers.join(' // ')}`.toUpperCase(), colSpan: 2, alignment: 'left', border: [true, false, true, false] }, ''],
                         [
                             {
                                 border: [true, false, false, false],

@@ -21,11 +21,7 @@ export async function createExternalRouteMap(procedure: ExternalDetail, workflow
     else {
         content = [
             await createHeader(),
-            // createFirstContainerExternal(
-            //     procedure,
-            //     [{ nombre_completo: '', cargo: '' }],
-            //     ['', '', '', '']
-            // ),
+            createFirstContainerExternal(procedure),
             createWhiteContainers(1, 8)
         ]
     }
