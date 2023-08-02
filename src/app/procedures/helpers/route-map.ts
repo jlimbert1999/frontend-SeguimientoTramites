@@ -366,7 +366,8 @@ export function createContainers(data: newWorkflow[]) {
     return cuadros
 }
 export function createWhiteContainers(initRange: number, endRange: number) {
-    const cuadros: ContentTable[] = []
+    const realEnd: number = initRange <= 8 ? 8 :
+    // const cuadros: ContentTable[] = []
     for (let index = initRange; index < endRange + 1; index++) {
         cuadros.push(
             {
