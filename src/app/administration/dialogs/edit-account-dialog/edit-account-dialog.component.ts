@@ -24,9 +24,6 @@ export class EditAccountDialogComponent implements OnInit {
   officers: Officer[] = []
   disableCloseButton: boolean = false
 
-
-
-
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: account,
     private fb: FormBuilder,

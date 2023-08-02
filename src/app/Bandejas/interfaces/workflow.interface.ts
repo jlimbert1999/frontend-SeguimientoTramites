@@ -17,7 +17,7 @@ export interface sending {
     cantidad: string;
     fecha_envio: string;
     numero_interno: string;
-    fecha_recibido: string;
+    fecha_recibido?: string;
     recibido: boolean;
 }
 

@@ -4,7 +4,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { institution } from 'src/app/administration/interfaces/institution.interface';
 import { InstitucionesService } from 'src/app/administration/services/instituciones.service';
 
-
 @Component({
   selector: 'app-institution-dialog',
   templateUrl: './institution-dialog.component.html',

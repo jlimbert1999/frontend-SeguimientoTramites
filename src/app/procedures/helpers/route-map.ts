@@ -22,7 +22,6 @@ export async function createHeader(): Promise<Content> {
                     bold: true,
                     alignment: 'center',
                     // width: 300,
-
                 },
                 {
                     image: await convertirImagenABase64('../../../assets/img/logo_sacaba.jpeg'),
@@ -33,7 +32,6 @@ export async function createHeader(): Promise<Content> {
         }
     ]
 }
-
 
 export function createFirstContainerExternal(procedure: ExternalDetail, firstSend?: newWorkflow): ContentTable {
     const sectionReceiver: TableCell[] = []
@@ -165,7 +163,7 @@ export function createFirstContainerExternal(procedure: ExternalDetail, firstSen
                             widths: ['*', '*'],
                             body: [
                                 [{ text: 'DATOS DE ORIGEN', bold: true }, ''],
-                                [`${procedure.cite} / TEL.: ${procedure.solicitante.telefono}`,
+                                [`CITE: ${procedure.cite} / TEL.: ${procedure.solicitante.telefono}`,
                                 {
                                     table: {
                                         widths: [85, 100, 40],
@@ -241,19 +239,20 @@ export function createContainers(data: newWorkflow[]) {
         if (data[index].sendings.length > 1) {
             data[index].sendings.forEach((element) => {
                 receivers.push(`${element.receptor.fullname} (${element.receptor.jobtitle})`)
-            })
+            });
             break;
         }
-        data[index].sendings.forEach((element) => {
-            receivers.push(`${element.receptor.fullname} (${element.receptor.jobtitle})`)
-            const inDetails = element.fecha_recibido
+        data[index].sendings.forEach((send) => {
+            receivers.push(`${send.receptor.fullname} (${send.receptor.jobtitle})`)
+            const inDetails = send.fecha_recibido
                 ? {
-                    date: `${moment(element.fecha_recibido).format('DD-MM-YYYY')}`,
-                    hour: `${moment(element.fecha_recibido).format('HH:mm A')}`,
-                    quantity: element.cantidad
+                    date: moment(send.fecha_recibido).format('DD-MM-YYYY'),
+                    hour: moment(send.fecha_recibido).format('HH:mm A'),
+                    quantity: send.cantidad,
+                    inNumber: send.numero_interno
                 }
-                : { date: '', hour: '', quantity: '' }
-            const nextSend = data.slice(index, data.length).find(send => send._id.cuenta === element.receptor.cuenta._id)
+                : { date: '', hour: '', inNumber: '', quantity: '' };
+            const nextSend = data.slice(index, data.length).find(flow => flow._id.cuenta === send.receptor.cuenta._id)
             const outDetails = nextSend
                 ? {
                     date: `${moment(nextSend._id.fecha_envio).format('DD-MM-YYYY')}`,
@@ -366,7 +365,6 @@ export function createContainers(data: newWorkflow[]) {
     cuadros[0].table.body.push([{ text: `SEGUNDA PARTE`, fontSize: 7, bold: true, alignment: 'left', border: [true, false, true, true], colSpan: 2 }, ''])
     return cuadros
 }
-
 export function createWhiteContainers(initRange: number, endRange: number) {
     const cuadros: ContentTable[] = []
     for (let index = initRange; index < endRange + 1; index++) {
@@ -460,7 +458,6 @@ export function createWhiteContainers(initRange: number, endRange: number) {
                                 }
                             }
                         ],
-
                     ]
                 }
             }

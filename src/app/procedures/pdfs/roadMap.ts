@@ -972,17 +972,17 @@ function createRoadMapData(workflow: WorkflowData[]): RoadMap[] {
     const merged = workflow.reduce((r: any, { tramite, emisor, fecha_envio, motivo, numero_interno, cantidad, ...rest }, index) => {
         const key = `${tramite}-${emisor.cuenta._id}-${fecha_envio}`;
         r[key] = r[key] || { remitente: { nombre_completo: createFullName(emisor.funcionario), cargo: emisor.funcionario.cargo }, motivo, sends: [] };
-        let salida: [string, string, string, string] = ['', '', '', '']
+        let salida: [string, string, string, string] = ['', '', '', ''];
         for (let j = index; j < workflow.length; j++) {
             if (rest.receptor.cuenta._id === workflow[j].emisor.cuenta._id) {
                 salida = [moment(workflow[j].fecha_envio).format('DD-MM-YYYY'), moment(workflow[j].fecha_envio).format('HH:mm A'), workflow[j].cantidad, workflow[j].numero_interno]
-                break
-            }
-        }
+                break;
+            };
+        };
         r[key]["sends"].push({ destinatario: { nombre_completo: createFullName(rest.receptor.funcionario), cargo: rest.receptor.funcionario.cargo }, entrada: rest.fecha_recibido ? [moment(rest.fecha_recibido).format('DD-MM-YYYY'), moment(rest.fecha_recibido).format('HH:mm A'), cantidad] : ['', '', ''], salida })
         return r;
     }, {})
-    return Object.values(merged)
+    return Object.values(merged);
 }
 export function filtreMyData(workflow: WorkflowData[], id_account: string) {
     const indexFound = workflow.map(el => el.receptor.cuenta._id).lastIndexOf(id_account)
