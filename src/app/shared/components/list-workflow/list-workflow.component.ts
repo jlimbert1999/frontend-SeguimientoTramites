@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import { createListWorkflow } from 'src/app/Bandejas/helpers/ListWorkflow';
+import { newWorkflow } from 'src/app/Bandejas/models/newWokflow.mode';
 import { ListWorkflow, WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 
 
@@ -35,13 +36,13 @@ export interface Officer {
   styleUrls: ['./list-workflow.component.scss']
 })
 export class ListWorkflowComponent implements OnInit {
-  @Input() Workflow: WorkflowData[] = []
+  @Input() Workflow: newWorkflow[] = []
   @Input() fecha_registro: string
   ListWorflow: Workflow[] = []
   constructor() { }
 
   ngOnInit(): void {
-    this.ListWorflow = this.createWorkflow(this.Workflow)
+    // this.ListWorflow = this.createWorkflow(this.Workflow)
     console.log(this.ListWorflow)
   }
 

@@ -1,11 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { stateProcedure } from 'src/app/procedures/interfaces/procedures.interfac';
 
 @Pipe({
   name: 'state'
 })
 export class StatePipe implements PipeTransform {
 
-  transform(state: string): string {
+  transform(state: stateProcedure): string {
     let classSpan: string
     switch (state) {
       case 'INSCRITO':

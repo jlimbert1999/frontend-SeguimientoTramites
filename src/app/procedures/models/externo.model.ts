@@ -1,8 +1,7 @@
 import { typeProcedure } from "src/app/administration/interfaces/typeProcedure.interface"
 import { applicant, representative } from "../interfaces/external.interface"
-import { account } from "src/app/auth/models/account.model"
 import { stateProcedure } from "../interfaces/procedures.interfac"
-import * as moment from "moment"
+import { account } from "src/app/administration/interfaces/account.interface"
 
 export class ExternalDetail {
     static frmJson(obj: any) {
@@ -18,11 +17,12 @@ export class ExternalDetail {
             new Date(obj['fecha_registro']),
             obj['cite'] !== '' ? obj['cite'] : 'SIN CITE',
             obj['solicitante'],
+            obj['requerimientos'],
             obj['representante'],
             obj['fecha_finalizacion']
         )
     }
-    fecha_finalizacion: Date
+    fecha_finalizacion?: Date
     constructor(
         public _id: string,
         public tipo_tramite: typeProcedure,
@@ -35,6 +35,7 @@ export class ExternalDetail {
         public fecha_registro: Date,
         public cite: string,
         public solicitante: applicant,
+        public requerimientos: string[],
         public representante?: representative,
         fecha_finalizacion?: string
     ) {
@@ -44,6 +45,11 @@ export class ExternalDetail {
         return this.solicitante.tipo === 'NATURAL'
             ? [this.solicitante.nombre, this.solicitante.paterno, this.solicitante.paterno].filter(Boolean).join(" ")
             : this.solicitante.nombre
+    }
+    get fullNameManager() {
+        if (!this.cuenta.funcionario) return `DESVINCULADO`
+        const jobtitle = this.cuenta.funcionario.cargo ? this.cuenta.funcionario.cargo.nombre : ''
+        return `${this.cuenta.funcionario.nombre} ${this.cuenta.funcionario.paterno} ${this.cuenta.funcionario.materno} (${jobtitle})`
     }
 
     get fullNameRepresentative() {

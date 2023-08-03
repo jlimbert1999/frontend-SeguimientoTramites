@@ -1,10 +1,9 @@
 import { Content, ContentTable, TDocumentDefinitions, TableCell } from "pdfmake/interfaces"
 import { convertirImagenABase64 } from "src/app/helpers/pdf/imageBase64"
-import { external } from "../interfaces/external.interface"
 import * as moment from "moment"
 import { ExternalDetail } from "../models/externo.model"
 import * as pdfMake from "pdfmake/build/pdfmake"
-import { newWorkflow, sending } from "src/app/Bandejas/interfaces/workflow.interface"
+import { newWorkflow } from "src/app/Bandejas/interfaces/workflow.interface"
 const ordinales = require("ordinales-js");
 
 export async function createHeader(): Promise<Content> {
@@ -365,10 +364,10 @@ export function createContainers(data: newWorkflow[]) {
     cuadros[0].table.body.push([{ text: `SEGUNDA PARTE`, fontSize: 7, bold: true, alignment: 'left', border: [true, false, true, true], colSpan: 2 }, ''])
     return cuadros
 }
+
 export function createWhiteContainers(initRange: number, endRange: number) {
-    const realEnd: number = initRange <= 8 ? 8 :
-    // const cuadros: ContentTable[] = []
-    for (let index = initRange; index < endRange + 1; index++) {
+    const cuadros: ContentTable[] = []
+    for (let index = initRange + 1; index <= endRange; index++) {
         cuadros.push(
             {
                 fontSize: 7,
@@ -470,9 +469,17 @@ export function createWhiteContainers(initRange: number, endRange: number) {
     return cuadros
 }
 
+export function getLastPageNumber(lengthData: number): number {
+    if (lengthData <= 8) return 8
+    const firstTerm = 3;
+    const increment = 5;
+    const termsBefore = Math.ceil((lengthData - firstTerm) / increment);
+    const nextTerm = firstTerm + termsBefore * increment;
+    return nextTerm;
+}
 
 
-export function createRouteMap(content: Content[]) {
+export async function createRouteMap(content: Content[]) {
     const docDefinition: TDocumentDefinitions = {
         pageSize: 'LETTER',
         pageMargins: [30, 30, 30, 30],

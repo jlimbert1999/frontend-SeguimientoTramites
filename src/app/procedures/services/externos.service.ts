@@ -10,6 +10,7 @@ import { external } from '../interfaces/external.interface';
 import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
 import { ExternalProcedureDto } from '../dtos/external.dto';
 import { ExternalDetail } from '../models/externo.model';
+import { newWorkflow } from 'src/app/Bandejas/interfaces/workflow.interface';
 
 
 const base_url = environment.base_url
@@ -78,9 +79,10 @@ export class ExternosService {
     )
   }
   getAllDataExternalProcedure(id_procedure: string) {
-    return this.http.get<{ procedure: any, workflow: any[] }>(`${base_url}/external/${id_procedure}`).pipe(
+    return this.http.get<{ procedure: any, workflow: newWorkflow[] }>(`${base_url}/external/${id_procedure}`).pipe(
       map(resp => {
         const { procedure } = resp
+        console.log(procedure);
         return { procedure: ExternalDetail.frmJson(resp.procedure), workflow: resp.workflow }
         // resp.workflow.map(element => {
         //   if (element.receptor.funcionario === undefined) {

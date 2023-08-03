@@ -11,6 +11,7 @@ import { PDF_FichaExterno, PDF_FichaInterno } from 'src/app/Reportes/pdf/reporte
 import { Externo, Observacion } from '../../models/Externo.interface';
 import { Interno } from '../../models/Interno.interface';
 import { createListWorkflow } from 'src/app/Bandejas/helpers/ListWorkflow';
+import { newWorkflow } from 'src/app/Bandejas/interfaces/workflow.interface';
 
 @Component({
   selector: 'app-ficha',
@@ -24,7 +25,7 @@ export class FichaComponent implements OnInit {
   tipo: 'ficha-externa' | 'ficha-interna'
   Tramite: any
   Location: LocationProcedure[] = []
-  Workflow: WorkflowData[] = []
+  Workflow: newWorkflow[] = []
   Observations: Observacion[] = []
   Events: any[] = []
   constructor(
@@ -43,16 +44,16 @@ export class FichaComponent implements OnInit {
       if (this.tipo == 'ficha-externa') {
         this.externoService.getAllDataExternalProcedure(params['id']).subscribe(data => {
           this.Tramite = data.procedure
-          console.log(data);
+          this.Workflow = data.workflow
         })
       }
       else if (this.tipo == 'ficha-interna') {
         this.internoService.getAllDataInternalProcedure(params['id']).subscribe(data => {
-          this.Tramite = data.procedure
-          this.Workflow = data.workflow
-          this.Location = data.location
-          this.Observations = data.observations
-          this.Events = data.events
+          // this.Tramite = data.procedure
+          // this.Workflow = data.workflow
+          // this.Location = data.location
+          // this.Observations = data.observations
+          // this.Events = data.events
         })
       }
       else {
@@ -72,15 +73,15 @@ export class FichaComponent implements OnInit {
   }
 
   generateFicha() {
-    const List = this.Workflow.length > 0
-      ? createListWorkflow(this.Workflow, [{ id_root: this.Workflow[0].emisor.cuenta._id, startDate: this.Tramite.fecha_registro }], [])
-      : []
-    if (this.tipo === 'ficha-externa') {
-      PDF_FichaExterno(this.Tramite, List, this.Location)
-    }
-    else {
-      PDF_FichaInterno(this.Tramite, List, this.Location)
-    }
+    // const List = this.Workflow.length > 0
+    //   ? createListWorkflow(this.Workflow, [{ id_root: this.Workflow[0].emisor.cuenta._id, startDate: this.Tramite.fecha_registro }], [])
+    //   : []
+    // if (this.tipo === 'ficha-externa') {
+    //   PDF_FichaExterno(this.Tramite, List, this.Location)
+    // }
+    // else {
+    //   PDF_FichaInterno(this.Tramite, List, this.Location)
+    // }
   }
 
 }

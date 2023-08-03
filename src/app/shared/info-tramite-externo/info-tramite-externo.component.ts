@@ -1,9 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import * as moment from 'moment';
-import { Externo } from 'src/app/procedures/models/Externo.interface';
 import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
 import { ExternalDetail } from 'src/app/procedures/models/externo.model';
+import { stateProcedure } from 'src/app/procedures/interfaces/procedures.interfac';
 
 
 @Component({
@@ -14,40 +14,40 @@ import { ExternalDetail } from 'src/app/procedures/models/externo.model';
 export class InfoTramiteExternoComponent implements OnInit, OnDestroy {
   @Input() Tramite: ExternalDetail
   @Input() Location: LocationProcedure[] = []
-  timer: any;
-  count: any
+  timer: NodeJS.Timer;
+  dateCount: string = ''
 
   constructor(private _location: Location,) {
 
   }
   ngOnInit(): void {
-    // this.createTimer(this.Tramite.fecha_registro, this.Tramite.fecha_finalizacion, this.Tramite.estado)
     console.log(this.Tramite);
+    this.createTimer()
   }
 
 
 
   ngOnDestroy(): void {
-    // clearInterval(this.timer);
+    clearInterval(this.timer);
   }
 
-  createTimer(fecha_inicio: any, fecha_fin: any | undefined, estado: string,) {
-    fecha_inicio = moment(new Date((fecha_inicio)))
-    fecha_fin = fecha_fin ? moment(new Date(fecha_fin)) : moment(new Date())
-    this.count = this.duration(fecha_inicio, fecha_fin)
-    if (estado !== "CONCLUIDO") {
+  createTimer() {
+    const init = moment(this.Tramite.fecha_registro)
+    if (this.Tramite.estado === 'CONCLUIDO' || this.Tramite.estado === 'ANULADO') {
+      this.dateCount = this.duration(init, moment(this.Tramite.fecha_finalizacion))
+    }
+    else {
+      this.dateCount = this.duration(init, moment(new Date()))
       this.timer = setInterval(() => {
-        console.log('timer');
-        fecha_fin = moment(new Date())
-        this.count = this.duration(fecha_inicio, fecha_fin)
+        console.log('tik');
+        this.dateCount = this.duration(init, moment(new Date()))
       }, 1000)
     }
-
   }
 
-  duration(inicio: any, fin: any) {
-    let parts: any = [];
-    let duration = moment.duration(fin.diff(inicio))
+  duration(inicio: moment.Moment, fin: moment.Moment) {
+    const parts: string[] = [];
+    const duration = moment.duration(fin.diff(inicio))
     if (duration.years() >= 1) {
       const years = Math.floor(duration.years());
       parts.push(years + " " + (years > 1 ? "años" : "año"));
@@ -56,17 +56,14 @@ export class InfoTramiteExternoComponent implements OnInit, OnDestroy {
       const months = Math.floor(duration.months());
       parts.push(months + " " + (months > 1 ? "meses" : "mes"));
     }
-
     if (duration.days() >= 1) {
       const days = Math.floor(duration.days());
       parts.push(days + " " + (days > 1 ? "dias" : "dia"));
     }
-
     if (duration.hours() >= 1) {
       const hours = Math.floor(duration.hours());
       parts.push(hours + " " + (hours > 1 ? "horas" : "hora"));
     }
-
     if (duration.minutes() >= 1) {
       const minutes = Math.floor(duration.minutes());
       parts.push(minutes + " " + (minutes > 1 ? "minutos" : "minuto"));

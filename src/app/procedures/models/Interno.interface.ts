@@ -25,6 +25,6 @@ export interface Interno {
     cantidad: string
     fecha_registro: string
     fecha_finalizacion?: string
-    estado: string
+    estado: any
     enviado: boolean
 }

@@ -34,14 +34,14 @@
             </ng-template>
             <app-events-procedure [events]="Events"></app-events-procedure>
         </mat-tab>
-        <ng-container *ngIf="Workflow.length!==0">
-            <mat-tab>
+        <ng-container *ngIf="Workflow.length>0">
+            <!-- <mat-tab>
                 <ng-template mat-tab-label>
                     <mat-icon class="example-tab-icon">groups</mat-icon>
                     Flujo de trabajo
                 </ng-template>
                 <app-list-workflow [Workflow]="Workflow" [fecha_registro]="Tramite.fecha_registro"></app-list-workflow>
-            </mat-tab>
+            </mat-tab> -->
             <mat-tab>
                 <ng-template mat-tab-label>
                     <mat-icon class="example-tab-icon">account_tree</mat-icon>
