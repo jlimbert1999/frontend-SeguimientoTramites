@@ -1,3 +1,5 @@
+import { job } from "../interfaces/job.interface"
+
 export class Officer {
     static officerFromJson(obj: any) {
         if (typeof obj['cargo'] === 'string') delete obj['cargo']
@@ -24,10 +26,7 @@ export class Officer {
         public direccion: string,
         public activo: boolean,
         public cuenta: boolean,
-        public cargo?: {
-            _id: string
-            nombre: string
-        }
+        public cargo?: job
     ) {
     }
     get fullname() {

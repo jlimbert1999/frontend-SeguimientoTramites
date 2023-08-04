@@ -6,6 +6,8 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { InternosService } from '../../services/internos.service';
 import { closeLoadingRequets, showLoadingRequest } from 'src/app/helpers/loading.helper';
 import { TypesProceduresGrouped } from 'src/app/administration/models/tipoTramite.interface';
+import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
+
 @Component({
   selector: 'app-dialog-internos',
   templateUrl: './dialog-internos.component.html',
@@ -26,7 +28,7 @@ export class DialogInternosComponent implements OnInit {
     cantidad: ['', Validators.required],
   });
 
-  tipos_tramites: TypesProceduresGrouped[] = []
+  typesProcedures: typeProcedure[] = []
 
 
   constructor(
@@ -34,7 +36,7 @@ export class DialogInternosComponent implements OnInit {
     private internoService: InternosService,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<DialogInternosComponent>,) {
+    public dialogRef: MatDialogRef<DialogInternosComponent>) {
   }
 
   ngOnInit(): void {
@@ -50,29 +52,30 @@ export class DialogInternosComponent implements OnInit {
       });
     }
     else {
-      this.internoService.getTypes().subscribe(tipos => {
-        this.tipos_tramites = tipos
-        this.TramiteFormGroup.get('tipo_tramite')?.setValue(tipos[0].id_tipoTramite)
+      this.internoService.getTypesProcedures().subscribe(data => {
+        this.typesProcedures = data
       })
     }
-    this.filteredOptions = this.TramiteFormGroup.controls['nombre_remitente'].valueChanges.pipe(
-      startWith(''),
-      switchMap(value => {
-        if (value) {
-          return this.FiltrarUsuarios(value)
-        }
-        return []
-      })
-    )
-    this.filteredDestiny = this.TramiteFormGroup.controls['nombre_destinatario'].valueChanges.pipe(
-      startWith(''),
-      switchMap(value => {
-        if (value) {
-          return this.FiltrarDestinatarios(value)
-        }
-        return []
-      })
-    )
+
+
+    // this.filteredOptions = this.TramiteFormGroup.controls['nombre_remitente'].valueChanges.pipe(
+    //   startWith(''),
+    //   switchMap(value => {
+    //     if (value) {
+    //       return this.FiltrarUsuarios(value)
+    //     }
+    //     return []
+    //   })
+    // )
+    // this.filteredDestiny = this.TramiteFormGroup.controls['nombre_destinatario'].valueChanges.pipe(
+    //   startWith(''),
+    //   switchMap(value => {
+    //     if (value) {
+    //       return this.FiltrarDestinatarios(value)
+    //     }
+    //     return []
+    //   })
+    // )
   }
 
   guardar() {
@@ -104,16 +107,16 @@ export class DialogInternosComponent implements OnInit {
   }
 
   FiltrarUsuarios(termino: string) {
-    return this.internoService.getUsers(termino)
-      .pipe(
-        map(officers => officers)
-      )
+    // return this.internoService.getUsers(termino)
+    //   .pipe(
+    //     map(officers => officers)
+    //   )
   }
   FiltrarDestinatarios(termino: string) {
-    return this.internoService.getUsers(termino)
-      .pipe(
-        map(officers => officers)
-      )
+    // return this.internoService.getUsers(termino)
+    //   .pipe(
+    //     map(officers => officers)
+    //   )
   }
   seleccionar_remitente(funcionario: any) {
     this.TramiteFormGroup.get('cargo_remitente')?.setValue(funcionario.cargo.toUpperCase())

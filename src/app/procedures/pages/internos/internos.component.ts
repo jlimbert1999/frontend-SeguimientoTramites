@@ -13,6 +13,7 @@ import { Interno } from '../../models/Interno.interface';
 import { paramsNavigation } from '../../models/ProceduresProperties';
 import { internalRouteMap } from '../../pdfs/roadMap';
 import { SocketService } from 'src/app/services/socket.service';
+import { internal } from '../../interfaces/internal.interface';
 
 @Component({
   selector: 'app-internos',
@@ -26,7 +27,7 @@ import { SocketService } from 'src/app/services/socket.service';
 })
 export class InternosComponent implements OnInit {
   displayedColumns: string[] = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'enviado', 'opciones']
-  dataSource: Interno[] = []
+  dataSource: internal[] = []
 
 
   constructor(
@@ -50,7 +51,7 @@ export class InternosComponent implements OnInit {
     }
     else {
       this.internoService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-        this.dataSource = data.tramites
+        this.dataSource = data.procedures
         this.paginatorService.length = data.length
       })
     }
@@ -67,9 +68,9 @@ export class InternosComponent implements OnInit {
         if (this.dataSource.length === this.paginatorService.limit) {
           this.dataSource.pop()
         }
-        this.dataSource = [result, ...this.dataSource]
-        this.paginatorService.length++
-        this.Send(result)
+        // this.dataSource = [result, ...this.dataSource]
+        // this.paginatorService.length++
+        // this.Send(result)
       }
     });
   }
@@ -81,9 +82,9 @@ export class InternosComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result: Interno) => {
       if (result) {
-        const indexFound = this.dataSource.findIndex(element => element._id === tramite._id)
-        this.dataSource[indexFound] = result
-        this.dataSource = [...this.dataSource]
+        // const indexFound = this.dataSource.findIndex(element => element._id === tramite._id)
+        // this.dataSource[indexFound] = result
+        // this.dataSource = [...this.dataSource]
       }
     });
   }

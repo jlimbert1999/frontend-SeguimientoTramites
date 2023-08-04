@@ -8,6 +8,10 @@ import { Interno } from '../models/Interno.interface';
 import { LocationProcedure, WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 import { Observacion } from '../models/Externo.interface';
 import { TypesProceduresGrouped } from 'src/app/administration/models/tipoTramite.interface';
+import { internal } from '../interfaces/internal.interface';
+import { officer } from 'src/app/administration/interfaces/oficer.interface';
+import { Officer } from 'src/app/administration/models/officer.model';
+import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -35,9 +39,9 @@ export class InternosService {
     let params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, tramites: Interno[], length: number }>(`${base_url}/internos`, { params }).pipe(
+    return this.http.get<{ ok: boolean, procedures: internal[], length: number }>(`${base_url}/internal`, { params }).pipe(
       map(resp => {
-        return { tramites: resp.tramites, length: resp.length }
+        return { procedures: resp.procedures, length: resp.length }
       })
     )
   }
@@ -45,7 +49,7 @@ export class InternosService {
     let params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset)
-    return this.http.get<{ ok: boolean, tramites: Interno[], length: number }>(`${base_url}/internos/search/${text}`, { params }).pipe(
+    return this.http.get<{ ok: boolean, tramites: internal[], length: number }>(`${base_url}/internos/search/${text}`, { params }).pipe(
       map(resp => {
         return { tramites: resp.tramites, length: resp.length }
       })
@@ -78,15 +82,15 @@ export class InternosService {
     )
   }
 
-  getUsers(text: string) {
-    return this.http.get<{ ok: boolean, users: any[] }>(`${base_url}/internos/usuarios/${text}`).pipe(map(resp => {
-      return resp.users
+  getParticipant(text: string) {
+    return this.http.get<officer[]>(`${base_url}/internal/participant/${text}`).pipe(map(resp => {
+      return Officer.officerFromJson(resp)
     }))
   }
-  getTypes() {
-    return this.http.get<{ ok: boolean, typesProcedures: TypesProceduresGrouped[] }>(`${base_url}/internos/tipos`).pipe(
+  getTypesProcedures() {
+    return this.http.get<typeProcedure[]>(`${base_url}/internal/types-procedures`).pipe(
       map(resp => {
-        return resp.typesProcedures
+        return resp
       })
     )
   }

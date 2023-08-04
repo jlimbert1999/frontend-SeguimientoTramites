@@ -11,7 +11,6 @@ export interface detailExternalProcedure {
     cite: string;
     enviado: boolean;
     fecha_registro: string;
-    // observaciones: any[];
 }
 
 export interface Cuenta {

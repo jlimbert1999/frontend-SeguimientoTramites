@@ -12,7 +12,6 @@ import { StatePipe } from './pipes/state.pipe';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
 import { TableReportPreceduresComponent } from './table-report-precedures/table-report-precedures.component';
 import { SimpleMatSelectSearchComponent } from './components/simple-mat-select-search/simple-mat-select-search.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
@@ -43,7 +42,6 @@ import { RouterModule } from '@angular/router';
     MaterialModule,
     NgxGraphModule,
     ReactiveFormsModule,
-    AngularSignaturePadModule,
     NgxMatSelectSearchModule,
     FormsModule,
     RouterModule

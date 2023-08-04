@@ -5,7 +5,7 @@
       <mat-form-field>
         <mat-label>Seleccione el tipo de tramite</mat-label>
         <mat-select formControlName="tipo_tramite">
-          <mat-option *ngFor="let tipo of tipos_tramites" [value]="tipo.id_tipoTramite">
+          <mat-option *ngFor="let tipo of typesProcedures" [value]="tipo._id">
             {{tipo.nombre}}
           </mat-option>
         </mat-select>

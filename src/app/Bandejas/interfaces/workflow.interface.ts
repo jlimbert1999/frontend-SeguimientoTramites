@@ -1,3 +1,5 @@
+import { account } from "src/app/administration/interfaces/account.interface";
+
 export interface newWorkflow {
     _id: {
         cuenta: string;
@@ -22,23 +24,8 @@ export interface sending {
 }
 
 export interface participant {
-    cuenta: Cuenta;
+    cuenta: account;
     fullname: string;
     jobtitle?: string;
 }
 
-export interface Cuenta {
-    _id: string;
-    dependencia: Dependencia;
-}
-
-export interface Dependencia {
-    _id: string;
-    nombre: string;
-    institucion: Institucion;
-}
-
-export interface Institucion {
-    _id: string;
-    nombre: string;
-}

@@ -58,7 +58,6 @@
                             <mat-icon>domain_verification</mat-icon>
                             <span>Concluir tramite</span>
                         </button>
-
                     </div>
                 </div>
             </mat-menu>
@@ -107,8 +106,8 @@
                 <mat-icon class="tab-icon">groups</mat-icon>
                 Flujo de trabajo
             </ng-template>
-            <app-list-workflow *ngIf="Workflow && Tramite" [Workflow]="Workflow"
-                [fecha_registro]="Tramite.fecha_registro"></app-list-workflow>
+            <!-- <app-list-workflow *ngIf="Workflow && Tramite" [Workflow]="Workflow"
+                [fecha_registro]="Tramite.fecha_registro"></app-list-workflow> -->
         </mat-tab>
         <mat-tab>
             <ng-template mat-tab-label>

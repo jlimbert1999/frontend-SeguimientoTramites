@@ -1,7 +1,8 @@
 <div class="areachart-wrapper dark">
-    <ngx-graph class="chart-container" [zoomLevel]="1" [links]="links" [nodes]="nodos"
-        [clusters]="clusters" [animate]="false" layout="dagreCluster" [showMiniMap]="true" [draggingEnabled]="false"
-        [curve]="curve">
+    <ngx-graph class="chart-container" [zoomLevel]="1" [links]="links" [nodes]="nodes" [clusters]="clusters"
+        [animate]="false" layout="dagreCluster" [showMiniMap]="true" [showMiniMap]="true" [draggingEnabled]="false"
+        [curve]="curve" [miniMapPosition]="minimapPosition" [miniMapMaxWidth]="400" [autoZoom]="true"
+        [autoCenter]="true">
         <ng-template #defsTemplate>
             <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4"
                 orient="auto">
@@ -20,22 +21,13 @@
                 <svg:foreignObject width="500" height="150">
                     <xhtml:div class="cardContainer">
                         <mat-card class="example-card">
-                            <mat-card-header *ngIf="node.data.funcionario">
+                            <mat-card-header>
                                 <div mat-card-avatar class="example-header-image"></div>
                                 <mat-card-title>
-                                    {{node.data.funcionario|fullname|titlecase}}
+                                    {{node.data.officer|titlecase}}
                                 </mat-card-title>
                                 <mat-card-subtitle>
-                                    {{node.data.funcionario.cargo}}
-                                </mat-card-subtitle>
-                            </mat-card-header>
-                            <mat-card-header *ngIf="!node.data.funcionario">
-                                <div mat-card-avatar class="example-header-image"></div>
-                                <mat-card-title>
-                                   Desvinculado
-                                </mat-card-title>
-                                <mat-card-subtitle>
-                                   ------
+                                    {{node.data.jobtitle ? node.data.jobtitle : 'Sin cargo'}}
                                 </mat-card-subtitle>
                             </mat-card-header>
                             <mat-card-content>
@@ -51,11 +43,11 @@
         <ng-template #linkTemplate let-link>
             <svg:g class="edge">
                 <svg:path class="line"
-                    [ngClass]="[link.recibido===true ? 'line-success' : link.recibido===false?'line-reject':'line-pending']"
+                    [ngClass]="[link.data.recibido===true ? 'line-success' : link.data.recibido===false?'line-reject':'line-pending']"
                     stroke-width="3.5" marker-end="url(#arrow)">
                 </svg:path>
-                <svg:g [matTooltip]="link.status" matTooltipClass="tooltip"
-                    [ngClass]="[link.recibido===true ? 'circle-success' : link.recibido===false?'circle-reject':'circle-pending']"
+                <svg:g [matTooltip]="link.data.status" matTooltipClass="tooltip"
+                    [ngClass]="[link.data.recibido===true ? 'circle-success' : link.data.recibido===false?'circle-reject':'circle-pending']"
                     *ngIf="link.midPoint"
                     [attr.transform]="'translate(' + (link.midPoint.x) + ',' + (link.midPoint.y) + ')'">
                     <circle r="15" stroke-width="1" />

@@ -3,7 +3,6 @@ import { Location } from '@angular/common';
 import * as moment from 'moment';
 import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
 import { ExternalDetail } from 'src/app/procedures/models/externo.model';
-import { stateProcedure } from 'src/app/procedures/interfaces/procedures.interfac';
 
 
 @Component({
@@ -21,7 +20,6 @@ export class InfoTramiteExternoComponent implements OnInit, OnDestroy {
 
   }
   ngOnInit(): void {
-    console.log(this.Tramite);
     this.createTimer()
   }
 
@@ -39,7 +37,6 @@ export class InfoTramiteExternoComponent implements OnInit, OnDestroy {
     else {
       this.dateCount = this.duration(init, moment(new Date()))
       this.timer = setInterval(() => {
-        console.log('tik');
         this.dateCount = this.duration(init, moment(new Date()))
       }, 1000)
     }
