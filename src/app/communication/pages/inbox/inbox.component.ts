@@ -28,6 +28,7 @@ import { SocketService } from 'src/app/services/socket.service';
   ],
 })
 export class InboxComponent implements OnInit {
+  dataSource: any[] = []
   displayedColumns = [
     'alterno',
     'detalle',
@@ -73,8 +74,10 @@ export class InboxComponent implements OnInit {
       })
     }
     else {
-      this.bandejaService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(length => {
+      this.bandejaService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
+        console.log(data);
         this.paginatorService.length = length
+        this.dataSource = data.mails
       })
     }
   }

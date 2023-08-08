@@ -19,12 +19,9 @@ export class InboxService {
     const params = new HttpParams()
       .set('offset', offset)
       .set('limit', limit);
-    return this.http.get<{ ok: boolean; mails: Entrada[]; length: number }>(
-      `${base_url}/imbox`,
-      { params }
+    return this.http.get<{ mails: any[]; length: number }>(`${base_url}/imbox`, { params }
     ).pipe(map((resp) => {
-      this.Mails = resp.mails;
-      return resp.length
+      return { mails: resp.mails, length: resp.length }
     })
     );
   }
