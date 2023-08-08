@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as shape from 'd3-shape';
 import { Edge, Node, ClusterNode, MiniMapPosition } from '@swimlane/ngx-graph';
-import { newWorkflow, participant } from 'src/app/Bandejas/interfaces/workflow.interface';
+import { newWorkflow, participant } from 'src/app/communication/interfaces/workflow.interface';
 
 @Component({
   selector: 'app-graph-workflow',

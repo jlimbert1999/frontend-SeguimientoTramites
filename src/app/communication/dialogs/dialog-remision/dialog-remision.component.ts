@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, UntypedFormControl, Validators } f
 import { ReplaySubject, Subject, takeUntil, tap } from 'rxjs';
 import Swal from 'sweetalert2';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BandejaEntradaService } from '../../services/bandeja-entrada.service';
+import { InboxService } from '../../services/inbox.service';
 import { AccountForSend, ImboxData } from '../../models/entrada.interface';
 import { EntradaDto } from '../../models/entrada.dto';
 import { SocketService } from 'src/app/services/socket.service';
@@ -30,7 +30,7 @@ export class DialogRemisionComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private bandejaService: BandejaEntradaService,
+    private bandejaService: InboxService,
     private socketService: SocketService,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public Data: ImboxData,

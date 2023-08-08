@@ -9,7 +9,7 @@ const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
 })
-export class BandejaSalidaService {
+export class OutboxService {
   constructor(private http: HttpClient) { }
 
   get(limit: number, offset: number) {

@@ -2,18 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { collapseOnLeaveAnimation, expandOnEnterAnimation, fadeInOnEnterAnimation } from 'angular-animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { DialogRemisionComponent } from 'src/app/Bandejas/dialogs/dialog-remision/dialog-remision.component';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import Swal from 'sweetalert2';
 import { DialogInternosComponent } from '../../dialogs/dialog-internos/dialog-internos.component';
-import { HojaRutaInterna } from '../../pdfs/hora-ruta-interna';
 import { InternosService } from '../../services/internos.service';
 import { Router } from '@angular/router';
 import { Interno } from '../../models/Interno.interface';
 import { paramsNavigation } from '../../models/ProceduresProperties';
-import { internalRouteMap } from '../../pdfs/roadMap';
 import { SocketService } from 'src/app/services/socket.service';
 import { internal } from '../../interfaces/internal.interface';
+import { createInternalRouteMap } from '../../helpers/internal-route-map';
+import { DialogRemisionComponent } from 'src/app/communication/dialogs/dialog-remision/dialog-remision.component';
 
 @Component({
   selector: 'app-internos',
@@ -26,7 +25,7 @@ import { internal } from '../../interfaces/internal.interface';
   ]
 })
 export class InternosComponent implements OnInit {
-  displayedColumns: string[] = ['alterno', 'detalle', 'solicitante', 'destinatario', 'estado', 'cite', 'fecha', 'enviado', 'opciones']
+  displayedColumns: string[] = ['alterno', 'detalle', 'destinatario', 'estado', 'fecha', 'enviado', 'opciones']
   dataSource: internal[] = []
 
 
@@ -44,8 +43,8 @@ export class InternosComponent implements OnInit {
   }
   Get() {
     if (this.paginatorService.text !== '') {
-      this.internoService.GetSearch(this.paginatorService.limit, this.paginatorService.offset, this.paginatorService.text).subscribe(data => {
-        this.dataSource = data.tramites
+      this.internoService.search(this.paginatorService.limit, this.paginatorService.offset, this.paginatorService.text).subscribe(data => {
+        this.dataSource = data.procedures
         this.paginatorService.length = data.length
       })
     }
@@ -63,14 +62,13 @@ export class InternosComponent implements OnInit {
       width: '1000px',
       disableClose: true
     });
-    dialogRef.afterClosed().subscribe((result: Interno) => {
+    dialogRef.afterClosed().subscribe((result: internal) => {
       if (result) {
         if (this.dataSource.length === this.paginatorService.limit) {
           this.dataSource.pop()
         }
-        // this.dataSource = [result, ...this.dataSource]
-        // this.paginatorService.length++
-        // this.Send(result)
+        this.dataSource = [result, ...this.dataSource]
+        this.paginatorService.length++;
       }
     });
   }
@@ -80,11 +78,11 @@ export class InternosComponent implements OnInit {
       disableClose: true,
       data: tramite
     });
-    dialogRef.afterClosed().subscribe((result: Interno) => {
+    dialogRef.afterClosed().subscribe((result: internal) => {
       if (result) {
-        // const indexFound = this.dataSource.findIndex(element => element._id === tramite._id)
-        // this.dataSource[indexFound] = result
-        // this.dataSource = [...this.dataSource]
+        const indexFound = this.dataSource.findIndex(element => element._id === tramite._id)
+        this.dataSource[indexFound] = result
+        this.dataSource = [...this.dataSource]
       }
     });
   }
@@ -124,11 +122,9 @@ export class InternosComponent implements OnInit {
   }
 
 
-  GenerateHojaRuta(id_tramite: string) {
+  generateRouteMap(id_tramite: string) {
     this.internoService.getAllDataInternalProcedure(id_tramite).subscribe(data => {
-      // HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
-      internalRouteMap(data.procedure, data.workflow)
-
+      createInternalRouteMap(data.procedure, data.workflow)
     })
   }
 
@@ -169,7 +165,7 @@ export class InternosComponent implements OnInit {
       offset: this.paginatorService.offset
     }
     if (this.paginatorService.text !== '') params.text = this.paginatorService.text
-    this.router.navigate(['home/tramites/internos/ficha-interna', procedure._id], { queryParams: params })
+    this.router.navigate(['tramites/internos/ficha-interna', procedure._id], { queryParams: params })
   }
 
 }

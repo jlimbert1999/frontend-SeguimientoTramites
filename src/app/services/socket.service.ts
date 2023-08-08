@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client'
 import { userSocket } from 'src/app/auth/models/account.model';
-import { Entrada } from 'src/app/Bandejas/models/entrada.interface';
 import { environment } from 'src/environments/environment';
+import { Entrada } from '../communication/models/entrada.interface';
 @Injectable({
   providedIn: 'root'
 })

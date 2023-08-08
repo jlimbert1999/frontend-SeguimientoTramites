@@ -4,11 +4,9 @@ import { Content, ContentOrderedList, ContentUnorderedList, Table, TableCell, Ta
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
-import { Externo } from "src/app/procedures/models/Externo.interface";
 import { Interno } from "src/app/procedures/models/Interno.interface";
-import { ListWorkflow, LocationProcedure } from "src/app/Bandejas/models/workflow.interface";
 
-export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkflow[], Location: LocationProcedure[]) {
+export async function PDF_FichaExterno(tramite: any, ListWorkflow: any[], Location: any[]) {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     const tableApplicat: Table = {
@@ -51,7 +49,7 @@ export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkf
             [{ text: 'Sin representante legal', bold: true, colSpan: 2 }],
         ]
     const listRequirements = tramite.requerimientos.length > 0
-        ? tramite.requerimientos.map(requeriment => requeriment)
+        ? tramite.requerimientos.map((requeriment: any) => requeriment)
         : ['Sin requerimientos']
     const tableProcedure: Table = {
         headerRows: 1,
@@ -167,7 +165,7 @@ export async function PDF_FichaExterno(tramite: Externo, ListWorkflow: ListWorkf
     pdfMake.createPdf(docDefinition).print();
 }
 
-export async function PDF_FichaInterno(tramite: Interno, ListWorkflow: ListWorkflow[], Location: LocationProcedure[]) {
+export async function PDF_FichaInterno(tramite: Interno, ListWorkflow: any[], Location: any[]) {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     const tableEmitter: Table = {
@@ -292,7 +290,7 @@ export async function PDF_FichaInterno(tramite: Interno, ListWorkflow: ListWorkf
     pdfMake.createPdf(docDefinition).print();
 }
 
-function createTableWorkflow(List: ListWorkflow[]): Table {
+function createTableWorkflow(List: any[]): Table {
     const tableWorkflow: Table = {
         dontBreakRows: true,
         widths: ['*', '*', '*', '*'],
@@ -346,7 +344,7 @@ function createTableWorkflow(List: ListWorkflow[]): Table {
     })
     return tableWorkflow
 }
-function createSectionLocation(location: LocationProcedure[]): Content {
+function createSectionLocation(location: any[]): Content {
     if (location.length === 0) {
         return ''
     }

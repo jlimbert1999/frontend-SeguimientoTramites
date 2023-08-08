@@ -3,7 +3,6 @@ import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { BandejaEntradaService } from 'src/app/Bandejas/services/bandeja-entrada.service';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { LoaderService } from 'src/app/auth/services/loader.service';
 import { NotificationService } from 'src/app/home-old/services/notification.service';
@@ -37,7 +36,6 @@ export class HomeComponent {
     changeDetectorRef: ChangeDetectorRef, media: MediaMatcher,
     public authService: AuthService,
     public socketService: SocketService,
-    public bandejaService: BandejaEntradaService,
     private toastr: ToastrService,
     public loader: LoaderService,
     private router: Router,

@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { BandejaEntradaService } from '../../services/bandeja-entrada.service';
+import { InboxService } from '../../services/inbox.service';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import Swal from 'sweetalert2';
 import { WorkflowData } from '../../models/workflow.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Mail } from '../../models/entrada.interface';
-import { AuthService } from 'src/app/auth/services/auth.service';
-import { Observacion } from 'src/app/procedures/models/Externo.interface';
 import { showToast } from 'src/app/helpers/toats.helper';
 import { DialogRemisionComponent } from '../../dialogs/dialog-remision/dialog-remision.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,7 +14,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { createListWorkflow } from '../../helpers/ListWorkflow';
 import { PDF_FichaExterno, PDF_FichaInterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
-import { externalRouteMap, internalRouteMap } from 'src/app/procedures/pdfs/roadMap';
 import { ExternosService } from 'src/app/procedures/services/externos.service';
 import { InternosService } from 'src/app/procedures/services/internos.service';
 
@@ -33,13 +30,13 @@ export class MailComponent implements OnInit {
   Tramite: any
   Workflow: WorkflowData[]
   Mail: Mail
-  observations: Observacion[] = []
+  observations: any[] = []
   Events: any[] = []
   Location: any[] = []
   constructor(
     private _location: Location,
     private activateRoute: ActivatedRoute,
-    private entradaService: BandejaEntradaService,
+    private entradaService: InboxService,
     private paginatorService: PaginatorService,
     private externoService: ExternosService,
     private internoService: InternosService,
@@ -90,7 +87,7 @@ export class MailComponent implements OnInit {
         // externalRouteMap(data.procedure, data.workflow)
       })
       : this.internoService.getAllDataInternalProcedure(this.Mail.tramite).subscribe(data => {
-        internalRouteMap(data.procedure, data.workflow)
+        // internalRouteMap(data.procedure, data.workflow)
       })
 
   }

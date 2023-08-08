@@ -8,21 +8,21 @@ import { SharedModule } from '../shared/shared.module';
 import { DialogRemisionComponent } from './dialogs/dialog-remision/dialog-remision.component';
 import { MaterialModule } from '../angular-material/material.module';
 import { MailComponent } from './pages/mail/mail.component';
-import { BandejaEntradaComponent } from './pages/bandeja-entrada/bandeja-entrada.component';
-import { BandejaSalidaComponent } from './pages/bandeja-salida/bandeja-salida.component';
-import { BandejasRoutingModule } from './bandejas-routing.module';
+import { InboxComponent } from './pages/inbox/inbox.component';
+import { OutboxComponent } from './pages/outbox/outbox.component';
+import { CommunicationRoutingModule } from './communication-routing.module';
 
 @NgModule({
   declarations: [
     DialogRemisionComponent,
     MailComponent,
-    BandejaEntradaComponent,
-    BandejaSalidaComponent,
+    InboxComponent,
+    OutboxComponent,
 
   ],
   imports: [
     CommonModule,
-    BandejasRoutingModule,
+    CommunicationRoutingModule,
     SharedModule,
     RouterModule,
     FormsModule,
@@ -31,4 +31,4 @@ import { BandejasRoutingModule } from './bandejas-routing.module';
     NgxMatSelectSearchModule,
   ]
 })
-export class BandejasModule { }
+export class CommunicationModule { }

@@ -15,10 +15,15 @@
                 <mat-icon class="example-tab-icon">info</mat-icon>
                 Informacion
             </ng-template>
-            <app-info-tramite-externo *ngIf="tipo==='ficha-externa'" [Tramite]="Tramite"
-                [Location]="Location"></app-info-tramite-externo>
-            <app-info-tramite-interno *ngIf="tipo==='ficha-interna'" [Tramite]="Tramite"
-                [Location]="Location"></app-info-tramite-interno>
+            <div [ngSwitch]="tipo">
+                <div *ngSwitchCase="'ficha-externa'">
+                    <app-info-tramite-externo [Tramite]="Tramite" [Location]="Location"></app-info-tramite-externo>
+                </div>
+                <div *ngSwitchCase="'ficha-interna'">
+                    <app-info-tramite-interno [procedure]="Tramite" [Location]="Location"></app-info-tramite-interno>
+                </div>
+                <div *ngSwitchDefault></div>
+            </div>
         </mat-tab>
         <mat-tab *ngIf="Observations.length>0">
             <ng-template mat-tab-label>

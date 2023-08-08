@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AccountForSend, Entrada, Mail } from '../models/entrada.interface';
-import { Observacion } from 'src/app/procedures/models/Externo.interface';
 import { LocationProcedure, WorkflowData } from '../models/workflow.interface';
 import { EntradaDto } from '../models/entrada.dto';
 
@@ -12,7 +11,7 @@ const base_url = environment.base_url;
 @Injectable({
   providedIn: 'root',
 })
-export class BandejaEntradaService {
+export class InboxService {
   Mails: Entrada[] = [];
   constructor(private http: HttpClient) { }
 
@@ -103,7 +102,7 @@ export class BandejaEntradaService {
   }
 
   getDetailsMail(id_bandeja: string) {
-    return this.http.get<{ ok: boolean, mail: Mail, procedure: any, observations: Observacion[], workflow: WorkflowData[], location: LocationProcedure[], events: any[] }>(`${base_url}/entradas/${id_bandeja}`).pipe(
+    return this.http.get<{ ok: boolean, mail: Mail, procedure: any, observations: any[], workflow: WorkflowData[], location: LocationProcedure[], events: any[] }>(`${base_url}/entradas/${id_bandeja}`).pipe(
       map(resp => {
         resp.workflow = resp.workflow.map(mail => {
           mail.emisor.funcionario ? mail.emisor.funcionario : { nombre: 'Desvinculado', paterno: '', materno: '', cargo: '----' }
@@ -121,7 +120,7 @@ export class BandejaEntradaService {
     )
   }
   addObservation(id_procedure: string, description: string) {
-    return this.http.put<{ ok: boolean, observation: Observacion }>(`${base_url}/entradas/observar/${id_procedure}`, { description }).pipe(
+    return this.http.put<{ ok: boolean, observation: any }>(`${base_url}/entradas/observar/${id_procedure}`, { description }).pipe(
       map(resp => {
         return resp.observation
       })

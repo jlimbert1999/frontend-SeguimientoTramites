@@ -4,7 +4,6 @@ import { Content, ContentOrderedList, ContentUnorderedList, Table, TableCell, Ta
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
-import { Externo } from "src/app/procedures/models/Externo.interface";
 import { ListWorkflow, LocationProcedure } from "src/app/Bandejas/models/workflow.interface";
 import { Interno } from "src/app/procedures/models/Interno.interface";
 
@@ -190,7 +189,7 @@ function createSectionLocation(location: LocationProcedure[]): Content {
 
 }
 
-function createSectionAplicantExternal(tramite: Externo): Content {
+function createSectionAplicantExternal(tramite: any): Content {
     const tableApplicat: Table = {
         headerRows: 1,
         dontBreakRows: true,

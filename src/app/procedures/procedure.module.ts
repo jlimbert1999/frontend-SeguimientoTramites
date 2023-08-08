@@ -11,7 +11,7 @@ import { DialogInternosComponent } from './dialogs/dialog-internos/dialog-intern
 import { DialogExternoComponent } from './dialogs/dialog-externo/dialog-externo.component';
 import { SharedModule } from '../shared/shared.module';
 import { MaterialModule } from '../angular-material/material.module';
-import { TramitesRoutingModule } from './tramites-routing.module';
+import { ProcedureRoutingModule } from './procedure-routing.module';
 import { SolicitantePipe } from './pipes/solicitante.pipe';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 
@@ -26,7 +26,7 @@ import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
   ],
   imports: [
     CommonModule,
-    TramitesRoutingModule,
+    ProcedureRoutingModule,
     SharedModule,
     MaterialModule,
     FormsModule,
@@ -42,4 +42,4 @@ import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
     }
   ]
 })
-export class TramitesModule { }
+export class ProcedureModule { }

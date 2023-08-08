@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { stateProcedure } from 'src/app/procedures/interfaces/procedures.interfac';
+import { stateProcedure } from 'src/app/procedures/interfaces/procedures.interface';
 
 @Pipe({
   name: 'state'

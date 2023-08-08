@@ -26,12 +26,12 @@
           <mat-label>Nombre del remitente</mat-label>
           <input type="text" class="uppercase" matInput formControlName="nombre_remitente" [matAutocomplete]="auto">
           <mat-autocomplete #auto="matAutocomplete">
-            <mat-option (onSelectionChange)="seleccionar_remitente(this.option)"
-              *ngFor="let option of filteredOptions | async" [value]="option|fullname">
-              {{option|fullname|titlecase}}
+            <mat-option (onSelectionChange)="setJobTitle(option, 'cargo_remitente')"
+              *ngFor="let option of filteredEmitter | async" [value]="option.fullname">
+              {{option.fullname|titlecase}}
             </mat-option>
           </mat-autocomplete>
-          <mat-error *ngIf="TramiteFormGroup.get('nombre_remitente')!.hasError('required')">
+          <mat-error *ngIf="TramiteFormGroup.get('cargo_remitente')!.hasError('required')">
             El nombre del remitente es <strong>requerido</strong>
           </mat-error>
         </mat-form-field>
@@ -53,8 +53,8 @@
           <input class="uppercase" type="text" matInput formControlName="nombre_destinatario"
             matAutocompletePosition="below" [matAutocomplete]="auto1">
           <mat-autocomplete matau #auto1="matAutocomplete">
-            <mat-option (onSelectionChange)="seleccionar_destinatario(option)"
-              *ngFor="let option of filteredDestiny | async" [value]="option|fullname">
+            <mat-option (onSelectionChange)="setJobTitle(option, 'cargo_destinatario')"
+              *ngFor="let option of filteredReceiver | async" [value]="option|fullname">
               {{option|fullname|titlecase}}
             </mat-option>
           </mat-autocomplete>

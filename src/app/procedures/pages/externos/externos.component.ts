@@ -3,19 +3,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { fadeInOnEnterAnimation } from 'angular-animations';
-import { Externo } from '../../models/Externo.interface';
 import { ExternosService } from '../../services/externos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { DialogExternoComponent } from '../../dialogs/dialog-externo/dialog-externo.component';
-import { DialogRemisionComponent } from 'src/app/Bandejas/dialogs/dialog-remision/dialog-remision.component';
-import { HojaRutaExterna } from '../../pdfs/hoja-ruta-externa';
-import { Ficha } from '../../pdfs/ficha';
-import { externalRouteMap } from '../../pdfs/roadMap';
-import { showToast } from 'src/app/helpers/toats.helper';
 import { paramsNavigation } from '../../models/ProceduresProperties';
-import { SocketService } from 'src/app/services/socket.service';
 import { external } from '../../interfaces/external.interface';
 import { createExternalRouteMap } from '../../helpers/external-route-map';
+import { Ficha } from '../../helpers/ficha';
+import { DialogRemisionComponent } from 'src/app/communication/dialogs/dialog-remision/dialog-remision.component';
 
 
 @Component({
@@ -91,7 +86,7 @@ export class ExternosComponent implements OnInit {
   }
 
 
-  Send(tramite: Externo) {
+  Send(tramite: external) {
     const dialogRef = this.dialog.open(DialogRemisionComponent, {
       width: '1200px',
       data: {
@@ -121,10 +116,10 @@ export class ExternosComponent implements OnInit {
       // externalRouteMap(data.procedure, data.workflow)
     })
   }
-  GenerateFicha(tramite: Externo) {
+  GenerateFicha(tramite: external) {
     Ficha(tramite)
   }
-  conclude(tramite: Externo) {
+  conclude(tramite: external) {
     Swal.fire({
       icon: 'question',
       title: `Concluir el tramite ${tramite.alterno}?`,
@@ -169,7 +164,7 @@ export class ExternosComponent implements OnInit {
     this.Get();
   }
 
-  view(procedure: Externo) {
+  view(procedure: external) {
     let params: paramsNavigation = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset

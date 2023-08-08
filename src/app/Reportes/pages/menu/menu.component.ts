@@ -11,7 +11,6 @@ import { createPDFFicha } from '../../pdf/reporte-fichas';
 import { createPDFUsuario } from '../../pdf/reporte-usuario';
 
 import { PDF_FichaExterno, PDF_FichaInterno } from '../../pdf/reporte-ficha-externa';
-import { createListWorkflow } from 'src/app/Bandejas/helpers/ListWorkflow';
 import { ExternosService } from 'src/app/procedures/services/externos.service';
 import { InternosService } from 'src/app/procedures/services/internos.service';
 
@@ -97,12 +96,12 @@ export class MenuComponent implements OnDestroy {
       })
     }
     else {
-      this.internoService.getAllDataInternalProcedure(data._id).subscribe(data => {
-        const List = data.workflow.length > 0
-          ? createListWorkflow(data.workflow, [{ id_root: data.workflow[0].emisor.cuenta._id, startDate: data.procedure.fecha_registro }], [])
-          : []
-        PDF_FichaInterno(data.procedure, List, data.location)
-      })
+      // this.internoService.getAllDataInternalProcedure(data._id).subscribe(data => {
+      //   const List = data.workflow.length > 0
+      //     ? createListWorkflow(data.workflow, [{ id_root: data.workflow[0].emisor.cuenta._id, startDate: data.procedure.fecha_registro }], [])
+      //     : []
+      //   PDF_FichaInterno(data.procedure, List, data.location)
+      // })
     }
 
   }

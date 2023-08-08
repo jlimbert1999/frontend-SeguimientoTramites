@@ -1,16 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
-import { LocationProcedure, WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 import { environment } from 'src/environments/environment';
-import { ExternoDto, RepresentanteDto, SolicitanteDto } from '../models/Externo.dto';
-import { Externo, Observacion } from '../models/Externo.interface';
 import { TipoTramite } from 'src/app/administration/models/tipoTramite.interface';
 import { external } from '../interfaces/external.interface';
 import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
 import { ExternalProcedureDto } from '../dtos/external.dto';
 import { ExternalDetail } from '../models/externo.model';
-import { newWorkflow } from 'src/app/Bandejas/interfaces/workflow.interface';
+import { newWorkflow } from 'src/app/communication/interfaces/workflow.interface';
 
 
 const base_url = environment.base_url

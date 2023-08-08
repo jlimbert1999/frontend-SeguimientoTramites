@@ -1,17 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import Swal from 'sweetalert2';
 import { ExternosService } from '../../services/externos.service';
 import { InternosService } from '../../services/internos.service';
 import { Location } from '@angular/common';
 import { slideInLeftOnEnterAnimation } from 'angular-animations';
-import { LocationProcedure, WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
 import { PDF_FichaExterno, PDF_FichaInterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
-import { Externo, Observacion } from '../../models/Externo.interface';
-import { Interno } from '../../models/Interno.interface';
-import { createListWorkflow } from 'src/app/Bandejas/helpers/ListWorkflow';
-import { newWorkflow } from 'src/app/Bandejas/interfaces/workflow.interface';
+import { newWorkflow } from 'src/app/communication/interfaces/workflow.interface';
+import { LocationProcedure } from 'src/app/communication/models/workflow.interface';
 
 @Component({
   selector: 'app-ficha',
@@ -26,7 +22,7 @@ export class FichaComponent implements OnInit {
   Tramite: any
   Location: LocationProcedure[] = []
   Workflow: newWorkflow[] = []
-  Observations: Observacion[] = []
+  Observations: any[] = []
   Events: any[] = []
   constructor(
     private activateRoute: ActivatedRoute,
@@ -49,8 +45,8 @@ export class FichaComponent implements OnInit {
       }
       else if (this.tipo == 'ficha-interna') {
         this.internoService.getAllDataInternalProcedure(params['id']).subscribe(data => {
-          // this.Tramite = data.procedure
-          // this.Workflow = data.workflow
+          this.Tramite = data.procedure
+          this.Workflow = data.workflow
           // this.Location = data.location
           // this.Observations = data.observations
           // this.Events = data.events

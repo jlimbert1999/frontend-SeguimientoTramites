@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MenuComponent } from './pages/menu/menu.component';
 import { BusquedaComponent } from './pages/busqueda/busqueda.component';
-import { FichaComponent } from '../Tramites/pages/ficha/ficha.component';
+import { FichaComponent } from '../procedures/pages/ficha/ficha.component';
 
 
 

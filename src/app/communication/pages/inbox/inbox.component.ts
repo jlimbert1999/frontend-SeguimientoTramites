@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
 import { LoaderService } from 'src/app/auth/services/loader.service';
-import { BandejaEntradaService } from '../../services/bandeja-entrada.service';
+import { InboxService } from '../../services/inbox.service';
 import { DialogRemisionComponent } from '../../dialogs/dialog-remision/dialog-remision.component';
 import { InternosService } from 'src/app/procedures/services/internos.service';
 import { ExternosService } from 'src/app/procedures/services/externos.service';
@@ -15,20 +15,19 @@ import { Router } from '@angular/router';
 import { Entrada } from '../../models/entrada.interface';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { showToast } from 'src/app/helpers/toats.helper';
-import { externalRouteMap, internalRouteMap } from 'src/app/procedures/pdfs/roadMap';
 import { NotificationService } from 'src/app/home-old/services/notification.service';
 import { SocketService } from 'src/app/services/socket.service';
 
 
 @Component({
-  selector: 'app-bandeja-entrada',
-  templateUrl: './bandeja-entrada.component.html',
-  styleUrls: ['./bandeja-entrada.component.scss'],
+  selector: 'app-inbox',
+  templateUrl: './inbox.component.html',
+  styleUrls: ['./inbox.component.scss'],
   animations: [
     fadeInOnEnterAnimation(),
   ],
 })
-export class BandejaEntradaComponent implements OnInit {
+export class InboxComponent implements OnInit {
   displayedColumns = [
     'alterno',
     'detalle',
@@ -46,7 +45,7 @@ export class BandejaEntradaComponent implements OnInit {
   Mails = this.bandejaService.Mails
 
   constructor(
-    public bandejaService: BandejaEntradaService,
+    public bandejaService: InboxService,
     public dialog: MatDialog,
     public authService: AuthService,
     private toastr: ToastrService,
@@ -216,7 +215,7 @@ export class BandejaEntradaComponent implements OnInit {
         // externalRouteMap(data.procedure, data.workflow)
       })
       : this.internoService.getAllDataInternalProcedure(mail.tramite._id).subscribe(data => {
-        internalRouteMap(data.procedure, data.workflow)
+        // internalRouteMap(data.procedure, data.workflow)
       })
 
   }

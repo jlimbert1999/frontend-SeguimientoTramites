@@ -17,13 +17,13 @@ import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { ArchivosModule } from './Archivos/archivos.module';
-import { BandejasModule } from './Bandejas/bandejas.module';
-import { TramitesModule } from './procedures/tramites.module';
+import { ProcedureModule } from './procedures/procedure.module';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { SharedModule } from "./shared/shared.module";
 import { PresentationComponent } from './pages/presentation/presentation.component';
 import { RouterModule } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
+import { CommunicationModule } from './communication/communication.module';
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
@@ -52,8 +52,8 @@ registerLocaleData(localeEs, 'es');
         ArchivosModule,
         ReportesModule,
         MaterialModule,
-        BandejasModule,
-        TramitesModule,
+        CommunicationModule,
+        ProcedureModule,
         SharedModule,
         RouterModule
     ]

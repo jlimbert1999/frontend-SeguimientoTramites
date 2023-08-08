@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import { createListWorkflow } from 'src/app/Bandejas/helpers/ListWorkflow';
-import { newWorkflow } from 'src/app/Bandejas/interfaces/workflow.interface';
-import { ListWorkflow, WorkflowData } from 'src/app/Bandejas/models/workflow.interface';
+import { newWorkflow } from 'src/app/communication/interfaces/workflow.interface';
 
 
 

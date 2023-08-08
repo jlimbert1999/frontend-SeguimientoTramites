@@ -16,10 +16,10 @@ const routes: Routes = [
         path: 'configuraciones', loadChildren: () => import(`./administration/administration.module`).then((m) => m.AdministrationModule),
       },
       {
-        path: 'tramites', loadChildren: () => import(`./procedures/tramites.module`).then((m) => m.TramitesModule),
+        path: 'tramites', loadChildren: () => import(`./procedures/procedure.module`).then((m) => m.ProcedureModule),
       },
       {
-        path: 'bandejas', loadChildren: () => import(`./Bandejas/bandejas.module`).then((m) => m.BandejasModule),
+        path: 'bandejas', loadChildren: () => import(`./communication/communication.module`).then((m) => m.CommunicationModule),
       }
     ]
   },

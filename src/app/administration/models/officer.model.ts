@@ -33,6 +33,10 @@ export class Officer {
         return `${this.nombre.trim()} ${this.paterno.trim()} ${this.materno.trim()}`
     }
 
+    get fulljobtitle() {
+        return this.cargo ? this.cargo.nombre : 'SIN CARGO'
+    }
+
     get fullWorkTitle() {
         return `${this.fullname} (${this.cargo ? this.cargo.nombre : 'SIN CARGO'})`
     }

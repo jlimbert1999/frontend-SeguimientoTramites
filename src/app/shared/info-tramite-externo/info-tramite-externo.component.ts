@@ -1,8 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import * as moment from 'moment';
-import { LocationProcedure } from 'src/app/Bandejas/models/workflow.interface';
 import { ExternalDetail } from 'src/app/procedures/models/externo.model';
+import { LocationProcedure } from 'src/app/communication/models/workflow.interface';
 
 
 @Component({

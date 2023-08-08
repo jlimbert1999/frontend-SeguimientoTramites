@@ -83,8 +83,8 @@
             </ng-template>
             <app-info-tramite-externo *ngIf="Mail.tipo==='tramites_externos' && Tramite"
                 [Tramite]="Tramite"></app-info-tramite-externo>
-            <app-info-tramite-interno *ngIf="Mail.tipo==='tramites_internos'&& Tramite"
-                [Tramite]="Tramite"></app-info-tramite-interno>
+            <!-- <app-info-tramite-interno *ngIf="Mail.tipo==='tramites_internos'&& Tramite"
+                [Tramite]="Tramite"></app-info-tramite-interno> -->
         </mat-tab>
         <mat-tab *ngIf="observations.length>0">
             <ng-template mat-tab-label>

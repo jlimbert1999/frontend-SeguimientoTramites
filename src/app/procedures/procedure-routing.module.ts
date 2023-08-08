@@ -17,4 +17,4 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ]
 })
-export class TramitesRoutingModule { }
+export class ProcedureRoutingModule { }

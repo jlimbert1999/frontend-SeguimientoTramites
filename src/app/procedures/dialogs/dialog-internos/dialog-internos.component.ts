@@ -1,12 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { map, Observable, startWith, switchMap } from 'rxjs';
+import { Observable, startWith, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { InternosService } from '../../services/internos.service';
-import { closeLoadingRequets, showLoadingRequest } from 'src/app/helpers/loading.helper';
-import { TypesProceduresGrouped } from 'src/app/administration/models/tipoTramite.interface';
 import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
+import { Officer } from 'src/app/administration/models/officer.model';
+import { CreateInternalProcedureDto } from '../../dtos/create-internal.dto';
+import { internal } from '../../interfaces/internal.interface';
+import { UpdateInternalProcedureDto } from '../../dtos/update-internal.dto';
 
 @Component({
   selector: 'app-dialog-internos',
@@ -14,117 +16,91 @@ import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.i
   styleUrls: ['./dialog-internos.component.scss']
 })
 export class DialogInternosComponent implements OnInit {
-  filteredOptions: Observable<any[]>;
-  filteredDestiny: Observable<any[]>;
-
-  TramiteFormGroup: FormGroup = this.fb.group({
-    tipo_tramite: ['', Validators.required],
-    detalle: ['', Validators.required],
-    cite: [this.authService.code],
-    nombre_remitente: [this.authService.account.officer.fullname, Validators.required],
-    cargo_remitente: [this.authService.account.officer.jobtitle, Validators.required],
-    nombre_destinatario: ['', Validators.required],
-    cargo_destinatario: ['', Validators.required],
-    cantidad: ['', Validators.required],
-  });
-
   typesProcedures: typeProcedure[] = []
-
+  filteredEmitter: Observable<Officer[]>;
+  filteredReceiver: Observable<Officer[]>;
+  TramiteFormGroup: FormGroup
 
   constructor(
     private authService: AuthService,
     private internoService: InternosService,
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: internal,
     public dialogRef: MatDialogRef<DialogInternosComponent>) {
+
   }
 
   ngOnInit(): void {
     if (this.data) {
-      this.TramiteFormGroup = this.fb.group({
-        detalle: [this.data.detalle, Validators.required],
-        cite: [this.data.cite],
-        nombre_remitente: [this.data.remitente.nombre, Validators.required],
-        cargo_remitente: [this.data.remitente.cargo, Validators.required],
-        nombre_destinatario: [this.data.destinatario.nombre, Validators.required],
-        cargo_destinatario: [this.data.destinatario.cargo, Validators.required],
-        cantidad: [this.data.cantidad, Validators.required]
-      });
-    }
-    else {
-      this.internoService.getTypesProcedures().subscribe(data => {
-        this.typesProcedures = data
+      this.TramiteFormGroup = this.createForm('EDIT')
+      const { remitente, destinatario, ...values } = this.data
+      this.TramiteFormGroup.patchValue({
+        nombre_remitente: remitente.nombre,
+        cargo_remitente: remitente.cargo,
+        nombre_destinatario: destinatario.nombre,
+        cargo_destinatario: destinatario.cargo,
+        ...values
       })
     }
-
-
-    // this.filteredOptions = this.TramiteFormGroup.controls['nombre_remitente'].valueChanges.pipe(
-    //   startWith(''),
-    //   switchMap(value => {
-    //     if (value) {
-    //       return this.FiltrarUsuarios(value)
-    //     }
-    //     return []
-    //   })
-    // )
-    // this.filteredDestiny = this.TramiteFormGroup.controls['nombre_destinatario'].valueChanges.pipe(
-    //   startWith(''),
-    //   switchMap(value => {
-    //     if (value) {
-    //       return this.FiltrarDestinatarios(value)
-    //     }
-    //     return []
-    //   })
-    // )
+    else {
+      this.TramiteFormGroup = this.createForm('ADD')
+      this.internoService.getTypesProcedures().subscribe(data => {
+        this.typesProcedures = data
+        this.TramiteFormGroup.get('tipo_tramite')?.setValue(data[0]._id)
+      })
+    }
+    this.filteredEmitter = this.setAutocomplete('nombre_remitente')
+    this.filteredReceiver = this.setAutocomplete('nombre_destinatario')
   }
 
   guardar() {
-    const {
-      nombre_remitente,
-      cargo_remitente,
-      nombre_destinatario,
-      cargo_destinatario,
-      ...Object } = this.TramiteFormGroup.value
-    const tramite = {
-      remitente: {
-        nombre: nombre_remitente,
-        cargo: cargo_remitente
-      },
-      destinatario: {
-        nombre: nombre_destinatario,
-        cargo: cargo_destinatario
-      },
-      ...Object
+    if (this.data) {
+      const procedure = UpdateInternalProcedureDto.fromForm(this.TramiteFormGroup.value)
+      this.internoService.Edit(this.data._id, procedure).subscribe(procedure => this.dialogRef.close(procedure))
     }
-    showLoadingRequest()
-    const observable = this.data
-      ? this.internoService.Edit(this.data._id, tramite)
-      : this.internoService.Add(tramite)
-    observable.subscribe(tramite => {
-      closeLoadingRequets(this.data ? 'Tramite editado' : 'Tramite guardado')
-      this.dialogRef.close(tramite)
-    })
+    else {
+      const procedure = CreateInternalProcedureDto.fromForm(this.TramiteFormGroup.value)
+      this.internoService.Add(procedure).subscribe(procedure => this.dialogRef.close(procedure))
+    }
   }
 
-  FiltrarUsuarios(termino: string) {
-    // return this.internoService.getUsers(termino)
-    //   .pipe(
-    //     map(officers => officers)
-    //   )
+  setAutocomplete(formControlPath: string) {
+    return this.TramiteFormGroup.controls[formControlPath].valueChanges.pipe(
+      startWith(''),
+      switchMap(value => this._filterOfficers(value))
+    )
   }
-  FiltrarDestinatarios(termino: string) {
-    // return this.internoService.getUsers(termino)
-    //   .pipe(
-    //     map(officers => officers)
-    //   )
+
+  private _filterOfficers(value: string) {
+    if (value === '') return []
+    return this.internoService.getParticipant(value).pipe(officers => officers)
   }
-  seleccionar_remitente(funcionario: any) {
-    this.TramiteFormGroup.get('cargo_remitente')?.setValue(funcionario.cargo.toUpperCase())
-    this.TramiteFormGroup.get('nombre_remitente')?.setValue(`${funcionario.nombre} ${funcionario.paterno} ${funcionario.materno}`.toUpperCase())
+
+  setJobTitle(officer: Officer, formControlPath: string) {
+    this.TramiteFormGroup.get(formControlPath)?.setValue(officer.fulljobtitle)
   }
-  seleccionar_destinatario(funcionario: any) {
-    this.TramiteFormGroup.get('cargo_destinatario')?.setValue(funcionario.cargo.toUpperCase())
-    this.TramiteFormGroup.get('nombre_destinatario')?.setValue(`${funcionario.nombre} ${funcionario.paterno} ${funcionario.materno}`.toUpperCase())
+
+  createForm(mode: 'ADD' | 'EDIT') {
+    return mode === 'ADD'
+      ? this.fb.group({
+        tipo_tramite: ['', Validators.required],
+        detalle: ['', Validators.required],
+        cite: [this.authService.code],
+        nombre_remitente: [this.authService.account.officer.fullname, Validators.required],
+        cargo_remitente: [this.authService.account.officer.jobtitle, Validators.required],
+        nombre_destinatario: ['', Validators.required],
+        cargo_destinatario: ['', Validators.required],
+        cantidad: ['', Validators.required],
+      })
+      : this.fb.group({
+        detalle: ['', Validators.required],
+        cite: [''],
+        nombre_remitente: ['', Validators.required],
+        cargo_remitente: ['', Validators.required],
+        nombre_destinatario: ['', Validators.required],
+        cargo_destinatario: ['', Validators.required],
+        cantidad: ['', Validators.required]
+      });
   }
 }
 

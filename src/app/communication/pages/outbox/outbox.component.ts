@@ -6,21 +6,20 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 
 import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
-import { BandejaSalidaService } from '../../services/bandeja-salida.service';
+import { OutboxService } from '../../services/outbox.service';
 import { InternosService } from 'src/app/procedures/services/internos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
 import { GroupedMails, Salida } from '../../models/salida.interface';
-import { externalRouteMap, internalRouteMap } from 'src/app/procedures/pdfs/roadMap';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { SocketService } from 'src/app/services/socket.service';
 import { ExternosService } from 'src/app/procedures/services/externos.service';
 
 
 @Component({
-  selector: 'app-bandeja-salida',
-  templateUrl: './bandeja-salida.component.html',
-  styleUrls: ['./bandeja-salida.component.scss'],
+  selector: 'app-outbox',
+  templateUrl: './outbox.component.html',
+  styleUrls: ['./outbox.component.scss'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),
@@ -30,7 +29,7 @@ import { ExternosService } from 'src/app/procedures/services/externos.service';
     fadeInOnEnterAnimation()
   ],
 })
-export class BandejaSalidaComponent implements OnInit, AfterViewInit {
+export class OutboxComponent implements OnInit, AfterViewInit {
   dataSource: GroupedMails[] = []
   displayedColumns = ['alterno', 'descripcion', 'estado', 'fecha_envio', 'situacion', 'opciones', 'expand']
   isLoadingResults = true;
@@ -42,7 +41,7 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private externoService: ExternosService,
     private internoService: InternosService,
-    private bandejaService: BandejaSalidaService,
+    private bandejaService: OutboxService,
     public paginatorService: PaginatorService,
     private router: Router,
     private socketService: SocketService
@@ -80,7 +79,7 @@ export class BandejaSalidaComponent implements OnInit, AfterViewInit {
     else {
       this.internoService.getAllDataInternalProcedure(id_tramite).subscribe(data => {
         // HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
-        internalRouteMap(data.procedure, data.workflow)
+        // internalRouteMap(data.procedure, data.workflow)
       })
     }
   }

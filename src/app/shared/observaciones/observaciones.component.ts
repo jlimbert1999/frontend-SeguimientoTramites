@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { BandejaEntradaService } from 'src/app/Bandejas/services/bandeja-entrada.service';
-import { Observacion } from 'src/app/procedures/models/Externo.interface';
+import { InboxService } from 'src/app/communication/services/inbox.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -10,21 +9,21 @@ import Swal from 'sweetalert2';
   styleUrls: ['./observaciones.component.scss']
 })
 export class ObservacionesComponent implements OnInit {
-  @Input() Observaciones: Observacion[] = []
+  @Input() Observaciones: any[] = []
   @Input() Options: boolean
   @Output() setNewState = new EventEmitter<string>();
   filter: boolean = false
 
   constructor(
     public authService: AuthService,
-    private entradaService: BandejaEntradaService
+    private entradaService: InboxService
   ) { }
 
   ngOnInit(): void {
 
   }
 
-  markAsSolved(observation: Observacion) {
+  markAsSolved(observation: any) {
     Swal.fire({
       title: `Marcar la observacion como corregida?`,
       text: `Esta observacion se mostrara como corregida para todos los funcionarios`,
