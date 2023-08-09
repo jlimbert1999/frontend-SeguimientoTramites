@@ -7,16 +7,17 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
 import { LoaderService } from 'src/app/auth/services/loader.service';
 import { InboxService } from '../../services/inbox.service';
-import { DialogRemisionComponent } from '../../dialogs/dialog-remision/dialog-remision.component';
+import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.component';
 import { InternosService } from 'src/app/procedures/services/internos.service';
 import { ExternosService } from 'src/app/procedures/services/externos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
-import { Entrada } from '../../models/entrada.interface';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { showToast } from 'src/app/helpers/toats.helper';
 import { NotificationService } from 'src/app/home-old/services/notification.service';
 import { SocketService } from 'src/app/services/socket.service';
+import { inbox } from '../../interfaces/inbox.interface';
+import { internal } from 'src/app/procedures/interfaces/internal.interface';
 
 
 @Component({
@@ -28,7 +29,7 @@ import { SocketService } from 'src/app/services/socket.service';
   ],
 })
 export class InboxComponent implements OnInit {
-  dataSource: any[] = []
+  dataSource: inbox[] = []
   displayedColumns = [
     'alterno',
     'detalle',
@@ -43,7 +44,7 @@ export class InboxComponent implements OnInit {
     { value: 'interno', viewValue: 'INTERNO' },
     { value: 'externo', viewValue: 'EXTERNO' },
   ];
-  Mails = this.bandejaService.Mails
+
 
   constructor(
     public bandejaService: InboxService,
@@ -75,15 +76,14 @@ export class InboxComponent implements OnInit {
     }
     else {
       this.bandejaService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-        console.log(data);
-        this.paginatorService.length = length
         this.dataSource = data.mails
+        this.paginatorService.length = data.length
       })
     }
   }
 
-  send(elemento: Entrada) {
-    const dialogRef = this.dialog.open(DialogRemisionComponent, {
+  send(elemento: inbox) {
+    const dialogRef = this.dialog.open(SendDialogComponent, {
       width: '1200px',
       data: {
         _id: elemento.tramite._id,
@@ -101,7 +101,7 @@ export class InboxComponent implements OnInit {
       }
     });
   }
-  aceptar_tramite(elemento: Entrada) {
+  aceptar_tramite(elemento: inbox) {
     Swal.fire({
       title: `Aceptar tramite ${elemento.tramite.alterno}?`,
       text: `El tramite sera marcado como aceptado`,
@@ -112,50 +112,50 @@ export class InboxComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.bandejaService.aceptMail(elemento._id).subscribe(data => {
-          const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
-          this.bandejaService.Mails[indexFound].recibido = true
-          this.bandejaService.Mails[indexFound].tramite.estado = data.state
-          this.bandejaService.Mails = [...this.bandejaService.Mails]
-          this.toastr.success(undefined, data.message, {
-            positionClass: 'toast-bottom-right',
-            timeOut: 3000,
-          })
+          // const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
+          // this.bandejaService.Mails[indexFound].recibido = true
+          // this.bandejaService.Mails[indexFound].tramite.estado = data.state
+          // this.bandejaService.Mails = [...this.bandejaService.Mails]
+          // this.toastr.success(undefined, data.message, {
+          //   positionClass: 'toast-bottom-right',
+          //   timeOut: 3000,
+          // })
         })
       }
     })
 
 
   }
-  rechazar_tramite(elemento: Entrada) {
-    Swal.fire({
-      icon: 'info',
-      title: `Rechazar tramite ${elemento.tramite.alterno}`,
-      text: `El tramite sera devuelto a ${createFullName(elemento.emisor.funcionario)}`,
-      input: 'textarea',
-      inputPlaceholder: 'Ingrese el motivo del rechazo',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-      customClass: {
-        validationMessage: 'my-validation-message'
-      },
-      preConfirm: (value) => {
-        if (!value) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Debe ingresar el motivo para el rechazo'
-          )
-        }
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.bandejaService.rejectMail(elemento._id, result.value!).subscribe(message => {
-          showToast('success', message)
-          this.Get()
-        })
-      }
-    })
+  rechazar_tramite(elemento: inbox) {
+    // Swal.fire({
+    //   icon: 'info',
+    //   title: `Rechazar tramite ${elemento.tramite.alterno}`,
+    //   text: `El tramite sera devuelto a ${createFullName(elemento.emisor.)}`,
+    //   input: 'textarea',
+    //   inputPlaceholder: 'Ingrese el motivo del rechazo',
+    //   showCancelButton: true,
+    //   confirmButtonText: 'Aceptar',
+    //   cancelButtonText: 'Cancelar',
+    //   customClass: {
+    //     validationMessage: 'my-validation-message'
+    //   },
+    //   preConfirm: (value) => {
+    //     if (!value) {
+    //       Swal.showValidationMessage(
+    //         '<i class="fa fa-info-circle"></i> Debe ingresar el motivo para el rechazo'
+    //       )
+    //     }
+    //   }
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     this.bandejaService.rejectMail(elemento._id, result.value!).subscribe(message => {
+    //       showToast('success', message)
+    //       this.Get()
+    //     })
+    //   }
+    // })
   }
-  concluir(mail: Entrada) {
+  concluir(mail: inbox) {
     Swal.fire({
       icon: 'question',
       title: `Concluir el tramite ${mail.tramite.alterno}?`,
@@ -212,7 +212,7 @@ export class InboxComponent implements OnInit {
   }
 
 
-  generateRouteMap(mail: Entrada) {
+  generateRouteMap(mail: inbox) {
     mail.tipo === 'tramites_externos'
       ? this.externoService.getAllDataExternalProcedure(mail.tramite._id).subscribe(data => {
         // externalRouteMap(data.procedure, data.workflow)

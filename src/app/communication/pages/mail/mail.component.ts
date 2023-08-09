@@ -6,9 +6,8 @@ import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import Swal from 'sweetalert2';
 import { WorkflowData } from '../../models/workflow.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { Mail } from '../../models/entrada.interface';
 import { showToast } from 'src/app/helpers/toats.helper';
-import { DialogRemisionComponent } from '../../dialogs/dialog-remision/dialog-remision.component';
+import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
 import { createFullName } from 'src/app/helpers/fullname.helper';
@@ -29,7 +28,7 @@ import { InternosService } from 'src/app/procedures/services/internos.service';
 export class MailComponent implements OnInit {
   Tramite: any
   Workflow: WorkflowData[]
-  Mail: Mail
+  Mail: any
   observations: any[] = []
   Events: any[] = []
   Location: any[] = []
@@ -174,7 +173,7 @@ export class MailComponent implements OnInit {
     })
   }
   send() {
-    const dialogRef = this.dialog.open(DialogRemisionComponent, {
+    const dialogRef = this.dialog.open(SendDialogComponent, {
       width: '1200px',
       data: {
         _id: this.Tramite._id,

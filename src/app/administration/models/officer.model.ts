@@ -30,15 +30,16 @@ export class Officer {
     ) {
     }
     get fullname() {
-        return `${this.nombre.trim()} ${this.paterno.trim()} ${this.materno.trim()}`
+        return `${this.nombre.trim()} ${this.paterno.trim()} ${this.materno.trim()}`;
     }
 
-    get fulljobtitle() {
-        return this.cargo ? this.cargo.nombre : 'SIN CARGO'
+    get jobtitle() {
+        return this.cargo ? this.cargo.nombre : 'SIN CARGO';
     }
 
     get fullWorkTitle() {
-        return `${this.fullname} (${this.cargo ? this.cargo.nombre : 'SIN CARGO'})`
+        const titleCaseFullname = this.fullname.toLowerCase().split(' ').map(word => (word.charAt(0).toUpperCase() + word.slice(1))).join(' ');
+        return `${titleCaseFullname} (${this.jobtitle.toUpperCase()})`;
     }
 
 }

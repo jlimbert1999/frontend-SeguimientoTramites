@@ -7,12 +7,11 @@ import Swal from 'sweetalert2';
 import { DialogInternosComponent } from '../../dialogs/dialog-internos/dialog-internos.component';
 import { InternosService } from '../../services/internos.service';
 import { Router } from '@angular/router';
-import { Interno } from '../../models/Interno.interface';
 import { paramsNavigation } from '../../models/ProceduresProperties';
 import { SocketService } from 'src/app/services/socket.service';
 import { internal } from '../../interfaces/internal.interface';
 import { createInternalRouteMap } from '../../helpers/internal-route-map';
-import { DialogRemisionComponent } from 'src/app/communication/dialogs/dialog-remision/dialog-remision.component';
+import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
 
 @Component({
   selector: 'app-internos',
@@ -72,7 +71,7 @@ export class InternosComponent implements OnInit {
       }
     });
   }
-  Edit(tramite: Interno) {
+  Edit(tramite: internal) {
     const dialogRef = this.dialog.open(DialogInternosComponent, {
       width: '1000px',
       disableClose: true,
@@ -86,8 +85,8 @@ export class InternosComponent implements OnInit {
       }
     });
   }
-  Send(tramite: Interno) {
-    const dialogRef = this.dialog.open(DialogRemisionComponent, {
+  Send(tramite: internal) {
+    const dialogRef = this.dialog.open(SendDialogComponent, {
       width: '1200px',
       data: {
         _id: tramite._id,
@@ -128,7 +127,7 @@ export class InternosComponent implements OnInit {
     })
   }
 
-  conclude(procedure: Interno) {
+  conclude(procedure: internal) {
     Swal.fire({
       icon: 'question',
       title: `Concluir el tramite ${procedure.alterno}?`,
@@ -159,7 +158,7 @@ export class InternosComponent implements OnInit {
       }
     })
   }
-  view(procedure: Interno) {
+  view(procedure: internal) {
     let params: paramsNavigation = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset

@@ -10,7 +10,8 @@ import { paramsNavigation } from '../../models/ProceduresProperties';
 import { external } from '../../interfaces/external.interface';
 import { createExternalRouteMap } from '../../helpers/external-route-map';
 import { Ficha } from '../../helpers/ficha';
-import { DialogRemisionComponent } from 'src/app/communication/dialogs/dialog-remision/dialog-remision.component';
+import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
+import { sendDetail } from 'src/app/communication/interfaces';
 
 
 @Component({
@@ -86,22 +87,24 @@ export class ExternosComponent implements OnInit {
   }
 
 
-  Send(tramite: external) {
-    const dialogRef = this.dialog.open(DialogRemisionComponent, {
+  Send(procedure: external) {
+    const { _id, alterno, cantidad } = procedure
+    const data: sendDetail = {
+      group: 'ExternalProcedure',
+      procedure: {
+        _id,
+        alterno,
+        amount: cantidad
+      }
+    }
+    const dialogRef = this.dialog.open(SendDialogComponent, {
       width: '1200px',
-      data: {
-        _id: tramite._id,
-        tipo: 'tramites_externos',
-        tramite: {
-          alterno: tramite.alterno,
-          cantidad: tramite.cantidad
-        }
-      },
+      data: data,
       disableClose: true
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        const indexFound = this.dataSource.findIndex(element => element._id === tramite._id)
+        const indexFound = this.dataSource.findIndex(element => element._id === procedure._id)
         // this.dataSource[indexFound].enviado = true
         this.dataSource = [...this.dataSource]
         this.Add()

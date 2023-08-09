@@ -77,7 +77,7 @@ export class DialogInternosComponent implements OnInit {
   }
 
   setJobTitle(officer: Officer, formControlPath: string) {
-    this.TramiteFormGroup.get(formControlPath)?.setValue(officer.fulljobtitle)
+    this.TramiteFormGroup.get(formControlPath)?.setValue(officer.jobtitle)
   }
 
   createForm(mode: 'ADD' | 'EDIT') {

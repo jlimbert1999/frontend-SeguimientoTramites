@@ -4,10 +4,8 @@ import { Content, ContentOrderedList, ContentUnorderedList, Table, TableCell, Ta
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
-import { ListWorkflow, LocationProcedure } from "src/app/Bandejas/models/workflow.interface";
-import { Interno } from "src/app/procedures/models/Interno.interface";
 
-export async function PDF_FichaExterno(tramite: any, ListWorkflow: ListWorkflow[], Location: LocationProcedure[], group: 'tramites_externos' | 'tramites_internos') {
+export async function PDF_FichaExterno(tramite: any, ListWorkflow: any[], Location: any[], group: 'tramites_externos' | 'tramites_internos') {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     let docDefinition: TDocumentDefinitions
@@ -108,7 +106,7 @@ export async function PDF_FichaExterno(tramite: any, ListWorkflow: ListWorkflow[
     pdfMake.createPdf(docDefinition).print();
 }
 
-function createTableWorkflow(List: ListWorkflow[]): Table {
+function createTableWorkflow(List: any[]): Table {
     const tableWorkflow: Table = {
         dontBreakRows: true,
         widths: ['*', '*', '*', '*'],
@@ -162,7 +160,7 @@ function createTableWorkflow(List: ListWorkflow[]): Table {
     })
     return tableWorkflow
 }
-function createSectionLocation(location: LocationProcedure[]): Content {
+function createSectionLocation(location: any[]): Content {
     if (location.length === 0) {
         return ''
     }
@@ -251,7 +249,7 @@ function createSectionAplicantExternal(tramite: any): Content {
     )
 }
 
-function createSectionAplicantInternal(tramite: Interno): Content {
+function createSectionAplicantInternal(tramite: any): Content {
     const tableEmitter: Table = {
         headerRows: 1,
         dontBreakRows: true,

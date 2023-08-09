@@ -4,7 +4,6 @@ import { Content, ContentOrderedList, ContentUnorderedList, Table, TableCell, Ta
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
 import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
-import { Interno } from "src/app/procedures/models/Interno.interface";
 
 export async function PDF_FichaExterno(tramite: any, ListWorkflow: any[], Location: any[]) {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
@@ -165,7 +164,7 @@ export async function PDF_FichaExterno(tramite: any, ListWorkflow: any[], Locati
     pdfMake.createPdf(docDefinition).print();
 }
 
-export async function PDF_FichaInterno(tramite: Interno, ListWorkflow: any[], Location: any[]) {
+export async function PDF_FichaInterno(tramite: any, ListWorkflow: any[], Location: any[]) {
     const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
     const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
     const tableEmitter: Table = {

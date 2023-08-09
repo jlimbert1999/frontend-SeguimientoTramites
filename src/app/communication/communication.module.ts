@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 import { SharedModule } from '../shared/shared.module';
-import { DialogRemisionComponent } from './dialogs/dialog-remision/dialog-remision.component';
+import { SendDialogComponent } from './dialogs/send-dialog/send-dialog.component';
 import { MaterialModule } from '../angular-material/material.module';
 import { MailComponent } from './pages/mail/mail.component';
 import { InboxComponent } from './pages/inbox/inbox.component';
@@ -14,11 +14,10 @@ import { CommunicationRoutingModule } from './communication-routing.module';
 
 @NgModule({
   declarations: [
-    DialogRemisionComponent,
+    SendDialogComponent,
     MailComponent,
     InboxComponent,
     OutboxComponent,
-
   ],
   imports: [
     CommonModule,

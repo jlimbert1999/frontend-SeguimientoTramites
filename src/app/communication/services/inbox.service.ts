@@ -2,9 +2,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { AccountForSend, Entrada, Mail } from '../models/entrada.interface';
 import { LocationProcedure, WorkflowData } from '../models/workflow.interface';
-import { EntradaDto } from '../models/entrada.dto';
+import { inbox } from '../interfaces/inbox.interface';
+import { Officer } from 'src/app/administration/models/officer.model';
+import { receiver } from '../interfaces/receiver.interface';
+import { institution, dependency, account } from 'src/app/administration/interfaces';
 
 const base_url = environment.base_url;
 
@@ -12,27 +14,26 @@ const base_url = environment.base_url;
   providedIn: 'root',
 })
 export class InboxService {
-  Mails: Entrada[] = [];
   constructor(private http: HttpClient) { }
 
   Get(limit: number, offset: number) {
     const params = new HttpParams()
       .set('offset', offset)
       .set('limit', limit);
-    return this.http.get<{ mails: any[]; length: number }>(`${base_url}/imbox`, { params }
-    ).pipe(map((resp) => {
-      return { mails: resp.mails, length: resp.length }
-    })
-    );
+    return this.http.get<{ mails: inbox[]; length: number }>(`${base_url}/inbox`, { params }).pipe(
+      map((resp) => {
+        return { mails: resp.mails, length: resp.length }
+      }
+      ));
   }
   Search(limit: number, offset: number, type: 'INTERNO' | 'EXTERNO', text: string) {
     let params = new HttpParams()
       .set('offset', offset)
       .set('limit', limit)
       .set('text', text)
-    return this.http.get<{ ok: boolean, mails: Entrada[], length: number }>(`${base_url}/entradas/search/${type}`, { params }).pipe(
+    return this.http.get<{ ok: boolean, mails: any[], length: number }>(`${base_url}/entradas/search/${type}`, { params }).pipe(
       map(resp => {
-        this.Mails = resp.mails
+   
         return resp.length
       })
     )
@@ -53,8 +54,8 @@ export class InboxService {
       })
     )
   }
-  Add(data: EntradaDto) {
-    return this.http.post<{ ok: boolean, mails: Entrada }>(`${base_url}/entradas`, data).pipe(
+  Add(data: any) {
+    return this.http.post<{ ok: boolean, mails: inbox }>(`${base_url}/entradas`, data).pipe(
       map(resp => {
         return resp.mails
       })
@@ -68,24 +69,30 @@ export class InboxService {
   //   )
   // }
   getInstitucions() {
-    return this.http.get<{ ok: boolean, institutions: any[] }>(`${base_url}/entradas/instituciones`).pipe(
+    return this.http.get<institution[]>(`${base_url}/inbox/institutions`).pipe(
       map(resp => {
-        return resp.institutions
+        return resp
       })
     )
   }
   getDependenciesOfInstitution(id_institution: string) {
-    return this.http.get<{ ok: boolean, dependencies: any[] }>(`${base_url}/entradas/dependencias/${id_institution}`).pipe(
+    return this.http.get<dependency[]>(`${base_url}/inbox/dependencies/${id_institution}`).pipe(
       map(resp => {
-        return resp.dependencies
+        return resp
       })
     )
   }
   getAccountsOfDependencie(id_dependencie: string) {
-    return this.http.get<{ ok: boolean, accounts: AccountForSend[] }>(`${base_url}/entradas/cuentas/${id_dependencie}`).pipe(
+    return this.http.get<account[]>(`${base_url}/inbox/accounts/${id_dependencie}`).pipe(
       map(resp => {
-        resp.accounts.map(account => account.funcionario.fullname = `${account.funcionario.nombre} ${account.funcionario.paterno} ${account.funcionario.materno}`)
-        return resp.accounts
+        const receivers: receiver[] = resp.map(account => {
+          return {
+            id_account: account._id,
+            officer: Officer.officerFromJson(account.funcionario),
+            online: false
+          }
+        })
+        return receivers
       })
     )
   }
@@ -99,7 +106,7 @@ export class InboxService {
   }
 
   getDetailsMail(id_bandeja: string) {
-    return this.http.get<{ ok: boolean, mail: Mail, procedure: any, observations: any[], workflow: WorkflowData[], location: LocationProcedure[], events: any[] }>(`${base_url}/entradas/${id_bandeja}`).pipe(
+    return this.http.get<{ ok: boolean, mail: any, procedure: any, observations: any[], workflow: WorkflowData[], location: LocationProcedure[], events: any[] }>(`${base_url}/entradas/${id_bandeja}`).pipe(
       map(resp => {
         resp.workflow = resp.workflow.map(mail => {
           mail.emisor.funcionario ? mail.emisor.funcionario : { nombre: 'Desvinculado', paterno: '', materno: '', cargo: '----' }

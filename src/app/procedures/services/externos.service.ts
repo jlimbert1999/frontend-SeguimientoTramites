@@ -2,7 +2,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { TipoTramite } from 'src/app/administration/models/tipoTramite.interface';
 import { external } from '../interfaces/external.interface';
 import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
 import { ExternalProcedureDto } from '../dtos/external.dto';
@@ -28,20 +27,6 @@ export class ExternosService {
   getTypesProceduresBySegment(segment: string) {
     return this.http.get<typeProcedure[]>(`${base_url}/external/segments/${segment}`).pipe(
       map(resp => resp)
-    )
-  }
-
-  getTypesProcedures() {
-    return this.http.get<{ ok: boolean, types: TipoTramite[] }>(`${base_url}/externos/tipos`).pipe(
-      map(resp => {
-        let segments: string[] = []
-        resp.types.forEach(type => {
-          if (!segments.includes(type.segmento)) {
-            segments.push(type.segmento)
-          }
-        });
-        return { segments, types: resp.types }
-      })
     )
   }
 

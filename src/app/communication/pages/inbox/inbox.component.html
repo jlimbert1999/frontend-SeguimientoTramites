@@ -53,9 +53,9 @@
                 <ng-container matColumnDef="emisor">
                     <th mat-header-cell *matHeaderCellDef>Emisor</th>
                     <td mat-cell *matCellDef="let row">
-                        <span class="fw-bold"></span>
+                        <span class="fw-bold">{{row.emisor.fullname}}</span>
                         <br>
-                        <!-- <span class="fw-light">{{row.emisor.funcionario.cargo}}</span>u -->
+                        <span class="fw-light">{{row.emisor.jobtitle}}</span>
                     </td>
                 </ng-container>
 

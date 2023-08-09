@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client'
 import { userSocket } from 'src/app/auth/models/account.model';
 import { environment } from 'src/environments/environment';
-import { Entrada } from '../communication/models/entrada.interface';
+import { inbox } from '../communication/interfaces';
 @Injectable({
   providedIn: 'root'
 })
@@ -29,9 +29,9 @@ export class SocketService {
       this.onlineUsersSubject.next(data)
     })
   }
-  listenMails(): Observable<Entrada> {
-    return new Observable<Entrada>((observable) => {
-      this.socket.on('newmail', (data: Entrada) => {
+  listenMails(): Observable<inbox> {
+    return new Observable<inbox>((observable) => {
+      this.socket.on('newmail', (data: inbox) => {
         observable.next(data)
       })
     })
