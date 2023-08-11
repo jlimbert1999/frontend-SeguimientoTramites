@@ -7,6 +7,7 @@ import { inbox } from '../interfaces/inbox.interface';
 import { Officer } from 'src/app/administration/models/officer.model';
 import { receiver } from '../interfaces/receiver.interface';
 import { institution, dependency, account } from 'src/app/administration/interfaces';
+import { CreateMailDto } from '../dto/create-mail.dto';
 
 const base_url = environment.base_url;
 
@@ -33,7 +34,7 @@ export class InboxService {
       .set('text', text)
     return this.http.get<{ ok: boolean, mails: any[], length: number }>(`${base_url}/entradas/search/${type}`, { params }).pipe(
       map(resp => {
-   
+
         return resp.length
       })
     )
@@ -54,10 +55,10 @@ export class InboxService {
       })
     )
   }
-  Add(data: any) {
-    return this.http.post<{ ok: boolean, mails: inbox }>(`${base_url}/entradas`, data).pipe(
+  Add(data: CreateMailDto) {
+    return this.http.post<any>(`${base_url}/inbox`, data).pipe(
       map(resp => {
-        return resp.mails
+        return resp
       })
     )
   }

@@ -4,7 +4,7 @@ import { SendDataReportEvent } from '../../models/sendData.model';
 import { forkJoin } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { searchParamsReportUnit } from '../../models/repot-unidad.model';
-import { groupProcedure, statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
+import {  statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
 @Component({
   selector: 'app-report-unidad-options',
   templateUrl: './report-unidad-options.component.html',
@@ -16,7 +16,7 @@ export class ReportUnidadOptionsComponent implements OnInit {
   typesProcedures: any[] = []
   dependencias: any[] = []
   accounts: any[] = []
-  groupProcedure: groupProcedure = 'tramites_externos'
+  groupProcedure: any = 'tramites_externos'
   options = this._formBuilder.group({
     institucion: null,
     dependencia: null,

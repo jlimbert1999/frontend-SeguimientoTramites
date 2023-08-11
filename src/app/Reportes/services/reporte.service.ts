@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { groupProcedure } from 'src/app/procedures/models/ProceduresProperties';
 const base_url = environment.base_url
 @Injectable({
   providedIn: 'root'
@@ -12,7 +11,7 @@ export class ReporteService {
 
 
   constructor(private http: HttpClient) { }
-  getReporteFicha(group: groupProcedure, paramsforSearch: any) {
+  getReporteFicha(group: any, paramsforSearch: any) {
     const params = new HttpParams({ fromObject: this.filterEmptyFields(paramsforSearch) })
     return this.http.get<{ ok: boolean, tramites: any }>(`${base_url}/reportes/ficha/${group}`, { params }).pipe(
       map(resp => {
@@ -20,7 +19,7 @@ export class ReporteService {
       })
     )
   }
-  getReportByAccount(group: groupProcedure, paramsforSearch: any) {
+  getReportByAccount(group: any, paramsforSearch: any) {
     const params = new HttpParams({ fromObject: this.filterEmptyFields(paramsforSearch) })
     return this.http.get<{ ok: boolean, procedures: any[] }>(`${base_url}/reportes/account/procedures/${group}`, { params }).pipe(
       map(resp => {
@@ -28,7 +27,7 @@ export class ReporteService {
       })
     )
   }
-  getReportByUnit(group: groupProcedure, paramsforSearch: any) {
+  getReportByUnit(group: any, paramsforSearch: any) {
     const params = new HttpParams({ fromObject: this.filterEmptyFields(paramsforSearch) })
     return this.http.get<{ ok: boolean, tramites: any[] }>(`${base_url}/reportes/unit/${group}`, { params }).pipe(
       map(resp => {
@@ -44,7 +43,7 @@ export class ReporteService {
       })
     )
   }
-  getReportByTypeProcedure(group: groupProcedure, paramsforSearch: any) {
+  getReportByTypeProcedure(group: any, paramsforSearch: any) {
     const params = new HttpParams({ fromObject: this.filterEmptyFields(paramsforSearch) })
     return this.http.get<{ ok: boolean, procedures: any[] }>(`${base_url}/reportes/tipos/${group}`, { params }).pipe(
       map(resp => {
@@ -52,7 +51,7 @@ export class ReporteService {
       })
     )
   }
-  getReporteBySearch(group: groupProcedure, paramsforSearch: any, limit: number, offset: number) {
+  getReporteBySearch(group: any, paramsforSearch: any, limit: number, offset: number) {
     let params = new HttpParams({ fromObject: this.filterEmptyFields(paramsforSearch) })
     params = params.set('limit', limit)
     params = params.set('offset', offset)
@@ -120,7 +119,7 @@ export class ReporteService {
       })
     )
   }
-  getTypesProceduresForReports(group: groupProcedure) {
+  getTypesProceduresForReports(group: any) {
     return this.http.get<{ ok: boolean, types: any[] }>(`${base_url}/reportes/types/${group}`).pipe(
       map(resp => {
         return resp.types

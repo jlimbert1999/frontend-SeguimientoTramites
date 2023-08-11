@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { ReporteService } from '../../services/reporte.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SendDataReportEvent } from '../../models/sendData.model';
-import { groupProcedure, statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
+import { statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
 
 @Component({
   selector: 'app-report-usuario-options',
@@ -12,7 +12,7 @@ import { groupProcedure, statesProcedure } from 'src/app/procedures/models/Proce
 export class ReportUsuarioOptionsComponent {
   @Output() sendDataEvent = new EventEmitter<SendDataReportEvent>();
   accounts: any[] = []
-  groupProcedure: groupProcedure = 'tramites_externos'
+  groupProcedure: any = 'tramites_externos'
   options = this._formBuilder.group({
     cuenta: '',
     estado: null,

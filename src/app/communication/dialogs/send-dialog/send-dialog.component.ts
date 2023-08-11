@@ -8,6 +8,7 @@ import { SocketService } from 'src/app/services/socket.service';
 import { receiver } from '../../interfaces/receiver.interface';
 import { dependency, institution } from 'src/app/administration/interfaces';
 import { sendDetail } from '../../interfaces';
+import { CreateMailDto } from '../../dto/create-mail.dto';
 
 @Component({
   selector: 'app-send-dialog',
@@ -25,7 +26,7 @@ export class SendDialogComponent implements OnInit, OnDestroy {
   selectedReceivers: receiver[] = [];
   FormEnvio: FormGroup = this.fb.group({
     motivo: ['PARA SU ATENCION', Validators.required],
-    cantidad: [this.data.procedure.amount, Validators.required],
+    cantidad: [this.data.amount, Validators.required],
     numero_interno: ['']
   });
 
@@ -50,41 +51,29 @@ export class SendDialogComponent implements OnInit, OnDestroy {
   }
 
   send() {
-    // let mails: EntradaDto = {
-    //   tramite: this.Data._id,
-    //   tipo: this.Data.tipo,
-    //   motivo: this.FormEnvio.get('motivo')?.value,
-    //   cantidad: this.FormEnvio.get('cantidad')?.value,
-    //   numero_interno: this.FormEnvio.get('numero_interno')?.value,
-    //   receptores: this.accountsForSend,
-    // };
-    // Swal.fire({
-    //   title: `Remitir el tramite ${this.Data.tramite.alterno}?`,
-    //   text: `Numero de destinatarios: ${this.accountsForSend.length}`,
-    //   icon: 'question',
-    //   showCancelButton: true,
-    //   confirmButtonColor: '#3085d6',
-    //   cancelButtonColor: '#d33',
-    //   confirmButtonText: 'Enviar',
-    //   cancelButtonText: 'Cancelar'
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     Swal.fire({
-    //       title: 'Enviando el tramite....',
-    //       text: 'Por favor espere',
-    //       allowOutsideClick: false,
-    //     });
-    //     Swal.showLoading();
-    //     this.bandejaService.Add(mails).subscribe(data => {
-    //       const isRealTime = this.accountsForSend.some(account => account.online === true)
-    //       if (isRealTime) {
-    //         this.socketService.socket.emit("mail", data)
-    //       }
-    //       Swal.close();
-    //       this.dialogRef.close({})
-    //     });
-    //   }
-    // });
+    const mail = CreateMailDto.fromFormData(this.FormEnvio.value, this.data, this.selectedReceivers)
+    Swal.fire({
+      title: `Remitir el tramite ${this.data.procedure.alterno}?`,
+      text: `Numero de destinatarios: ${mail.receivers.length}`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Enviar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'Enviando el tramite....',
+          text: 'Por favor espere',
+          allowOutsideClick: false,
+        });
+        this.bandejaService.Add(mail).subscribe(data => {
+          Swal.close();
+          // this.dialogRef.close({})
+        });
+      }
+    });
   }
   addReceiver(account: receiver) {
     this.userCtrl.setValue(null)

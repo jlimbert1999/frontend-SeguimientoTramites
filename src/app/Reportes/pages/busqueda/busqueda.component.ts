@@ -5,7 +5,7 @@ import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ReporteService } from '../../services/reporte.service';
 import { Router } from '@angular/router';
 import { MatAccordion } from '@angular/material/expansion';
-import { groupProcedure, paramsNavigation, statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
+import { paramsNavigation, statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { forkJoin } from 'rxjs';
 
@@ -19,7 +19,7 @@ import { forkJoin } from 'rxjs';
 })
 
 export class BusquedaComponent implements OnInit {
-  groupProcedure: groupProcedure = 'tramites_externos'
+  groupProcedure: any = 'tramites_externos'
   searchForm: FormGroup = this.createForm(this.groupProcedure)
   states: statesProcedure[] = [
     'CONCLUIDO',
@@ -83,7 +83,7 @@ export class BusquedaComponent implements OnInit {
       this.paginationService.length = data.length
     }))
   }
-  createForm(group: groupProcedure) {
+  createForm(group: any) {
     return group === 'tramites_externos'
       ? this.fb.group({
         alterno: null,
@@ -114,7 +114,7 @@ export class BusquedaComponent implements OnInit {
         end: new FormControl<Date | null>(null),
       })
   }
-  selectGroupProcedure(group: groupProcedure) {
+  selectGroupProcedure(group: any) {
     this.searchForm = this.createForm(this.groupProcedure)
     this.reporteService.getTypesProceduresForReports(group).subscribe(data => {
       this.typesProcedures = data

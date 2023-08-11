@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ReporteService } from '../../services/reporte.service';
 import { SendDataReportEvent } from '../../models/sendData.model';
-import { groupProcedure, statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
+import {  statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
 import { FormControl, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
@@ -11,7 +11,7 @@ import { FormControl, FormBuilder, Validators } from '@angular/forms';
 })
 export class ReportTipoOptionsComponent {
   @Output() sendDataEvent = new EventEmitter<SendDataReportEvent>();
-  groupProcedure: groupProcedure = 'tramites_externos'
+  groupProcedure: any = 'tramites_externos'
   options = this._formBuilder.group({
     tipo_tramite: [null, Validators.required],
     alterno: null,

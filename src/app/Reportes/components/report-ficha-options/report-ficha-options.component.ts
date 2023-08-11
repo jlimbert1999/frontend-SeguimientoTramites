@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ReporteService } from '../../services/reporte.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { groupProcedure, statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
+import { statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
 import { SendDataReportEvent } from '../../models/sendData.model';
 
 @Component({
@@ -11,7 +11,7 @@ import { SendDataReportEvent } from '../../models/sendData.model';
 })
 export class ReportFichaOptionsComponent implements OnInit {
   @Output() sendDataEvent = new EventEmitter<SendDataReportEvent>();
-  groupProcedure: groupProcedure = 'tramites_externos'
+  groupProcedure: any = 'tramites_externos'
   options = this._formBuilder.group({
     alterno: null,
     estado: null,
