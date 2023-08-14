@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { ReplaySubject, Subject, map, switchMap, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { InboxService } from '../../services/inbox.service';
@@ -63,12 +63,14 @@ export class SendDialogComponent implements OnInit, OnDestroy {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire({
-          title: 'Enviando el tramite....',
-          text: 'Por favor espere',
-          allowOutsideClick: false,
-        });
+        // Swal.fire({
+        //   title: 'Enviando el tramite....',
+        //   text: 'Por favor espere',
+        //   allowOutsideClick: false,
+        // });
         this.bandejaService.Add(mail).subscribe(data => {
+          const receiversId = this.selectedReceivers.filter(receiver => receiver.online).map(receiver => receiver.id_account)
+         
           Swal.close();
           // this.dialogRef.close({})
         });
@@ -94,18 +96,30 @@ export class SendDialogComponent implements OnInit, OnDestroy {
     })
   }
   selectDependencie(dependencie: dependency) {
-    this.bandejaService.getAccountsOfDependencie(dependencie._id).subscribe(data => {
-      this.receivers = data.map(account => {
-        account.online = this.socketService.onlineUsers.some((userSocket) => userSocket.id_account === account.id_account);
-        return account
-      });
-      this.userCtrl.setValue(this.receivers)
-      this.filteredUsers.next(this.receivers.slice());
-      this.userFilterCtrl.valueChanges.pipe(takeUntil(this._onDestroy))
-        .subscribe(() => {
-          this.filterAccounts()
-        });
-    })
+    this.bandejaService.getAccountsOfDependencie(dependencie._id)
+      .pipe(
+        switchMap(data => {
+          return this.socketService.onlineUsers$
+            .pipe(
+              takeUntil(this._onDestroy),
+              map(onlineUsers => {
+                return data.map(account => {
+                  account.online = onlineUsers.some(userSocket => userSocket.id_account === account.id_account);
+                  return account;
+                });
+              })
+            );
+        })
+      )
+      .subscribe(data => {
+        this.receivers = data;
+        this.userCtrl.setValue(this.receivers);
+        this.filteredUsers.next(this.receivers.slice());
+        this.userFilterCtrl.valueChanges.pipe(takeUntil(this._onDestroy))
+          .subscribe(() => {
+            this.filterAccounts();
+          });
+      })
   }
   protected filterAccounts() {
     if (!this.receivers) {

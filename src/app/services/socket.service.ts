@@ -9,7 +9,6 @@ import { inbox } from '../communication/interfaces';
 })
 export class SocketService {
   socket: Socket;
-  onlineUsers: userSocket[] = []
   isOnline: boolean = false
   private onlineUsersSubject: BehaviorSubject<userSocket[]> = new BehaviorSubject<userSocket[]>([]);
   public onlineUsers$: Observable<userSocket[]> = this.onlineUsersSubject.asObservable();
@@ -68,6 +67,10 @@ export class SocketService {
   sendNotificacionToExpelUser(id_accountReceiver: string, message: string) {
     this.socket.emit('expel', { id_cuenta: id_accountReceiver, message })
   }
+
+  // sendMail(mails: inbox[]) {
+  //   this.socket.emit('mail', mails)
+  // }
 
   emitCancelAllMails(ids_receivers: string[]) {
     this.socket.emit('mail-all-cancel', ids_receivers)

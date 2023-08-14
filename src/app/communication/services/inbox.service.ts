@@ -56,7 +56,7 @@ export class InboxService {
     )
   }
   Add(data: CreateMailDto) {
-    return this.http.post<any>(`${base_url}/inbox`, data).pipe(
+    return this.http.post<inbox[]>(`${base_url}/inbox`, data).pipe(
       map(resp => {
         return resp
       })

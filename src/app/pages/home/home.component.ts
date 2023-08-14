@@ -56,6 +56,10 @@ export class HomeComponent {
   ngOnInit(): void {
     this.socketService.setupSocketConnection(this.authService.token)
     this.socketService.listenUserConection()
+    this.socketService.listenMails().subscribe(mail => {
+      alert('sdsd')
+      console.log(mail)
+    })
     // this.socketService.listenUserConection().subscribe(users => {
     //   this.socketService.onlineUsers = users
     // })
