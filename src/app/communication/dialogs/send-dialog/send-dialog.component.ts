@@ -69,14 +69,12 @@ export class SendDialogComponent implements OnInit, OnDestroy {
         //   allowOutsideClick: false,
         // });
         this.bandejaService.Add(mail).subscribe(data => {
-          const receiversId = this.selectedReceivers.filter(receiver => receiver.online).map(receiver => receiver.id_account)
-         
-          Swal.close();
-          // this.dialogRef.close({})
+          this.dialogRef.close(true)
         });
       }
     });
   }
+  
   addReceiver(account: receiver) {
     this.userCtrl.setValue(null)
     const found = this.selectedReceivers.some((accountForSend) => accountForSend.id_account === account.id_account);

@@ -18,6 +18,7 @@ import { NotificationService } from 'src/app/home-old/services/notification.serv
 import { SocketService } from 'src/app/services/socket.service';
 import { inbox } from '../../interfaces/inbox.interface';
 import { internal } from 'src/app/procedures/interfaces/internal.interface';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -29,6 +30,7 @@ import { internal } from 'src/app/procedures/interfaces/internal.interface';
   ],
 })
 export class InboxComponent implements OnInit {
+  private mailSubscription: Subscription;
   dataSource: inbox[] = []
   displayedColumns = [
     'alterno',
@@ -60,9 +62,13 @@ export class InboxComponent implements OnInit {
     private notificationService: NotificationService
   ) {
     this.socketService.listenCancelMail().subscribe(() => {
-      this.notificationService.number_mails.next(this.notificationService.number_mails.value - 1)
-      this.Get()
+      this.notificationService.number_mails.next(this.notificationService.number_mails.value - 1);
+      this.Get();
     })
+    this.mailSubscription = this.socketService.mailSubscription$.subscribe(data => {
+      console.log(data);
+      this.dataSource = [data, ...this.dataSource]
+    });
   }
 
   ngOnInit(): void {

@@ -17,6 +17,13 @@ export class ExternosService {
 
   constructor(private http: HttpClient) { }
 
+  markProcedureAsSend(id_procedure: string) {
+    return this.http.patch<{ ok: boolean }>(`${base_url}/external/send/${id_procedure}`, undefined)
+  }
+  verifyIfProceduresIsSend(id_procedure: string) {
+    return this.http.get<{ ok: boolean }>(`${base_url}/external/send/verify/${id_procedure}`, undefined)
+  }
+
   getSegments() {
     return this.http.get<{ _id: string }[]>(`${base_url}/external/segments`).pipe(
       map(resp => {

@@ -104,14 +104,15 @@ export class ExternosComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        const indexFound = this.dataSource.findIndex(element => element._id === procedure._id)
-        // this.dataSource[indexFound].enviado = true
-        this.dataSource = [...this.dataSource]
-        this.Add()
+        // this.externoService.markProcedureAsSend(procedure._id).subscribe(_ => {
+        //   const indexFound = this.dataSource.findIndex(element => element._id === procedure._id)
+        //   this.dataSource[indexFound].enviado = true
+        //   this.dataSource = [...this.dataSource]
+        //   this.Add()
+        // })
       }
     });
   }
-
 
   GenerateHojaRuta(id_tramite: string) {
     this.externoService.getAllDataExternalProcedure(id_tramite).subscribe(data => {

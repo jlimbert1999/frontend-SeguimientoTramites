@@ -14,6 +14,7 @@ export interface external {
     observaciones: any[];
     solicitante: applicant;
     representante?: representative;
+    enviado: boolean;
 }
 
 export type typeApplicant = 'NATURAL' | 'JURIDICO';

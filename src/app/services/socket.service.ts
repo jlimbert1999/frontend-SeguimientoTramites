@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client'
 import { userSocket } from 'src/app/auth/models/account.model';
 import { environment } from 'src/environments/environment';
@@ -12,6 +12,10 @@ export class SocketService {
   isOnline: boolean = false
   private onlineUsersSubject: BehaviorSubject<userSocket[]> = new BehaviorSubject<userSocket[]>([]);
   public onlineUsers$: Observable<userSocket[]> = this.onlineUsersSubject.asObservable();
+
+  private mailSubscription: Subject<inbox> = new Subject()
+  public mailSubscription$: Observable<inbox> = this.mailSubscription.asObservable()
+
   constructor() { }
   setupSocketConnection(token: string) {
     this.socket = io(`${environment.base_url}`, { auth: { token } });
@@ -28,13 +32,12 @@ export class SocketService {
       this.onlineUsersSubject.next(data)
     })
   }
-  listenMails(): Observable<inbox> {
-    return new Observable<inbox>((observable) => {
-      this.socket.on('newmail', (data: inbox) => {
-        observable.next(data)
-      })
+  listenMails() {
+    this.socket.on('newmail', (data: inbox) => {
+      this.mailSubscription.next(data)
     })
   }
+
   listenNotifications() {
     return new Observable((observable) => {
       this.socket.on('notify', (data: any) => {
