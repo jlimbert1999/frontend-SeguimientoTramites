@@ -19,6 +19,7 @@ export class OutboxService {
     return this.http.get<{ ok: boolean, mails: GroupedResponse[], length: number }>(
       `${base_url}/outbox`, { params }).pipe(
         map(resp => {
+          console.log(resp);
           const orderMails: GroupedMails[] = resp.mails.map<GroupedMails>(
             ({ _id: { tramite, ...rootData }, sendings }) => {
               sendings.map(send => {

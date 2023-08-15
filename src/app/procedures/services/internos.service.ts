@@ -18,6 +18,10 @@ export class InternosService {
 
   constructor(private http: HttpClient) { }
 
+  markProcedureAsSend(id_procedure: string) {
+    return this.http.patch<{ ok: boolean }>(`${base_url}/internal/send/${id_procedure}`, undefined)
+  }
+
   Add(tramite: CreateInternalProcedureDto) {
     return this.http.post<internal>(`${base_url}/internal`, tramite).pipe(
       map(resp => {

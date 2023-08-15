@@ -9,6 +9,7 @@ import { NotificationService } from 'src/app/home-old/services/notification.serv
 import { SocketService } from 'src/app/services/socket.service';
 import { ThemeService } from 'src/app/home-old/services/theme.service';
 import { SidenavService } from 'src/app/shared/services/sidenav.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -20,6 +21,7 @@ export class HomeComponent {
   Menu: any = this.authService.menu
   loading$ = this.loader.loading$;
   numberMails$ = this.notificationService.number_mails$
+  private mailSubscription: Subscription;
   @ViewChild('snav') public sidenav: MatSidenav;
 
   private _mobileQueryListener: () => void;
@@ -30,8 +32,8 @@ export class HomeComponent {
       this.sidenav.toggle();
     })
     this.sidenav.open()
-
   }
+
   constructor(
     changeDetectorRef: ChangeDetectorRef, media: MediaMatcher,
     public authService: AuthService,
@@ -47,17 +49,19 @@ export class HomeComponent {
     this.themeService.startTheme()
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
-
     this.socketService.setupSocketConnection(this.authService.token)
-    this.socketService.listenUserConection()
-    this.socketService.listenMails()
-
   }
   ngOnDestroy(): void {
     this.mobileQuery!.removeListener(this._mobileQueryListener);
+    if (this.mailSubscription) this.mailSubscription.unsubscribe()
   }
 
   ngOnInit(): void {
+    this.socketService.listenUserConection()
+    this.socketService.listenMails()
+    this.mailSubscription = this.mailSubscription = this.socketService.mailSubscription$.subscribe(data => {
+      this.notificationService.showNotificationNewMail({ nombre: 'ds', paterno: 'ds', materno: 's' })
+    });
     // this.socketService.listenUserConection().subscribe(users => {
     //   this.socketService.onlineUsers = users
     // })

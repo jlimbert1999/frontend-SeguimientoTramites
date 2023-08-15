@@ -15,7 +15,7 @@
                     <th mat-header-cell *matHeaderCellDef>Alterno</th>
                     <td mat-cell *matCellDef="let row">
                         <a (click)="view(row)">
-                            {{row.alterno}}
+                            {{row.code}}
                         </a>
                     </td>
                 </ng-container>
@@ -26,7 +26,7 @@
                 <ng-container matColumnDef="detalle">
                     <th mat-header-cell *matHeaderCellDef>Referencia</th>
                     <td mat-cell *matCellDef="let row">
-                        {{row.detalle}}
+                        {{row.reference}}
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="solicitante">
@@ -65,8 +65,7 @@
                                 <mat-icon>edit</mat-icon>
                                 <span>Editar tramite</span>
                             </button>
-                            <button mat-menu-item (click)="Send(row)"
-                                [disabled]="row.estado==='CONCLUIDO'|| row.enviado===true">
+                            <button mat-menu-item (click)="Send(row)">
                                 <mat-icon>send</mat-icon>
                                 <span>Remitir tramite</span>
                             </button>

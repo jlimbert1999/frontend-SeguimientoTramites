@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { fadeInOnEnterAnimation } from 'angular-animations';
@@ -29,7 +29,7 @@ import { Subscription } from 'rxjs';
     fadeInOnEnterAnimation(),
   ],
 })
-export class InboxComponent implements OnInit {
+export class InboxComponent implements OnInit, OnDestroy {
   private mailSubscription: Subscription;
   dataSource: inbox[] = []
   displayedColumns = [
@@ -61,12 +61,11 @@ export class InboxComponent implements OnInit {
     private socketService: SocketService,
     private notificationService: NotificationService
   ) {
-    this.socketService.listenCancelMail().subscribe(() => {
-      this.notificationService.number_mails.next(this.notificationService.number_mails.value - 1);
-      this.Get();
-    })
+    // this.socketService.listenCancelMail().subscribe(() => {
+    //   this.notificationService.number_mails.next(this.notificationService.number_mails.value - 1);
+    //   this.Get();
+    // })
     this.mailSubscription = this.socketService.mailSubscription$.subscribe(data => {
-      console.log(data);
       this.dataSource = [data, ...this.dataSource]
     });
   }
@@ -74,6 +73,11 @@ export class InboxComponent implements OnInit {
   ngOnInit(): void {
     this.Get()
   }
+
+  ngOnDestroy(): void {
+    if (this.mailSubscription) this.mailSubscription.unsubscribe()
+  }
+
   Get() {
     if (this.paginatorService.type) {
       this.bandejaService.Search(this.paginatorService.limit, this.paginatorService.offset, this.paginatorService.type, this.paginatorService.text).subscribe(length => {

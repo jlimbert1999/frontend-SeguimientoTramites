@@ -74,7 +74,7 @@ export class SendDialogComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
+
   addReceiver(account: receiver) {
     this.userCtrl.setValue(null)
     const found = this.selectedReceivers.some((accountForSend) => accountForSend.id_account === account.id_account);
@@ -108,8 +108,7 @@ export class SendDialogComponent implements OnInit, OnDestroy {
               })
             );
         })
-      )
-      .subscribe(data => {
+      ).subscribe(data => {
         this.receivers = data;
         this.userCtrl.setValue(this.receivers);
         this.filteredUsers.next(this.receivers.slice());

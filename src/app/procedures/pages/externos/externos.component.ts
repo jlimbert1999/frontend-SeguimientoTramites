@@ -66,7 +66,7 @@ export class ExternosComponent implements OnInit {
         }
         this.dataSource = [result, ...this.dataSource]
         this.paginatorService.length++
-        // this.Send(result)
+        this.Send(result)
       }
     });
   }
@@ -104,12 +104,11 @@ export class ExternosComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // this.externoService.markProcedureAsSend(procedure._id).subscribe(_ => {
-        //   const indexFound = this.dataSource.findIndex(element => element._id === procedure._id)
-        //   this.dataSource[indexFound].enviado = true
-        //   this.dataSource = [...this.dataSource]
-        //   this.Add()
-        // })
+        this.externoService.markProcedureAsSend(procedure._id).subscribe(_ => {
+          const indexFound = this.dataSource.findIndex(element => element._id === procedure._id)
+          this.dataSource[indexFound].enviado = true
+          this.dataSource = [...this.dataSource]
+        })
       }
     });
   }

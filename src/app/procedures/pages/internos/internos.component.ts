@@ -12,6 +12,7 @@ import { SocketService } from 'src/app/services/socket.service';
 import { internal } from '../../interfaces/internal.interface';
 import { createInternalRouteMap } from '../../helpers/internal-route-map';
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
+import { sendDetail } from 'src/app/communication/interfaces';
 
 @Component({
   selector: 'app-internos',
@@ -85,25 +86,27 @@ export class InternosComponent implements OnInit {
       }
     });
   }
-  Send(tramite: internal) {
+  Send(procedure: internal) {
+    const data: sendDetail = {
+      group: 'InternalProcedure',
+      amount: procedure.cantidad,
+      procedure: {
+        _id: procedure._id,
+        alterno: procedure.alterno
+      }
+    }
     const dialogRef = this.dialog.open(SendDialogComponent, {
       width: '1200px',
-      data: {
-        _id: tramite._id,
-        tipo: 'tramites_internos',
-        tramite: {
-          nombre: tramite.tipo_tramite.nombre,
-          alterno: tramite.alterno,
-          cantidad: tramite.cantidad
-        }
-      },
+      data: data,
       disableClose: true
     });
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        const indexFound = this.dataSource.findIndex(element => element._id === tramite._id)
-        this.dataSource[indexFound].enviado = true
-        this.dataSource = [...this.dataSource]
+        this.internoService.markProcedureAsSend(procedure._id).subscribe(_ => {
+          const indexFound = this.dataSource.findIndex(element => element._id === procedure._id)
+          this.dataSource[indexFound].enviado = true
+          this.dataSource = [...this.dataSource]
+        })
       }
     });
   }
