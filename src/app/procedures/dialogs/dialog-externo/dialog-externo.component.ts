@@ -91,7 +91,8 @@ export class DialogExternoComponent implements OnInit {
     else {
       const procedure = ExternalProcedureDto.fromForm(this.TramiteFormGroup.value, this.requeriments, this.SolicitanteFormGroup.value, this.RepresentanteFormGroup.value)
       this.externoService.Add(procedure).subscribe(procedure => {
-        this.dialogRef.close(procedure)
+        // this.dialogRef.close(procedure)
+        console.log(procedure);
       })
     }
   }

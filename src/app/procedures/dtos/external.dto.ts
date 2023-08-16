@@ -29,10 +29,10 @@ export class ExternalProcedureDto {
         dni: number
     }
     constructor(
-        public tipo_tramite: string,
-        public detalle: string,
-        public cantidad: string,
-        public requerimientos: string[],
+        public type: string,
+        public reference: string,
+        public amount: string,
+        public requirements: string[],
         public cite: string,
         public solicitante: {
             nombre: string
