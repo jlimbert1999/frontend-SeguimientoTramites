@@ -33,14 +33,14 @@ export class DialogInternosComponent implements OnInit {
   ngOnInit(): void {
     if (this.data) {
       this.TramiteFormGroup = this.createForm('EDIT')
-      const { remitente, destinatario, ...values } = this.data
-      this.TramiteFormGroup.patchValue({
-        nombre_remitente: remitente.nombre,
-        cargo_remitente: remitente.cargo,
-        nombre_destinatario: destinatario.nombre,
-        cargo_destinatario: destinatario.cargo,
-        ...values
-      })
+      // const { remitente, destinatario, ...values } = this.data
+      // this.TramiteFormGroup.patchValue({
+      //   nombre_remitente: remitente.nombre,
+      //   cargo_remitente: remitente.cargo,
+      //   nombre_destinatario: destinatario.nombre,
+      //   cargo_destinatario: destinatario.cargo,
+      //   ...values
+      // })
     }
     else {
       this.TramiteFormGroup = this.createForm('ADD')

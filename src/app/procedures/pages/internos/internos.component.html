@@ -1,105 +1,135 @@
 <app-toolbar title="INTERNOS" [showAdd]="true" (add)="Add()"></app-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
-    <mat-form-field class="example-full-width">
-        <mat-label>Buscar tramite interno</mat-label>
-        <input matInput [(ngModel)]="paginatorService.text" (keyup)="applyFilter($event)"
-            placeholder="Alterno / Referencia / Destinatario / Cite" #input>
-        <button *ngIf="paginatorService.text!==''" matSuffix mat-icon-button aria-label="Clear"
-            (click)="cancelSearch()">
-            <mat-icon>close</mat-icon>
-        </button>
-    </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <mat-label>Buscar tramite interno</mat-label>
+    <input
+      matInput
+      [(ngModel)]="paginatorService.text"
+      (keyup)="applyFilter($event)"
+      placeholder="Alterno / Referencia / Destinatario / Cite"
+      #input
+    />
+    <button
+      *ngIf="paginatorService.text !== ''"
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      (click)="cancelSearch()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
 
-    <div class="example-container mat-elevation-z8">
-        <div class="example-table-container">
-            <table mat-table [dataSource]="dataSource">
-                <ng-container matColumnDef="alterno">
-                    <th mat-header-cell *matHeaderCellDef> Alterno </th>
-                    <td mat-cell *matCellDef="let element">
-                        <a (click)="view(element)">
-                            {{element.alterno}}
-                        </a>
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="tipo_tramite">
-                    <th mat-header-cell *matHeaderCellDef> Tramite </th>
-                    <td mat-cell *matCellDef="let element"> {{element.tipo_tramite.nombre}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="detalle">
-                    <th mat-header-cell *matHeaderCellDef> Referencia </th>
-                    <td mat-cell *matCellDef="let element"> {{element.detalle|uppercase}} </td>
-                </ng-container>
-                <ng-container matColumnDef="solicitante">
-                    <th mat-header-cell *matHeaderCellDef> Solicitante </th>
-                    <td mat-cell *matCellDef="let element">
-                        {{element.remitente.nombre |titlecase}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="destinatario">
-                    <th mat-header-cell *matHeaderCellDef> Destinatario </th>
-                    <td mat-cell *matCellDef="let element">
-                        {{element.destinatario.nombre|titlecase}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="estado">
-                    <th mat-header-cell *matHeaderCellDef> Estado </th>
-                    <td mat-cell *matCellDef="let element">
-                        <span class="badge" [ngClass]="element.estado|state">
-                            {{element.estado|uppercase}}
-                        </span>
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="cite">
-                    <th mat-header-cell *matHeaderCellDef> Cite </th>
-                    <td mat-cell *matCellDef="let element">
-                        {{element.cite!=""?element.cite:'S / C'}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="fecha">
-                    <th mat-header-cell *matHeaderCellDef> Fecha </th>
-                    <td mat-cell *matCellDef="let element">
-                        {{element.fecha_registro|date:'short'}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="enviado">
-                    <th mat-header-cell *matHeaderCellDef> Enviado </th>
-                    <td mat-cell *matCellDef="let element">
-                        <mat-icon
-                            [ngClass]="element.enviado?'send':'pending'">{{element.enviado?'mark_email_read':'unsubscribe'}}</mat-icon>
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="opciones">
-                    <th mat-header-cell *matHeaderCellDef> </th>
-                    <td mat-cell *matCellDef="let element">
-                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                            <mat-icon>more_vert</mat-icon>
-                        </button>
-                        <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="Edit(element)" [disabled]="element.estado!=='INSCRITO'">
-                                <mat-icon>edit</mat-icon>
-                                <span>Editar tramite</span>
-                            </button>
-                            <button mat-menu-item (click)="Send(element)" [disabled]="element.estado==='CONCLUIDO'|| element.enviado===true">
-                                <mat-icon>send</mat-icon>
-                                <span>Remitir tramite</span>
-                            </button>
-                            <button mat-menu-item (click)="generateRouteMap(element._id)">
-                                <mat-icon>feed</mat-icon>
-                                <span>Hoja de ruta</span>
-                            </button>
-                            <button mat-menu-item (click)="conclude(element)"
-                                [disabled]="element.estado==='CONCLUIDO'|| element.enviado===true">
-                                <mat-icon>domain_verification</mat-icon>
-                                <span>Concluir tramite</span>
-                            </button>
-                        </mat-menu>
-                    </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-        </div>
-        <app-paginator (page)="Get()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
+  <div class="example-container mat-elevation-z8">
+    <div class="example-table-container">
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="alterno">
+          <th mat-header-cell *matHeaderCellDef>Alterno</th>
+          <td mat-cell *matCellDef="let element">
+            <a (click)="view(element)">
+              {{ element.code }}
+            </a>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="detalle">
+          <th mat-header-cell *matHeaderCellDef>Referencia</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.reference | uppercase }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="solicitante">
+          <th mat-header-cell *matHeaderCellDef>Solicitante</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.details.remitente.nombre | titlecase }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="destinatario">
+          <th mat-header-cell *matHeaderCellDef>Destinatario</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.details.destinatario.nombre | titlecase }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="badge" [ngClass]="element.state | state">
+              {{ element.state | uppercase }}
+            </span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="cite">
+          <th mat-header-cell *matHeaderCellDef>Cite</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.cite != "" ? element.cite : "S / C" }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.startDate | date : "short" }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="enviado">
+          <th mat-header-cell *matHeaderCellDef>Enviado</th>
+          <td mat-cell *matCellDef="let element">
+            <mat-icon [ngClass]="element.send ? 'send' : 'pending'">{{
+              element.send ? "mark_email_read" : "unsubscribe"
+            }}</mat-icon>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="opciones">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element">
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="menu"
+              aria-label="Example icon-button with a menu"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button
+                mat-menu-item
+                (click)="Edit(element)"
+                [disabled]="element.estado !== 'INSCRITO'"
+              >
+                <mat-icon>edit</mat-icon>
+                <span>Editar tramite</span>
+              </button>
+              <button
+                mat-menu-item
+                (click)="Send(element)"
+                [disabled]="
+                  element.estado === 'CONCLUIDO' || element.enviado === true
+                "
+              >
+                <mat-icon>send</mat-icon>
+                <span>Remitir tramite</span>
+              </button>
+              <button mat-menu-item (click)="generateRouteMap(element._id)">
+                <mat-icon>feed</mat-icon>
+                <span>Hoja de ruta</span>
+              </button>
+              <button
+                mat-menu-item
+                (click)="conclude(element)"
+                [disabled]="
+                  element.estado === 'CONCLUIDO' || element.enviado === true
+                "
+              >
+                <mat-icon>domain_verification</mat-icon>
+                <span>Concluir tramite</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
     </div>
+    <app-paginator
+      (page)="Get()"
+      [pageSizeOptions]="[10, 20, 30, 50]"
+    ></app-paginator>
+  </div>
 </div>

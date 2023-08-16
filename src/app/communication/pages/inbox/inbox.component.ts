@@ -20,18 +20,15 @@ import { inbox } from '../../interfaces/inbox.interface';
 import { internal } from 'src/app/procedures/interfaces/internal.interface';
 import { Subscription } from 'rxjs';
 
-
 @Component({
   selector: 'app-inbox',
   templateUrl: './inbox.component.html',
   styleUrls: ['./inbox.component.scss'],
-  animations: [
-    fadeInOnEnterAnimation(),
-  ],
+  animations: [fadeInOnEnterAnimation()],
 })
 export class InboxComponent implements OnInit, OnDestroy {
   private mailSubscription: Subscription;
-  dataSource: inbox[] = []
+  dataSource: inbox[] = [];
   displayedColumns = [
     'alterno',
     'detalle',
@@ -46,7 +43,6 @@ export class InboxComponent implements OnInit, OnDestroy {
     { value: 'interno', viewValue: 'INTERNO' },
     { value: 'externo', viewValue: 'EXTERNO' },
   ];
-
 
   constructor(
     public bandejaService: InboxService,
@@ -65,55 +61,65 @@ export class InboxComponent implements OnInit, OnDestroy {
     //   this.notificationService.number_mails.next(this.notificationService.number_mails.value - 1);
     //   this.Get();
     // })
-    this.mailSubscription = this.socketService.mailSubscription$.subscribe(data => {
-      this.dataSource = [data, ...this.dataSource]
-    });
+    this.mailSubscription = this.socketService.mailSubscription$.subscribe(
+      (data) => {
+        this.dataSource = [data, ...this.dataSource];
+      }
+    );
   }
 
   ngOnInit(): void {
-    this.Get()
+    this.Get();
   }
 
   ngOnDestroy(): void {
-    if (this.mailSubscription) this.mailSubscription.unsubscribe()
+    if (this.mailSubscription) this.mailSubscription.unsubscribe();
   }
 
   Get() {
     if (this.paginatorService.type) {
-      this.bandejaService.Search(this.paginatorService.limit, this.paginatorService.offset, this.paginatorService.type, this.paginatorService.text).subscribe(length => {
-        this.paginatorService.length = length
-      })
-    }
-    else {
-      this.bandejaService.Get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-        this.dataSource = data.mails
-        this.paginatorService.length = data.length
-      })
+      this.bandejaService
+        .Search(
+          this.paginatorService.limit,
+          this.paginatorService.offset,
+          this.paginatorService.type,
+          this.paginatorService.text
+        )
+        .subscribe((length) => {
+          this.paginatorService.length = length;
+        });
+    } else {
+      this.bandejaService
+        .Get(this.paginatorService.limit, this.paginatorService.offset)
+        .subscribe((data) => {
+          this.dataSource = data.mails;
+          this.paginatorService.length = data.length;
+        });
     }
   }
 
   send(elemento: inbox) {
-    const dialogRef = this.dialog.open(SendDialogComponent, {
-      width: '1200px',
-      data: {
-        _id: elemento.tramite._id,
-        tipo: elemento.tipo,
-        tramite: {
-          nombre: '',
-          alterno: elemento.tramite.alterno,
-          cantidad: elemento.cantidad
-        }
-      }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.Get()
-      }
-    });
+    // const dialogRef = this.dialog.open(SendDialogComponent, {
+    //   width: '1200px',
+    //   data: {
+    //     _id: elemento.tramite._id,
+    //     tipo: elemento.tipo,
+    //     tramite: {
+    //       nombre: '',
+    //       alterno: elemento.tramite.alterno,
+    //       cantidad: elemento.cantidad
+    //     }
+    //   }
+    // });
+    // dialogRef.afterClosed().subscribe(result => {
+    //   if (result) {
+    //     this.Get()
+    //   }
+    // });
   }
   aceptar_tramite(elemento: inbox) {
     Swal.fire({
-      title: `Aceptar tramite ${elemento.tramite.alterno}?`,
+      title: `Aceptar tramite ${elemento.tramite}?`,
       text: `El tramite sera marcado como aceptado`,
       icon: 'question',
       showCancelButton: true,
@@ -121,7 +127,7 @@ export class InboxComponent implements OnInit, OnDestroy {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService.aceptMail(elemento._id).subscribe(data => {
+        this.bandejaService.aceptMail(elemento._id).subscribe((data) => {
           // const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
           // this.bandejaService.Mails[indexFound].recibido = true
           // this.bandejaService.Mails[indexFound].tramite.estado = data.state
@@ -130,11 +136,9 @@ export class InboxComponent implements OnInit, OnDestroy {
           //   positionClass: 'toast-bottom-right',
           //   timeOut: 3000,
           // })
-        })
+        });
       }
-    })
-
-
+    });
   }
   rechazar_tramite(elemento: inbox) {
     // Swal.fire({
@@ -168,7 +172,7 @@ export class InboxComponent implements OnInit, OnDestroy {
   concluir(mail: inbox) {
     Swal.fire({
       icon: 'question',
-      title: `Concluir el tramite ${mail.tramite.alterno}?`,
+      title: `Concluir el tramite ${mail.tramite}?`,
       text: `El tramite pasara a su seccion de archivos`,
       inputPlaceholder: 'Ingrese una referencia para concluir',
       input: 'textarea',
@@ -176,75 +180,75 @@ export class InboxComponent implements OnInit, OnDestroy {
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
       customClass: {
-        validationMessage: 'my-validation-message'
+        validationMessage: 'my-validation-message',
       },
       preConfirm: (value) => {
         if (!value) {
           Swal.showValidationMessage(
             '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
-          )
+          );
         }
-      }
+      },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService.Conclude(mail._id, result.value!).subscribe(message => {
-          showToast('success', message)
-          this.Get()
-        })
+        this.bandejaService
+          .Conclude(mail._id, result.value!)
+          .subscribe((message) => {
+            showToast('success', message);
+            this.Get();
+          });
       }
-    })
+    });
   }
-
-
 
   applyFilter(event: Event) {
     if (this.paginatorService.type) {
-      this.paginatorService.offset = 0
+      this.paginatorService.offset = 0;
       const filterValue = (event.target as HTMLInputElement).value;
       this.paginatorService.text = filterValue;
-      this.Get()
+      this.Get();
     }
   }
 
   selectTypeSearch() {
     if (this.paginatorService.type === undefined) {
-      this.paginatorService.text = ''
+      this.paginatorService.text = '';
     }
-    this.paginatorService.offset = 0
-    this.Get()
+    this.paginatorService.offset = 0;
+    this.Get();
   }
 
   cancelSearch() {
     this.paginatorService.offset = 0;
-    this.paginatorService.text = "";
-    this.paginatorService.type = undefined
+    this.paginatorService.text = '';
+    this.paginatorService.type = undefined;
     this.Get();
   }
 
-
   generateRouteMap(mail: inbox) {
     mail.tipo === 'tramites_externos'
-      ? this.externoService.getAllDataExternalProcedure(mail.tramite._id).subscribe(data => {
-        // externalRouteMap(data.procedure, data.workflow)
-      })
-      : this.internoService.getAllDataInternalProcedure(mail.tramite._id).subscribe(data => {
-        // internalRouteMap(data.procedure, data.workflow)
-      })
-
+      ? this.externoService
+          .getAllDataExternalProcedure(mail.tramite._id)
+          .subscribe((data) => {
+            // externalRouteMap(data.procedure, data.workflow)
+          })
+      : this.internoService
+          .getAllDataInternalProcedure(mail.tramite._id)
+          .subscribe((data) => {
+            // internalRouteMap(data.procedure, data.workflow)
+          });
   }
   View(id_bandeja: string) {
     let params = {
       limit: this.paginatorService.limit,
-      offset: this.paginatorService.offset
-    }
+      offset: this.paginatorService.offset,
+    };
     if (this.paginatorService.text !== '') {
-      Object.assign(params, { type: this.paginatorService.type })
-      Object.assign(params, { text: this.paginatorService.text })
+      Object.assign(params, { type: this.paginatorService.type });
+      Object.assign(params, { text: this.paginatorService.text });
     }
-    this.router.navigate(['home/bandejas/entrada/mail', id_bandeja], { queryParams: params })
+    this.router.navigate(['home/bandejas/entrada/mail', id_bandeja], {
+      queryParams: params,
+    });
   }
-
-
-
-
 }
