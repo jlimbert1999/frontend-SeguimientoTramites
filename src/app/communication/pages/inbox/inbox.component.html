@@ -1,26 +1,19 @@
 <app-toolbar title="BANDEJA ENTRADA"></app-toolbar>
 <div class="container-fluid animate__animated animate__fadeIn">
   <div class="row">
-    <div class="col-sm-9">
-      <!-- <mat-form-field class="example-full-width">
+    <div class="col-sm-8">
+      <mat-form-field class="example-form-field">
         <mat-label>Buscar tramite</mat-label>
         <input
-          [(ngModel)]="paginatorService.text"
-          (keyup)="applyFilter($event)"
           matInput
-          placeholder="Alterno / Referencia / Proveido / Nº Interno"
-          [disabled]="paginatorService.type === undefined"
+          (keyup)="applyFilter($event)"
+          type="text"
+          placeholder="Alterno / Referencia / Remitente"
         />
-        <button
-          *ngIf="paginatorService.text"
-          matSuffix
-          mat-icon-button
-          aria-label="Clear"
-          (click)="cancelSearch()"
-        >
-          <mat-icon>close</mat-icon>
-        </button> -->
-      <!-- </mat-form-field> -->
+        <button matSuffix mat-icon-button aria-label="Clear">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
     </div>
   </div>
 
@@ -76,11 +69,11 @@
             <mat-menu #menu="matMenu">
               <div [ngSwitch]="row.recibido">
                 <div *ngSwitchCase="undefined">
-                  <button (click)="aceptar_tramite(row)" mat-menu-item>
+                  <button (click)="acceptMail(row)" mat-menu-item>
                     <mat-icon>done</mat-icon>
                     <span>Aceptar tramite</span>
                   </button>
-                  <button (click)="rechazar_tramite(row)" mat-menu-item>
+                  <button (click)="rejectMail(row)" mat-menu-item>
                     <mat-icon>block</mat-icon>
                     <span>Rechazar tramite</span>
                   </button>

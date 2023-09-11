@@ -67,15 +67,16 @@ export class InboxComponent implements OnInit, OnDestroy {
           this.paginatorService.offset,
           this.paginatorService.textSearch
         )
-        .subscribe((length) => {
-          this.paginatorService.length = length;
+        .subscribe((resp) => {
+          this.dataSource = resp.mails;
+          this.paginatorService.length = resp.length;
         });
     } else {
       this.bandejaService
         .Get(this.paginatorService.limit, this.paginatorService.offset)
-        .subscribe((data) => {
-          this.dataSource = data.mails;
-          this.paginatorService.length = data.length;
+        .subscribe((resp) => {
+          this.dataSource = resp.mails;
+          this.paginatorService.length = resp.length;
         });
     }
   }
@@ -99,9 +100,9 @@ export class InboxComponent implements OnInit, OnDestroy {
     //   }
     // });
   }
-  aceptar_tramite(elemento: inbox) {
+  acceptMail(mail: inbox) {
     Swal.fire({
-      title: `Aceptar tramite ${elemento.tramite}?`,
+      title: `¿Aceptar tramite ${mail.tramite.code}?`,
       text: `El tramite sera marcado como aceptado`,
       icon: 'question',
       showCancelButton: true,
@@ -109,47 +110,47 @@ export class InboxComponent implements OnInit, OnDestroy {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService.aceptMail(elemento._id).subscribe((data) => {
-          // const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
-          // this.bandejaService.Mails[indexFound].recibido = true
-          // this.bandejaService.Mails[indexFound].tramite.estado = data.state
-          // this.bandejaService.Mails = [...this.bandejaService.Mails]
-          // this.toastr.success(undefined, data.message, {
-          //   positionClass: 'toast-bottom-right',
-          //   timeOut: 3000,
-          // })
-        });
+        // this.bandejaService.aceptMail(elemento._id).subscribe((data) => {
+        //   // const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
+        //   // this.bandejaService.Mails[indexFound].recibido = true
+        //   // this.bandejaService.Mails[indexFound].tramite.estado = data.state
+        //   // this.bandejaService.Mails = [...this.bandejaService.Mails]
+        //   // this.toastr.success(undefined, data.message, {
+        //   //   positionClass: 'toast-bottom-right',
+        //   //   timeOut: 3000,
+        //   // })
+        // });
       }
     });
   }
-  rechazar_tramite(elemento: inbox) {
-    // Swal.fire({
-    //   icon: 'info',
-    //   title: `Rechazar tramite ${elemento.tramite.alterno}`,
-    //   text: `El tramite sera devuelto a ${createFullName(elemento.emisor.)}`,
-    //   input: 'textarea',
-    //   inputPlaceholder: 'Ingrese el motivo del rechazo',
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Aceptar',
-    //   cancelButtonText: 'Cancelar',
-    //   customClass: {
-    //     validationMessage: 'my-validation-message'
-    //   },
-    //   preConfirm: (value) => {
-    //     if (!value) {
-    //       Swal.showValidationMessage(
-    //         '<i class="fa fa-info-circle"></i> Debe ingresar el motivo para el rechazo'
-    //       )
-    //     }
-    //   }
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     this.bandejaService.rejectMail(elemento._id, result.value!).subscribe(message => {
-    //       showToast('success', message)
-    //       this.Get()
-    //     })
-    //   }
-    // })
+  rejectMail(mail: inbox) {
+    Swal.fire({
+      icon: 'question',
+      title: `¿Rechazar tramite ${mail.tramite.code}?`,
+      text: `El tramite sera devuelto al funcionario emisor`,
+      input: 'textarea',
+      inputPlaceholder: 'Ingrese el motivo del rechazo',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        validationMessage: 'my-validation-message',
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Debe ingresar el motivo para el rechazo'
+          );
+        }
+      },
+    }).then((result) => {
+      // if (result.isConfirmed) {
+      //   this.bandejaService.rejectMail(elemento._id, result.value!).subscribe(message => {
+      //     showToast('success', message)
+      //     this.Get()
+      //   })
+      // }
+    });
   }
   concluir(mail: inbox) {
     Swal.fire({
@@ -183,20 +184,10 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   applyFilter(event: Event) {
-    // if (this.paginatorService.type) {
-    //   this.paginatorService.offset = 0;
-    //   const filterValue = (event.target as HTMLInputElement).value;
-    //   this.paginatorService.text = filterValue;
-    //   this.Get();
-    // }
-  }
-
-  selectTypeSearch() {
-    // if (this.paginatorService.type === undefined) {
-    //   this.paginatorService.text = '';
-    // }
-    // this.paginatorService.offset = 0;
-    // this.Get();
+    this.paginatorService.offset = 0;
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.paginatorService.textSearch = filterValue;
+    this.Get();
   }
 
   cancelSearch() {

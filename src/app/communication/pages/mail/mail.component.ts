@@ -114,11 +114,11 @@ export class MailComponent implements OnInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.entradaService.aceptMail(this.mail._id).subscribe(
+        this.entradaService.acceptMail(this.mail._id).subscribe(
           (data) => {
-            this.mail.recibido = true;
-            this.procedure.state = data.state;
-            showToast('success', data.message);
+            // this.mail.recibido = true;
+            // this.procedure.state = data.state;
+            // showToast('success', data.message);
           },
           (HttpError: HttpErrorResponse) => {
             if (HttpError.status === 404) {

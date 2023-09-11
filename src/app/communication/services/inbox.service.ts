@@ -49,26 +49,23 @@ export class InboxService {
       .set('limit', limit)
       .set('text', text);
     return this.http
-      .get<{ ok: boolean; mails: any[]; length: number }>(
-        `${base_url}/entradas/search/${text}`,
+      .get<{ mails: inbox[]; length: number }>(
+        `${base_url}/inbox/search/${text}`,
         { params }
       )
       .pipe(
         map((resp) => {
-          return resp.length;
+          return { mails: resp.mails, length: resp.length };
         })
       );
   }
 
-  aceptMail(id_bandeja: string) {
+  acceptMail(id_bandeja: string) {
     return this.http
-      .put<{ ok: boolean; state: stateProcedure; message: string }>(
-        `${base_url}/entradas/acept/${id_bandeja}`,
-        {}
-      )
+      .put<stateProcedure>(`${base_url}/entradas/acept/${id_bandeja}`, {})
       .pipe(
         map((resp) => {
-          return { message: resp.message, state: resp.state };
+          return resp;
         })
       );
   }
