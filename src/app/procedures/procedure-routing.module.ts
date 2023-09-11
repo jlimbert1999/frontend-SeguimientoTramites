@@ -7,14 +7,12 @@ import { FichaComponent } from './pages/ficha/ficha.component';
 const routes: Routes = [
   { path: 'internos', component: InternosComponent },
   { path: 'externos', component: ExternosComponent },
-  { path: 'externos/:tipo/:id', component: FichaComponent },
-  { path: 'internos/:tipo/:id', component: FichaComponent },
+  { path: 'internos/:id', component: FichaComponent },
+  { path: 'externos/:id', component: FichaComponent },
 ];
 
 @NgModule({
   declarations: [],
-  imports: [
-    RouterModule.forChild(routes)
-  ]
+  imports: [RouterModule.forChild(routes)],
 })
-export class ProcedureRoutingModule { }
+export class ProcedureRoutingModule {}

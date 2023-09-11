@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { stateProcedure } from 'src/app/procedures/interfaces/procedures.interface';
+import { stateProcedure } from 'src/app/procedures/interfaces/procedures-props.interface';
 
 @Pipe({
   name: 'state'
@@ -11,7 +11,7 @@ export class StatePipe implements PipeTransform {
     switch (state) {
       case 'INSCRITO':
         classSpan = 'text-bg-primary'
-        break;
+        break;  
       case 'EN REVISION':
         classSpan = 'text-bg-secondary'
         break;

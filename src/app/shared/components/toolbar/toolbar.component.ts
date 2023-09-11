@@ -1,7 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
-import { SidenavService } from '../services/sidenav.service';
+import { SidenavService } from '../../services/sidenav.service';
 
 @Component({
   selector: 'app-toolbar',

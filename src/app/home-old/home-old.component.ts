@@ -6,7 +6,7 @@ import { LoaderService } from '../auth/services/loader.service';
 import { Router } from '@angular/router';
 
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { BandejaEntradaService } from '../Bandejas/services/bandeja-entrada.service';
+
 import { SidenavService } from '../shared/services/sidenav.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { SocketService } from '../services/socket.service';
@@ -40,7 +40,6 @@ export class HomeOldComponent implements OnInit, OnDestroy, AfterViewInit {
     changeDetectorRef: ChangeDetectorRef, media: MediaMatcher,
     public authService: AuthService,
     private socketService: SocketService,
-    public bandejaService: BandejaEntradaService,
     private toastr: ToastrService,
     public loader: LoaderService,
     private router: Router,

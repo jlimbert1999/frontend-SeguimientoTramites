@@ -1,11 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
-@import 'material-icons/iconfont/material-icons.css';
-@import './assets/scss/theme.scss';
-@import './assets/scss/toastr.scss';
-@import './assets/scss/tables.config.scss';
-@import './assets/scss/admin-tables.config.scss';
-@import './assets/scss/orgChart.scss';
-@import '@sweetalert2/theme-dark/dark.scss';
+@import "material-icons/iconfont/material-icons.css";
+@import "./assets/scss/theme.scss";
+@import "./assets/scss/toastr.scss";
+@import "./assets/scss/tables.config.scss";
+@import "./assets/scss/admin-tables.config.scss";
+@import "./assets/scss/orgChart.scss";
+@import "@sweetalert2/theme-dark/dark.scss";
+@import "animate.css";
+@import "ngx-toastr/toastr";
 
 html,
 body {
@@ -39,7 +41,7 @@ body {
 
 .c-pill:before {
   border-radius: 50%;
-  content: '';
+  content: "";
   height: 10px;
   left: 6px;
   margin-top: -5px;
@@ -73,11 +75,11 @@ body {
 }
 
 .c-pill--info {
-  background: #90E0EF;
+  background: #90e0ef;
 }
 
 .c-pill--info:before {
-  background: #0077B6;
+  background: #0077b6;
 }
 
 .example-spacer {

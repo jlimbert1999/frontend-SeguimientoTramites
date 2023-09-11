@@ -29,17 +29,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatListModule } from '@angular/material/list';
 import { MatRadioModule } from '@angular/material/radio';
-import {MatChipsModule} from '@angular/material/chips';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
-import {CdkTableModule} from '@angular/cdk/table';
-import {PortalModule} from '@angular/cdk/portal';
-import {OverlayModule} from '@angular/cdk/overlay';
-import {MatSliderModule} from '@angular/material/slider';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { CdkTableModule } from '@angular/cdk/table';
+import { PortalModule } from '@angular/cdk/portal';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { MatSliderModule } from '@angular/material/slider';
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   exports: [
     MatFormFieldModule,
     MatIconModule,
@@ -75,8 +73,7 @@ import {MatSliderModule} from '@angular/material/slider';
     CdkTableModule,
     PortalModule,
     OverlayModule,
-    MatSliderModule
-    
-  ]
+    MatSliderModule,
+  ],
 })
-export class MaterialModule { }
+export class MaterialModule {}

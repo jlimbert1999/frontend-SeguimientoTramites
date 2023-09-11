@@ -2,9 +2,10 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ExternosService } from '../../services/externos.service';
-import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
-import { ExternalProcedureDto } from '../../dtos/external.dto';
-import { external } from '../../interfaces/external_detail.interface';
+import { ExternalProcedureDto } from '../../dtos';
+import { NestedPartial } from 'src/app/shared/interfaces/nested-partial';
+import { external } from '../../interfaces';
+import { typeProcedure } from 'src/app/administration/interfaces';
 
 @Component({
   selector: 'app-dialog-externo',
@@ -55,7 +56,7 @@ export class DialogExternoComponent implements OnInit {
   }
   getTypesProceduresBySegment(segment: string) {
     this.requeriments = [];
-    this.TramiteFormGroup.get('tipo_tramite')?.setValue('');
+    this.TramiteFormGroup.get('type')?.setValue('');
     this.externoService
       .getTypesProceduresBySegment(segment)
       .subscribe((data) => {
@@ -64,7 +65,7 @@ export class DialogExternoComponent implements OnInit {
   }
 
   selectTypeProcedure(type: typeProcedure) {
-    this.TramiteFormGroup.get('tipo_tramite')?.setValue(type._id);
+    this.TramiteFormGroup.get('type')?.setValue(type._id);
     this.requeriments = type.requerimientos
       .filter((el) => el.activo)
       .map((el) => el.nombre);
@@ -72,13 +73,15 @@ export class DialogExternoComponent implements OnInit {
 
   guardar() {
     if (this.data) {
-      const updateProcedure = {
-        ...this.TramiteFormGroup.value,
-        solicitante: this.SolicitanteFormGroup.value,
+      const updateProcedure: NestedPartial<ExternalProcedureDto> = {
+        procedure: this.TramiteFormGroup.value,
+        details: {
+          solicitante: this.SolicitanteFormGroup.value,
+        },
       };
-      if (this.data.details.representante) {
-        updateProcedure['representante'] = this.RepresentanteFormGroup.value;
-      }
+      if (this.data.details.representante)
+        updateProcedure.details!.representante =
+          this.RepresentanteFormGroup.value;
       this.externoService
         .Edit(this.data._id, updateProcedure)
         .subscribe((procedure) => {
@@ -137,7 +140,7 @@ export class DialogExternoComponent implements OnInit {
         this.SolicitanteFormGroup = this.fb.group({
           nombre: [
             '',
-            [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')],
+            [Validators.required, Validators.pattern('^[a-zA-Z0-9 ,.]*$')],
           ],
           telefono: [
             '',

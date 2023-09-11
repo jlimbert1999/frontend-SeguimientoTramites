@@ -11,6 +11,7 @@ import { MailComponent } from './pages/mail/mail.component';
 import { InboxComponent } from './pages/inbox/inbox.component';
 import { OutboxComponent } from './pages/outbox/outbox.component';
 import { CommunicationRoutingModule } from './communication-routing.module';
+import { ProcedureModule } from '../procedures/procedure.module';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { CommunicationRoutingModule } from './communication-routing.module';
     ReactiveFormsModule,
     MaterialModule,
     NgxMatSelectSearchModule,
+    ProcedureModule
   ]
 })
 export class CommunicationModule { }

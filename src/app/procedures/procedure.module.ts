@@ -14,6 +14,8 @@ import { MaterialModule } from '../angular-material/material.module';
 import { ProcedureRoutingModule } from './procedure-routing.module';
 import { SolicitantePipe } from './pipes/solicitante.pipe';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
+import { InternalDetailComponent } from './components/internal-detail/internal-detail.component';
+import { ExternalDetailComponent } from './components/external-detail/external-detail.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
     InternosComponent,
     DialogInternosComponent,
     DialogExternoComponent,
-    SolicitantePipe
+    InternalDetailComponent,
+    ExternalDetailComponent,
+    SolicitantePipe,
   ],
   imports: [
     CommonModule,
@@ -33,13 +37,16 @@ import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
     ReactiveFormsModule,
     NgxMatSelectSearchModule,
     RouterModule,
-
   ],
   providers: [
     {
       provide: STEPPER_GLOBAL_OPTIONS,
-      useValue: { showError: true }
-    }
+      useValue: { showError: true },
+    },
+  ],
+  exports:[
+    InternalDetailComponent,
+    ExternalDetailComponent
   ]
 })
-export class ProcedureModule { }
+export class ProcedureModule {}

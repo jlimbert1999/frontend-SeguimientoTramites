@@ -1,26 +1,8 @@
 <app-toolbar title="ARCHIVOS"></app-toolbar>
 <div class="container-fluid" [@fadeInOnEnter]>
     <div class="row">
-        <div class="col-sm-3">
-            <mat-radio-group [(ngModel)]="paginatorService.type" (change)="selectTypeSearch()"
-                aria-label="Select an option">
-                <mat-radio-button class="default-radio-button" [value]="undefined"
-                    color="primary">TODOS</mat-radio-button>
-                <mat-radio-button value="EXTERNO" color="accent">EXTERNOS</mat-radio-button>
-                <mat-radio-button value="INTERNO" color="warn">INTERNOS</mat-radio-button>
-            </mat-radio-group>
-        </div>
         <div class="col-sm-9">
-            <mat-form-field class="example-full-width">
-                <mat-label>Buscar tramite archivado</mat-label>
-                <input [(ngModel)]="paginatorService.text" (keyup)="applyFilter($event)" matInput
-                    placeholder="Alterno / Referencia / Cite /Funcionario"
-                    [disabled]="paginatorService.type===undefined">
-                <button *ngIf="paginatorService.text" matSuffix mat-icon-button aria-label="Clear"
-                    (click)="cancelSearch()">
-                    <mat-icon>close</mat-icon>
-                </button>
-            </mat-form-field>
+            
         </div>
     </div>
 

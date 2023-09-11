@@ -80,7 +80,7 @@
                                         <mat-label>Permisos</mat-label>
                                         <mat-select formControlName="rol">
                                             <mat-option *ngFor="let rol of roles" [value]="rol._id">
-                                                {{rol.role}}
+                                                {{rol.name}}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>

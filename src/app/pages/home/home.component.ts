@@ -14,28 +14,28 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
   mobileQuery: MediaQueryList;
-  Menu: any = this.authService.menu
+  Menu: any = this.authService.menu;
   loading$ = this.loader.loading$;
-  numberMails$ = this.notificationService.number_mails$
+  numberMails$ = this.notificationService.number_mails$;
   private mailSubscription: Subscription;
   @ViewChild('snav') public sidenav: MatSidenav;
 
   private _mobileQueryListener: () => void;
 
-
   ngAfterViewInit() {
     this.sidenavService.sideNavToggleSubject.subscribe(() => {
       this.sidenav.toggle();
-    })
-    this.sidenav.open()
+    });
+    this.sidenav.open();
   }
 
   constructor(
-    changeDetectorRef: ChangeDetectorRef, media: MediaMatcher,
+    changeDetectorRef: ChangeDetectorRef,
+    media: MediaMatcher,
     public authService: AuthService,
     public socketService: SocketService,
     private toastr: ToastrService,
@@ -46,22 +46,30 @@ export class HomeComponent {
     public themeService: ThemeService
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    this.themeService.startTheme()
+    this.themeService.startTheme();
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
-    this.socketService.setupSocketConnection(this.authService.token)
-  }
-  ngOnDestroy(): void {
-    this.mobileQuery!.removeListener(this._mobileQueryListener);
-    if (this.mailSubscription) this.mailSubscription.unsubscribe()
+    this.socketService.setupSocketConnection(this.authService.token);
   }
 
   ngOnInit(): void {
-    this.socketService.listenUserConection()
-    this.socketService.listenMails()
-    this.mailSubscription = this.mailSubscription = this.socketService.mailSubscription$.subscribe(data => {
-      this.notificationService.showNotificationNewMail({ nombre: 'ds', paterno: 'ds', materno: 's' })
-    });
+    this.socketService.listenUserConection();
+    this.socketService.listenMails();
+    this.mailSubscription = this.mailSubscription =
+      this.socketService.mailSubscription$.subscribe((data) => {
+        const toast = this.toastr.info(
+          `${data.receptor.fullname} ha enviado un tramite`,
+          'Nuevo tramite recibido',
+          {
+            positionClass: 'toast-bottom-right',
+            closeButton: true,
+            timeOut: 7000,
+          }
+        );
+        toast.onTap.subscribe((action) => {
+          this.router.navigateByUrl('bandejas/entrada');
+        });
+      });
     // this.socketService.listenUserConection().subscribe(users => {
     //   this.socketService.onlineUsers = users
     // })
@@ -80,13 +88,16 @@ export class HomeComponent {
     //   this.logout()
     // })
   }
+  ngOnDestroy(): void {
+    this.mobileQuery!.removeListener(this._mobileQueryListener);
+    if (this.mailSubscription) this.mailSubscription.unsubscribe();
+  }
   editAccount() {
-    this.router.navigate(['home/perfil', this.authService.account.id_account])
+    this.router.navigate(['home/perfil', this.authService.account.id_account]);
   }
 
-
   logout() {
-    this.authService.logout()
-    this.socketService.disconnect()
+    this.authService.logout();
+    this.socketService.disconnect();
   }
 }

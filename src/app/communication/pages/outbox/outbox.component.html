@@ -1,150 +1,176 @@
 <app-toolbar title="BANDEJA SALIDA"></app-toolbar>
+<div class="container-fluid">
+  <div class="example-container mat-elevation-z8">
+    <div class="example-table-container">
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        class="example-table"
+        multiTemplateDataRows
+      >
+        <ng-container matColumnDef="alterno">
+          <th mat-header-cell *matHeaderCellDef>Alterno</th>
+          <td mat-cell *matCellDef="let row">
+            <a (click)="View(row)">
+              {{ row._id.tramite.code }}
+            </a>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef>Referencia</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row._id.tramite.reference }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="badge" [ngClass]="row._id.tramite.state | state">
+              {{ row._id.tramite.state }}
+            </span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="fecha_envio">
+          <th mat-header-cell *matHeaderCellDef>Fecha envio</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row._id.fecha_envio | date : "short" }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="situacion">
+          <th mat-header-cell *matHeaderCellDef>Envios</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.sendings.length }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="opciones">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row">
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="menu"
+              aria-label="Example icon-button with a menu"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button
+                (click)="generar_hoja_ruta(row.tramite._id, row.tipo)"
+                mat-menu-item
+              >
+                <mat-icon>print</mat-icon>
+                <span>Hoja de ruta</span>
+              </button>
+              <button
+                (click)="cancelAllSend(row)"
+                mat-menu-item
+                [disabled]="row.recibido !== undefined"
+              >
+                <mat-icon>cancel_schedule_send</mat-icon>
+                <span>Cancelar envios</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
 
-<div class="container-fluid" [@fadeInOnEnter]>
-    <div class="row">
-        <div class="col-sm-3">
-            <mat-radio-group [(ngModel)]="paginatorService.type" (change)="selectTypeSearch()">
-                <mat-radio-button class="default-radio-button" [value]="undefined"
-                    color="primary">TODOS</mat-radio-button>
-                <mat-radio-button value="EXTERNO" color="accent">EXTERNOS</mat-radio-button>
-                <mat-radio-button value="INTERNO" color="warn">INTERNOS</mat-radio-button>
-            </mat-radio-group>
-        </div>
-        <div class="col-sm-9">
-            <mat-form-field class="example-full-width">
-                <mat-label>Buscar tramite</mat-label>
-                <input [(ngModel)]="paginatorService.text" (keyup)="applyFilter($event)" matInput
-                    placeholder="Alterno / Referencia / Proveido / Nº Interno"
-                    [disabled]="paginatorService.type===undefined">
-                <button *ngIf="paginatorService.text" matSuffix mat-icon-button aria-label="Clear"
-                    (click)="cancelSearch()">
-                    <mat-icon>close</mat-icon>
-                </button>
-            </mat-form-field>
-        </div>
-    </div>
-
-    <div class="example-container mat-elevation-z8">
-        <div class="example-table-container">
-            <table mat-table [dataSource]="dataSource" class="example-table" multiTemplateDataRows>
-                <ng-container matColumnDef="alterno">
-                    <th mat-header-cell *matHeaderCellDef>Alterno</th>
-                    <td mat-cell *matCellDef="let row">
-                        <a (click)="View(row)">
-                            {{row.tramite.alterno}}
-                        </a>
+        <ng-container matColumnDef="expand">
+          <th mat-header-cell *matHeaderCellDef aria-label="row actions">
+            &nbsp;
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <button
+              mat-icon-button
+              aria-label="expand row"
+              (click)="
+                expandedElement = expandedElement === element ? null : element;
+                $event.stopPropagation()
+              "
+            >
+              <mat-icon *ngIf="expandedElement !== element"
+                >keyboard_arrow_down</mat-icon
+              >
+              <mat-icon *ngIf="expandedElement === element"
+                >keyboard_arrow_up</mat-icon
+              >
+            </button>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="expandedDetail">
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [attr.colspan]="displayedColumns.length"
+          >
+            <div
+              class="example-element-detail"
+              [@detailExpand]="
+                element == expandedElement ? 'expanded' : 'collapsed'
+              "
+            >
+              <table class="table caption-top">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Destinatario</th>
+                    <th scope="col">Situacion</th>
+                    <th scope="col">Opciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of element.sendings; let i = index">
+                    <th scope="row">{{ i + 1 }}</th>
+                    <td>
+                      {{ item.receptor.fullname | titlecase }} ({{
+                        item.receptor.jobtitle
+                      }})
                     </td>
-                </ng-container>
-                <ng-container matColumnDef="descripcion">
-                    <th mat-header-cell *matHeaderCellDef>Referencia</th>
-                    <td mat-cell *matCellDef="let row">{{row.tramite.detalle}}</td>
-                </ng-container>
-                <ng-container matColumnDef="estado">
-                    <th mat-header-cell *matHeaderCellDef>Estado</th>
-                    <td mat-cell *matCellDef="let row">
-                        <span class="badge" [ngClass]="[
-                            row.tramite.estado=='INSCRITO'?'text-bg-primary':'',
-                            row.tramite.estado=='EN REVISION'?'text-bg-secondary':'',
-                            row.tramite.estado=='OBSERVADO'?'text-bg-warning':'',
-                            row.tramite.estado=='CONCLUIDO'?'text-bg-dark':'',
-                        ]">
-                            {{row.tramite.estado|uppercase}}
-                        </span>
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="fecha_envio">
-                    <th mat-header-cell *matHeaderCellDef>Fecha envio</th>
-                    <td mat-cell *matCellDef="let row">
-                        {{row.fecha_envio | date:'short'}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="situacion">
-                    <th mat-header-cell *matHeaderCellDef>Envios</th>
-                    <td mat-cell *matCellDef="let row">
-                        {{row.sendings.length}}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="opciones">
-                    <th mat-header-cell *matHeaderCellDef></th>
-                    <td mat-cell *matCellDef="let row">
-                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                            <mat-icon>more_vert</mat-icon>
-                        </button>
-                        <mat-menu #menu="matMenu">
-                            <button (click)="generar_hoja_ruta(row.tramite._id, row.tipo)" mat-menu-item>
-                                <mat-icon>print</mat-icon>
-                                <span>Hoja de ruta</span>
-                            </button>
-                            <button (click)="cancelAllSend(row)" mat-menu-item [disabled]="row.recibido!==undefined">
-                                <mat-icon>cancel_schedule_send</mat-icon>
-                                <span>Cancelar envios</span>
-                            </button>
-                        </mat-menu>
-
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="expand">
-                    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
-                    <td mat-cell *matCellDef="let element">
-                        <button mat-icon-button aria-label="expand row"
-                            (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
-                            <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
-                            <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="expandedDetail">
-                    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
-                        <div class="example-element-detail"
-                            [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                            <table class="table caption-top">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Destinatario</th>
-                                        <th scope="col">Situacion</th>
-                                        <th scope="col">Opciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let item of element.sendings, let i=index">
-                                        <th scope="row">{{i+1}}</th>
-                                        <td>{{item.receptor.funcionario|fullname|titlecase}}
-                                            ({{item.receptor.funcionario.cargo}})</td>
-                                        <td>
-                                            <div [ngSwitch]="item.recibido">
-                                                <div *ngSwitchCase="null">
-                                                    <span class="c-pill c-pill--warning">ENVIADO</span>
-                                                </div>
-                                                <div *ngSwitchCase="true">
-                                                    <span class="c-pill c-pill--success">ACEPTADO</span>
-                                                </div>
-                                                <div *ngSwitchCase="false">
-                                                    <span class="c-pill c-pill--danger">RECHAZADO</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button (click)="cancelOneSend(item)" [disabled]="item.recibido!==undefined"
-                                                matTooltip="Cancelar envio" mat-icon-button color="accent"
-                                                aria-label="Example icon button with a menu icon">
-                                                <mat-icon>unsubscribe</mat-icon>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <td>
+                      <div [ngSwitch]="item.recibido">
+                        <div *ngSwitchCase="null">
+                          <span class="c-pill c-pill--warning">ENVIADO</span>
                         </div>
+                        <div *ngSwitchCase="true">
+                          <span class="c-pill c-pill--success">ACEPTADO</span>
+                        </div>
+                        <div *ngSwitchCase="false">
+                          <span class="c-pill c-pill--danger">RECHAZADO</span>
+                        </div>
+                      </div>
                     </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
-                    [class.example-expanded-row]="expandedElement === row"></tr>
-                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
-            </table>
-        </div>
-
-        <app-paginator (page)="Get()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
+                    <td>
+                      <button
+                        (click)="cancelOneSend(item)"
+                        [disabled]="item.recibido !== undefined"
+                        matTooltip="Cancelar envio"
+                        mat-icon-button
+                        color="accent"
+                        aria-label="Example icon button with a menu icon"
+                      >
+                        <mat-icon>unsubscribe</mat-icon>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="example-element-row"
+          [class.example-expanded-row]="expandedElement === row"
+        ></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: ['expandedDetail']"
+          class="example-detail-row"
+        ></tr>
+      </table>
     </div>
+    <app-paginator
+      (page)="Get()"
+      [pageSizeOptions]="[10, 20, 30, 50]"
+    ></app-paginator>
+  </div>
 </div>

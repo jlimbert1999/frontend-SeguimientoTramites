@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ReporteService } from '../../services/reporte.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
 import { SendDataReportEvent } from '../../models/sendData.model';
+import { stateProcedure } from 'src/app/procedures/interfaces/procedures-props.interface';
 
 @Component({
   selector: 'app-report-ficha-options',
@@ -20,7 +20,7 @@ export class ReportFichaOptionsComponent implements OnInit {
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
-  states: statesProcedure
+  states: stateProcedure
 
   constructor(private reporteService: ReporteService, private _formBuilder: FormBuilder) {
   }

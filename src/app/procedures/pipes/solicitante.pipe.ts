@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {} from '../interfaces/external.interface';
-import { applicant } from '../interfaces/external_detail.interface';
+// import {} from '../interfaces/external.interface';
+import { applicant } from '../interfaces/external.interface';
 
 @Pipe({
   name: 'solicitante',

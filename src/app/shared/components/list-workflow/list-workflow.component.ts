@@ -1,21 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import { newWorkflow } from 'src/app/communication/interfaces/workflow.interface';
-
-
+import { workflow } from 'src/app/communication/interfaces';
 
 @Component({
   selector: 'app-list-workflow',
   templateUrl: './list-workflow.component.html',
-  styleUrls: ['./list-workflow.component.scss']
+  styleUrls: ['./list-workflow.component.scss'],
 })
 export class ListWorkflowComponent implements OnInit {
-  @Input() workflow: newWorkflow[] = []
-  @Input() fecha_registro: string
-  constructor() { }
+  @Input() workflow: workflow[] = [];
+  @Input() startDate: Date;
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
-
+  ngOnInit(): void {}
 }

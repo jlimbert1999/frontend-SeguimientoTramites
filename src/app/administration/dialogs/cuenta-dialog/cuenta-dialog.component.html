@@ -95,7 +95,7 @@
                                 <mat-label>Seleccione el rol</mat-label>
                                 <mat-select formControlName="rol">
                                     <mat-option *ngFor="let rol of roles" [value]="rol._id">
-                                        {{rol.role}}
+                                        {{rol.name}}
                                     </mat-option>
                                 </mat-select>
                                 <mat-error>{{ getErrorMessagesForm(Form_Cuenta.get('login')!) }}</mat-error>

@@ -4,103 +4,133 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, startWith, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { InternosService } from '../../services/internos.service';
-import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
 import { Officer } from 'src/app/administration/models/officer.model';
-import { CreateInternalProcedureDto } from '../../dtos/create-internal.dto';
-import { internal } from '../../interfaces/internal.interface';
-import { UpdateInternalProcedureDto } from '../../dtos/update-internal.dto';
+import { typeProcedure } from 'src/app/administration/interfaces';
+import { InternalProcedureDto } from '../../dtos';
+import { NestedPartial } from 'src/app/shared/interfaces/nested-partial';
+import { internal } from '../../interfaces';
 
 @Component({
   selector: 'app-dialog-internos',
   templateUrl: './dialog-internos.component.html',
-  styleUrls: ['./dialog-internos.component.scss']
+  styleUrls: ['./dialog-internos.component.scss'],
 })
 export class DialogInternosComponent implements OnInit {
-  typesProcedures: typeProcedure[] = []
+  typesProcedures: typeProcedure[] = [];
   filteredEmitter: Observable<Officer[]>;
   filteredReceiver: Observable<Officer[]>;
-  TramiteFormGroup: FormGroup
+  TramiteFormGroup: FormGroup;
 
   constructor(
     private authService: AuthService,
     private internoService: InternosService,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: internal,
-    public dialogRef: MatDialogRef<DialogInternosComponent>) {
-
-  }
+    public dialogRef: MatDialogRef<DialogInternosComponent>
+  ) {}
 
   ngOnInit(): void {
     if (this.data) {
-      this.TramiteFormGroup = this.createForm('EDIT')
-      // const { remitente, destinatario, ...values } = this.data
-      // this.TramiteFormGroup.patchValue({
-      //   nombre_remitente: remitente.nombre,
-      //   cargo_remitente: remitente.cargo,
-      //   nombre_destinatario: destinatario.nombre,
-      //   cargo_destinatario: destinatario.cargo,
-      //   ...values
-      // })
+      this.TramiteFormGroup = this.createForm('EDIT');
+      const { details, ...values } = this.data;
+      this.TramiteFormGroup.patchValue({
+        fullname_emitter: details.remitente.nombre,
+        jobtitle_emitter: details.remitente.cargo,
+        fullname_receiver: details.destinatario.nombre,
+        jobtitle_receiver: details.destinatario.cargo,
+        ...values,
+      });
+    } else {
+      this.TramiteFormGroup = this.createForm('ADD');
+      this.internoService.getTypesProcedures().subscribe((data) => {
+        this.typesProcedures = data;
+        this.TramiteFormGroup.get('type')?.setValue(data[0]._id);
+      });
     }
-    else {
-      this.TramiteFormGroup = this.createForm('ADD')
-      this.internoService.getTypesProcedures().subscribe(data => {
-        this.typesProcedures = data
-        this.TramiteFormGroup.get('tipo_tramite')?.setValue(data[0]._id)
-      })
-    }
-    this.filteredEmitter = this.setAutocomplete('nombre_remitente')
-    this.filteredReceiver = this.setAutocomplete('nombre_destinatario')
+    this.filteredEmitter = this.setAutocomplete('fullname_emitter');
+    this.filteredReceiver = this.setAutocomplete('fullname_receiver');
   }
 
   guardar() {
     if (this.data) {
-      const procedure = UpdateInternalProcedureDto.fromForm(this.TramiteFormGroup.value)
-      this.internoService.Edit(this.data._id, procedure).subscribe(procedure => this.dialogRef.close(procedure))
-    }
-    else {
-      const procedure = CreateInternalProcedureDto.fromForm(this.TramiteFormGroup.value)
-      this.internoService.Add(procedure).subscribe(procedure => this.dialogRef.close(procedure))
+      const {
+        fullname_emitter,
+        fullname_receiver,
+        jobtitle_emitter,
+        jobtitle_receiver,
+        ...values
+      } = this.TramiteFormGroup.value;
+      const procedure: NestedPartial<InternalProcedureDto> = {
+        procedure: values,
+        details: {
+          remitente: {
+            nombre: fullname_emitter,
+            cargo: jobtitle_emitter,
+          },
+          destinatario: {
+            nombre: fullname_receiver,
+            cargo: jobtitle_receiver,
+          },
+        },
+      };
+
+      this.internoService
+        .Edit(this.data._id, procedure)
+        .subscribe((procedure) => this.dialogRef.close(procedure));
+    } else {
+      const procedure = InternalProcedureDto.fromForm(
+        this.TramiteFormGroup.value
+      );
+      this.internoService
+        .Add(procedure)
+        .subscribe((procedure) => this.dialogRef.close(procedure));
     }
   }
 
   setAutocomplete(formControlPath: string) {
     return this.TramiteFormGroup.controls[formControlPath].valueChanges.pipe(
       startWith(''),
-      switchMap(value => this._filterOfficers(value))
-    )
+      switchMap((value) => this._filterOfficers(value))
+    );
   }
 
   private _filterOfficers(value: string) {
-    if (value === '') return []
-    return this.internoService.getParticipant(value).pipe(officers => officers)
+    if (value === '') return [];
+    return this.internoService
+      .getParticipant(value)
+      .pipe((officers) => officers);
   }
 
   setJobTitle(officer: Officer, formControlPath: string) {
-    this.TramiteFormGroup.get(formControlPath)?.setValue(officer.jobtitle)
+    this.TramiteFormGroup.get(formControlPath)?.setValue(officer.jobtitle);
   }
 
   createForm(mode: 'ADD' | 'EDIT') {
     return mode === 'ADD'
       ? this.fb.group({
-        tipo_tramite: ['', Validators.required],
-        detalle: ['', Validators.required],
-        cite: [this.authService.code],
-        nombre_remitente: [this.authService.account.officer.fullname, Validators.required],
-        cargo_remitente: [this.authService.account.officer.jobtitle, Validators.required],
-        nombre_destinatario: ['', Validators.required],
-        cargo_destinatario: ['', Validators.required],
-        cantidad: ['', Validators.required],
-      })
+          type: ['', Validators.required],
+          reference: ['', Validators.required],
+          cite: [this.authService.code],
+          amount: ['', Validators.required],
+          fullname_emitter: [
+            this.authService.account.officer.fullname,
+            Validators.required,
+          ],
+          jobtitle_emitter: [
+            this.authService.account.officer.jobtitle,
+            Validators.required,
+          ],
+          fullname_receiver: ['', Validators.required],
+          jobtitle_receiver: ['', Validators.required],
+        })
       : this.fb.group({
-        detalle: ['', Validators.required],
-        cite: [''],
-        nombre_remitente: ['', Validators.required],
-        cargo_remitente: ['', Validators.required],
-        nombre_destinatario: ['', Validators.required],
-        cargo_destinatario: ['', Validators.required],
-        cantidad: ['', Validators.required]
-      });
+          reference: ['', Validators.required],
+          cite: [''],
+          amount: ['', Validators.required],
+          fullname_emitter: ['', Validators.required],
+          jobtitle_emitter: ['', Validators.required],
+          fullname_receiver: ['', Validators.required],
+          jobtitle_receiver: ['', Validators.required],
+        });
   }
 }
-

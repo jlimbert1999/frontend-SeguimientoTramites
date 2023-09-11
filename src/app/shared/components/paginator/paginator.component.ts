@@ -1,33 +1,43 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { PaginatorService } from '../../services/paginator.service';
 
 @Component({
   selector: 'app-paginator',
   templateUrl: './paginator.component.html',
-  styleUrls: ['./paginator.component.scss']
+  styleUrls: ['./paginator.component.scss'],
 })
-export class PaginatorComponent implements OnInit, AfterViewInit, OnDestroy {
-  @Input('pageSizeOptions') pageSizeOptions: number[] = [10];
+export class PaginatorComponent implements OnInit, OnDestroy {
+  @Input('pageSizeOptions') pageSizeOptions: number[] = [];
   @Output('page') page: EventEmitter<undefined> = new EventEmitter();
 
+  constructor(private paginatorService: PaginatorService) {}
 
-  constructor(public paginatorService: PaginatorService) {
-  }
-
-  ngAfterViewInit(): void {
-  }
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   setPage(event: PageEvent) {
-    this.paginatorService.setPage(event)
+    this.paginatorService.setPage = event;
     this.page.emit();
   }
 
-  ngOnDestroy(): void {
-    this.paginatorService.resetPage()
+  get pageIndex() {
+    return this.paginatorService.offset;
+  }
+  get pageSize() {
+    return this.paginatorService.limit;
+  }
+  get length() {
+    return this.paginatorService.length;
   }
 
+  ngOnDestroy(): void {
+    this.paginatorService.resetPage();
+  }
 }

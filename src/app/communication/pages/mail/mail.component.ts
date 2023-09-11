@@ -1,100 +1,110 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { InboxService } from '../../services/inbox.service';
-import { slideInLeftOnEnterAnimation } from 'angular-animations';
 import Swal from 'sweetalert2';
 import { WorkflowData } from '../../models/workflow.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { showToast } from 'src/app/helpers/toats.helper';
 import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { HttpErrorResponse } from '@angular/common/http';
-import { createFullName } from 'src/app/helpers/fullname.helper';
-import { createListWorkflow } from '../../helpers/ListWorkflow';
-import { PDF_FichaExterno, PDF_FichaInterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
-import { ExternosService } from 'src/app/procedures/services/externos.service';
-import { InternosService } from 'src/app/procedures/services/internos.service';
+
+import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
+import { inbox, workflow } from '../../interfaces';
+import { ProcedureService } from 'src/app/procedures/services/procedure.service';
+import {
+  ExternalProcedure,
+  InternalProcedure,
+  Procedure,
+} from 'src/app/procedures/models';
 
 @Component({
   selector: 'app-mail',
   templateUrl: './mail.component.html',
   styleUrls: ['./mail.component.scss'],
-  animations: [
-    slideInLeftOnEnterAnimation({ duration: 500 })
-  ],
-
 })
 export class MailComponent implements OnInit {
-  Tramite: any
-  Workflow: WorkflowData[]
-  Mail: any
-  observations: any[] = []
-  Events: any[] = []
-  Location: any[] = []
+  group = groupProcedure;
+  procedure: Procedure;
+  workflow: workflow[] = [];
+  mail: inbox;
+  observations: any[] = [];
+  Events: any[] = [];
+  Location: any[] = [];
   constructor(
     private _location: Location,
     private activateRoute: ActivatedRoute,
     private entradaService: InboxService,
     private paginatorService: PaginatorService,
-    private externoService: ExternosService,
-    private internoService: InternosService,
-    public dialog: MatDialog,
-  ) {
-
-  }
+    private procedureService: ProcedureService,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
-    this.activateRoute.params.subscribe(params => {
+    this.activateRoute.params.subscribe((params) => {
       if (params['id']) {
-        this.entradaService.getDetailsMail(params['id']).subscribe(data => {
-          this.Mail = data.mail
-          this.Tramite = data.tramite
-          this.Workflow = data.workflow
-          this.observations = data.observations
-          this.Events = data.events
-          this.Location = data.location
-        })
+        this.entradaService.getMail(params['id']).subscribe((data) => {
+          this.mail = data;
+          this.procedureService
+            .getFullProcedure(this.mail.tramite._id)
+            .subscribe((data) => {
+              this.procedure = data.procedure;
+              this.workflow = data.workflow;
+            });
+        });
       }
-    })
+    });
   }
+
+  get officeOfEmiter() {
+    if (!this.mail) return '';
+    return `${this.mail.emisor.cuenta.dependencia.nombre} / ${this.mail.emisor.cuenta.dependencia.institucion.nombre}`;
+  }
+
   back() {
-    this.activateRoute.queryParams.subscribe(data => {
-      this.paginatorService.limit = data['limit']
-      this.paginatorService.offset = data['offset']
-      this.paginatorService.text = data['text'] ? data['text'] : ''
-      this.paginatorService.type = data['type']
+    this.activateRoute.queryParams.subscribe((data) => {
+      this.paginatorService.limit = data['limit'];
+      this.paginatorService.offset = data['offset'];
+      this.paginatorService.textSearch = data['text'] ? data['text'] : '';
       this._location.back();
-    })
+    });
   }
 
   generar() {
-    const List = this.Workflow.length > 0
-      ? createListWorkflow(this.Workflow, [{ id_root: this.Workflow[0].emisor.cuenta._id, startDate: this.Tramite.fecha_registro }], [])
-      : []
-    if (this.Mail.tipo === 'tramites_externos') {
-      PDF_FichaExterno(this.Tramite, List, this.Location)
-    }
-    else {
-      PDF_FichaInterno(this.Tramite, List, this.Location)
-    }
+    // const List =
+    //   this.Workflow.length > 0
+    //     ? createListWorkflow(
+    //         this.Workflow,
+    //         [
+    //           {
+    //             id_root: this.Workflow[0].emisor.cuenta._id,
+    //             startDate: this.procedure.fecha_registro,
+    //           },
+    //         ],
+    //         []
+    //       )
+    //     : [];
+    // if (this.Mail.tipo === 'tramites_externos') {
+    //   PDF_FichaExterno(this.Tramite, List, this.Location);
+    // } else {
+    //   PDF_FichaInterno(this.Tramite, List, this.Location);
+    // }
   }
 
   generateRouteMap() {
-    this.Mail.tipo === 'tramites_externos'
-      ? this.externoService.getAllDataExternalProcedure(this.Mail.tramite).subscribe(data => {
-        // externalRouteMap(data.procedure, data.workflow)
-      })
-      : this.internoService.getAllDataInternalProcedure(this.Mail.tramite).subscribe(data => {
-        // internalRouteMap(data.procedure, data.workflow)
-      })
-
+    // this.Mail.tipo === 'tramites_externos'
+    //   ? this.externoService.getProcedure(this.Mail.tramite).subscribe(data => {
+    //     // externalRouteMap(data.procedure, data.workflow)
+    //   })
+    //   : this.internoService.getAllDataInternalProcedure(this.Mail.tramite).subscribe(data => {
+    //     // internalRouteMap(data.procedure, data.workflow)
+    //   })
   }
-
 
   aceptMail() {
     Swal.fire({
-      title: `Aceptar tramite ${this.Tramite.alterno}?`,
+      title: `Aceptar tramite ${this.procedure.code}?`,
       text: `El tramite sera marcado como aceptado`,
       icon: 'question',
       showCancelButton: true,
@@ -104,97 +114,103 @@ export class MailComponent implements OnInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.entradaService.aceptMail(this.Mail._id).subscribe(data => {
-          this.Mail.recibido = true
-          this.Tramite.estado = data.state
-          showToast('success', data.message)
-        }, (HttpError: HttpErrorResponse) => {
-          if (HttpError.status === 404) {
-            this.back()
+        this.entradaService.aceptMail(this.mail._id).subscribe(
+          (data) => {
+            this.mail.recibido = true;
+            this.procedure.state = data.state;
+            showToast('success', data.message);
+          },
+          (HttpError: HttpErrorResponse) => {
+            if (HttpError.status === 404) {
+              this.back();
+            }
           }
-        })
+        );
       }
-    })
+    });
   }
   rejectMail() {
     Swal.fire({
       icon: 'info',
-      title: `Rechazar tramite ${this.Tramite.alterno}`,
-      text: `El tramite sera devuelto a ${createFullName(this.Mail.emisor.funcionario)}`,
+      title: `Rechazar tramite ${this.procedure.code}`,
+      text: `El tramite sera devuelto a ${this.mail.emisor.fullname}`,
       input: 'textarea',
       inputPlaceholder: 'Ingrese el motivo del rechazo',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
       customClass: {
-        validationMessage: 'my-validation-message'
+        validationMessage: 'my-validation-message',
       },
       preConfirm: (value) => {
         if (!value) {
           Swal.showValidationMessage(
             '<i class="fa fa-info-circle"></i> Debe ingresar el motivo para el rechazo'
-          )
+          );
         }
-      }
+      },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.entradaService.rejectMail(this.Mail._id, result.value!).subscribe(message => {
-          showToast('success', message)
-          this.back()
-        })
+        this.entradaService
+          .rejectMail(this.mail._id, result.value!)
+          .subscribe((message) => {
+            showToast('success', message);
+            this.back();
+          });
       }
-    })
+    });
   }
   addObservation() {
     Swal.fire({
       icon: 'question',
-      title: `Registrar observacion para el tramite: ${this.Tramite.alterno}?`,
+      title: `Registrar observacion para el tramite: ${this.procedure.cite}?`,
       text: `Debe ingresar una descripcion de la observacion`,
       input: 'textarea',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
       customClass: {
-        validationMessage: 'my-validation-message'
+        validationMessage: 'my-validation-message',
       },
       preConfirm: (value) => {
         if (!value) {
           Swal.showValidationMessage(
             '<i class="fa fa-info-circle"></i> Ingrese la descripcion'
-          )
+          );
         }
-      }
+      },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.entradaService.addObservation(this.Tramite._id, result.value!).subscribe(observation => {
-          this.Tramite.estado = 'OBSERVADO'
-          this.observations.unshift(observation)
-        })
+        this.entradaService
+          .addObservation(this.procedure._id, result.value!)
+          .subscribe((observation) => {
+            this.procedure.state = stateProcedure.OBSERVADO;
+            this.observations.unshift(observation);
+          });
       }
-    })
+    });
   }
   send() {
     const dialogRef = this.dialog.open(SendDialogComponent, {
       width: '1200px',
       data: {
-        _id: this.Tramite._id,
-        tipo: this.Mail.tipo,
+        _id: this.procedure._id,
         tramite: {
           nombre: '',
-          alterno: this.Tramite.alterno,
-          cantidad: this.Mail.cantidad
-        }
-      }
+          alterno: this.procedure.code,
+          cantidad: this.mail.cantidad,
+        },
+      },
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.back()
+        this.back();
       }
     });
   }
   concluir() {
     Swal.fire({
       icon: 'question',
-      title: `Concluir el tramite ${this.Tramite.alterno}?`,
+      title: `Concluir el tramite ${this.procedure.code}?`,
       text: `El tramite pasara a su seccion de archivos`,
       inputPlaceholder: 'Ingrese una referencia para concluir',
       input: 'textarea',
@@ -202,28 +218,35 @@ export class MailComponent implements OnInit {
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
       customClass: {
-        validationMessage: 'my-validation-message'
+        validationMessage: 'my-validation-message',
       },
       preConfirm: (value) => {
         if (!value) {
           Swal.showValidationMessage(
             '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
-          )
+          );
         }
-      }
+      },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.entradaService.Conclude(this.Mail._id, result.value!).subscribe(message => {
-          showToast('success', message)
-          this.back()
-        })
+        this.entradaService
+          .Conclude(this.mail._id, result.value!)
+          .subscribe((message) => {
+            showToast('success', message);
+            this.back();
+          });
       }
-    })
+    });
   }
 
-  setNewStateProcedure(state: string) {
-    this.Tramite.estado = state
+  setNewStateProcedure(state: any) {
+    this.procedure.state = state;
   }
 
-
+  get external() {
+    return this.procedure as ExternalProcedure;
+  }
+  get internal() {
+    return this.procedure as InternalProcedure;
+  }
 }

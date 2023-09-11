@@ -1,3 +1,5 @@
+import { applicant, representative } from '../interfaces';
+
 export class ExternalProcedureDto {
   static fromForm(
     FormProcedure: any,
@@ -8,56 +10,53 @@ export class ExternalProcedureDto {
     return Object.keys(FormRepresentative).length > 0
       ? new ExternalProcedureDto(
           FormProcedure['type'],
+          FormProcedure['cite'],
           FormProcedure['reference'],
           FormProcedure['amount'],
-          requeriments,
-          FormProcedure['cite'],
           FormApplicant,
-          FormRepresentative
+          requeriments
         )
       : new ExternalProcedureDto(
           FormProcedure['type'],
+          FormProcedure['cite'],
           FormProcedure['reference'],
           FormProcedure['amount'],
-          requeriments,
-          FormProcedure['cite'],
-          FormApplicant
+          FormApplicant,
+          requeriments
         );
   }
-  pin: number;
-  representante?: {
-    nombre: string;
-    paterno: string;
-    materno: string;
-    documento: string;
-    telefono: number;
-    dni: number;
+  procedure: {
+    cite: string;
+    reference: string;
+    amount: string;
+    type: string;
+  };
+  details: {
+    requerimientos: string[];
+    solicitante: applicant;
+    representante?: representative;
+    pin: number;
   };
   constructor(
-    public type: string,
-    public reference: string,
-    public amount: string,
-    public requirements: string[],
-    public cite: string,
-    public solicitante: {
-      nombre: string;
-      telefono: number;
-      tipo: string;
-      paterno?: string;
-      materno?: string;
-      documento?: string;
-      dni?: number;
-    },
-    representante?: {
-      nombre: string;
-      paterno: string;
-      materno: string;
-      documento: string;
-      telefono: number;
-      dni: number;
-    }
+    type: string,
+    cite: string,
+    reference: string,
+    amount: string,
+    applicant: applicant,
+    requirements: string[],
+    representative?: representative
   ) {
-    this.pin = Math.floor(100000 + Math.random() * 900000);
-    if (representante) this.representante = representante;
+    this.procedure = {
+      cite,
+      reference,
+      amount,
+      type,
+    };
+    this.details = {
+      solicitante: applicant,
+      requerimientos: requirements,
+      pin: Math.floor(100000 + Math.random() * 900000),
+    };
+    if (representative) this.details.representante = representative;
   }
 }

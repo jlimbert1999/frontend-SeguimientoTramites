@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { ReporteService } from '../../services/reporte.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SendDataReportEvent } from '../../models/sendData.model';
-import { statesProcedure } from 'src/app/procedures/models/ProceduresProperties';
+import { stateProcedure } from 'src/app/procedures/interfaces/procedures-props.interface';
 
 @Component({
   selector: 'app-report-usuario-options',
@@ -19,7 +19,7 @@ export class ReportUsuarioOptionsComponent {
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
-  states: statesProcedure
+  states: stateProcedure
 
   constructor(private reporteService: ReporteService, private _formBuilder: FormBuilder) {
 

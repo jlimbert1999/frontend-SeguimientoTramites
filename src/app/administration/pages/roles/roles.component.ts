@@ -29,7 +29,7 @@ export class RolesComponent {
   }
   Add(): void {
     const dialogRef = this.dialog.open(RolDialogComponent, {
-      width: '1200px'
+      width: '1000px'
     });
     dialogRef.afterClosed().subscribe((result: role) => {
       if (result) {
@@ -39,7 +39,7 @@ export class RolesComponent {
   }
   Edit(role: role) {
     const dialogRef = this.dialog.open(RolDialogComponent, {
-      width: '1200px',
+      width: '1000px',
       data: role
     });
     dialogRef.afterClosed().subscribe((result: role) => {

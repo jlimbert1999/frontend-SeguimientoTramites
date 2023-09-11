@@ -5,6 +5,10 @@ export enum stateProcedure {
   REVISION = 'EN REVISION',
   CONCLUIDO = 'CONCLUIDO',
 }
+export enum groupProcedure {
+  EXTERNAL = 'ExternalDetail',
+  INTERNAL = 'InternalDetail',
+}
 export interface procedure {
   _id: string;
   code: string;
@@ -15,8 +19,7 @@ export interface procedure {
   reference: string;
   amount: string;
   send: boolean;
+  group: groupProcedure;
   startDate: string;
   endDate?: string;
-  group: string;
-  tramite: string;
 }

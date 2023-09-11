@@ -1,12 +1,6 @@
-export class rolDto {
-    role: string
-    privileges: {
-        resource: string;
-        create: boolean;
-        update: boolean;
-        read: boolean;
-        delete: boolean;
-    }[]
+import { permissions } from '../interfaces';
+
+export class RoleDto {
+  name: string;
+  permisions: permissions[];
 }
-
-

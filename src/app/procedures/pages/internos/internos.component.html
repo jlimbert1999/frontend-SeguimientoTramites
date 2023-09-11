@@ -4,13 +4,13 @@
     <mat-label>Buscar tramite interno</mat-label>
     <input
       matInput
-      [(ngModel)]="paginatorService.text"
+      [(ngModel)]="paginatorService.textSearch"
       (keyup)="applyFilter($event)"
       placeholder="Alterno / Referencia / Destinatario / Cite"
       #input
     />
     <button
-      *ngIf="paginatorService.text !== ''"
+      *ngIf="paginatorService.textSearch !== ''"
       matSuffix
       mat-icon-button
       aria-label="Clear"
@@ -91,7 +91,7 @@
               <button
                 mat-menu-item
                 (click)="Edit(element)"
-                [disabled]="element.estado !== 'INSCRITO'"
+                [disabled]="element.state !== 'INSCRITO'"
               >
                 <mat-icon>edit</mat-icon>
                 <span>Editar tramite</span>

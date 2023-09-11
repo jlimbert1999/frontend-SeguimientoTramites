@@ -2,12 +2,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { typeProcedure } from 'src/app/administration/interfaces/typeProcedure.interface';
-import { ExternalProcedureDto } from '../dtos/external.dto';
-import { ExternalDetail } from '../models/externo.model';
-import { newWorkflow } from 'src/app/communication/interfaces/workflow.interface';
-import { procedure } from '../interfaces/procedure.interface';
-import { external } from '../interfaces/external_detail.interface';
+import { typeProcedure } from 'src/app/administration/interfaces';
+import { external } from '../interfaces/external.interface';
+import { ExternalProcedureDto } from '../dtos';
+import { NestedPartial } from 'src/app/shared/interfaces/nested-partial';
+import { ExternalProcedure } from '../models';
+import { workflow } from 'src/app/communication/interfaces';
 
 const base_url = environment.base_url;
 @Injectable({
@@ -15,13 +15,6 @@ const base_url = environment.base_url;
 })
 export class ExternosService {
   constructor(private http: HttpClient) {}
-
-  markProcedureAsSend(id_procedure: string) {
-    return this.http.patch<{ ok: boolean }>(
-      `${base_url}/external/send/${id_procedure}`,
-      undefined
-    );
-  }
 
   getSegments() {
     return this.http
@@ -39,28 +32,31 @@ export class ExternosService {
   }
 
   Add(procedure: ExternalProcedureDto) {
+    return this.http.post<external>(`${base_url}/external`, procedure).pipe(
+      map((resp) => {
+        return resp;
+      })
+    );
+  }
+  Edit(id_procedure: string, procedure: NestedPartial<ExternalProcedureDto>) {
     return this.http
-      .post<external>(`${base_url}/external`, procedure)
+      .put<external>(`${base_url}/external/${id_procedure}`, procedure)
       .pipe(map((resp) => resp));
   }
   Get(limit: number, offset: number) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
-      .get<{ procedures: external[]; total: number }>(`${base_url}/external`, {
+      .get<{ procedures: external[]; length: number }>(`${base_url}/external`, {
         params,
       })
       .pipe(
         map((resp) => {
-          return { procedures: resp.procedures, length: resp.total };
+          return { procedures: resp.procedures, length: resp.length };
         })
       );
   }
-  Edit(id_procedure: string, procedure: any) {
-    return this.http
-      .put<external>(`${base_url}/external/${id_procedure}`, procedure)
-      .pipe(map((resp) => resp));
-  }
-  GetSearch(limit: number, offset: number, text: string) {
+
+  GetSearch(text: string, limit: number, offset: number) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
       .get<{ procedures: external[]; length: number }>(
@@ -70,42 +66,6 @@ export class ExternosService {
       .pipe(
         map((resp) => {
           return { procedures: resp.procedures, length: resp.length };
-        })
-      );
-  }
-  getAllDataExternalProcedure(id_procedure: string) {
-    return this.http
-      .get<{ procedure: any; workflow: newWorkflow[] }>(
-        `${base_url}/external/${id_procedure}`
-      )
-      .pipe(
-        map((resp) => {
-          const { procedure } = resp;
-          console.log(procedure);
-          return {
-            procedure: ExternalDetail.frmJson(resp.procedure),
-            workflow: resp.workflow,
-          };
-          // resp.workflow.map(element => {
-          //   if (element.receptor.funcionario === undefined) {
-          //     element.receptor.funcionario = {
-          //       nombre: element.receptor.usuario,
-          //       paterno: '',
-          //       materno: '',
-          //       cargo: element.receptor.cargo
-          //     }
-          //   }
-          //   if (element.emisor.funcionario === undefined) {
-          //     element.emisor.funcionario = {
-          //       nombre: element.emisor.usuario,
-          //       paterno: '',
-          //       materno: '',
-          //       cargo: element.emisor.cargo
-          //     }
-          //   }
-          //   return element
-          // })
-          // return { procedure: resp.procedure, workflow: resp.workflow, location: resp.location, observations: resp.observations, events: resp.events }
         })
       );
   }

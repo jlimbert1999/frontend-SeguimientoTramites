@@ -1,30 +1,23 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { fadeInOnEnterAnimation } from 'angular-animations';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from 'src/app/auth/services/auth.service';
 import Swal from 'sweetalert2';
-import { LoaderService } from 'src/app/auth/services/loader.service';
+import { AuthService } from 'src/app/auth/services/auth.service';
 import { InboxService } from '../../services/inbox.service';
 import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.component';
 import { InternosService } from 'src/app/procedures/services/internos.service';
 import { ExternosService } from 'src/app/procedures/services/externos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { Router } from '@angular/router';
-import { createFullName } from 'src/app/helpers/fullname.helper';
-import { showToast } from 'src/app/helpers/toats.helper';
 import { NotificationService } from 'src/app/home-old/services/notification.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { inbox } from '../../interfaces/inbox.interface';
-import { internal } from 'src/app/procedures/interfaces/internal.interface';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-inbox',
   templateUrl: './inbox.component.html',
   styleUrls: ['./inbox.component.scss'],
-  animations: [fadeInOnEnterAnimation()],
 })
 export class InboxComponent implements OnInit, OnDestroy {
   private mailSubscription: Subscription;
@@ -37,21 +30,11 @@ export class InboxComponent implements OnInit, OnDestroy {
     'fecha_envio',
     'opciones',
   ];
-  expandedElement: any | null;
-
-  filterOptions = [
-    { value: 'interno', viewValue: 'INTERNO' },
-    { value: 'externo', viewValue: 'EXTERNO' },
-  ];
 
   constructor(
     public bandejaService: InboxService,
     public dialog: MatDialog,
     public authService: AuthService,
-    private toastr: ToastrService,
-    private internoService: InternosService,
-    private externoService: ExternosService,
-    public loaderService: LoaderService,
     public paginatorService: PaginatorService,
     private router: Router,
     private socketService: SocketService,
@@ -77,13 +60,12 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   Get() {
-    if (this.paginatorService.type) {
+    if (this.paginatorService.textSearch != '') {
       this.bandejaService
         .Search(
           this.paginatorService.limit,
           this.paginatorService.offset,
-          this.paginatorService.type,
-          this.paginatorService.text
+          this.paginatorService.textSearch
         )
         .subscribe((length) => {
           this.paginatorService.length = length;
@@ -194,7 +176,6 @@ export class InboxComponent implements OnInit, OnDestroy {
         this.bandejaService
           .Conclude(mail._id, result.value!)
           .subscribe((message) => {
-            showToast('success', message);
             this.Get();
           });
       }
@@ -202,52 +183,52 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   applyFilter(event: Event) {
-    if (this.paginatorService.type) {
-      this.paginatorService.offset = 0;
-      const filterValue = (event.target as HTMLInputElement).value;
-      this.paginatorService.text = filterValue;
-      this.Get();
-    }
+    // if (this.paginatorService.type) {
+    //   this.paginatorService.offset = 0;
+    //   const filterValue = (event.target as HTMLInputElement).value;
+    //   this.paginatorService.text = filterValue;
+    //   this.Get();
+    // }
   }
 
   selectTypeSearch() {
-    if (this.paginatorService.type === undefined) {
-      this.paginatorService.text = '';
-    }
-    this.paginatorService.offset = 0;
-    this.Get();
+    // if (this.paginatorService.type === undefined) {
+    //   this.paginatorService.text = '';
+    // }
+    // this.paginatorService.offset = 0;
+    // this.Get();
   }
 
   cancelSearch() {
-    this.paginatorService.offset = 0;
-    this.paginatorService.text = '';
-    this.paginatorService.type = undefined;
-    this.Get();
+    // this.paginatorService.offset = 0;
+    // this.paginatorService.text = '';
+    // this.paginatorService.type = undefined;
+    // this.Get();
   }
 
   generateRouteMap(mail: inbox) {
-    mail.tipo === 'tramites_externos'
-      ? this.externoService
-          .getAllDataExternalProcedure(mail.tramite._id)
-          .subscribe((data) => {
-            // externalRouteMap(data.procedure, data.workflow)
-          })
-      : this.internoService
-          .getAllDataInternalProcedure(mail.tramite._id)
-          .subscribe((data) => {
-            // internalRouteMap(data.procedure, data.workflow)
-          });
+    // mail.tipo === 'tramites_externos'
+    //   ? this.externoService
+    //       .getAllDataExternalProcedure(mail.tramite._id)
+    //       .subscribe((data) => {
+    //         // externalRouteMap(data.procedure, data.workflow)
+    //       })
+    //   : this.internoService
+    //       .getAllDataInternalProcedure(mail.tramite._id)
+    //       .subscribe((data) => {
+    //         // internalRouteMap(data.procedure, data.workflow)
+    //       });
   }
-  View(id_bandeja: string) {
-    let params = {
+  view(id_bandeja: string) {
+    const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
     };
-    if (this.paginatorService.text !== '') {
-      Object.assign(params, { type: this.paginatorService.type });
-      Object.assign(params, { text: this.paginatorService.text });
-    }
-    this.router.navigate(['home/bandejas/entrada/mail', id_bandeja], {
+    // if (this.paginatorService.text !== '') {
+    //   Object.assign(params, { type: this.paginatorService.type });
+    //   Object.assign(params, { text: this.paginatorService.text });
+    // }
+    this.router.navigate(['/bandejas/entrada', id_bandeja], {
       queryParams: params,
     });
   }

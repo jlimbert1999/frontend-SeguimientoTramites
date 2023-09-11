@@ -6,11 +6,11 @@ import { ListWorkflowComponent } from './components/list-workflow/list-workflow.
 import { ObservacionesComponent } from './observaciones/observaciones.component';
 import { FullnamePipe } from './pipes/fullname.pipe';
 import { PaginatorComponent } from './components/paginator/paginator.component';
-import { InfoTramiteInternoComponent } from './info-tramite-interno/info-tramite-interno.component';
-import { InfoTramiteExternoComponent } from './info-tramite-externo/info-tramite-externo.component';
+import { InternalDetailComponent } from '../procedures/components/internal-detail/internal-detail.component';
+import { ExternalDetailComponent } from '../procedures/components/external-detail/external-detail.component';
 import { StatePipe } from './pipes/state.pipe';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
-import { ToolbarComponent } from './toolbar/toolbar.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TableReportPreceduresComponent } from './table-report-precedures/table-report-precedures.component';
 import { SimpleMatSelectSearchComponent } from './components/simple-mat-select-search/simple-mat-select-search.component';
@@ -19,6 +19,7 @@ import { ServerMatSelectSearchComponent } from './components/server-mat-select-s
 import { EventsProcedureComponent } from './events-procedure/events-procedure.component';
 import { BadgePipe } from './pipes/badge.pipe';
 import { RouterModule } from '@angular/router';
+import { InputSearchProceduresComponent } from './components/input-search-procedures/input-search-procedures.component';
 
 @NgModule({
   declarations: [
@@ -27,8 +28,7 @@ import { RouterModule } from '@angular/router';
     ObservacionesComponent,
     FullnamePipe,
     PaginatorComponent,
-    InfoTramiteInternoComponent,
-    InfoTramiteExternoComponent,
+    
     StatePipe,
     ToolbarComponent,
     TableReportPreceduresComponent,
@@ -36,6 +36,7 @@ import { RouterModule } from '@angular/router';
     ServerMatSelectSearchComponent,
     EventsProcedureComponent,
     BadgePipe,
+    InputSearchProceduresComponent,
   ],
   imports: [
     CommonModule,
@@ -44,7 +45,7 @@ import { RouterModule } from '@angular/router';
     ReactiveFormsModule,
     NgxMatSelectSearchModule,
     FormsModule,
-    RouterModule
+    RouterModule,
   ],
   exports: [
     GraphWorkflowComponent,
@@ -53,15 +54,13 @@ import { RouterModule } from '@angular/router';
     FullnamePipe,
     StatePipe,
     PaginatorComponent,
-    InfoTramiteExternoComponent,
-    InfoTramiteInternoComponent,
     ToolbarComponent,
     TableReportPreceduresComponent,
     SimpleMatSelectSearchComponent,
     ServerMatSelectSearchComponent,
+    InputSearchProceduresComponent,
     EventsProcedureComponent,
-    BadgePipe
-
-  ]
+    BadgePipe,
+  ],
 })
-export class SharedModule { }
+export class SharedModule {}

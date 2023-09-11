@@ -13,22 +13,60 @@ import { OrganizationComponent } from './pages/organization/organization.compone
 import { SettingsComponent } from './pages/settings/settings.component';
 
 const routes: Routes = [
-  { path: 'instituciones', component: InstitucionesComponent, canActivate: [RoleGuard], data: { resource: 'instituciones' } },
-  { path: 'funcionarios', component: OfficersComponent, canActivate: [RoleGuard], data: { resource: 'usuarios' } },
-  { path: 'dependencias', component: DependenciasComponent, canActivate: [RoleGuard], data: { resource: 'dependencias' } },
-  { path: 'cuentas', component: AccountsComponent, canActivate: [RoleGuard], data: { resource: 'cuentas' } },
-  { path: 'tipos', component: TiposTramitesComponent, canActivate: [RoleGuard], data: { resource: 'tipos' } },
-  { path: 'roles', component: RolesComponent, canActivate: [RoleGuard], data: { resource: 'roles' } },
-  { path: 'organigrama', component: OrganizationComponent, canActivate: [RoleGuard], data: { resource: 'cargos' } },
-  { path: 'cargos', component: JobsComponent, canActivate: [RoleGuard], data: { resource: 'cargos' } },
+  {
+    path: 'instituciones',
+    component: InstitucionesComponent,
+    canActivate: [RoleGuard],
+    data: { resource: 'institutions' },
+  },
+  {
+    path: 'funcionarios',
+    component: OfficersComponent,
+    canActivate: [RoleGuard],
+    data: { resource: 'officers' },
+  },
+  {
+    path: 'dependencias',
+    component: DependenciasComponent,
+    canActivate: [RoleGuard],
+    data: { resource: 'dependences' },
+  },
+  {
+    path: 'cuentas',
+    component: AccountsComponent,
+    canActivate: [RoleGuard],
+    data: { resource: 'accounts' },
+  },
+  {
+    path: 'tipos',
+    component: TiposTramitesComponent,
+    canActivate: [RoleGuard],
+    data: { resource: 'types-procedures' },
+  },
+  {
+    path: 'roles',
+    component: RolesComponent,
+    canActivate: [RoleGuard],
+    data: { resource: 'roles' },
+  },
+  {
+    path: 'organigrama',
+    component: OrganizationComponent,
+    canActivate: [RoleGuard],
+    data: { resource: 'jobs' },
+  },
+  {
+    path: 'cargos',
+    component: JobsComponent,
+    canActivate: [RoleGuard],
+    data: { resource: 'jobs' },
+  },
   { path: 'groupware', component: GroupwareComponent },
-  { path: 'sistema', component: SettingsComponent }
+  { path: 'sistema', component: SettingsComponent },
 ];
 
 @NgModule({
   declarations: [],
-  imports: [
-    RouterModule.forChild(routes)
-  ]
+  imports: [RouterModule.forChild(routes)],
 })
-export class AdministrationRoutingModule { }
+export class AdministrationRoutingModule {}

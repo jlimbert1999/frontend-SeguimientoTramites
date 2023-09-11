@@ -11,12 +11,13 @@ import Swal from 'sweetalert2';
 import { DialogInternosComponent } from '../../dialogs/dialog-internos/dialog-internos.component';
 import { InternosService } from '../../services/internos.service';
 import { Router } from '@angular/router';
-import { paramsNavigation } from '../../models/ProceduresProperties';
 import { SocketService } from 'src/app/services/socket.service';
-import { internal } from '../../interfaces/internal.interface';
 import { createInternalRouteMap } from '../../helpers/internal-route-map';
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
 import { sendDetail } from 'src/app/communication/interfaces';
+import { internal } from '../../interfaces';
+import { ProcedureService } from '../../services/procedure.service';
+import { InternalProcedure } from '../../models';
 
 @Component({
   selector: 'app-internos',
@@ -41,8 +42,9 @@ export class InternosComponent implements OnInit {
   dataSource: internal[] = [];
 
   constructor(
-    public dialog: MatDialog,
-    public internoService: InternosService,
+    private dialog: MatDialog,
+    private internoService: InternosService,
+    public procedureService: ProcedureService,
     private authService: AuthService,
     public paginatorService: PaginatorService,
     private router: Router,
@@ -53,12 +55,12 @@ export class InternosComponent implements OnInit {
     this.Get();
   }
   Get() {
-    if (this.paginatorService.text !== '') {
+    if (this.paginatorService.textSearch !== '') {
       this.internoService
         .search(
           this.paginatorService.limit,
           this.paginatorService.offset,
-          this.paginatorService.text
+          this.paginatorService.textSearch
         )
         .subscribe((data) => {
           this.dataSource = data.procedures;
@@ -98,7 +100,7 @@ export class InternosComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: internal) => {
       if (result) {
         const indexFound = this.dataSource.findIndex(
-          (element) => element._id === tramite._id
+          (element) => element._id === result._id
         );
         this.dataSource[indexFound] = result;
         this.dataSource = [...this.dataSource];
@@ -107,7 +109,6 @@ export class InternosComponent implements OnInit {
   }
   Send(procedure: internal) {
     const data: sendDetail = {
-      group: 'InternalProcedure',
       amount: procedure.amount,
       procedure: {
         _id: procedure._id,
@@ -121,37 +122,34 @@ export class InternosComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        this.internoService
-          .markProcedureAsSend(procedure._id)
-          .subscribe((_) => {
-            const indexFound = this.dataSource.findIndex(
-              (element) => element._id === procedure._id
-            );
-            this.dataSource[indexFound].send = true;
-            this.dataSource = [...this.dataSource];
-          });
+        const indexFound = this.dataSource.findIndex(
+          (element) => element._id === procedure._id
+        );
+        this.dataSource[indexFound].send = true;
+        this.dataSource = [...this.dataSource];
       }
     });
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.paginatorService.text = filterValue.toLowerCase();
+    this.paginatorService.textSearch = filterValue.toLowerCase();
     this.Get();
   }
 
   cancelSearch() {
     this.paginatorService.offset = 0;
-    this.paginatorService.text = '';
+    this.paginatorService.textSearch = '';
     this.Get();
   }
 
   generateRouteMap(id_tramite: string) {
-    this.internoService
-      .getAllDataInternalProcedure(id_tramite)
-      .subscribe((data) => {
-        createInternalRouteMap(data.procedure, data.workflow);
-      });
+    this.procedureService.getFullProcedure(id_tramite).subscribe((data) => {
+      createInternalRouteMap(
+        data.procedure as InternalProcedure,
+        data.workflow
+      );
+    });
   }
 
   conclude(procedure: internal) {
@@ -193,13 +191,14 @@ export class InternosComponent implements OnInit {
     });
   }
   view(procedure: internal) {
-    let params: paramsNavigation = {
+    const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
+      ...(this.paginatorService.textSearch !== '' && {
+        text: this.paginatorService.textSearch,
+      }),
     };
-    if (this.paginatorService.text !== '')
-      params.text = this.paginatorService.text;
-    this.router.navigate(['tramites/internos/ficha-interna', procedure._id], {
+    this.router.navigate(['/tramites/internos', procedure._id], {
       queryParams: params,
     });
   }
