@@ -72,7 +72,7 @@ export class InboxService {
   rejectMail(id_bandeja: string, motivo_rechazo: string) {
     return this.http
       .put<{ ok: boolean; message: string }>(
-        `${base_url}/entradas/rechazar/${id_bandeja}`,
+        `${base_url}/inbox/reject/${id_bandeja}`,
         { motivo_rechazo }
       )
       .pipe(

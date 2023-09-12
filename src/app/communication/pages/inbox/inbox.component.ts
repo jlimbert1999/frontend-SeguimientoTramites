@@ -144,12 +144,13 @@ export class InboxComponent implements OnInit, OnDestroy {
         }
       },
     }).then((result) => {
-      // if (result.isConfirmed) {
-      //   this.bandejaService.rejectMail(elemento._id, result.value!).subscribe(message => {
-      //     showToast('success', message)
-      //     this.Get()
-      //   })
-      // }
+      if (result.isConfirmed) {
+        this.bandejaService
+          .rejectMail(mail._id, 'dsds')
+          .subscribe((message) => {
+            
+          });
+      }
     });
   }
   concluir(mail: inbox) {
