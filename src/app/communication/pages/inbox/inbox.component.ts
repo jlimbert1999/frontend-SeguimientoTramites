@@ -13,6 +13,7 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { NotificationService } from 'src/app/home-old/services/notification.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { inbox } from '../../interfaces/inbox.interface';
+import { sendDetail } from '../../interfaces';
 
 @Component({
   selector: 'app-inbox',
@@ -38,12 +39,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     public paginatorService: PaginatorService,
     private router: Router,
     private socketService: SocketService,
-    private notificationService: NotificationService
   ) {
-    // this.socketService.listenCancelMail().subscribe(() => {
-    //   this.notificationService.number_mails.next(this.notificationService.number_mails.value - 1);
-    //   this.Get();
-    // })
     this.mailSubscription = this.socketService.mailSubscription$.subscribe(
       (data) => {
         this.dataSource = [data, ...this.dataSource];
@@ -81,25 +77,25 @@ export class InboxComponent implements OnInit, OnDestroy {
     }
   }
 
-  send(elemento: inbox) {
-    // const dialogRef = this.dialog.open(SendDialogComponent, {
-    //   width: '1200px',
-    //   data: {
-    //     _id: elemento.tramite._id,
-    //     tipo: elemento.tipo,
-    //     tramite: {
-    //       nombre: '',
-    //       alterno: elemento.tramite.alterno,
-    //       cantidad: elemento.cantidad
-    //     }
-    //   }
-    // });
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.Get()
-    //   }
-    // });
+  send(mail: inbox) {
+    const { tramite, cantidad } = mail;
+    const data: sendDetail = {
+      amount: cantidad,
+      procedure: {
+        _id: tramite._id,
+        alterno: tramite.code,
+      },
+    };
+    const dialogRef = this.dialog.open(SendDialogComponent, {
+      width: '1200px',
+      data,
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+      }
+    });
   }
+
   acceptMail(mail: inbox) {
     Swal.fire({
       title: `¿Aceptar tramite ${mail.tramite.code}?`,
@@ -110,16 +106,13 @@ export class InboxComponent implements OnInit, OnDestroy {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        // this.bandejaService.aceptMail(elemento._id).subscribe((data) => {
-        //   // const indexFound = this.bandejaService.Mails.findIndex(mail => mail._id === elemento._id)
-        //   // this.bandejaService.Mails[indexFound].recibido = true
-        //   // this.bandejaService.Mails[indexFound].tramite.estado = data.state
-        //   // this.bandejaService.Mails = [...this.bandejaService.Mails]
-        //   // this.toastr.success(undefined, data.message, {
-        //   //   positionClass: 'toast-bottom-right',
-        //   //   timeOut: 3000,
-        //   // })
-        // });
+        this.bandejaService.acceptMail(mail._id).subscribe((data) => {
+          const indexFound = this.dataSource.findIndex(
+            (item) => item._id === mail._id
+          );
+          this.dataSource[indexFound].tramite.state = data;
+          this.dataSource[indexFound].recibido = true;
+        });
       }
     });
   }

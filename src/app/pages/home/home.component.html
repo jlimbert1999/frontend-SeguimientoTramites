@@ -87,7 +87,9 @@
               [routerLink]="submenu.routerLink"
               routerLinkActive="active-link"
             >
-              <mat-icon matListItemIcon>{{ submenu.icon }}</mat-icon>
+              <mat-icon matListItemIcon matBadge="7">{{
+                submenu.icon
+              }}</mat-icon>
               <span matListItemTitle>{{ submenu.text }}</span>
             </mat-list-item>
           </mat-nav-list>

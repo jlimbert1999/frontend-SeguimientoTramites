@@ -67,32 +67,30 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <div [ngSwitch]="row.recibido">
-                <div *ngSwitchCase="undefined">
-                  <button (click)="acceptMail(row)" mat-menu-item>
-                    <mat-icon>done</mat-icon>
-                    <span>Aceptar tramite</span>
-                  </button>
-                  <button (click)="rejectMail(row)" mat-menu-item>
-                    <mat-icon>block</mat-icon>
-                    <span>Rechazar tramite</span>
-                  </button>
-                </div>
-                <div *ngSwitchDefault>
-                  <button (click)="send(row)" mat-menu-item>
-                    <mat-icon>send</mat-icon>
-                    <span>Remitir tramite</span>
-                  </button>
-                  <button (click)="generateRouteMap(row)" mat-menu-item>
-                    <mat-icon>print</mat-icon>
-                    <span>Hoja de ruta</span>
-                  </button>
-                  <button (click)="concluir(row)" mat-menu-item>
-                    <mat-icon>domain_verification</mat-icon>
-                    <span>Concluir tramite</span>
-                  </button>
-                </div>
+              <div *ngIf="row.recibido === null; else templateOptionsManager">
+                <button (click)="acceptMail(row)" mat-menu-item>
+                  <mat-icon>done</mat-icon>
+                  <span>Aceptar tramite</span>
+                </button>
+                <button (click)="rejectMail(row)" mat-menu-item>
+                  <mat-icon>block</mat-icon>
+                  <span>Rechazar tramite</span>
+                </button>
               </div>
+              <ng-template #templateOptionsManager>
+                <button (click)="send(row)" mat-menu-item>
+                  <mat-icon>send</mat-icon>
+                  <span>Remitir tramite</span>
+                </button>
+                <button (click)="generateRouteMap(row)" mat-menu-item>
+                  <mat-icon>print</mat-icon>
+                  <span>Hoja de ruta</span>
+                </button>
+                <button (click)="concluir(row)" mat-menu-item>
+                  <mat-icon>domain_verification</mat-icon>
+                  <span>Concluir tramite</span>
+                </button>
+              </ng-template>
             </mat-menu>
           </td>
         </ng-container>

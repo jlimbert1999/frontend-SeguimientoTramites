@@ -62,18 +62,18 @@ export class InboxService {
 
   acceptMail(id_bandeja: string) {
     return this.http
-      .put<stateProcedure>(`${base_url}/entradas/acept/${id_bandeja}`, {})
+      .put<stateProcedure>(`${base_url}/inbox/accept/${id_bandeja}`, {})
       .pipe(
         map((resp) => {
           return resp;
         })
       );
   }
-  rejectMail(id_bandeja: string, motivo_rechazo: string) {
+  rejectMail(id_bandeja: string, rejection_reason: string) {
     return this.http
       .put<{ ok: boolean; message: string }>(
         `${base_url}/inbox/reject/${id_bandeja}`,
-        { motivo_rechazo }
+        { rejection_reason }
       )
       .pipe(
         map((resp) => {
