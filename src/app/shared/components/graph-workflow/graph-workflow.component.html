@@ -72,26 +72,14 @@
       <svg:g class="edge">
         <svg:path
           class="line"
-          [ngClass]="[
-            link.data.recibido === true
-              ? 'line-success'
-              : link.data.recibido === false
-              ? 'line-reject'
-              : 'line-pending'
-          ]"
+          [ngClass]="[link.data.classLink]"
           stroke-width="3.5"
           marker-end="url(#arrow)"
         ></svg:path>
         <svg:g
           [matTooltip]="link.data.status"
           matTooltipClass="tooltip"
-          [ngClass]="[
-            link.data.recibido === true
-              ? 'circle-success'
-              : link.data.recibido === false
-              ? 'circle-reject'
-              : 'circle-pending'
-          ]"
+          [ngClass]="[link.data.classEdge]"
           *ngIf="link.midPoint"
           [attr.transform]="
             'translate(' + link.midPoint.x + ',' + link.midPoint.y + ')'

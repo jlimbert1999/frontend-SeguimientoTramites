@@ -1,14 +1,7 @@
 import { procedure } from 'src/app/procedures/interfaces';
-import { participant } from './participant.interface';
-import { inbox } from './inbox.interface';
+import { communication } from './communication';
 
 export interface groupedOutbox {
-  _id: { cuenta: string; tramite: procedure; fecha_envio: string };
-  sendings: send[];
+  _id: { account: string; procedure: procedure; outboundDate: string };
+  sendings: communication[];
 }
-
-export interface send extends inbox {
-  numero_interno: string;
-  fecha_recibido?: string;
-}
-

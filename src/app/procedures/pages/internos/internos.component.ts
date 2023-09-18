@@ -109,10 +109,10 @@ export class InternosComponent implements OnInit {
   }
   Send(procedure: internal) {
     const data: sendDetail = {
-      amount: procedure.amount,
+      attachmentQuantity: procedure.amount,
       procedure: {
         _id: procedure._id,
-        alterno: procedure.code,
+        code: procedure.code,
       },
     };
     const dialogRef = this.dialog.open(SendDialogComponent, {

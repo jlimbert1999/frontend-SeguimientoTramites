@@ -4,7 +4,7 @@ import { receiver, sendDetail } from '../interfaces';
 export class CreateMailDto {
   static fromFormData(
     form: any,
-    datails: sendDetail,
+    details: sendDetail,
     participants: receiver[]
   ) {
     const receivers = participants.map((participant) => {
@@ -19,23 +19,27 @@ export class CreateMailDto {
       return receiver;
     });
     return new CreateMailDto(
-      datails.procedure._id,
+      details.procedure._id,
       form['cantidad'],
       form['motivo'],
       form['numero_interno'],
-      receivers
+      receivers,
+      details.id_mail
     );
   }
-
+  id_mail: string;
   constructor(
-    public tramite: string,
-    public cantidad: string,
-    public motivo: string,
-    public numero_interno: string,
+    public id_procedure: string,
+    public attachmentQuantity: string,
+    public reference: string,
+    public internalNumber: string,
     public receivers: {
       cuenta: string;
       fullname: string;
       jobtitle?: string;
-    }[]
-  ) {}
+    }[],
+    currentMailId?: string
+  ) {
+    if (currentMailId) this.id_mail = currentMailId;
+  }
 }

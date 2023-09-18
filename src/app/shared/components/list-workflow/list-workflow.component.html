@@ -5,20 +5,20 @@
         <div class="card bg-transparent">
           <div class="card-body">
             <h5 class="card-title">
-              {{ item.sendings[0].emisor.fullname | titlecase }}
+              {{ item.sendings[0].emitter.fullname | titlecase }}
             </h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">
-              {{ item.sendings[0].emisor.jobtitle | uppercase }}
+              {{ item.sendings[0].emitter.jobtitle | uppercase }}
             </h6>
             <hr />
-            <p class="card-text">{{ item.sendings[0].motivo }}</p>
+            <p class="card-text">{{ item.sendings[0].reference }}</p>
           </div>
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
               Fecha envio: {{ item._id.fecha_envio | date : "short" }}
             </li>
             <li class="list-group-item">
-              Cantidad: {{ item.sendings[0].cantidad }}
+              Cantidad: {{ item.sendings[0].attachmentQuantity }}
             </li>
           </ul>
         </div>
@@ -28,22 +28,22 @@
           class="card bg-transparent"
           *ngFor="let subitem of item.sendings"
           [ngClass]="[
-            subitem.recibido === false ? 'border-danger ' : '',
-            subitem.recibido === true ? 'border-success' : 'border-warning'
+            subitem.status === 'rejected' ? 'border-danger ' : '',
+            subitem.status === 'pending' ? 'border-warning' : 'border-success'
           ]"
         >
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">
-                {{ subitem.receptor.fullname | titlecase }}
+                {{ subitem.emitter.fullname | titlecase }}
               </h5>
               <h6 class="card-subtitle mb-2 text-body-secondary">
-                {{ subitem.receptor.jobtitle }}
+                {{ subitem.receiver.jobtitle }}
               </h6>
             </div>
             <ul class="list-group list-group-flush">
               <li class="list-group-item">
-                Fecha recibido: {{ subitem.fecha_recibido | date : "short" }}
+                Fecha recibido: {{ subitem.inboundDate | date : "short" }}
               </li>
             </ul>
           </div>

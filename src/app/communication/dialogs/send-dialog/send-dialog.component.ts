@@ -21,24 +21,25 @@ import { CreateMailDto } from '../../dto/create-mail.dto';
   styleUrls: ['./send-dialog.component.scss'],
 })
 export class SendDialogComponent implements OnInit, OnDestroy {
+  institutions: institution[] = [];
+  dependencies: dependency[] = [];
   receivers: receiver[] = [];
+  selectedReceivers: receiver[] = [];
   public userCtrl = new FormControl();
   public userFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredUsers: ReplaySubject<receiver[]> = new ReplaySubject<
     receiver[]
   >(1);
   protected _onDestroy = new Subject<void>();
-  institutions: institution[] = [];
-  dependencies: dependency[] = [];
-  selectedReceivers: receiver[] = [];
+
   FormEnvio: FormGroup = this.fb.group({
     motivo: ['PARA SU ATENCION', Validators.required],
-    cantidad: [this.data.amount, Validators.required],
+    cantidad: [this.data.attachmentQuantity, Validators.required],
     numero_interno: [''],
   });
 
   constructor(
-    private bandejaService: InboxService,
+    private inboxService: InboxService,
     private socketService: SocketService,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: sendDetail,
@@ -51,7 +52,7 @@ export class SendDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.bandejaService.getInstitucions().subscribe((data) => {
+    this.inboxService.getInstitucions().subscribe((data) => {
       this.institutions = data;
     });
   }
@@ -63,7 +64,7 @@ export class SendDialogComponent implements OnInit, OnDestroy {
       this.selectedReceivers
     );
     Swal.fire({
-      title: `Remitir el tramite ${this.data.procedure.alterno}?`,
+      title: `Remitir el tramite ${this.data.procedure.code}?`,
       text: `Numero de destinatarios: ${mail.receivers.length}`,
       icon: 'question',
       showCancelButton: true,
@@ -79,7 +80,7 @@ export class SendDialogComponent implements OnInit, OnDestroy {
           allowOutsideClick: false,
         });
         Swal.showLoading();
-        this.bandejaService.Add(mail).subscribe((data) => {
+        this.inboxService.create(mail).subscribe((data) => {
           Swal.close();
           this.dialogRef.close(true);
         });
@@ -105,14 +106,14 @@ export class SendDialogComponent implements OnInit, OnDestroy {
   selectInstitution(institution: institution) {
     this.filteredUsers.next([]);
     this.receivers = [];
-    this.bandejaService
+    this.inboxService
       .getDependenciesOfInstitution(institution._id)
       .subscribe((data) => {
         this.dependencies = data;
       });
   }
   selectDependencie(dependencie: dependency) {
-    this.bandejaService
+    this.inboxService
       .getAccountsOfDependencie(dependencie._id)
       .pipe(
         switchMap((data) => {

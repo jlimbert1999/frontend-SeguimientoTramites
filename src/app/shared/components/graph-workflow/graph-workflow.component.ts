@@ -1,7 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as shape from 'd3-shape';
 import { Edge, Node, ClusterNode, MiniMapPosition } from '@swimlane/ngx-graph';
-import { workflow, participant } from 'src/app/communication/interfaces';
+import {
+  workflow,
+  participant,
+  statusMail,
+} from 'src/app/communication/interfaces';
 
 @Component({
   selector: 'app-graph-workflow',
@@ -21,25 +25,28 @@ export class GraphWorkflowComponent implements OnInit {
   ngOnInit(): void {
     this.workflow.forEach((element, index) => {
       element.sendings.forEach((send, subindex) => {
+        const [status, classEdge, classLink] =
+          send.status === statusMail.Rejected
+            ? ['Rechazado', 'circle-reject', 'line-reject']
+            : send.status === statusMail.Pending
+            ? ['Pendiente', 'circle-pending', 'line-pending']
+            : ['Recibido', 'circle-success', 'line-success'];
+
         this.links.push({
           id: `a${subindex}-${index}`,
-          source: send.emisor.cuenta._id,
-          target: send.receptor.cuenta._id,
+          source: send.emitter.cuenta._id,
+          target: send.receiver.cuenta._id,
           label: `${index + 1}`,
           data: {
-            status:
-              send.recibido === true
-                ? 'Enviado'
-                : send.recibido === false
-                ? 'Rechazado'
-                : 'Pendiente....',
-            recibido: send.recibido,
+            status,
+            classEdge,
+            classLink,
           },
         });
-        this.addNodeIfNotFound(send.emisor);
-        this.addNodeIfNotFound(send.receptor);
-        this.addClusterIfNotFount(send.emisor);
-        this.addClusterIfNotFount(send.receptor);
+        this.addNodeIfNotFound(send.emitter);
+        this.addNodeIfNotFound(send.receiver);
+        this.addClusterIfNotFount(send.emitter);
+        this.addClusterIfNotFount(send.receiver);
       });
     });
   }

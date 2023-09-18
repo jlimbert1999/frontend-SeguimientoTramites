@@ -98,10 +98,10 @@ export class ExternosComponent implements OnInit {
   Send(procedure: external) {
     const { _id, code, amount } = procedure;
     const data: sendDetail = {
-      amount: amount,
+      attachmentQuantity: amount,
       procedure: {
         _id,
-        alterno: code,
+        code,
       },
     };
     const dialogRef = this.dialog.open(SendDialogComponent, {

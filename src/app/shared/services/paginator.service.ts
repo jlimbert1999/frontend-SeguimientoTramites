@@ -12,7 +12,6 @@ export class PaginatorService {
 
   constructor() {}
   set setPage(event: PageEvent) {
-    console.log(event);
     this.limit = event.pageSize;
     this.offset = event.pageIndex;
   }

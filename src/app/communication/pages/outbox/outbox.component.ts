@@ -58,7 +58,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private externoService: ExternosService,
     private internoService: InternosService,
-    private bandejaService: OutboxService,
+    private outboxService: OutboxService,
     public paginatorService: PaginatorService,
     private router: Router,
     private socketService: SocketService
@@ -70,7 +70,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
   }
   Get() {
     if (this.paginatorService.textSearch) {
-      this.bandejaService
+      this.outboxService
         .Search(
           this.paginatorService.limit,
           this.paginatorService.offset,
@@ -81,8 +81,11 @@ export class OutboxComponent implements OnInit, AfterViewInit {
           this.paginatorService.length = data.length;
         });
     } else {
-      this.bandejaService
-        .get(this.paginatorService.limit, this.paginatorService.offset)
+      this.outboxService
+        .getOutboxOfAccount(
+          this.paginatorService.limit,
+          this.paginatorService.offset
+        )
         .subscribe((data) => {
           this.dataSource = data.mails;
           this.paginatorService.length = data.length;
@@ -96,8 +99,8 @@ export class OutboxComponent implements OnInit, AfterViewInit {
   ) {
     if (tipo_hoja === 'tramites_externos') {
       // this.externoService.getProcedure(id_tramite).subscribe((data) => {
-        // externalRouteMap(data.procedure, data.workflow)
-        // HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
+      // externalRouteMap(data.procedure, data.workflow)
+      // HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
       // });
     } else {
       // this.internoService
@@ -123,13 +126,13 @@ export class OutboxComponent implements OnInit, AfterViewInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService.cancelOneSend(imbox._id).subscribe((message) => {
+        this.outboxService.cancelOneSend(imbox._id).subscribe((message) => {
           this.socketService.emitCancelMail(imbox.receptor.cuenta);
           const index = this.dataSource.findIndex(
             (mail) =>
-              mail._id.cuenta === imbox.emisor.cuenta &&
-              mail._id.tramite._id === imbox.tramite._id &&
-              mail._id.fecha_envio === imbox.fecha_envio
+              mail._id.account === imbox.emisor.cuenta &&
+              mail._id.procedure._id === imbox.tramite._id &&
+              mail._id.outboundDate === imbox.fecha_envio
           );
           const sendings = this.dataSource[index].sendings.filter(
             (item) => item._id !== imbox._id
@@ -159,7 +162,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService
+        this.outboxService
           .cancelAllSend(data.tramite._id, data.fecha_envio)
           .subscribe((message) => {
             Swal.fire({

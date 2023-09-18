@@ -9,6 +9,7 @@ import {
 } from './route-map';
 import { workflow } from 'src/app/communication/interfaces/workflow.interface';
 import { ExternalProcedure } from '../models';
+import { statusMail } from 'src/app/communication/interfaces';
 
 export async function createExternalRouteMap(
   procedure: ExternalProcedure,
@@ -18,7 +19,9 @@ export async function createExternalRouteMap(
     .map((element) => {
       const { sendings, ...values } = element;
       const filteredItems = sendings.filter(
-        (send) => send.recibido === true || send.recibido === undefined
+        (send) =>
+          send.status === statusMail.Completed ||
+          send.status === statusMail.Received
       );
       return { sendings: filteredItems, ...values };
     })

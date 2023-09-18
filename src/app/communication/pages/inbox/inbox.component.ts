@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { InboxService } from '../../services/inbox.service';
@@ -10,10 +9,8 @@ import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.compo
 import { InternosService } from 'src/app/procedures/services/internos.service';
 import { ExternosService } from 'src/app/procedures/services/externos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { NotificationService } from 'src/app/home-old/services/notification.service';
 import { SocketService } from 'src/app/services/socket.service';
-import { inbox } from '../../interfaces/inbox.interface';
-import { sendDetail } from '../../interfaces';
+import { communication, sendDetail, statusMail } from '../../interfaces';
 
 @Component({
   selector: 'app-inbox',
@@ -22,26 +19,28 @@ import { sendDetail } from '../../interfaces';
 })
 export class InboxComponent implements OnInit, OnDestroy {
   private mailSubscription: Subscription;
-  dataSource: inbox[] = [];
+  dataSource: communication[] = [];
   displayedColumns = [
-    'alterno',
-    'detalle',
-    'estado',
-    'emisor',
-    'fecha_envio',
-    'opciones',
+    'code',
+    'reference',
+    'state',
+    'emitter',
+    'outboundDate',
+    'options',
   ];
 
   constructor(
-    public bandejaService: InboxService,
+    public inboxService: InboxService,
     public dialog: MatDialog,
     public authService: AuthService,
     public paginatorService: PaginatorService,
     private router: Router,
-    private socketService: SocketService,
+    private socketService: SocketService
   ) {
     this.mailSubscription = this.socketService.mailSubscription$.subscribe(
       (data) => {
+        if (this.paginatorService.limit === this.dataSource.length)
+          this.dataSource.pop();
         this.dataSource = [data, ...this.dataSource];
       }
     );
@@ -57,8 +56,8 @@ export class InboxComponent implements OnInit, OnDestroy {
 
   Get() {
     if (this.paginatorService.textSearch != '') {
-      this.bandejaService
-        .Search(
+      this.inboxService
+        .searchInboxOfAccount(
           this.paginatorService.limit,
           this.paginatorService.offset,
           this.paginatorService.textSearch
@@ -68,8 +67,11 @@ export class InboxComponent implements OnInit, OnDestroy {
           this.paginatorService.length = resp.length;
         });
     } else {
-      this.bandejaService
-        .Get(this.paginatorService.limit, this.paginatorService.offset)
+      this.inboxService
+        .getInboxOfAccount(
+          this.paginatorService.limit,
+          this.paginatorService.offset
+        )
         .subscribe((resp) => {
           this.dataSource = resp.mails;
           this.paginatorService.length = resp.length;
@@ -77,13 +79,14 @@ export class InboxComponent implements OnInit, OnDestroy {
     }
   }
 
-  send(mail: inbox) {
-    const { tramite, cantidad } = mail;
+  send(mail: communication) {
+    const { procedure, attachmentQuantity } = mail;
     const data: sendDetail = {
-      amount: cantidad,
+      id_mail: mail._id,
+      attachmentQuantity,
       procedure: {
-        _id: tramite._id,
-        alterno: tramite.code,
+        _id: procedure._id,
+        code: procedure.code,
       },
     };
     const dialogRef = this.dialog.open(SendDialogComponent, {
@@ -96,9 +99,9 @@ export class InboxComponent implements OnInit, OnDestroy {
     });
   }
 
-  acceptMail(mail: inbox) {
+  acceptMail(mail: communication) {
     Swal.fire({
-      title: `¿Aceptar tramite ${mail.tramite.code}?`,
+      title: `¿Aceptar tramite ${mail.procedure.code}?`,
       text: `El tramite sera marcado como aceptado`,
       icon: 'question',
       showCancelButton: true,
@@ -106,20 +109,20 @@ export class InboxComponent implements OnInit, OnDestroy {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService.acceptMail(mail._id).subscribe((data) => {
+        this.inboxService.acceptMail(mail._id).subscribe((newState) => {
           const indexFound = this.dataSource.findIndex(
             (item) => item._id === mail._id
           );
-          this.dataSource[indexFound].tramite.state = data;
-          this.dataSource[indexFound].recibido = true;
+          this.dataSource[indexFound].procedure.state = newState;
+          this.dataSource[indexFound].status = statusMail.Received;
         });
       }
     });
   }
-  rejectMail(mail: inbox) {
+  rejectMail(mail: communication) {
     Swal.fire({
       icon: 'question',
-      title: `¿Rechazar tramite ${mail.tramite.code}?`,
+      title: `¿Rechazar tramite ${mail.procedure.code}?`,
       text: `El tramite sera devuelto al funcionario emisor`,
       input: 'textarea',
       inputPlaceholder: 'Ingrese el motivo del rechazo',
@@ -138,18 +141,18 @@ export class InboxComponent implements OnInit, OnDestroy {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService
-          .rejectMail(mail._id, 'dsds')
+        this.inboxService
+          .rejectMail(mail._id, result.value!)
           .subscribe((message) => {
-            
+            this.Get();
           });
       }
     });
   }
-  concluir(mail: inbox) {
+  concluir(mail: communication) {
     Swal.fire({
       icon: 'question',
-      title: `Concluir el tramite ${mail.tramite}?`,
+      title: `Concluir el tramite ${mail.procedure}?`,
       text: `El tramite pasara a su seccion de archivos`,
       inputPlaceholder: 'Ingrese una referencia para concluir',
       input: 'textarea',
@@ -168,7 +171,7 @@ export class InboxComponent implements OnInit, OnDestroy {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.bandejaService
+        this.inboxService
           .Conclude(mail._id, result.value!)
           .subscribe((message) => {
             this.Get();
@@ -191,7 +194,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     // this.Get();
   }
 
-  generateRouteMap(mail: inbox) {
+  generateRouteMap(mail: communication) {
     // mail.tipo === 'tramites_externos'
     //   ? this.externoService
     //       .getAllDataExternalProcedure(mail.tramite._id)

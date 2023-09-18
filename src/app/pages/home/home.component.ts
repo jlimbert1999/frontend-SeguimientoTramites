@@ -58,7 +58,7 @@ export class HomeComponent {
     this.mailSubscription = this.mailSubscription =
       this.socketService.mailSubscription$.subscribe((data) => {
         const toast = this.toastr.info(
-          `${data.receptor.fullname} ha enviado un tramite`,
+          `${data.emitter.fullname} ha enviado un tramite`,
           'Nuevo tramite recibido',
           {
             positionClass: 'toast-bottom-right',

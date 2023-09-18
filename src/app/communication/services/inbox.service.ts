@@ -12,7 +12,7 @@ import {
   account,
 } from 'src/app/administration/interfaces';
 import { CreateMailDto } from '../dto/create-mail.dto';
-import { workflow } from '../interfaces';
+import { communication, workflow } from '../interfaces';
 import {
   external,
   groupProcedure,
@@ -33,23 +33,28 @@ const base_url = environment.base_url;
 export class InboxService {
   constructor(private http: HttpClient) {}
 
-  Get(limit: number, offset: number) {
-    const params = new HttpParams().set('offset', offset).set('limit', limit);
+  getInboxOfAccount(limit: number, offset: number) {
+    const params = new HttpParams()
+      .set('offset', offset * limit)
+      .set('limit', limit);
     return this.http
-      .get<{ mails: inbox[]; length: number }>(`${base_url}/inbox`, { params })
+      .get<{ mails: communication[]; length: number }>(
+        `${base_url}/communication/inbox`,
+        { params }
+      )
       .pipe(
         map((resp) => {
           return { mails: resp.mails, length: resp.length };
         })
       );
   }
-  Search(limit: number, offset: number, text: string) {
+  searchInboxOfAccount(limit: number, offset: number, text: string) {
     let params = new HttpParams()
       .set('offset', offset)
       .set('limit', limit)
       .set('text', text);
     return this.http
-      .get<{ mails: inbox[]; length: number }>(
+      .get<{ mails: communication[]; length: number }>(
         `${base_url}/inbox/search/${text}`,
         { params }
       )
@@ -60,20 +65,23 @@ export class InboxService {
       );
   }
 
-  acceptMail(id_bandeja: string) {
+  acceptMail(id_mail: string) {
     return this.http
-      .put<stateProcedure>(`${base_url}/inbox/accept/${id_bandeja}`, {})
+      .put<{ state: stateProcedure }>(
+        `${base_url}/communication/inbox/accept/${id_mail}`,
+        {}
+      )
       .pipe(
         map((resp) => {
-          return resp;
+          return resp.state;
         })
       );
   }
-  rejectMail(id_bandeja: string, rejection_reason: string) {
+  rejectMail(id_mail: string, rejectionReason: string) {
     return this.http
-      .put<{ ok: boolean; message: string }>(
-        `${base_url}/inbox/reject/${id_bandeja}`,
-        { rejection_reason }
+      .put<{ message: string }>(
+        `${base_url}/communication/inbox/reject/${id_mail}`,
+        { rejectionReason }
       )
       .pipe(
         map((resp) => {
@@ -81,17 +89,19 @@ export class InboxService {
         })
       );
   }
-  Add(data: CreateMailDto) {
+
+  create(data: CreateMailDto) {
     return this.http
       .post<{
         message: string;
-      }>(`${base_url}/inbox`, data)
+      }>(`${base_url}/communication`, data)
       .pipe(
         map((resp) => {
           return resp;
         })
       );
   }
+
   // GetAccounts(text: string) {
   //   return this.http.get<{ ok: boolean, cuentas: AccountForSend[] }>(`${base_url}/entradas/users/${text}`).pipe(
   //     map(resp => {

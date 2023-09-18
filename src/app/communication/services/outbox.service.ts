@@ -13,12 +13,15 @@ const base_url = environment.base_url;
 export class OutboxService {
   constructor(private http: HttpClient) {}
 
-  get(limit: number, offset: number) {
+  getOutboxOfAccount(limit: number, offset: number) {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
-      .get<{ mails: groupedOutbox[]; length: number }>(`${base_url}/outbox`, {
-        params,
-      })
+      .get<{ mails: groupedOutbox[]; length: number }>(
+        `${base_url}/communication/outbox`,
+        {
+          params,
+        }
+      )
       .pipe(
         map((resp) => {
           return { mails: resp.mails, length: resp.length };

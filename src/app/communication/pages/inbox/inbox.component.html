@@ -1,73 +1,55 @@
 <app-toolbar title="BANDEJA ENTRADA"></app-toolbar>
 <div class="container-fluid animate__animated animate__fadeIn">
-  <div class="row">
-    <div class="col-sm-8">
-      <mat-form-field class="example-form-field">
-        <mat-label>Buscar tramite</mat-label>
-        <input
-          matInput
-          (keyup)="applyFilter($event)"
-          type="text"
-          placeholder="Alterno / Referencia / Remitente"
-        />
-        <button matSuffix mat-icon-button aria-label="Clear">
-          <mat-icon>search</mat-icon>
-        </button>
-      </mat-form-field>
-    </div>
-  </div>
-
-  <div class="example-container mat-elevation-z8">
+  <div class="mat-elevation-z8">
     <div class="example-table-container">
-      <table mat-table [dataSource]="dataSource" class="example-table">
-        <ng-container matColumnDef="alterno">
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="code">
           <th mat-header-cell *matHeaderCellDef>Alterno</th>
           <td mat-cell *matCellDef="let row">
             <a (click)="view(row._id)">
-              {{ row.tramite.code }}
+              {{ row.procedure.code }}
             </a>
           </td>
         </ng-container>
-        <ng-container matColumnDef="detalle">
+        <ng-container matColumnDef="reference">
           <th mat-header-cell *matHeaderCellDef>Referencia</th>
-          <td mat-cell *matCellDef="let row">{{ row.tramite.reference }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.procedure.reference }}</td>
         </ng-container>
-        <ng-container matColumnDef="estado">
+        <ng-container matColumnDef="state">
           <th mat-header-cell *matHeaderCellDef>Estado</th>
           <td mat-cell *matCellDef="let row">
-            <span class="badge" [ngClass]="row.tramite.state | state">
-              {{ row.tramite.state }}
+            <span class="badge" [ngClass]="row.procedure.state | state">
+              {{ row.procedure.state }}
             </span>
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="emisor">
+        <ng-container matColumnDef="emitter">
           <th mat-header-cell *matHeaderCellDef>Emisor</th>
           <td mat-cell *matCellDef="let row">
-            <span class="fw-bold">{{ row.emisor.fullname }}</span>
+            <span class="fw-bold">{{ row.emitter.fullname }}</span>
             <br />
-            <span class="fw-light">{{ row.emisor.jobtitle }}</span>
+            <span class="fw-light">{{ row.emitter.jobtitle }}</span>
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="fecha_envio">
-          <th mat-header-cell *matHeaderCellDef>Recibido</th>
+        <ng-container matColumnDef="outboundDate">
+          <th mat-header-cell *matHeaderCellDef>Ingreso</th>
           <td mat-cell *matCellDef="let row">
-            {{ row.fecha_envio | date : "short" }}
+            {{ row.outboundDate | date : "short" }}
           </td>
         </ng-container>
-        <ng-container matColumnDef="opciones">
+
+        <ng-container matColumnDef="options">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let row">
-            <button
-              mat-icon-button
-              [matMenuTriggerFor]="menu"
-              aria-label="Example icon-button with a menu"
-            >
+            <button mat-icon-button [matMenuTriggerFor]="menu">
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <div *ngIf="row.recibido === null; else templateOptionsManager">
+              <div
+                *ngIf="row.status === 'pending'; else templateOptionsManager"
+              >
                 <button (click)="acceptMail(row)" mat-menu-item>
                   <mat-icon>done</mat-icon>
                   <span>Aceptar tramite</span>
@@ -98,11 +80,7 @@
         <tr
           mat-row
           *matRowDef="let row; columns: displayedColumns"
-          class="example-element-row"
-          [ngClass]="{
-            'mail-pending': row.recibido === undefined,
-            'mail-reject': row.recibido === false
-          }"
+          [class.mail-pending]="row.status === 'pending'"
         ></tr>
       </table>
     </div>

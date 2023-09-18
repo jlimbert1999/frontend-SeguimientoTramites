@@ -1,7 +1,8 @@
 export interface sendDetail {
-  amount: string;
+  id_mail?: string;
+  attachmentQuantity: string;
   procedure: {
     _id: string;
-    alterno: string;
+    code: string;
   };
 }

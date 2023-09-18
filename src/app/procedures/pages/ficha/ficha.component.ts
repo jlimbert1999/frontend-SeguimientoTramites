@@ -33,6 +33,7 @@ export class FichaComponent implements OnInit {
     this.activateRoute.params.subscribe((params) => {
       const id = params['id'];
       this.procedureService.getFullProcedure(id).subscribe((data) => {
+        console.log(data);
         this.procedure = data.procedure;
         this.workflow = data.workflow;
       });

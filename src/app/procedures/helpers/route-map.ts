@@ -57,11 +57,11 @@ export function createFirstContainerExternal(
     //     sectionReceiver.push([`DESTINATARIO: ${dest.receptor.fullname}`, `CARGO: ${dest.receptor.jobtitle}`])
     // })
     sectionReceiver.push([
-      `DESTINATARIO: ${firstSend.sendings[0].receptor.fullname}`,
-      `CARGO: ${firstSend.sendings[0].receptor.jobtitle}`,
+      `DESTINATARIO: ${firstSend.sendings[0].receiver.fullname}`,
+      `CARGO: ${firstSend.sendings[0].receiver.jobtitle}`,
     ]);
-    firstSendDetails.quantity = firstSend.sendings[0].cantidad;
-    firstSendDetails.inNumber = firstSend.sendings[0].numero_interno;
+    firstSendDetails.quantity = firstSend.sendings[0].attachmentQuantity;
+    firstSendDetails.inNumber = firstSend.sendings[0].internalNumber;
     firstSendDetails.date = moment(firstSend._id.fecha_envio).format(
       'DD-MM-YYYY'
     );
@@ -308,8 +308,8 @@ export function createFirstContainerInternal(
     inNumber: '',
   };
   if (firstSend) {
-    firstSendDetails.quantity = firstSend.sendings[0].cantidad;
-    firstSendDetails.inNumber = firstSend.sendings[0].numero_interno;
+    firstSendDetails.quantity = firstSend.sendings[0].attachmentQuantity;
+    firstSendDetails.inNumber = firstSend.sendings[0].internalNumber;
     firstSendDetails.date = moment(firstSend._id.fecha_envio).format(
       'DD-MM-YYYY'
     );
@@ -554,30 +554,30 @@ export function createContainers(data: workflow[]) {
     if (data[index].sendings.length > 1) {
       data[index].sendings.forEach((element) => {
         receivers.push(
-          `${element.receptor.fullname} (${element.receptor.jobtitle})`
+          `${element.receiver.fullname} (${element.receiver.jobtitle})`
         );
       });
       break;
     }
     data[index].sendings.forEach((send) => {
-      receivers.push(`${send.receptor.fullname} (${send.receptor.jobtitle})`);
-      const inDetails = send.fecha_recibido
+      receivers.push(`${send.receiver.fullname} (${send.receiver.jobtitle})`);
+      const inDetails = send.inboundDate
         ? {
-            date: moment(send.fecha_recibido).format('DD-MM-YYYY'),
-            hour: moment(send.fecha_recibido).format('HH:mm A'),
-            quantity: send.cantidad,
-            inNumber: send.numero_interno,
+            date: moment(send.inboundDate).format('DD-MM-YYYY'),
+            hour: moment(send.inboundDate).format('HH:mm A'),
+            quantity: send.attachmentQuantity,
+            inNumber: send.internalNumber,
           }
         : { date: '', hour: '', inNumber: '', quantity: '' };
       const nextSend = data
         .slice(index, data.length)
-        .find((flow) => flow._id.cuenta === send.receptor.cuenta._id);
+        .find((flow) => flow._id.cuenta === send.receiver.cuenta._id);
       const outDetails = nextSend
         ? {
             date: `${moment(nextSend._id.fecha_envio).format('DD-MM-YYYY')}`,
             hour: `${moment(nextSend._id.fecha_envio).format('HH:mm A')}`,
-            quantity: nextSend.sendings[0].cantidad,
-            inNumber: nextSend.sendings[0].numero_interno,
+            quantity: nextSend.sendings[0].attachmentQuantity,
+            inNumber: nextSend.sendings[0].internalNumber,
           }
         : { date: '', hour: '', quantity: '', inNumber: '' };
       sectionDates.push(
@@ -700,7 +700,7 @@ export function createContainers(data: workflow[]) {
                     [
                       { text: 'INSTRUCCION / PROVEIDO' },
                       {
-                        text: `\n\n${data[index].sendings[0].motivo}`,
+                        text: `\n\n${data[index].sendings[0].reference}`,
                         bold: true,
                         alignment: 'center',
                       },

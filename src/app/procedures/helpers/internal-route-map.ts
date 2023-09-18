@@ -8,7 +8,7 @@ import {
   createWhiteContainers,
   getLastPageNumber,
 } from './route-map';
-import { workflow } from 'src/app/communication/interfaces';
+import { statusMail, workflow } from 'src/app/communication/interfaces';
 import { InternalProcedure } from '../models';
 
 export async function createInternalRouteMap(
@@ -19,7 +19,9 @@ export async function createInternalRouteMap(
     .map((element) => {
       const { sendings, ...values } = element;
       const filteredItems = sendings.filter(
-        (send) => send.recibido === true || send.recibido === undefined
+        (send) =>
+          send.status === statusMail.Completed ||
+          send.status === statusMail.Received
       );
       return { sendings: filteredItems, ...values };
     })
