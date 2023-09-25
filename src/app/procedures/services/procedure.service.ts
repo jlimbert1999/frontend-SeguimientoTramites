@@ -11,7 +11,7 @@ const base_url = environment.base_url;
   providedIn: 'root',
 })
 export class ProcedureService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {}             
 
   getFullProcedure(id_procedure: string) {
     return this.http
@@ -28,7 +28,7 @@ export class ProcedureService {
               ? InternalProcedure.fromJson(resp.procedure as internal)
               : new Procedure(resp.procedure);
           return {
-            procedure,
+            procedure: ExternalProcedure.fromJson(resp.procedure as external),
             workflow: resp.workflow,
           };
         })

@@ -21,12 +21,10 @@
       </ng-template>
       <div [ngSwitch]="procedure.group">
         <div *ngSwitchCase="group.EXTERNAL">
-          <ng-container>
-            <app-external-detail [procedure]="external"></app-external-detail>
-          </ng-container>
+          <!-- <app-external-detail [procedure]="procedure"></app-external-detail> -->
         </div>
         <div *ngSwitchCase="group.INTERNAL">
-          <app-internal-detail [procedure]="internal"></app-internal-detail>
+          <!-- <app-internal-detail [procedure]="procedure"></app-internal-detail> -->
         </div>
         <div *ngSwitchDefault>Type procedure not define</div>
       </div>

@@ -9,6 +9,7 @@ import { ExternalProcedure, Procedure } from '../../models';
 import { InternalProcedure } from '../../models/internal.model';
 import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
 import { ProcedureService } from '../../services/procedure.service';
+type ProcedureCo = ExternalProcedure | InternalProcedure;
 @Component({
   selector: 'app-ficha',
   templateUrl: './ficha.component.html',
@@ -16,7 +17,7 @@ import { ProcedureService } from '../../services/procedure.service';
 })
 export class FichaComponent implements OnInit {
   group = groupProcedure;
-  procedure: Procedure;
+  procedure: ProcedureCo;
   Location: LocationProcedure[] = [];
   workflow: workflow[] = [];
   Observations: any[] = [];
@@ -33,9 +34,7 @@ export class FichaComponent implements OnInit {
     this.activateRoute.params.subscribe((params) => {
       const id = params['id'];
       this.procedureService.getFullProcedure(id).subscribe((data) => {
-        console.log(data);
         this.procedure = data.procedure;
-        this.workflow = data.workflow;
       });
     });
   }
@@ -66,10 +65,10 @@ export class FichaComponent implements OnInit {
     return procedure.group === groupProcedure.EXTERNAL;
   }
 
-  get external() {
-    return this.procedure as ExternalProcedure;
-  }
-  get internal() {
-    return this.procedure as InternalProcedure;
-  }
+  // get external() {
+  //   return this.procedure as ExternalProcedure;
+  // }
+  // get internal() {
+  //   return this.procedure as InternalProcedure;
+  // }
 }

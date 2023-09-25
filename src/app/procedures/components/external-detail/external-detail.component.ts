@@ -17,11 +17,11 @@ export class ExternalDetailComponent implements OnInit, OnDestroy {
   constructor(private _location: Location) {}
   ngOnInit(): void {
     this.duration = this.procedure.getDuration();
-    this.createTimer();
+    // this.createTimer();
   }
 
   ngOnDestroy(): void {
-    clearInterval(this.timer);
+    // clearInterval(this.timer);
   }
 
   createTimer() {
