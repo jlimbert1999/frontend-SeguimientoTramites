@@ -20,7 +20,8 @@ import { GroupedMails, Salida } from '../../models/salida.interface';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { SocketService } from 'src/app/services/socket.service';
 import { ExternosService } from 'src/app/procedures/services/externos.service';
-import { groupedOutbox } from '../../interfaces';
+import { communication, groupedOutbox } from '../../interfaces';
+import { MatSelectionList } from '@angular/material/list';
 
 @Component({
   selector: 'app-outbox',
@@ -39,6 +40,13 @@ import { groupedOutbox } from '../../interfaces';
   ],
 })
 export class OutboxComponent implements OnInit, AfterViewInit {
+  typesOfShoes: string[] = [
+    'Boots',
+    'Clogs',
+    'Loafers',
+    'Moccasins',
+    'Sneakers',
+  ];
   dataSource: groupedOutbox[] = [];
   displayedColumns = [
     'alterno',
@@ -152,33 +160,6 @@ export class OutboxComponent implements OnInit, AfterViewInit {
       }
     });
   }
-  cancelAllSend(data: GroupedMails) {
-    Swal.fire({
-      title: `Cancelar envio del tramite ${data.tramite.alterno}?`,
-      text: `Se cancelaran ${data.sendings.length} envios`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.outboxService
-          .cancelAllSend(data.tramite._id, data.fecha_envio)
-          .subscribe((message) => {
-            Swal.fire({
-              icon: 'success',
-              title: 'Todos los envios se cancelaron',
-              text: message,
-              confirmButtonText: 'Aceptar',
-            });
-            this.socketService.emitCancelAllMails(
-              data.sendings.map((imbox) => imbox.receptor.cuenta)
-            );
-            this.Get();
-          });
-      }
-    });
-  }
 
   View(mail: GroupedMails) {
     let params = {
@@ -210,10 +191,51 @@ export class OutboxComponent implements OnInit, AfterViewInit {
       this.Get();
     }
   }
-
   cancelSearch() {
     this.paginatorService.offset = 0;
     this.paginatorService.textSearch = '';
     this.Get();
+  }
+
+  cancelSend(mail: groupedOutbox, selectedSendIds: string[] | null) {
+    if (!selectedSendIds) return;
+    Swal.fire({
+      title: `Cancelar envios del tramite ${mail._id.procedure.code}?`,
+      text: `Envios a cancelar: ${selectedSendIds.length}`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.outboxService
+          .cancelMail(mail._id.procedure._id, selectedSendIds)
+          .subscribe((data) => {
+            if (mail.sendings.length === selectedSendIds.length) {
+              this.Get();
+            } else {
+              const index = this.dataSource.findIndex(
+                (item) => item._id === mail._id
+              );
+              this.dataSource[index].sendings = mail.sendings.filter(
+                (send) => !selectedSendIds.includes(send._id)
+              );
+            }
+            Swal.fire({
+              title: 'Envio cancelado',
+              text: data.message,
+              icon: 'success',
+              confirmButtonText: 'Aceptar',
+            });
+          });
+      }
+    });
+  }
+  selectAllItemsList(list: MatSelectionList) {
+    list._items.forEach((item) => {
+      if (!item.disabled) {
+        item.selected = true;
+      }
+    });
   }
 }

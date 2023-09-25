@@ -6,8 +6,6 @@ import Swal from 'sweetalert2';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { InboxService } from '../../services/inbox.service';
 import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.component';
-import { InternosService } from 'src/app/procedures/services/internos.service';
-import { ExternosService } from 'src/app/procedures/services/externos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { communication, sendDetail, statusMail } from '../../interfaces';
@@ -19,6 +17,8 @@ import { communication, sendDetail, statusMail } from '../../interfaces';
 })
 export class InboxComponent implements OnInit, OnDestroy {
   private mailSubscription: Subscription;
+  private mailCancelSubscription: Subscription;
+
   dataSource: communication[] = [];
   displayedColumns = [
     'code',
@@ -37,13 +37,8 @@ export class InboxComponent implements OnInit, OnDestroy {
     private router: Router,
     private socketService: SocketService
   ) {
-    this.mailSubscription = this.socketService.mailSubscription$.subscribe(
-      (data) => {
-        if (this.paginatorService.limit === this.dataSource.length)
-          this.dataSource.pop();
-        this.dataSource = [data, ...this.dataSource];
-      }
-    );
+    this.listenNewMails();
+    this.listenCancelMails();
   }
 
   ngOnInit(): void {
@@ -52,6 +47,7 @@ export class InboxComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.mailSubscription) this.mailSubscription.unsubscribe();
+    if (this.mailCancelSubscription) this.mailCancelSubscription.unsubscribe();
   }
 
   Get() {
@@ -95,6 +91,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        this.Get();
       }
     });
   }
@@ -109,13 +106,18 @@ export class InboxComponent implements OnInit, OnDestroy {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.inboxService.acceptMail(mail._id).subscribe((newState) => {
-          const indexFound = this.dataSource.findIndex(
-            (item) => item._id === mail._id
-          );
-          this.dataSource[indexFound].procedure.state = newState;
-          this.dataSource[indexFound].status = statusMail.Received;
-        });
+        this.inboxService.acceptMail(mail._id).subscribe(
+          (newState) => {
+            const indexFound = this.dataSource.findIndex(
+              (item) => item._id === mail._id
+            );
+            this.dataSource[indexFound].procedure.state = newState;
+            this.dataSource[indexFound].status = statusMail.Received;
+          },
+          () => {
+            this.Get();
+          }
+        );
       }
     });
   }
@@ -207,17 +209,36 @@ export class InboxComponent implements OnInit, OnDestroy {
     //         // internalRouteMap(data.procedure, data.workflow)
     //       });
   }
-  view(id_bandeja: string) {
+  view(mail: communication) {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
     };
-    // if (this.paginatorService.text !== '') {
-    //   Object.assign(params, { type: this.paginatorService.type });
-    //   Object.assign(params, { text: this.paginatorService.text });
-    // }
-    this.router.navigate(['/bandejas/entrada', id_bandeja], {
+    this.router.navigate(['bandejas/entrada', mail._id], {
       queryParams: params,
     });
+  }
+
+  listenNewMails() {
+    this.mailSubscription = this.socketService.mailSubscription$.subscribe(
+      (data) => {
+        if (this.paginatorService.limit === this.dataSource.length)
+          this.dataSource.pop();
+        this.dataSource = [data, ...this.dataSource];
+      }
+    );
+  }
+  listenCancelMails() {
+    this.mailCancelSubscription = this.socketService
+      .listenCancelMail()
+      .subscribe((id_mail) => {
+        this.dataSource = this.dataSource.filter(
+          (item) => item._id !== id_mail
+        );
+      });
+  }
+
+  get textSearch() {
+    return this.paginatorService.textSearch;
   }
 }

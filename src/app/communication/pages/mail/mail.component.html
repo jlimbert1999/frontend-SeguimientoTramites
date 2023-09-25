@@ -3,9 +3,9 @@
     <button (click)="back()" mat-icon-button>
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <span>{{ mail.tramite.code }}</span>
+    <span>{{ mail.procedure.code }}</span>
     <span class="example-spacer"></span>
-    <button
+    <!-- <button
       [disabled]="mail.recibido === undefined"
       (click)="addObservation()"
       matTooltip="Agregar observacion"
@@ -19,7 +19,7 @@
       mat-icon-button
     >
       <mat-icon>print</mat-icon>
-    </button>
+    </button> -->
   </mat-toolbar>
 </p>
 
@@ -30,15 +30,15 @@
         <mat-card-header>
           <div mat-card-avatar class="example-header-image"></div>
           <mat-card-title>
-            {{ mail.emisor.fullname | titlecase }}</mat-card-title
+            {{ mail.emitter.fullname | titlecase }}</mat-card-title
           >
           <mat-card-subtitle>{{
-            mail.emisor.jobtitle | uppercase
+            mail.emitter.jobtitle | uppercase
           }}</mat-card-subtitle>
         </mat-card-header>
       </div>
       <div class="p-3">
-        <span class="fs-6">{{ mail.fecha_envio | date : "medium" }} </span>
+        <span class="fs-6">{{ mail.outboundDate | date : "medium" }} </span>
       </div>
       <!-- <div class="p-3">
         <button mat-icon-button [matMenuTriggerFor]="menu">
@@ -78,11 +78,12 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Instruccion / Proveido:</h5>
-          <p class="card-text">{{ mail.motivo }}</p>
+          <p class="card-text">{{ mail.reference }}</p>
         </div>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">Cantidad: {{ mail.cantidad }}</li>
-          <li class="list-group-item">Dependencia: {{ officeOfEmiter }}</li>
+          <li class="list-group-item">
+            Cantidad: {{ mail.attachmentQuantity }}
+          </li>
         </ul>
       </div>
     </mat-card-content>

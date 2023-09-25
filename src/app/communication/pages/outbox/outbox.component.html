@@ -60,14 +60,6 @@
                 <mat-icon>print</mat-icon>
                 <span>Hoja de ruta</span>
               </button>
-              <button
-                (click)="cancelAllSend(row)"
-                mat-menu-item
-                [disabled]="row.recibido !== undefined"
-              >
-                <mat-icon>cancel_schedule_send</mat-icon>
-                <span>Cancelar envios</span>
-              </button>
             </mat-menu>
           </td>
         </ng-container>
@@ -106,55 +98,46 @@
                 element == expandedElement ? 'expanded' : 'collapsed'
               "
             >
-              <div class="expanded-contend p-2" style="width: 100%">
-                <table class="table table-borderless align-middle fs-6">
-                  <thead>
-                    <tr>
-                      <th scope="col">Destinatario</th>
-                      <th scope="col">Situacion</th>
-                      <th scope="col">Opciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let send of element.sendings; let i = index">
-                      <td>
-                        {{ send.receiver.fullname | titlecase }} ({{
-                          send.receiver.jobtitle
-                        }})
-                        <br />
-                        <p
-                          *ngIf="send.status === 'rejected'"
-                          class="text-danger mt-1"
-                        >
-                          {{ send.rejectionReason }}
-                        </p>
-                      </td>
-                      <td>
-                        <div [ngSwitch]="send.status">
-                          <div *ngSwitchCase="'pending'">
-                            <span class="c-pill c-pill--warning">ENVIADO</span>
-                          </div>
-                          <div *ngSwitchCase="'rejected'">
-                            <span class="c-pill c-pill--danger">RECHAZADO</span>
-                          </div>
-                          <div *ngSwitchDefault>
-                            <span class="c-pill c-pill--success">ACEPTADO</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <button
-                          matTooltip="Cancelar envio"
-                          mat-icon-button
-                          color="accent"
-                          aria-label="Example icon button with a menu icon"
-                        >
-                          <mat-icon>unsubscribe</mat-icon>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div class="expanded-contend p-2">
+                <section>
+                  <div class="example-button-row">
+                    <button
+                      mat-stroked-button
+                      (click)="selectAllItemsList(shoes)"
+                    >
+                      <mat-icon>checklist</mat-icon>
+                      Marcar todo
+                    </button>
+                    <button mat-stroked-button (click)="shoes.deselectAll()">
+                      <mat-icon>rule</mat-icon>
+                      Desmarcar todo
+                    </button>
+                    <button
+                      mat-stroked-button
+                      color="warn"
+                      [disabled]="!shoes._value || shoes._value.length === 0"
+                      (click)="cancelSend(element, shoes._value)"
+                    >
+                      <mat-icon>cancel_schedule_send</mat-icon>
+                      Cancelar envios
+                    </button>
+                  </div>
+                </section>
+                <mat-selection-list #shoes>
+                  <mat-list-option
+                    *ngFor="let send of element.sendings"
+                    [value]="send._id"
+                    [disabled]="send.status !== 'pending'"
+                  >
+                    <mat-icon matListItemIcon> mark_email_read </mat-icon>
+                    <span matListItemTitle
+                      >{{ send.receiver.fullname | titlecase }} /
+                      {{ send.status }}
+                    </span>
+                    <span matListItemLine>{{ send.receiver.jobtitle }} </span>
+                    <!-- <span matListItemLine>{{ send.rejectionReason }}</span> -->
+                  </mat-list-option>
+                </mat-selection-list>
               </div>
             </div>
           </td>

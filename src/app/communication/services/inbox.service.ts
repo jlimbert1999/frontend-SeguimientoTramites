@@ -110,15 +110,19 @@ export class InboxService {
   //   )
   // }
   getInstitucions() {
-    return this.http.get<institution[]>(`${base_url}/inbox/institutions`).pipe(
-      map((resp) => {
-        return resp;
-      })
-    );
+    return this.http
+      .get<institution[]>(`${base_url}/communication/institutions`)
+      .pipe(
+        map((resp) => {
+          return resp;
+        })
+      );
   }
   getDependenciesOfInstitution(id_institution: string) {
     return this.http
-      .get<dependency[]>(`${base_url}/inbox/dependencies/${id_institution}`)
+      .get<dependency[]>(
+        `${base_url}/communication/dependencies/${id_institution}`
+      )
       .pipe(
         map((resp) => {
           return resp;
@@ -127,7 +131,7 @@ export class InboxService {
   }
   getAccountsOfDependencie(id_dependencie: string) {
     return this.http
-      .get<account[]>(`${base_url}/inbox/accounts/${id_dependencie}`)
+      .get<account[]>(`${base_url}/communication/accounts/${id_dependencie}`)
       .pipe(
         map((resp) => {
           const receivers: receiver[] = resp.map((account) => {
@@ -155,12 +159,8 @@ export class InboxService {
       );
   }
 
-  getMail(id_inbox: string) {
-    return this.http.get<inbox>(`${base_url}/inbox/${id_inbox}`).pipe(
-      map((resp) => {
-        return resp;
-      })
-    );
+  getMailDetails(id_mail: string) {
+    return this.http.get<communication>(`${base_url}/communication/${id_mail}`);
   }
   addObservation(id_procedure: string, description: string) {
     return this.http

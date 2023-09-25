@@ -45,6 +45,15 @@ export class OutboxService {
       );
   }
 
+  cancelMail(id_procedure: string, ids_mails: string[]) {
+    return this.http.delete<{ message: string }>(
+      `${base_url}/communication/outbox/${id_procedure}`,
+      {
+        body: { ids_mails },
+      }
+    );
+  }
+
   cancelOneSend(id_bandeja: string) {
     return this.http
       .delete<{ ok: boolean; message: string }>(

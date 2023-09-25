@@ -1,16 +1,11 @@
 .mail-pending {
-    background-color: #FE5F55;
+  background-color: #fe5f55;
 }
 
 .mail-pending .mat-mdc-cell {
-    color: white;
+  color: white;
 }
 
 tr.mail-pending:hover {
-    background: #F4978E;
+  background: #f4978e;
 }
-
-.mail-reject {
-    background-color: #F6BD60;
-}
-

@@ -13,4 +13,5 @@ export interface communication {
   outboundDate: string;
   inboundDate?: string;
   status: statusMail;
+  rejectionReason?: string;
 }

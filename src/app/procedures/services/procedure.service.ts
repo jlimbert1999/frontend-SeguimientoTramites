@@ -18,7 +18,7 @@ export class ProcedureService {
       .get<{
         procedure: internal | external;
         workflow: workflow[];
-      }>(`${base_url}/internal/${id_procedure}`)
+      }>(`${base_url}/procedure/${id_procedure}`)
       .pipe(
         map((resp) => {
           const procedure =

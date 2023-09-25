@@ -41,6 +41,13 @@ export class SocketService {
       this.mailSubscription.next(data);
     });
   }
+  listenCancelMail(): Observable<string> {
+    return new Observable((observable) => {
+      this.socket.on('cancel-mail', (id_mail: string) => {
+        observable.next(id_mail);
+      });
+    });
+  }
 
   listenNotifications() {
     return new Observable((observable) => {
@@ -51,13 +58,6 @@ export class SocketService {
     });
   }
 
-  listenCancelMail(): Observable<null> {
-    return new Observable((observable) => {
-      this.socket.on('cancel-mail', (data: null) => {
-        observable.next(data);
-      });
-    });
-  }
   listenExpel(): Observable<string> {
     return new Observable((observable) => {
       this.socket.on('kick', (message: string | undefined) => {

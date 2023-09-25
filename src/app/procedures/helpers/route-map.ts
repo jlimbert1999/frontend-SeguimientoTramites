@@ -62,10 +62,12 @@ export function createFirstContainerExternal(
     ]);
     firstSendDetails.quantity = firstSend.sendings[0].attachmentQuantity;
     firstSendDetails.inNumber = firstSend.sendings[0].internalNumber;
-    firstSendDetails.date = moment(firstSend._id.fecha_envio).format(
+    firstSendDetails.date = moment(firstSend._id.outboundDate).format(
       'DD-MM-YYYY'
     );
-    firstSendDetails.hour = moment(firstSend._id.fecha_envio).format('HH:mm A');
+    firstSendDetails.hour = moment(firstSend._id.outboundDate).format(
+      'HH:mm A'
+    );
   } else {
     sectionReceiver.push([`DESTINATARIO:`, `CARGO:`]);
   }
@@ -310,10 +312,12 @@ export function createFirstContainerInternal(
   if (firstSend) {
     firstSendDetails.quantity = firstSend.sendings[0].attachmentQuantity;
     firstSendDetails.inNumber = firstSend.sendings[0].internalNumber;
-    firstSendDetails.date = moment(firstSend._id.fecha_envio).format(
+    firstSendDetails.date = moment(firstSend._id.outboundDate).format(
       'DD-MM-YYYY'
     );
-    firstSendDetails.hour = moment(firstSend._id.fecha_envio).format('HH:mm A');
+    firstSendDetails.hour = moment(firstSend._id.outboundDate).format(
+      'HH:mm A'
+    );
   }
   return {
     fontSize: 7,
@@ -571,11 +575,11 @@ export function createContainers(data: workflow[]) {
         : { date: '', hour: '', inNumber: '', quantity: '' };
       const nextSend = data
         .slice(index, data.length)
-        .find((flow) => flow._id.cuenta === send.receiver.cuenta._id);
+        .find((flow) => flow._id.emitterAccount === send.receiver.cuenta._id);
       const outDetails = nextSend
         ? {
-            date: `${moment(nextSend._id.fecha_envio).format('DD-MM-YYYY')}`,
-            hour: `${moment(nextSend._id.fecha_envio).format('HH:mm A')}`,
+            date: `${moment(nextSend._id.outboundDate).format('DD-MM-YYYY')}`,
+            hour: `${moment(nextSend._id.outboundDate).format('HH:mm A')}`,
             quantity: nextSend.sendings[0].attachmentQuantity,
             inNumber: nextSend.sendings[0].internalNumber,
           }
