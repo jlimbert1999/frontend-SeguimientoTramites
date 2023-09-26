@@ -27,7 +27,6 @@ export async function createHeader(): Promise<Content> {
           text: '\nHOJA DE RUTA DE CORRESPONDENCIA',
           bold: true,
           alignment: 'center',
-          // width: 300,
         },
         {
           image: await convertirImagenABase64(
@@ -50,18 +49,15 @@ export function createFirstContainerExternal(
     date: '',
     hour: '',
     quantity: '',
-    inNumber: '',
+    internalNumber: '',
   };
   if (firstSend) {
-    // firstSend.sendings.forEach(dest => {
-    //     sectionReceiver.push([`DESTINATARIO: ${dest.receptor.fullname}`, `CARGO: ${dest.receptor.jobtitle}`])
-    // })
     sectionReceiver.push([
       `DESTINATARIO: ${firstSend.sendings[0].receiver.fullname}`,
       `CARGO: ${firstSend.sendings[0].receiver.jobtitle}`,
     ]);
     firstSendDetails.quantity = firstSend.sendings[0].attachmentQuantity;
-    firstSendDetails.inNumber = firstSend.sendings[0].internalNumber;
+    firstSendDetails.internalNumber = firstSend.sendings[0].internalNumber;
     firstSendDetails.date = moment(firstSend._id.outboundDate).format(
       'DD-MM-YYYY'
     );
@@ -224,7 +220,7 @@ export function createFirstContainerExternal(
                             border: [false, false, false, false],
                           },
                           {
-                            text: `${firstSendDetails.inNumber}`,
+                            text: `${firstSendDetails.internalNumber}`,
                             fontSize: 9,
                             alignment: 'center',
                           },
@@ -307,11 +303,11 @@ export function createFirstContainerInternal(
     date: '',
     hour: '',
     quantity: '',
-    inNumber: '',
+    internalNumber: '',
   };
   if (firstSend) {
     firstSendDetails.quantity = firstSend.sendings[0].attachmentQuantity;
-    firstSendDetails.inNumber = firstSend.sendings[0].internalNumber;
+    firstSendDetails.internalNumber = firstSend.sendings[0].internalNumber;
     firstSendDetails.date = moment(firstSend._id.outboundDate).format(
       'DD-MM-YYYY'
     );
@@ -341,7 +337,7 @@ export function createFirstContainerInternal(
                         text: 'CORRESPONDENCIA INTERNA',
                         border: [false, false, false, false],
                       },
-                      { text: '', style: 'header' },
+                      { text: 'X', style: 'header' },
                     ],
                   ],
                 },
@@ -356,7 +352,7 @@ export function createFirstContainerInternal(
                         text: 'CORRESPONDENCIA EXTERNA',
                         border: [false, false, false, false],
                       },
-                      { text: 'X', style: 'header' },
+                      { text: '', style: 'header' },
                     ],
                   ],
                 },
@@ -470,7 +466,7 @@ export function createFirstContainerInternal(
                             border: [false, false, false, false],
                           },
                           {
-                            text: `${firstSendDetails.inNumber}`,
+                            text: `${firstSendDetails.internalNumber}`,
                             fontSize: 9,
                             alignment: 'center',
                           },

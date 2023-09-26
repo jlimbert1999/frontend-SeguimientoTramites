@@ -5,29 +5,28 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { InboxService } from '../../services/inbox.service';
 import Swal from 'sweetalert2';
-import { WorkflowData } from '../../models/workflow.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { showToast } from 'src/app/helpers/toats.helper';
-import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.component';
 
 import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
-import { communication, inbox, workflow } from '../../interfaces';
+import { communication, statusMail, workflow } from '../../interfaces';
 import { ProcedureService } from 'src/app/procedures/services/procedure.service';
 import {
   ExternalProcedure,
   InternalProcedure,
-  Procedure,
 } from 'src/app/procedures/models';
+import { createExternalRouteMap } from 'src/app/procedures/helpers/external-route-map';
+import { CreateInternalProcedureDto } from 'src/app/procedures/dtos/create-internal.dto';
+import { createInternalRouteMap } from 'src/app/procedures/helpers/internal-route-map';
 @Component({
   selector: 'app-mail',
   templateUrl: './mail.component.html',
   styleUrls: ['./mail.component.scss'],
 })
 export class MailComponent implements OnInit {
-  group = groupProcedure;
-  procedure: Procedure;
-  workflow: workflow[] = [];
   mail: communication;
+  procedure: InternalProcedure | ExternalProcedure;
+  workflow: workflow[] = [];
   observations: any[] = [];
   Events: any[] = [];
   Location: any[] = [];
@@ -44,17 +43,17 @@ export class MailComponent implements OnInit {
     this.activateRoute.params.subscribe((params) => {
       this.entradaService.getMailDetails(params['id']).subscribe((data) => {
         this.mail = data;
-        this.procedureService
-          .getFullProcedure(this.mail.procedure._id)
-          .subscribe((data) => {
-            this.procedure = data.procedure;
-            this.workflow = data.workflow;
-          });
+        this.getFullDetailsProcedure(this.mail.procedure._id);
       });
     });
   }
 
-  // getFullDataProcedure(id_) {}
+  getFullDetailsProcedure(id_procedure: string) {
+    this.procedureService.getFullProcedure(id_procedure).subscribe((data) => {
+      this.procedure = data.procedure;
+      this.workflow = data.workflow;
+    });
+  }
 
   back() {
     this.activateRoute.queryParams.subscribe((data) => {
@@ -86,33 +85,20 @@ export class MailComponent implements OnInit {
     // }
   }
 
-  generateRouteMap() {
-    // this.Mail.tipo === 'tramites_externos'
-    //   ? this.externoService.getProcedure(this.Mail.tramite).subscribe(data => {
-    //     // externalRouteMap(data.procedure, data.workflow)
-    //   })
-    //   : this.internoService.getAllDataInternalProcedure(this.Mail.tramite).subscribe(data => {
-    //     // internalRouteMap(data.procedure, data.workflow)
-    //   })
-  }
-
-  aceptMail() {
+  acceptMail() {
     Swal.fire({
-      title: `Aceptar tramite ${this.procedure.code}?`,
+      title: `¿Aceptar tramite ${this.mail.procedure.code}?`,
       text: `El tramite sera marcado como aceptado`,
       icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
         this.entradaService.acceptMail(this.mail._id).subscribe(
-          (data) => {
-            // this.mail.recibido = true;
-            // this.procedure.state = data.state;
-            // showToast('success', data.message);
+          (newState) => {
+            this.mail.status = statusMail.Received;
+            this.procedure.state = newState;
           },
           (HttpError: HttpErrorResponse) => {
             if (HttpError.status === 404) {
@@ -124,44 +110,41 @@ export class MailComponent implements OnInit {
     });
   }
   rejectMail() {
-    // Swal.fire({
-    //   icon: 'info',
-    //   title: `Rechazar tramite ${this.procedure.code}`,
-    //   text: `El tramite sera devuelto a ${this.mail.emisor.fullname}`,
-    //   input: 'textarea',
-    //   inputPlaceholder: 'Ingrese el motivo del rechazo',
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Aceptar',
-    //   cancelButtonText: 'Cancelar',
-    //   customClass: {
-    //     validationMessage: 'my-validation-message',
-    //   },
-    //   preConfirm: (value) => {
-    //     if (!value) {
-    //       Swal.showValidationMessage(
-    //         '<i class="fa fa-info-circle"></i> Debe ingresar el motivo para el rechazo'
-    //       );
-    //     }
-    //   },
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     this.entradaService
-    //       .rejectMail(this.mail._id, result.value!)
-    //       .subscribe((message) => {
-    //         showToast('success', message);
-    //         this.back();
-    //       });
-    //   }
-    // });
+    Swal.fire({
+      icon: 'question',
+      title: `¿Rechazar tramite ${this.mail.procedure.code}?`,
+      text: `El tramite sera devuelto al funcionario ${this.mail.emitter.fullname}`,
+      input: 'textarea',
+      inputPlaceholder: 'Ingrese el motivo del rechazo',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        validationMessage: 'my-validation-message',
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Debe ingresar el motivo para el rechazo'
+          );
+        }
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.back();
+      }
+    });
   }
   addObservation() {
     Swal.fire({
       icon: 'question',
-      title: `Registrar observacion para el tramite: ${this.procedure.cite}?`,
-      text: `Debe ingresar una descripcion de la observacion`,
+      title: `¿Observar el tramite: ${this.procedure.code}?`,
+      text: `El estado pasara a ser observado hasta su correccion`,
       input: 'textarea',
+      inputPlaceholder: 'Ingrese la descripcion de la observacion',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
       customClass: {
         validationMessage: 'my-validation-message',
       },
@@ -237,10 +220,27 @@ export class MailComponent implements OnInit {
     this.procedure.state = state;
   }
 
+  generateRouteMap() {
+    switch (this.procedure.group) {
+      case groupProcedure.EXTERNAL:
+        createExternalRouteMap(this.external, this.workflow);
+        break;
+      case groupProcedure.INTERNAL:
+        createInternalRouteMap(this.internal, this.workflow);
+        break;
+      default:
+        alert('Group procedure is not defined');
+        break;
+    }
+  }
+
   get external() {
     return this.procedure as ExternalProcedure;
   }
   get internal() {
     return this.procedure as InternalProcedure;
+  }
+  get group() {
+    return groupProcedure;
   }
 }

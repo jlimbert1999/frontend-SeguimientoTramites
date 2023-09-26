@@ -2,7 +2,7 @@ import { account, typeProcedure } from 'src/app/administration/interfaces';
 import { procedure, groupProcedure, stateProcedure } from '../interfaces';
 import * as moment from 'moment';
 
-export class Procedure {
+export abstract class Procedure {
   _id: string;
   code: string;
   cite: string;
@@ -15,7 +15,6 @@ export class Procedure {
   group: groupProcedure;
   startDate: Date;
   endDate?: Date;
-  tramite: string;
   constructor({
     _id,
     code,
@@ -26,9 +25,9 @@ export class Procedure {
     reference,
     amount,
     send,
-    group,
     startDate,
     endDate,
+    group,
   }: procedure) {
     this._id = _id;
     this.code = code;
@@ -39,8 +38,8 @@ export class Procedure {
     this.reference = reference;
     this.amount = amount;
     this.send = send;
-    this.group = group;
     this.startDate = new Date(startDate);
+    this.group = group;
     if (endDate) this.endDate = new Date(endDate);
   }
 
@@ -50,6 +49,12 @@ export class Procedure {
       ? this.account.funcionario.cargo.nombre
       : 'Sin cargo';
     return `${this.account.funcionario.nombre} ${this.account.funcionario.paterno} ${this.account.funcionario.materno} (${jobtitle})`;
+  }
+
+  get groupProcedre() {
+    return this.group === groupProcedure.EXTERNAL
+      ? 'Tramite externo'
+      : 'Tramite interno';
   }
 
   getDuration(): string {

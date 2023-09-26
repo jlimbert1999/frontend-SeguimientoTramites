@@ -1,4 +1,3 @@
-import { groupProcedure } from 'src/app/procedures/interfaces/procedures-props.interface';
 import { receiver, sendDetail } from '../interfaces';
 
 export class CreateMailDto {

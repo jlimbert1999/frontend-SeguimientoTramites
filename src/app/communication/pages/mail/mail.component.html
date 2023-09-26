@@ -1,11 +1,18 @@
-<p *ngIf="mail">
-  <mat-toolbar color="primary">
-    <button (click)="back()" mat-icon-button>
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    <span>{{ mail.procedure.code }}</span>
-    <span class="example-spacer"></span>
-    <!-- <button
+<div *ngIf="mail" class="animate__animated animate__fadeInLeft">
+  <p>
+    <mat-toolbar color="primary">
+      <button (click)="back()" mat-icon-button>
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <span>{{ mail.procedure.code }}</span>
+      <span class="example-spacer"></span>
+      <button mat-icon-button (click)="generateRouteMap()" matTooltip="Hoja de ruta">
+        <mat-icon>description</mat-icon>
+      </button>
+      <button mat-icon-button (click)="addObservation()" matTooltip="Agregar observacion">
+        <mat-icon>attach_file</mat-icon>
+      </button>
+      <!-- <button
       [disabled]="mail.recibido === undefined"
       (click)="addObservation()"
       matTooltip="Agregar observacion"
@@ -20,126 +27,108 @@
     >
       <mat-icon>print</mat-icon>
     </button> -->
-  </mat-toolbar>
-</p>
+    </mat-toolbar>
+  </p>
 
-<div class="container-fluid animate__animated animate__fadeInLeft">
-  <mat-card *ngIf="mail" appearance="outlined" class="example-card">
-    <div class="d-sm-flex">
-      <div class="me-auto">
-        <mat-card-header>
-          <div mat-card-avatar class="example-header-image"></div>
-          <mat-card-title>
-            {{ mail.emitter.fullname | titlecase }}</mat-card-title
-          >
-          <mat-card-subtitle>{{
-            mail.emitter.jobtitle | uppercase
-          }}</mat-card-subtitle>
-        </mat-card-header>
+  <div class="container-fluid">
+    <mat-card>
+      <div class="d-sm-flex">
+        <div class="me-auto">
+          <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title>
+              {{ mail.emitter.fullname | titlecase }}</mat-card-title
+            >
+            <mat-card-subtitle>{{
+              mail.emitter.jobtitle | uppercase
+            }}</mat-card-subtitle>
+          </mat-card-header>
+        </div>
+        <div class="p-3">
+          <span class="fs-6">{{ mail.outboundDate | date : "medium" }} </span>
+        </div>
       </div>
-      <div class="p-3">
-        <span class="fs-6">{{ mail.outboundDate | date : "medium" }} </span>
-      </div>
-      <!-- <div class="p-3">
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>more_vert</mat-icon>
+      <mat-card-content>
+        <div class="card bg-transparent">
+          <div class="card-body">
+            <h5 class="card-title">Instruccion / Proveido:</h5>
+            <p class="card-text">{{ mail.reference }}</p>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              Cantidad: {{ mail.attachmentQuantity }}
+            </li>
+          </ul>
+        </div>
+      </mat-card-content>
+      <mat-card-actions
+        class="action-row-buttons"
+        *ngIf="mail.status === 'pending'"
+        align="end"
+      >
+        <button mat-raised-button color="warn" (click)="rejectMail()">
+          Rechazar
         </button>
-        <mat-menu #menu="matMenu">
-          <div [ngSwitch]="mail.recibido">
-            <div *ngSwitchCase="null">
-              <button (click)="aceptMail()" mat-menu-item>
-                <mat-icon>done</mat-icon>
-                <span>Aceptar tramite</span>
-              </button>
-              <button (click)="rejectMail()" mat-menu-item>
-                <mat-icon>block</mat-icon>
-                <span>Rechazar tramite</span>
-              </button>
+        <button mat-raised-button color="primary" (click)="acceptMail()">
+          Aceptar
+        </button>
+      </mat-card-actions>
+    </mat-card>
+    <mat-tab-group *ngIf="procedure" mat-align-tabs="center">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">info</mat-icon>
+          Informacion
+        </ng-template>
+        <div [ngSwitch]="procedure.group">
+          <div [ngSwitch]="procedure.group">
+            <div *ngSwitchCase="group.EXTERNAL">
+              <app-external-detail [procedure]="external"></app-external-detail>
             </div>
-            <div *ngSwitchCase="true">
-              <button (click)="send()" mat-menu-item>
-                <mat-icon>send</mat-icon>
-                <span>Remitir tramite</span>
-              </button>
-              <button (click)="generateRouteMap()" mat-menu-item>
-                <mat-icon>print</mat-icon>
-                <span>Hoja de ruta</span>
-              </button>
-              <button (click)="concluir()" mat-menu-item>
-                <mat-icon>domain_verification</mat-icon>
-                <span>Concluir tramite</span>
-              </button>
+            <div *ngSwitchCase="group.INTERNAL">
+              <app-internal-detail [procedure]="internal"></app-internal-detail>
+            </div>
+            <div *ngSwitchDefault>
+              Type procedure not define {{ procedure.group }}
             </div>
           </div>
-        </mat-menu>
-      </div> -->
-    </div>
-    <mat-card-content>
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Instruccion / Proveido:</h5>
-          <p class="card-text">{{ mail.reference }}</p>
         </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            Cantidad: {{ mail.attachmentQuantity }}
-          </li>
-        </ul>
-      </div>
-    </mat-card-content>
-  </mat-card>
-  <mat-tab-group *ngIf="procedure" mat-align-tabs="center">
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">info</mat-icon>
-        Informacion
-      </ng-template>
-      <div [ngSwitch]="procedure.group">
-        <div *ngSwitchCase="group.EXTERNAL">
-          <ng-container>
-            <app-external-detail [procedure]="external"></app-external-detail>
-          </ng-container>
-        </div>
-        <div *ngSwitchCase="group.INTERNAL">
-          <app-internal-detail [procedure]="internal"></app-internal-detail>
-        </div>
-        <div *ngSwitchDefault>Type procedure not define</div>
-      </div>
-    </mat-tab>
-    <mat-tab *ngIf="observations.length > 0">
-      <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">push_pin</mat-icon>
-        Observaciones
-      </ng-template>
-      <app-observaciones
-        [Options]="true"
-        [Observaciones]="observations"
-        (setNewState)="setNewStateProcedure($event)"
-      ></app-observaciones>
-    </mat-tab>
-    <mat-tab *ngIf="Events.length > 0">
-      <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">list_alt</mat-icon>
-        Eventos
-      </ng-template>
-      <app-events-procedure [events]="Events"></app-events-procedure>
-    </mat-tab>
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">groups</mat-icon>
-        Flujo de trabajo
-      </ng-template>
-      <app-list-workflow
-        [workflow]="workflow"
-        [startDate]="procedure.startDate"
-      ></app-list-workflow>
-    </mat-tab>
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">account_tree</mat-icon>
-        Flujo de trabajo grafico
-      </ng-template>
-      <app-graph-workflow [workflow]="workflow"></app-graph-workflow>
-    </mat-tab>
-  </mat-tab-group>
+      </mat-tab>
+      <mat-tab *ngIf="observations.length > 0">
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">push_pin</mat-icon>
+          Observaciones
+        </ng-template>
+        <app-observaciones
+          [Options]="true"
+          [Observaciones]="observations"
+          (setNewState)="setNewStateProcedure($event)"
+        ></app-observaciones>
+      </mat-tab>
+      <mat-tab *ngIf="Events.length > 0">
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">list_alt</mat-icon>
+          Eventos
+        </ng-template>
+        <app-events-procedure [events]="Events"></app-events-procedure>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">groups</mat-icon>
+          Flujo de trabajo
+        </ng-template>
+        <app-list-workflow
+          [workflow]="workflow"
+          [startDate]="procedure.startDate"
+        ></app-list-workflow>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">account_tree</mat-icon>
+          Flujo de trabajo grafico
+        </ng-template>
+        <app-graph-workflow [workflow]="workflow"></app-graph-workflow>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
 </div>

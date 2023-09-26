@@ -120,8 +120,8 @@ export class ExternosComponent implements OnInit {
     });
   }
 
-  generateRouteMap(id_tramite: string) {
-    this.procedureService.getFullProcedure(id_tramite).subscribe((data) => {
+  generateRouteMap(id_procedure: string) {
+    this.procedureService.getFullProcedure(id_procedure).subscribe((data) => {
       createExternalRouteMap(
         data.procedure as ExternalProcedure,
         data.workflow

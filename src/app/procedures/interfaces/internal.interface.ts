@@ -1,4 +1,4 @@
-import { procedure } from './procedure.interface';
+import { groupProcedure, procedure } from './procedure.interface';
 
 export interface worker {
   nombre: string;
@@ -9,5 +9,6 @@ export interface detailsInternal {
   destinatario: worker;
 }
 export interface internal extends procedure {
+  group: groupProcedure.INTERNAL;
   details: detailsInternal;
 }

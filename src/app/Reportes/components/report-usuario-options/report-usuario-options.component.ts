@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { ReporteService } from '../../services/reporte.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SendDataReportEvent } from '../../models/sendData.model';
-import { stateProcedure } from 'src/app/procedures/interfaces/procedures-props.interface';
+import { stateProcedure } from 'src/app/procedures/interfaces';
 
 @Component({
   selector: 'app-report-usuario-options',

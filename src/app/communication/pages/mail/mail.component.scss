@@ -2,20 +2,16 @@
     margin-right: 8px;
 }
 
-.list-group {
-    max-height: 400px;
-    overflow-y: scroll;
-}
-
-.example-spacer {
-    flex: 1 1 auto;
-}
-
 .example-header-image {
     background-image: url('../../../../assets/img/account.png');
     background-size: cover;
 }
 
+.action-row-buttons .mat-mdc-button-base {
+    margin: 0 8px 0 0;
+}
+
+
 mat-card-title {
-   color: royalblue
+    color: royalblue
 }

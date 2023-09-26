@@ -7,9 +7,8 @@ import {
   createWhiteContainers,
   getLastPageNumber,
 } from './route-map';
-import { workflow } from 'src/app/communication/interfaces/workflow.interface';
 import { ExternalProcedure } from '../models';
-import { statusMail } from 'src/app/communication/interfaces';
+import { statusMail, workflow } from 'src/app/communication/interfaces';
 
 export async function createExternalRouteMap(
   procedure: ExternalProcedure,

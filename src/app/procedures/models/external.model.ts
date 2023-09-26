@@ -1,8 +1,8 @@
-import { details, external } from '../interfaces';
+import { detailsExternal, external } from '../interfaces';
 import { Procedure } from './procedure.model';
 
 export class ExternalProcedure extends Procedure {
-  details: details;
+  details: detailsExternal;
   static fromJson(data: external) {
     return new ExternalProcedure(data);
   }

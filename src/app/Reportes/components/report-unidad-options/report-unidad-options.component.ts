@@ -3,8 +3,8 @@ import { ReporteService } from '../../services/reporte.service';
 import { SendDataReportEvent } from '../../models/sendData.model';
 import { forkJoin } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { searchParamsReportUnit } from '../../models/repot-unidad.model';
-import { stateProcedure } from 'src/app/procedures/interfaces/procedures-props.interface';
+import { stateProcedure } from 'src/app/procedures/interfaces';
+
 @Component({
   selector: 'app-report-unidad-options',
   templateUrl: './report-unidad-options.component.html',

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ReporteService } from '../../services/reporte.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { SendDataReportEvent } from '../../models/sendData.model';
-import { stateProcedure } from 'src/app/procedures/interfaces/procedures-props.interface';
+import { stateProcedure } from 'src/app/procedures/interfaces';
 
 @Component({
   selector: 'app-report-ficha-options',

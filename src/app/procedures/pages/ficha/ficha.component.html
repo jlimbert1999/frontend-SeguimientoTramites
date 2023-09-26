@@ -1,69 +1,76 @@
-<mat-toolbar color="primary">
-  <button (click)="back()" mat-icon-button matTooltip="Regresar">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-  <span>{{ procedure ? procedure.code : "" }}</span>
-  <span class="example-spacer"></span>
-  <button
-    (click)="generateFicha()"
-    matTooltip="Generar ficha de tramite"
-    mat-icon-button
-  >
-    <mat-icon>print</mat-icon>
-  </button>
-</mat-toolbar>
-<div>
-  <mat-tab-group mat-align-tabs="center">
-    <mat-tab *ngIf="procedure">
-      <ng-template mat-tab-label>
-        <mat-icon class="example-tab-icon">info</mat-icon>
-        Informacion
-      </ng-template>
-      <div [ngSwitch]="procedure.group">
-        <div *ngSwitchCase="group.EXTERNAL">
-          <!-- <app-external-detail [procedure]="procedure"></app-external-detail> -->
-        </div>
-        <div *ngSwitchCase="group.INTERNAL">
-          <!-- <app-internal-detail [procedure]="procedure"></app-internal-detail> -->
-        </div>
-        <div *ngSwitchDefault>Type procedure not define</div>
-      </div>
-    </mat-tab>
-    <mat-tab *ngIf="Observations.length > 0">
-      <ng-template mat-tab-label>
-        <mat-icon class="example-tab-icon">push_pin</mat-icon>
-        Observaciones
-      </ng-template>
-      <app-observaciones
-        [Options]="false"
-        [Observaciones]="Observations"
-      ></app-observaciones>
-    </mat-tab>
-    <mat-tab *ngIf="Events.length > 0">
-      <ng-template mat-tab-label>
-        <mat-icon class="example-tab-icon">list_alt</mat-icon>
-        Eventos
-      </ng-template>
-      <app-events-procedure [events]="Events"></app-events-procedure>
-    </mat-tab>
-    <ng-container *ngIf="workflow.length > 0">
+<div
+  *ngIf="procedure"
+  class="animate__animated animate__fadeInLeft animate__faster"
+>
+  <mat-toolbar color="primary">
+    <button (click)="back()" mat-icon-button matTooltip="Regresar">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span>{{ procedure.code }}</span>
+    <span class="example-spacer"></span>
+    <button
+      (click)="generateFicha()"
+      matTooltip="Generar ficha de tramite"
+      mat-icon-button
+    >
+      <mat-icon>print</mat-icon>
+    </button>
+  </mat-toolbar>
+  <div>
+    <mat-tab-group mat-align-tabs="center">
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon class="example-tab-icon">groups</mat-icon>
-          Flujo de trabajo
+          <mat-icon class="example-tab-icon">info</mat-icon>
+          Informacion
         </ng-template>
-        <app-list-workflow
-          [workflow]="workflow"
-          [startDate]="procedure.startDate"
-        ></app-list-workflow>
+        <div [ngSwitch]="procedure.group">
+          <div *ngSwitchCase="group.EXTERNAL">
+            <app-external-detail [procedure]="external"></app-external-detail>
+          </div>
+          <div *ngSwitchCase="group.INTERNAL">
+            <app-internal-detail [procedure]="internal"></app-internal-detail>
+          </div>
+          <div *ngSwitchDefault>
+            Type procedure not define {{ procedure.group }}
+          </div>
+        </div>
       </mat-tab>
-      <mat-tab>
+      <mat-tab *ngIf="Observations.length > 0">
         <ng-template mat-tab-label>
-          <mat-icon class="example-tab-icon">account_tree</mat-icon>
-          Flujo de trabajo grafico
+          <mat-icon class="example-tab-icon">push_pin</mat-icon>
+          Observaciones
         </ng-template>
-        <app-graph-workflow [workflow]="workflow"></app-graph-workflow>
+        <app-observaciones
+          [Options]="false"
+          [Observaciones]="Observations"
+        ></app-observaciones>
       </mat-tab>
-    </ng-container>
-  </mat-tab-group>
+      <mat-tab *ngIf="Events.length > 0">
+        <ng-template mat-tab-label>
+          <mat-icon class="example-tab-icon">list_alt</mat-icon>
+          Eventos
+        </ng-template>
+        <app-events-procedure [events]="Events"></app-events-procedure>
+      </mat-tab>
+      <ng-container *ngIf="workflow.length > 0">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">groups</mat-icon>
+            Flujo de trabajo
+          </ng-template>
+          <app-list-workflow
+            [workflow]="workflow"
+            [startDate]="procedure.startDate"
+          ></app-list-workflow>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">account_tree</mat-icon>
+            Flujo de trabajo grafico
+          </ng-template>
+          <app-graph-workflow [workflow]="workflow"></app-graph-workflow>
+        </mat-tab>
+      </ng-container>
+    </mat-tab-group>
+  </div>
 </div>

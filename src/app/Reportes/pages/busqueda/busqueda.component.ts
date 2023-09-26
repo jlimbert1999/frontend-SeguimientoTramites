@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 import { MatAccordion } from '@angular/material/expansion';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { forkJoin } from 'rxjs';
-import { stateProcedure } from 'src/app/procedures/interfaces/procedures-props.interface';
+import { stateProcedure } from 'src/app/procedures/interfaces';
 
 @Component({
   selector: 'app-busqueda',

@@ -4,20 +4,18 @@ import { Location } from '@angular/common';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { workflow } from 'src/app/communication/interfaces';
 import { LocationProcedure } from 'src/app/communication/models/workflow.interface';
-import { groupProcedure, procedure } from '../../interfaces';
+import { external, groupProcedure, procedure } from '../../interfaces';
 import { ExternalProcedure, Procedure } from '../../models';
 import { InternalProcedure } from '../../models/internal.model';
 import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
 import { ProcedureService } from '../../services/procedure.service';
-type ProcedureCo = ExternalProcedure | InternalProcedure;
 @Component({
   selector: 'app-ficha',
   templateUrl: './ficha.component.html',
   styleUrls: ['./ficha.component.scss'],
 })
 export class FichaComponent implements OnInit {
-  group = groupProcedure;
-  procedure: ProcedureCo;
+  procedure: InternalProcedure | ExternalProcedure;
   Location: LocationProcedure[] = [];
   workflow: workflow[] = [];
   Observations: any[] = [];
@@ -58,17 +56,13 @@ export class FichaComponent implements OnInit {
     //   PDF_FichaInterno(this.Tramite, List, this.Location)
     // }
   }
-
-  isExternalProcedure(
-    procedure: ExternalProcedure | InternalProcedure
-  ): boolean {
-    return procedure.group === groupProcedure.EXTERNAL;
+  get external() {
+    return this.procedure as ExternalProcedure;
   }
-
-  // get external() {
-  //   return this.procedure as ExternalProcedure;
-  // }
-  // get internal() {
-  //   return this.procedure as InternalProcedure;
-  // }
+  get internal() {
+    return this.procedure as InternalProcedure;
+  }
+  get group() {
+    return groupProcedure;
+  }
 }

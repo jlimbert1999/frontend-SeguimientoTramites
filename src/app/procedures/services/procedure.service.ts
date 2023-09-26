@@ -5,13 +5,12 @@ import { external, groupProcedure, internal } from '../interfaces';
 import { workflow } from 'src/app/communication/interfaces';
 import { map } from 'rxjs';
 import { ExternalProcedure, InternalProcedure, Procedure } from '../models';
-
 const base_url = environment.base_url;
 @Injectable({
   providedIn: 'root',
 })
 export class ProcedureService {
-  constructor(private http: HttpClient) {}             
+  constructor(private http: HttpClient) {}
 
   getFullProcedure(id_procedure: string) {
     return this.http
@@ -21,14 +20,12 @@ export class ProcedureService {
       }>(`${base_url}/procedure/${id_procedure}`)
       .pipe(
         map((resp) => {
-          const procedure =
+          const Procedure =
             resp.procedure.group === groupProcedure.EXTERNAL
-              ? ExternalProcedure.fromJson(resp.procedure as external)
-              : resp.procedure.group === groupProcedure.INTERNAL
-              ? InternalProcedure.fromJson(resp.procedure as internal)
-              : new Procedure(resp.procedure);
+              ? ExternalProcedure.fromJson(resp.procedure)
+              : InternalProcedure.fromJson(resp.procedure);
           return {
-            procedure: ExternalProcedure.fromJson(resp.procedure as external),
+            procedure: Procedure,
             workflow: resp.workflow,
           };
         })

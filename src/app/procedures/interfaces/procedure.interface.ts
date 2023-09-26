@@ -4,6 +4,7 @@ export enum stateProcedure {
   OBSERVADO = 'OBSERVADO',
   REVISION = 'EN REVISION',
   CONCLUIDO = 'CONCLUIDO',
+  ANULADO = 'ANULADO',
 }
 export enum groupProcedure {
   EXTERNAL = 'ExternalDetail',
@@ -19,7 +20,7 @@ export interface procedure {
   reference: string;
   amount: string;
   send: boolean;
-  group: groupProcedure;
   startDate: string;
+  group: groupProcedure;
   endDate?: string;
 }
