@@ -3,12 +3,22 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { AuthService } from 'src/app/auth/services/auth.service';
 import { InboxService } from '../../services/inbox.service';
 import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.component';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { communication, sendDetail, statusMail } from '../../interfaces';
+import { ProcedureService } from 'src/app/procedures/services/procedure.service';
+import { groupProcedure } from 'src/app/procedures/interfaces';
+
+import {
+  ExternalProcedure,
+  InternalProcedure,
+} from 'src/app/procedures/models';
+import {
+  createExternalRouteMap,
+  createInternalRouteMap,
+} from 'src/app/procedures/helpers';
 
 @Component({
   selector: 'app-inbox',
@@ -32,10 +42,10 @@ export class InboxComponent implements OnInit, OnDestroy {
   constructor(
     public inboxService: InboxService,
     public dialog: MatDialog,
-    public authService: AuthService,
     public paginatorService: PaginatorService,
     private router: Router,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private procedureService: ProcedureService
   ) {
     this.listenNewMails();
     this.listenCancelMails();
@@ -197,17 +207,22 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   generateRouteMap(mail: communication) {
-    // mail.tipo === 'tramites_externos'
-    //   ? this.externoService
-    //       .getAllDataExternalProcedure(mail.tramite._id)
-    //       .subscribe((data) => {
-    //         // externalRouteMap(data.procedure, data.workflow)
-    //       })
-    //   : this.internoService
-    //       .getAllDataInternalProcedure(mail.tramite._id)
-    //       .subscribe((data) => {
-    //         // internalRouteMap(data.procedure, data.workflow)
-    //       });
+    this.procedureService
+      .getFullProcedure(mail.procedure._id)
+      .subscribe((data) => {
+        const { procedure, workflow } = data;
+        switch (procedure.group) {
+          case groupProcedure.EXTERNAL:
+            createExternalRouteMap(procedure as ExternalProcedure, workflow);
+            break;
+          case groupProcedure.INTERNAL:
+            createInternalRouteMap(procedure as InternalProcedure, workflow);
+            break;
+          default:
+            alert('Group procedure is not defined');
+            break;
+        }
+      });
   }
   view(mail: communication) {
     const params = {

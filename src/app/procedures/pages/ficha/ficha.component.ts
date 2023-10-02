@@ -9,6 +9,7 @@ import { ExternalProcedure, Procedure } from '../../models';
 import { InternalProcedure } from '../../models/internal.model';
 import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
 import { ProcedureService } from '../../services/procedure.service';
+
 @Component({
   selector: 'app-ficha',
   templateUrl: './ficha.component.html',
@@ -16,8 +17,8 @@ import { ProcedureService } from '../../services/procedure.service';
 })
 export class FichaComponent implements OnInit {
   procedure: InternalProcedure | ExternalProcedure;
-  Location: LocationProcedure[] = [];
   workflow: workflow[] = [];
+  Location: LocationProcedure[] = [];
   Observations: any[] = [];
   Events: any[] = [];
 
