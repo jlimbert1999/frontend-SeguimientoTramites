@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
+import { Subscription, timer } from 'rxjs';
 import { LocationProcedure } from 'src/app/communication/models/workflow.interface';
 import { ExternalProcedure } from '../../models';
 
@@ -11,22 +11,22 @@ import { ExternalProcedure } from '../../models';
 export class ExternalDetailComponent implements OnInit, OnDestroy {
   @Input() procedure: ExternalProcedure;
   @Input() Location: LocationProcedure[] = [];
-  timer: NodeJS.Timer;
+  sourceTimer = timer(0, 1000);
+  timerSubscription: Subscription;
   duration: string = '';
 
-  constructor(private _location: Location) {}
+  constructor() {}
   ngOnInit(): void {
-    this.duration = this.procedure.getDuration();
-    // this.createTimer();
-  }
-
-  ngOnDestroy(): void {
-    // clearInterval(this.timer);
+    this.createTimer();
   }
 
   createTimer() {
-    this.timer = setInterval(() => {
-      this.duration = this.procedure.getDuration();
-    }, 1000);
+    this.timerSubscription = this.sourceTimer.subscribe(
+      (val) => (this.duration = this.procedure.getDuration())
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.timerSubscription.unsubscribe();
   }
 }

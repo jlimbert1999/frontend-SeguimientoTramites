@@ -17,6 +17,7 @@ import {
   external,
   groupProcedure,
   internal,
+  observation,
   stateProcedure,
 } from 'src/app/procedures/interfaces';
 import {
@@ -163,16 +164,12 @@ export class InboxService {
     return this.http.get<communication>(`${base_url}/communication/${id_mail}`);
   }
   addObservation(id_procedure: string, description: string) {
-    return this.http
-      .put<{ ok: boolean; observation: any }>(
-        `${base_url}/entradas/observar/${id_procedure}`,
-        { description }
-      )
-      .pipe(
-        map((resp) => {
-          return resp.observation;
-        })
-      );
+    return this.http.post<observation>(
+      `${base_url}/communication/inbox/observation/${id_procedure}`,
+      {
+        description,
+      }
+    );
   }
   repairObservation(id_observation: string) {
     return this.http

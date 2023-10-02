@@ -6,8 +6,6 @@ import { typeProcedure } from 'src/app/administration/interfaces';
 import { external } from '../interfaces/external.interface';
 import { ExternalProcedureDto } from '../dtos';
 import { NestedPartial } from 'src/app/shared/interfaces/nested-partial';
-import { ExternalProcedure } from '../models';
-import { workflow } from 'src/app/communication/interfaces';
 
 const base_url = environment.base_url;
 @Injectable({

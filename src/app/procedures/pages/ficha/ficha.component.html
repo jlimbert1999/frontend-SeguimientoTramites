@@ -40,10 +40,7 @@
           <mat-icon class="example-tab-icon">push_pin</mat-icon>
           Observaciones
         </ng-template>
-        <app-observaciones
-          [Options]="false"
-          [Observaciones]="Observations"
-        ></app-observaciones>
+        <app-observations [observations]="Observations"></app-observations>
       </mat-tab>
       <mat-tab *ngIf="Events.length > 0">
         <ng-template mat-tab-label>

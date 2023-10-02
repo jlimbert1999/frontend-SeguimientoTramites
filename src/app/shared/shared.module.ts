@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../angular-material/material.module';
 import { GraphWorkflowComponent } from './components/graph-workflow/graph-workflow.component';
 import { ListWorkflowComponent } from './components/list-workflow/list-workflow.component';
-import { ObservacionesComponent } from './observaciones/observaciones.component';
 import { FullnamePipe } from './pipes/fullname.pipe';
 import { PaginatorComponent } from './components/paginator/paginator.component';
 import { InternalDetailComponent } from '../procedures/components/internal-detail/internal-detail.component';
@@ -25,10 +24,9 @@ import { InputSearchProceduresComponent } from './components/input-search-proced
   declarations: [
     GraphWorkflowComponent,
     ListWorkflowComponent,
-    ObservacionesComponent,
     FullnamePipe,
     PaginatorComponent,
-    
+
     StatePipe,
     ToolbarComponent,
     TableReportPreceduresComponent,
@@ -50,7 +48,6 @@ import { InputSearchProceduresComponent } from './components/input-search-proced
   exports: [
     GraphWorkflowComponent,
     ListWorkflowComponent,
-    ObservacionesComponent,
     FullnamePipe,
     StatePipe,
     PaginatorComponent,

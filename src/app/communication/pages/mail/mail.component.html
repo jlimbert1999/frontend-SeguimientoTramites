@@ -6,10 +6,18 @@
       </button>
       <span>{{ mail.procedure.code }}</span>
       <span class="example-spacer"></span>
-      <button mat-icon-button (click)="generateRouteMap()" matTooltip="Hoja de ruta">
+      <button
+        mat-icon-button
+        (click)="generateRouteMap()"
+        matTooltip="Hoja de ruta"
+      >
         <mat-icon>description</mat-icon>
       </button>
-      <button mat-icon-button (click)="addObservation()" matTooltip="Agregar observacion">
+      <button
+        mat-icon-button
+        (click)="addObservation()"
+        matTooltip="Agregar observacion"
+      >
         <mat-icon>attach_file</mat-icon>
       </button>
       <!-- <button
@@ -99,11 +107,10 @@
           <mat-icon class="tab-icon">push_pin</mat-icon>
           Observaciones
         </ng-template>
-        <app-observaciones
-          [Options]="true"
-          [Observaciones]="observations"
+        <app-observations
+          [observations]="observations"
           (setNewState)="setNewStateProcedure($event)"
-        ></app-observaciones>
+        ></app-observations>
       </mat-tab>
       <mat-tab *ngIf="Events.length > 0">
         <ng-template mat-tab-label>

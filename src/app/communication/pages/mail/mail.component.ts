@@ -8,7 +8,11 @@ import Swal from 'sweetalert2';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { showToast } from 'src/app/helpers/toats.helper';
 
-import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
+import {
+  groupProcedure,
+  observation,
+  stateProcedure,
+} from 'src/app/procedures/interfaces';
 import { communication, statusMail, workflow } from '../../interfaces';
 import { ProcedureService } from 'src/app/procedures/services/procedure.service';
 import {
@@ -27,7 +31,7 @@ export class MailComponent implements OnInit {
   mail: communication;
   procedure: InternalProcedure | ExternalProcedure;
   workflow: workflow[] = [];
-  observations: any[] = [];
+  observations: observation[] = [];
   Events: any[] = [];
   Location: any[] = [];
   constructor(
@@ -43,6 +47,7 @@ export class MailComponent implements OnInit {
     this.activateRoute.params.subscribe((params) => {
       this.entradaService.getMailDetails(params['id']).subscribe((data) => {
         this.mail = data;
+
         this.getFullDetailsProcedure(this.mail.procedure._id);
       });
     });
@@ -52,6 +57,7 @@ export class MailComponent implements OnInit {
     this.procedureService.getFullProcedure(id_procedure).subscribe((data) => {
       this.procedure = data.procedure;
       this.workflow = data.workflow;
+      this.observations = data.observations;
     });
   }
 
@@ -160,8 +166,7 @@ export class MailComponent implements OnInit {
         this.entradaService
           .addObservation(this.procedure._id, result.value!)
           .subscribe((observation) => {
-            this.procedure.state = stateProcedure.OBSERVADO;
-            this.observations.unshift(observation);
+            console.log(observation);
           });
       }
     });

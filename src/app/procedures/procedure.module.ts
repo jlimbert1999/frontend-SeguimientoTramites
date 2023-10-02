@@ -1,21 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { RouterModule } from '@angular/router';
-
-import { FichaComponent } from './pages/ficha/ficha.component';
-import { InternosComponent } from './pages/internos/internos.component';
-import { ExternosComponent } from './pages/externos/externos.component';
-import { DialogInternosComponent } from './dialogs/dialog-internos/dialog-internos.component';
-import { DialogExternoComponent } from './dialogs/dialog-externo/dialog-externo.component';
-import { SharedModule } from '../shared/shared.module';
-import { MaterialModule } from '../angular-material/material.module';
-import { ProcedureRoutingModule } from './procedure-routing.module';
-import { SolicitantePipe } from './pipes/solicitante.pipe';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-import { InternalDetailComponent } from './components/internal-detail/internal-detail.component';
+
+import { DialogExternoComponent } from './dialogs/dialog-externo/dialog-externo.component';
+import { DialogInternosComponent } from './dialogs/dialog-internos/dialog-internos.component';
 import { ExternalDetailComponent } from './components/external-detail/external-detail.component';
+import { ExternosComponent } from './pages/externos/externos.component';
+import { FichaComponent } from './pages/ficha/ficha.component';
+import { FilterObservationsPipe } from './pipes/filter-observations.pipe';
+import { InternalDetailComponent } from './components/internal-detail/internal-detail.component';
+import { InternosComponent } from './pages/internos/internos.component';
+import { MaterialModule } from '../angular-material/material.module';
+import { ObservationsComponent } from './components/observations/observations.component';
+import { ProcedureRoutingModule } from './procedure-routing.module';
+import { SharedModule } from '../shared/shared.module';
+import { SolicitantePipe } from './pipes/solicitante.pipe';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,8 @@ import { ExternalDetailComponent } from './components/external-detail/external-d
     InternalDetailComponent,
     ExternalDetailComponent,
     SolicitantePipe,
+    FilterObservationsPipe,
+    ObservationsComponent,
   ],
   imports: [
     CommonModule,
@@ -44,9 +48,10 @@ import { ExternalDetailComponent } from './components/external-detail/external-d
       useValue: { showError: true },
     },
   ],
-  exports:[
+  exports: [
     InternalDetailComponent,
-    ExternalDetailComponent
-  ]
+    ExternalDetailComponent,
+    ObservationsComponent,
+  ],
 })
 export class ProcedureModule {}

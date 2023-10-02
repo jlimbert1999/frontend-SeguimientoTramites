@@ -57,6 +57,11 @@ export abstract class Procedure {
       : 'Tramite interno';
   }
 
+  get citeCode() {
+    if (this.cite === '') return 'S/C';
+    return this.cite;
+  }
+
   getDuration(): string {
     const parts: string[] = [];
     const start = moment(this.startDate);

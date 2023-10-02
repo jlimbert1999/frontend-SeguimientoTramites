@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
+import { Subscription, timer } from 'rxjs';
 import { InternalProcedure } from '../../models';
 
 @Component({
@@ -9,23 +9,22 @@ import { InternalProcedure } from '../../models';
 })
 export class InternalDetailComponent implements OnInit, OnDestroy {
   @Input() procedure: InternalProcedure;
-  // @Input() Location: LocationProcedure[] = [];
-  timer: NodeJS.Timer;
+  sourceTimer = timer(0, 1000);
+  timerSubscription: Subscription;
   duration: string = '';
 
-  constructor(private _location: Location) {}
+  constructor() {}
   ngOnInit(): void {
-    this.duration = this.procedure.getDuration();
-    // this.createTimer();
+    this.createTimer();
   }
 
   ngOnDestroy(): void {
-    // clearInterval(this.timer);
+    this.timerSubscription.unsubscribe();
   }
 
   createTimer() {
-    this.timer = setInterval(() => {
-      this.duration = this.procedure.getDuration();
-    }, 1000);
+    this.timerSubscription = this.sourceTimer.subscribe(
+      (val) => (this.duration = this.procedure.getDuration())
+    );
   }
 }

@@ -16,6 +16,7 @@
             <h6 class="card-subtitle mb-2 text-muted">
               Encargado: {{ procedure.fullNameManager }}
             </h6>
+            <hr />
             <form class="row g-3">
               <div class="col-12">
                 <label for="txtType" class="form-label">Tipo de tramite</label>
@@ -51,7 +52,7 @@
                   type="text"
                   class="form-control"
                   id="txtCite"
-                  [value]="procedure.cite"
+                  [value]="procedure.citeCode"
                   readonly
                 />
               </div>
@@ -80,13 +81,14 @@
         </div>
       </div>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-12">
       <div class="shadow rounded">
         <div class="card bg-transparent">
           <div class="card-body">
-            <h6 class="card-title">
+            <h5 class="card-title">
               Solicitante: {{ procedure.details.solicitante.tipo }}
-            </h6>
+            </h5>
+            <hr />
             <div
               *ngIf="
                 procedure.details.solicitante.tipo === 'NATURAL';
@@ -160,6 +162,68 @@
                   />
                 </div>
               </form>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12">
+      <div class="shadow rounded">
+        <div class="card bg-transparent">
+          <div class="card-body">
+            <h5 class="card-title">Representante</h5>
+            <hr />
+            <div
+              *ngIf="
+                procedure.details.representante;
+                else representativeTemplate
+              "
+            >
+              <form class="row g-3">
+                <div class="col-md-8">
+                  <label for="txtFirstName" class="form-label">Nombre</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="txtFirstName"
+                    [value]="procedure.fullNameRepresentative"
+                    readonly
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="txtDni" class="form-label">Dni</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="txtDni"
+                    [value]="procedure.details.representante.dni"
+                    readonly
+                  />
+                </div>
+                <div class="col-md-8">
+                  <label for="txtDocument" class="form-label">Documento</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="txtDocument"
+                    [value]="procedure.details.representante.documento"
+                    readonly
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="txtTelephone" class="form-label">Telefono</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="txtTelephone"
+                    [value]="procedure.details.representante.telefono"
+                    readonly
+                  />
+                </div>
+              </form>
+            </div>
+            <ng-template #representativeTemplate>
+              <p class="fw-bold text-center">Sin representante</p>
             </ng-template>
           </div>
         </div>

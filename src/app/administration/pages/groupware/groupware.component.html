@@ -1,32 +1,48 @@
 <app-toolbar title="GRUPO DE TRABAJO"></app-toolbar>
 <div class="container" [@fadeInOnEnter]>
-    <mat-form-field class="example-full-width">
-        <mat-label>Buscar funcionario</mat-label>
-        <input [(ngModel)]="textSearch" matInput placeholder="Nombre / Cargo">
-        <button *ngIf="textSearch" matSuffix mat-icon-button aria-label="Clear" (click)="textSearch=''">
-            <mat-icon>close</mat-icon>
+  <mat-form-field class="example-full-width">
+    <mat-label>Buscar funcionario</mat-label>
+    <input [(ngModel)]="textSearch" matInput placeholder="Nombre / Cargo" />
+    <button
+      *ngIf="textSearch"
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      (click)="textSearch = ''"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <mat-list>
+    <mat-list-item
+      *ngFor="
+        let user of socketService.onlineUsers$
+          | async
+          | filterUsersSocket : textSearch
+      "
+    >
+      <img matListItemAvatar src="../../../assets/img/account.png" alt="..." />
+      <h3 class="fw-bold" matListItemTitle>
+        {{ user.officer.fullname | titlecase }}
+      </h3>
+      <span class="fst-italic" matListItemLine>{{
+        user.officer.jobtitle | uppercase
+      }}</span>
+      <span matListItemLine>Sesiones: {{ user.socketIds.length }}</span>
+      <button matListItemMeta mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button (click)="sendNotificacion(user)" mat-menu-item>
+          <mat-icon>campaign</mat-icon>
+          <span>Notificar</span>
         </button>
-    </mat-form-field>
-    <mat-list>
-        <mat-list-item *ngFor="let user of socketService.onlineUsers$|async|filterUsersSocket:textSearch">
-            <img matListItemAvatar src="../../../assets/img/account.png" alt="...">
-            <h3 class="fw-bold" matListItemTitle>{{user.officer.fullname|titlecase}}</h3>
-            <span class="fst-italic" matListItemLine>{{user.officer.jobtitle|uppercase}}</span>
-            <span matListItemLine>Sesiones: {{user.socketIds.length}}</span>
-            <button matListItemMeta mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-                <button (click)="sendNotificacion(user)" mat-menu-item>
-                    <mat-icon>campaign</mat-icon>
-                    <span>Notificar</span>
-                </button>
-                <button (click)="kickUser(user)" mat-menu-item>
-                    <mat-icon>connect_without_contact</mat-icon>
-                    <span>Expulsar</span>
-                </button>
-            </mat-menu>
-            <mat-divider></mat-divider>
-        </mat-list-item>
-    </mat-list>
+        <button (click)="kickUser(user)" mat-menu-item>
+          <mat-icon>connect_without_contact</mat-icon>
+          <span>Expulsar</span>
+        </button>
+      </mat-menu>
+      <mat-divider></mat-divider>
+    </mat-list-item>
+  </mat-list>
 </div>

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { external, groupProcedure, internal } from '../interfaces';
+import { external, groupProcedure, internal, observation } from '../interfaces';
 import { workflow } from 'src/app/communication/interfaces';
 import { map } from 'rxjs';
 import { ExternalProcedure, InternalProcedure, Procedure } from '../models';
@@ -17,6 +17,7 @@ export class ProcedureService {
       .get<{
         procedure: internal | external;
         workflow: workflow[];
+        observations: observation[];
       }>(`${base_url}/procedure/${id_procedure}`)
       .pipe(
         map((resp) => {
@@ -27,6 +28,7 @@ export class ProcedureService {
           return {
             procedure: Procedure,
             workflow: resp.workflow,
+            observations: resp.observations,
           };
         })
       );
