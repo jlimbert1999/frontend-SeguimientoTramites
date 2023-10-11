@@ -83,12 +83,27 @@
               </button>
               <button
                 mat-menu-item
-                (click)="conclude(row)"
+                [matMenuTriggerFor]="endingOptions"
                 [disabled]="row.estado === 'CONCLUIDO' || row.enviado === true"
               >
-                <mat-icon>domain_verification</mat-icon>
                 <span>Concluir tramite</span>
               </button>
+              <mat-menu #endingOptions="matMenu">
+                <button
+                  mat-menu-item
+                  (click)="conclude(row, groupArchive.COMPLETED)"
+                >
+                  <mat-icon>domain_verification</mat-icon>
+                  Finalizar proceso
+                </button>
+                <button
+                  mat-menu-item
+                  (click)="conclude(row, groupArchive.SUSPENDED)"
+                >
+                  <mat-icon>snooze</mat-icon>
+                  Suspender proceso
+                </button>
+              </mat-menu>
             </mat-menu>
           </td>
         </ng-container>

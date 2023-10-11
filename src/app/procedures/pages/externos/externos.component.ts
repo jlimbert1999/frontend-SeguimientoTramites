@@ -12,6 +12,9 @@ import { external } from '../../interfaces/external.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ProcedureService } from '../../services/procedure.service';
 import { ExternalProcedure } from '../../models';
+import { ArchivoService } from 'src/app/archives/services/archivo.service';
+import { ArchiveDto } from 'src/app/archives/dtos/archive.dto';
+import { groupArchive } from 'src/app/archives/interfaces/archive-group.interface';
 
 @Component({
   selector: 'app-externos',
@@ -29,12 +32,14 @@ export class ExternosComponent implements OnInit {
     'enviado',
     'opciones',
   ];
+  groupArchive = groupArchive;
   constructor(
     public dialog: MatDialog,
     private router: Router,
-    public readonly externoService: ExternosService,
-    public readonly procedureService: ProcedureService,
-    public readonly paginatorService: PaginatorService
+    private readonly externoService: ExternosService,
+    private readonly procedureService: ProcedureService,
+    private readonly paginatorService: PaginatorService,
+    private readonly archivosService: ArchivoService
   ) {}
   ngOnInit(): void {
     this.Get();
@@ -133,34 +138,40 @@ export class ExternosComponent implements OnInit {
     Ficha(tramite);
   }
 
-  conclude(tramite: external) {
+  conclude(tramite: external, group: groupArchive) {
     Swal.fire({
       icon: 'question',
-      title: `Concluir el tramite ${tramite.code}?`,
+      title: `¿Concluir el tramite ${tramite.code} por ${
+        group === groupArchive.COMPLETED
+          ? 'FINALIZACION DE PROCESO'
+          : 'FALTA DE CONTINUIDAD'
+      }?`,
       text: `El tramite pasara a su seccion de archivos`,
       input: 'textarea',
       inputPlaceholder: 'Ingrese una referencia para concluir',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
       customClass: {
         validationMessage: 'my-validation-message',
       },
       preConfirm: (value) => {
         if (!value) {
           Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para concluir'
+            '<i class="fa fa-info-circle"></i> La referencia es obligatoria!'
           );
         }
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        // this.externoService.conclude(tramite._id, result.value!).subscribe(message => {
-        //   const index = this.Data.findIndex(element => element._id === tramite._id)
-        //   this.socket.socket.emit('archive', this.authService.account.id_dependencie)
-        //   this.Data[index].estado = 'CONCLUIDO'
-        //   this.Data = [...this.Data]
-        //   showToast('success', message)
-        // })
+        const archive: ArchiveDto = {
+          procedure: tramite._id,
+          description: result.value,
+          group: group,
+        };
+        this.archivosService
+          .archiveProcedure(archive)
+          .subscribe((message) => {});
       }
     });
   }

@@ -161,10 +161,10 @@ export class InboxComponent implements OnInit, OnDestroy {
       }
     });
   }
-  concluir(mail: communication) {
+  conclude(mail: communication) {
     Swal.fire({
       icon: 'question',
-      title: `Concluir el tramite ${mail.procedure}?`,
+      title: `¿Concluir el tramite ${mail.procedure}?`,
       text: `El tramite pasara a su seccion de archivos`,
       inputPlaceholder: 'Ingrese una referencia para concluir',
       input: 'textarea',

@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../angular-material/material.module';
-import { ArchivosComponent } from './archivos.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { AdministrationComponent } from './pages/administration/administration.component';
 
 
 @NgModule({
   declarations: [
-    ArchivosComponent
+    AdministrationComponent
   ],
   imports: [
     CommonModule,
@@ -18,6 +18,6 @@ import { SharedModule } from '../shared/shared.module';
     SharedModule
   ]
 })
-export class ArchivosModule {
+export class ArchiveModule {
   
 }

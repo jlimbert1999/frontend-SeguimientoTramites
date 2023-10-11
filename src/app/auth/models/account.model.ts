@@ -3,7 +3,7 @@ export interface jwtPayload {
   id_dependencie: string;
   officer: {
     fullname: string;
-    jobtitle: string;
+    jobtitle?: string;
   };
 }
 export interface userSocket {
