@@ -84,7 +84,7 @@
               <button
                 mat-menu-item
                 [matMenuTriggerFor]="endingOptions"
-                [disabled]="row.estado === 'CONCLUIDO' || row.enviado === true"
+                [disabled]="row.state === 'CONCLUIDO' || row.send === true"
               >
                 <span>Concluir tramite</span>
               </button>

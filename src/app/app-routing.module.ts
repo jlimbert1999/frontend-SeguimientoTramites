@@ -8,28 +8,45 @@ import { PresentationComponent } from './pages/presentation/presentation.compone
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
-    path: '', component: HomeComponent, canActivate: [AuthGuard],
+    path: '',
+    component: HomeComponent,
+    canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'main', pathMatch: 'full' },
       { path: 'main', component: PresentationComponent },
       {
-        path: 'configuraciones', loadChildren: () => import(`./administration/administration.module`).then((m) => m.AdministrationModule),
+        path: 'configuraciones',
+        loadChildren: () =>
+          import(`./administration/administration.module`).then(
+            (m) => m.AdministrationModule
+          ),
       },
       {
-        path: 'tramites', loadChildren: () => import(`./procedures/procedure.module`).then((m) => m.ProcedureModule),
+        path: 'tramites',
+        loadChildren: () =>
+          import(`./procedures/procedure.module`).then(
+            (m) => m.ProcedureModule
+          ),
       },
       {
-        path: 'bandejas', loadChildren: () => import(`./communication/communication.module`).then((m) => m.CommunicationModule),
-      }
-    ]
+        path: 'archivos',
+        loadChildren: () =>
+          import(`./archives/archive.module`).then((m) => m.ArchiveModule),
+      },
+      {
+        path: 'bandejas',
+        loadChildren: () =>
+          import(`./communication/communication.module`).then(
+            (m) => m.CommunicationModule
+          ),
+      },
+    ],
   },
-  { path: '**', redirectTo: '', pathMatch: 'full' }
+  { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes),
-  ],
-  exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

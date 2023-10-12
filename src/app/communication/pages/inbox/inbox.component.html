@@ -68,10 +68,33 @@
                   <mat-icon>description</mat-icon>
                   <span>Hoja de ruta</span>
                 </button>
-                <button (click)="conclude(row)" mat-menu-item>
+                <button mat-menu-item>
                   <mat-icon>domain_verification</mat-icon>
                   <span>Concluir tramite</span>
                 </button>
+                <button
+                  mat-menu-item
+                  [matMenuTriggerFor]="endingOptions"
+                  [disabled]="row.state === 'CONCLUIDO' || row.send === true"
+                >
+                  <span>Concluir tramite</span>
+                </button>
+                <mat-menu #endingOptions="matMenu">
+                  <button
+                    mat-menu-item
+                    (click)="conclude(row, groupArchive.COMPLETED)"
+                  >
+                    <mat-icon>domain_verification</mat-icon>
+                    Finalizar proceso
+                  </button>
+                  <button
+                    mat-menu-item
+                    (click)="conclude(row, groupArchive.SUSPENDED)"
+                  >
+                    <mat-icon>snooze</mat-icon>
+                    Suspender proceso
+                  </button>
+                </mat-menu>
               </ng-template>
             </mat-menu>
           </td>

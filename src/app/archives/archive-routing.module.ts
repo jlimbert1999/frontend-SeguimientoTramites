@@ -4,7 +4,7 @@ import { FichaComponent } from '../procedures/pages/ficha/ficha.component';
 import { AdministrationComponent } from './pages/administration/administration.component';
 
 const routes: Routes = [
-  { path: 'archivos', component: AdministrationComponent },
+  { path: '', component: AdministrationComponent },
   { path: 'tramite/:tipo/:id', component: FichaComponent },
 ];
 

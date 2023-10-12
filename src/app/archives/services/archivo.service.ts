@@ -13,18 +13,13 @@ const base_url = environment.base_url;
 export class ArchivoService {
   constructor(private http: HttpClient) {}
 
-  Get(limit: number, offset: number) {
+  getAll(limit: number, offset: number) {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
-    return this.http
-      .get<{ ok: boolean; archives: Archive[]; length: number }>(
-        `${base_url}/archivos`,
-        { params }
-      )
-      .pipe(
-        map((resp) => {
-          return { archives: resp.archives, length: resp.length };
-        })
-      );
+    return this.http.get<any>(`${base_url}/archive`, { params }).pipe(
+      map((resp) => {
+        return resp;
+      })
+    );
   }
   search(text: string, group: string, limit: number, offset: number) {
     const params = new HttpParams()
@@ -43,9 +38,9 @@ export class ArchivoService {
       );
   }
 
-  archiveProcedure(archive: ArchiveDto) {
+  archiveProcedure(id_procedure: string, archive: ArchiveDto) {
     return this.http.post<{ message: string }>(
-      `${base_url}/archive/procedure`,
+      `${base_url}/archive/procedure/${id_procedure}`,
       archive
     );
   }

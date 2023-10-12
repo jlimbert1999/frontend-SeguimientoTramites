@@ -15,6 +15,7 @@ export abstract class Procedure {
   group: groupProcedure;
   startDate: Date;
   endDate?: Date;
+  completionReason?: string;
   constructor({
     _id,
     code,
@@ -28,6 +29,7 @@ export abstract class Procedure {
     startDate,
     endDate,
     group,
+    completionReason,
   }: procedure) {
     this._id = _id;
     this.code = code;
@@ -41,6 +43,7 @@ export abstract class Procedure {
     this.startDate = new Date(startDate);
     this.group = group;
     if (endDate) this.endDate = new Date(endDate);
+    if (completionReason) this.completionReason = completionReason;
   }
 
   get fullNameManager() {

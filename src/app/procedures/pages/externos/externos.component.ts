@@ -138,10 +138,10 @@ export class ExternosComponent implements OnInit {
     Ficha(tramite);
   }
 
-  conclude(tramite: external, group: groupArchive) {
+  conclude(procedure: external, group: groupArchive) {
     Swal.fire({
       icon: 'question',
-      title: `¿Concluir el tramite ${tramite.code} por ${
+      title: `¿Concluir el tramite ${procedure.code} por ${
         group === groupArchive.COMPLETED
           ? 'FINALIZACION DE PROCESO'
           : 'FALTA DE CONTINUIDAD'
@@ -165,12 +165,11 @@ export class ExternosComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const archive: ArchiveDto = {
-          procedure: tramite._id,
           description: result.value,
           group: group,
         };
         this.archivosService
-          .archiveProcedure(archive)
+          .archiveProcedure(procedure._id, archive)
           .subscribe((message) => {});
       }
     });

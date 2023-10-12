@@ -23,4 +23,5 @@ export interface procedure {
   startDate: string;
   group: groupProcedure;
   endDate?: string;
+  completionReason?: string;
 }

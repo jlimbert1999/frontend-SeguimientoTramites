@@ -19,6 +19,9 @@ import {
   createExternalRouteMap,
   createInternalRouteMap,
 } from 'src/app/procedures/helpers';
+import { groupArchive } from 'src/app/archives/interfaces/archive-group.interface';
+import { ArchivoService } from 'src/app/archives/services/archivo.service';
+import { ArchiveDto } from 'src/app/archives/dtos/archive.dto';
 
 @Component({
   selector: 'app-inbox',
@@ -28,7 +31,7 @@ import {
 export class InboxComponent implements OnInit, OnDestroy {
   private mailSubscription: Subscription;
   private mailCancelSubscription: Subscription;
-
+  groupArchive = groupArchive;
   dataSource: communication[] = [];
   displayedColumns = [
     'code',
@@ -45,7 +48,8 @@ export class InboxComponent implements OnInit, OnDestroy {
     public paginatorService: PaginatorService,
     private router: Router,
     private socketService: SocketService,
-    private procedureService: ProcedureService
+    private procedureService: ProcedureService,
+    private archiveService: ArchivoService
   ) {
     this.listenNewMails();
     this.listenCancelMails();
@@ -161,10 +165,14 @@ export class InboxComponent implements OnInit, OnDestroy {
       }
     });
   }
-  conclude(mail: communication) {
+  conclude(mail: communication, group: groupArchive) {
     Swal.fire({
       icon: 'question',
-      title: `¿Concluir el tramite ${mail.procedure}?`,
+      title: `¿Concluir el tramite ${mail.procedure.code} por ${
+        group === groupArchive.COMPLETED
+          ? 'FINALIZACION DE PROCESO'
+          : 'FALTA DE CONTINUIDAD'
+      }?`,
       text: `El tramite pasara a su seccion de archivos`,
       inputPlaceholder: 'Ingrese una referencia para concluir',
       input: 'textarea',
@@ -183,11 +191,14 @@ export class InboxComponent implements OnInit, OnDestroy {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.inboxService
-          .Conclude(mail._id, result.value!)
-          .subscribe((message) => {
-            this.Get();
-          });
+        const { _id, procedure } = mail;
+        const archiveDto: ArchiveDto = {
+          description: result.value,
+          group,
+        };
+        this.archiveService.archiveMail(_id, archiveDto).subscribe((resp) => {
+          console.log(resp);
+        });
       }
     });
   }

@@ -4,20 +4,17 @@ import { MaterialModule } from '../angular-material/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { AdministrationComponent } from './pages/administration/administration.component';
-
+import { ArchiveRoutingModule } from './archive-routing.module';
 
 @NgModule({
-  declarations: [
-    AdministrationComponent
-  ],
+  declarations: [AdministrationComponent],
   imports: [
     CommonModule,
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule
-  ]
+    SharedModule,
+    ArchiveRoutingModule,
+  ],
 })
-export class ArchiveModule {
-  
-}
+export class ArchiveModule {}
