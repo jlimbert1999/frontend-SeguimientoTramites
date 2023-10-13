@@ -12,7 +12,6 @@ export class AdministrationComponent {
     'procedure',
     'manager',
     'reference',
-    'group',
     'date',
   ];
   dataSource: communication[] = [];

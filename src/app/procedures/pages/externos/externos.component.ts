@@ -14,7 +14,7 @@ import { ProcedureService } from '../../services/procedure.service';
 import { ExternalProcedure } from '../../models';
 import { ArchivoService } from 'src/app/archives/services/archivo.service';
 import { ArchiveDto } from 'src/app/archives/dtos/archive.dto';
-import { groupArchive } from 'src/app/archives/interfaces/archive-group.interface';
+import { stateProcedure } from '../../interfaces';
 
 @Component({
   selector: 'app-externos',
@@ -32,7 +32,7 @@ export class ExternosComponent implements OnInit {
     'enviado',
     'opciones',
   ];
-  groupArchive = groupArchive;
+  stateProcedure: stateProcedure;
   constructor(
     public dialog: MatDialog,
     private router: Router,
@@ -138,15 +138,11 @@ export class ExternosComponent implements OnInit {
     Ficha(tramite);
   }
 
-  conclude(procedure: external, group: groupArchive) {
+  conclude(procedure: external) {
     Swal.fire({
       icon: 'question',
-      title: `¿Concluir el tramite ${procedure.code} por ${
-        group === groupArchive.COMPLETED
-          ? 'FINALIZACION DE PROCESO'
-          : 'FALTA DE CONTINUIDAD'
-      }?`,
-      text: `El tramite pasara a su seccion de archivos`,
+      title: `¿Concluir tramite ${procedure.code}?`,
+      text: `Los tramites concluidos desde su administacion ya no podran ser desarchivados`,
       input: 'textarea',
       inputPlaceholder: 'Ingrese una referencia para concluir',
       showCancelButton: true,
@@ -165,12 +161,18 @@ export class ExternosComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const archive: ArchiveDto = {
+          procedure: procedure._id,
           description: result.value,
-          group: group,
+          state: stateProcedure.CONCLUIDO,
         };
         this.archivosService
           .archiveProcedure(procedure._id, archive)
-          .subscribe((message) => {});
+          .subscribe((message) => {
+            const indexFound = this.dataSource.findIndex(
+              (element) => element._id === procedure._id
+            );
+            this.dataSource[indexFound].state = stateProcedure.CONCLUIDO;
+          });
       }
     });
   }

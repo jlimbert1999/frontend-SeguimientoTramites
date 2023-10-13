@@ -80,17 +80,11 @@
                   <span>Concluir tramite</span>
                 </button>
                 <mat-menu #endingOptions="matMenu">
-                  <button
-                    mat-menu-item
-                    (click)="conclude(row, groupArchive.COMPLETED)"
-                  >
+                  <button mat-menu-item>
                     <mat-icon>domain_verification</mat-icon>
                     Finalizar proceso
                   </button>
-                  <button
-                    mat-menu-item
-                    (click)="conclude(row, groupArchive.SUSPENDED)"
-                  >
+                  <button mat-menu-item>
                     <mat-icon>snooze</mat-icon>
                     Suspender proceso
                   </button>

@@ -65,11 +65,19 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="Edit(row)">
+              <button
+                [disabled]="row.state === 'CONCLUIDO'"
+                mat-menu-item
+                (click)="Edit(row)"
+              >
                 <mat-icon>edit</mat-icon>
                 <span>Editar tramite</span>
               </button>
-              <button mat-menu-item [disabled]="row.send" (click)="Send(row)">
+              <button
+                mat-menu-item
+                [disabled]="row.state === 'CONCLUIDO' || row.send"
+                (click)="Send(row)"
+              >
                 <mat-icon>send</mat-icon>
                 <span>Remitir tramite</span>
               </button>
@@ -83,27 +91,12 @@
               </button>
               <button
                 mat-menu-item
-                [matMenuTriggerFor]="endingOptions"
-                [disabled]="row.state === 'CONCLUIDO' || row.send === true"
+                [disabled]="row.state === 'CONCLUIDO' || row.send"
+                (click)="conclude(row)"
               >
-                <span>Concluir tramite</span>
+                <mat-icon>domain_verification</mat-icon>
+                Concluir tramite
               </button>
-              <mat-menu #endingOptions="matMenu">
-                <button
-                  mat-menu-item
-                  (click)="conclude(row, groupArchive.COMPLETED)"
-                >
-                  <mat-icon>domain_verification</mat-icon>
-                  Finalizar proceso
-                </button>
-                <button
-                  mat-menu-item
-                  (click)="conclude(row, groupArchive.SUSPENDED)"
-                >
-                  <mat-icon>snooze</mat-icon>
-                  Suspender proceso
-                </button>
-              </mat-menu>
             </mat-menu>
           </td>
         </ng-container>

@@ -19,7 +19,6 @@ import {
   createExternalRouteMap,
   createInternalRouteMap,
 } from 'src/app/procedures/helpers';
-import { groupArchive } from 'src/app/archives/interfaces/archive-group.interface';
 import { ArchivoService } from 'src/app/archives/services/archivo.service';
 import { ArchiveDto } from 'src/app/archives/dtos/archive.dto';
 
@@ -31,7 +30,6 @@ import { ArchiveDto } from 'src/app/archives/dtos/archive.dto';
 export class InboxComponent implements OnInit, OnDestroy {
   private mailSubscription: Subscription;
   private mailCancelSubscription: Subscription;
-  groupArchive = groupArchive;
   dataSource: communication[] = [];
   displayedColumns = [
     'code',
@@ -165,42 +163,42 @@ export class InboxComponent implements OnInit, OnDestroy {
       }
     });
   }
-  conclude(mail: communication, group: groupArchive) {
-    Swal.fire({
-      icon: 'question',
-      title: `¿Concluir el tramite ${mail.procedure.code} por ${
-        group === groupArchive.COMPLETED
-          ? 'FINALIZACION DE PROCESO'
-          : 'FALTA DE CONTINUIDAD'
-      }?`,
-      text: `El tramite pasara a su seccion de archivos`,
-      inputPlaceholder: 'Ingrese una referencia para concluir',
-      input: 'textarea',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-      customClass: {
-        validationMessage: 'my-validation-message',
-      },
-      preConfirm: (value) => {
-        if (!value) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
-          );
-        }
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const { _id, procedure } = mail;
-        const archiveDto: ArchiveDto = {
-          description: result.value,
-          group,
-        };
-        this.archiveService.archiveMail(_id, archiveDto).subscribe((resp) => {
-          console.log(resp);
-        });
-      }
-    });
+  conclude(mail: communication) {
+    // Swal.fire({
+    //   icon: 'question',
+    //   title: `¿Concluir el tramite ${mail.procedure.code} por ${
+    //     group === groupArchive.COMPLETED
+    //       ? 'FINALIZACION DE PROCESO'
+    //       : 'FALTA DE CONTINUIDAD'
+    //   }?`,
+    //   text: `El tramite pasara a su seccion de archivos`,
+    //   inputPlaceholder: 'Ingrese una referencia para concluir',
+    //   input: 'textarea',
+    //   showCancelButton: true,
+    //   confirmButtonText: 'Aceptar',
+    //   cancelButtonText: 'Cancelar',
+    //   customClass: {
+    //     validationMessage: 'my-validation-message',
+    //   },
+    //   preConfirm: (value) => {
+    //     if (!value) {
+    //       Swal.showValidationMessage(
+    //         '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
+    //       );
+    //     }
+    //   },
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     // const { _id, procedure } = mail;
+    //     // const archiveDto: ArchiveDto = {
+    //     //   description: result.value,
+    //     //   group,
+    //     // };
+    //     // this.archiveService.archiveMail(_id, archiveDto).subscribe((resp) => {
+    //     //   console.log(resp);
+    //     // });
+    //   }
+    // });
   }
 
   applyFilter(event: Event) {

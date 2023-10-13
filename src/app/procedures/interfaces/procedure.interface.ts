@@ -5,6 +5,7 @@ export enum stateProcedure {
   REVISION = 'EN REVISION',
   CONCLUIDO = 'CONCLUIDO',
   ANULADO = 'ANULADO',
+  SUSPENDIDO = 'SUSPENDIDO',
 }
 export enum groupProcedure {
   EXTERNAL = 'ExternalDetail',

@@ -1,5 +1,9 @@
-import { groupArchive } from '../interfaces/archive-group.interface';
+import { stateProcedure } from 'src/app/procedures/interfaces';
 
 export class ArchiveDto {
-  constructor(public description: string, public group: groupArchive) {}
+  constructor(
+    public procedure: string,
+    public description: string,
+    public state: stateProcedure
+  ) {}
 }
