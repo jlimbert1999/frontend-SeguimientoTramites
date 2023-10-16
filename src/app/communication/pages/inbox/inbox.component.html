@@ -72,19 +72,15 @@
                   <mat-icon>domain_verification</mat-icon>
                   <span>Concluir tramite</span>
                 </button>
-                <button
-                  mat-menu-item
-                  [matMenuTriggerFor]="endingOptions"
-                  [disabled]="row.state === 'CONCLUIDO' || row.send === true"
-                >
+                <button mat-menu-item [matMenuTriggerFor]="endingOptions">
                   <span>Concluir tramite</span>
                 </button>
                 <mat-menu #endingOptions="matMenu">
-                  <button mat-menu-item>
+                  <button mat-menu-item (click)="conclude(row, false)">
                     <mat-icon>domain_verification</mat-icon>
                     Finalizar proceso
                   </button>
-                  <button mat-menu-item>
+                  <button mat-menu-item (click)="conclude(row, true)">
                     <mat-icon>snooze</mat-icon>
                     Suspender proceso
                   </button>

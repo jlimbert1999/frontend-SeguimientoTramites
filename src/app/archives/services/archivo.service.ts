@@ -2,8 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Archive } from './models/archive.interface';
 import { ArchiveDto } from '../dtos/archive.dto';
+import { communication } from 'src/app/communication/interfaces';
 
 const base_url = environment.base_url;
 
@@ -15,10 +15,11 @@ export class ArchivoService {
 
   getAll(limit: number, offset: number) {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
-    return this.http.get<any>(`${base_url}/archive`, { params }).pipe(
-      map((resp) => {
-        return resp;
-      })
+    return this.http.get<{ archives: communication[]; length: number }>(
+      `${base_url}/archive`,
+      {
+        params,
+      }
     );
   }
   search(text: string, group: string, limit: number, offset: number) {
@@ -53,15 +54,9 @@ export class ArchivoService {
   }
 
   unarchive(id_archive: string, description: string) {
-    return this.http
-      .put<{ ok: boolean; message: string }>(
-        `${base_url}/archivos/${id_archive}`,
-        { description }
-      )
-      .pipe(
-        map((resp) => {
-          return resp.message;
-        })
-      );
+    return this.http.post<any>(
+      `${base_url}/archive/mail/restart/${id_archive}`,
+      { description }
+    );
   }
 }

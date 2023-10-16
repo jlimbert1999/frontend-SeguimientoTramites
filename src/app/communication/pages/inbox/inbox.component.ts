@@ -9,7 +9,7 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { communication, sendDetail, statusMail } from '../../interfaces';
 import { ProcedureService } from 'src/app/procedures/services/procedure.service';
-import { groupProcedure } from 'src/app/procedures/interfaces';
+import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
 
 import {
   ExternalProcedure,
@@ -39,6 +39,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     'outboundDate',
     'options',
   ];
+  stateProcedure = stateProcedure;
 
   constructor(
     public inboxService: InboxService,
@@ -163,42 +164,43 @@ export class InboxComponent implements OnInit, OnDestroy {
       }
     });
   }
-  conclude(mail: communication) {
-    // Swal.fire({
-    //   icon: 'question',
-    //   title: `¿Concluir el tramite ${mail.procedure.code} por ${
-    //     group === groupArchive.COMPLETED
-    //       ? 'FINALIZACION DE PROCESO'
-    //       : 'FALTA DE CONTINUIDAD'
-    //   }?`,
-    //   text: `El tramite pasara a su seccion de archivos`,
-    //   inputPlaceholder: 'Ingrese una referencia para concluir',
-    //   input: 'textarea',
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Aceptar',
-    //   cancelButtonText: 'Cancelar',
-    //   customClass: {
-    //     validationMessage: 'my-validation-message',
-    //   },
-    //   preConfirm: (value) => {
-    //     if (!value) {
-    //       Swal.showValidationMessage(
-    //         '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
-    //       );
-    //     }
-    //   },
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     // const { _id, procedure } = mail;
-    //     // const archiveDto: ArchiveDto = {
-    //     //   description: result.value,
-    //     //   group,
-    //     // };
-    //     // this.archiveService.archiveMail(_id, archiveDto).subscribe((resp) => {
-    //     //   console.log(resp);
-    //     // });
-    //   }
-    // });
+  conclude(mail: communication, isSuspended: boolean) {
+    Swal.fire({
+      icon: 'question',
+      title: `¿${isSuspended ? 'Suspender' : 'Concluir'} el tramite ${
+        mail.procedure.code
+      }?`,
+      text: `El tramite pasara a su seccion de archivos`,
+      inputPlaceholder: 'Ingrese una referencia para concluir',
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        validationMessage: 'my-validation-message',
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para la conclusion'
+          );
+        }
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const { _id, procedure } = mail;
+        const archiveDto: ArchiveDto = {
+          description: result.value,
+          procedure: mail.procedure._id,
+          state: isSuspended
+            ? stateProcedure.SUSPENDIDO
+            : stateProcedure.CONCLUIDO,
+        };
+        this.archiveService.archiveMail(_id, archiveDto).subscribe((resp) => {
+          this.Get();
+        });
+      }
+    });
   }
 
   applyFilter(event: Event) {
