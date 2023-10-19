@@ -1,0 +1,30 @@
+<div class="container-fluid">
+  <cdk-virtual-scroll-viewport itemSize="4" class="example-viewport">
+    <ul class="timeline">
+      <li *cdkVirtualFor="let item of timeline">
+        <div class="timeline-time">
+          <span class="date">{{ item.date | date : "mediumDate" }}</span>
+          <span class="time">{{ item.date | date : "shortTime" }}</span>
+        </div>
+        <div class="timeline-icon">
+          <a href="javascript:;">&nbsp;</a>
+        </div>
+        <div class="timeline-body">
+          <div class="timeline-header">
+            <span class="userimage"
+              ><img src="../../../../assets/img/account.png" alt=""
+            /></span>
+            <span class="username">{{ item.fullNameOfficer | titlecase }}</span>
+          </div>
+          <div class="timeline-content">
+            <p class="lead">
+              <i class="fa fa-quote-left fa-fw pull-left"></i>
+              {{ item.description }}
+              <i class="fa fa-quote-right fa-fw pull-right"></i>
+            </p>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </cdk-virtual-scroll-viewport>
+</div>

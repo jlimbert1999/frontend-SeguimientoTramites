@@ -2,8 +2,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { LocationProcedure, WorkflowData } from '../models/workflow.interface';
-import { inbox } from '../interfaces/inbox.interface';
 import { Officer } from 'src/app/administration/models/officer.model';
 import { receiver } from '../interfaces/receiver.interface';
 import {

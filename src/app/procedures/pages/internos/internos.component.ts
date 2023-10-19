@@ -178,7 +178,7 @@ export class InternosComponent implements OnInit {
           .subscribe((message) => {
             this.socketService.socket.emit(
               'archive',
-              this.authService.account.id_dependencie
+              this.authService.account.id_dependency
             );
             Swal.fire(message, undefined, 'success');
             const index = this.dataSource.findIndex(

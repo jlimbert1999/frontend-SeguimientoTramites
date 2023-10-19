@@ -1,11 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { workflow } from 'src/app/communication/interfaces';
-import { LocationProcedure } from 'src/app/communication/models/workflow.interface';
-import { external, groupProcedure, procedure } from '../../interfaces';
-import { ExternalProcedure, Procedure } from '../../models';
+import { eventProcedure, groupProcedure } from '../../interfaces';
+import { ExternalProcedure } from '../../models';
 import { InternalProcedure } from '../../models/internal.model';
 import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
 import { ProcedureService } from '../../services/procedure.service';
@@ -16,11 +15,11 @@ import { ProcedureService } from '../../services/procedure.service';
   styleUrls: ['./ficha.component.scss'],
 })
 export class FichaComponent implements OnInit {
+  isLoading: boolean = true;
   procedure: InternalProcedure | ExternalProcedure;
   workflow: workflow[] = [];
-  Location: LocationProcedure[] = [];
   Observations: any[] = [];
-  Events: any[] = [];
+  events: eventProcedure[] = [];
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -34,6 +33,9 @@ export class FichaComponent implements OnInit {
       const id = params['id'];
       this.procedureService.getFullProcedure(id).subscribe((data) => {
         this.procedure = data.procedure;
+        this.workflow = data.workflow;
+        this.events = data.events;
+        this.isLoading = false;
       });
     });
   }

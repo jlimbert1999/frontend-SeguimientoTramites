@@ -47,7 +47,7 @@
       <mat-nav-list>
         <ng-container *ngFor="let menu of Menu">
           <ng-container
-            [ngTemplateOutlet]="menu.resources ? childMenu : parentMenu"
+            [ngTemplateOutlet]="menu.children ? childMenu : parentMenu"
             [ngTemplateOutletContext]="{ menu: menu }"
           >
           </ng-container>
@@ -56,18 +56,11 @@
 
       <ng-template #parentMenu let-menu="menu">
         <mat-divider></mat-divider>
-        <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="active">
-          <!-- <mat-icon
-
-            matListItemIcon
-            [matBadge]="(numberMails$ | async)! | badge"
-            matBadgeColor="warn"
-            [matBadgeHidden]="(numberMails$ | async) === 0"
-            >{{ menu.icon }}</mat-icon
-          > -->
-          <ng-template #item>
-            <mat-icon matListItemIcon>{{ menu.icon }}</mat-icon></ng-template
-          >
+        <mat-list-item
+          [routerLink]="menu.routerLink"
+          routerLinkActive="active-link"
+        >
+          <mat-icon matListItemIcon>{{ menu.icon }}</mat-icon>
           <span matListItemTitle>{{ menu.text }}</span>
         </mat-list-item>
       </ng-template>
@@ -76,14 +69,14 @@
         <mat-divider></mat-divider>
         <mat-expansion-panel [expanded]="true" [class.mat-elevation-z0]="true">
           <mat-expansion-panel-header>
-            <mat-icon mat-list-icon style="margin-right: 30px">{{
-              menu.icon
-            }}</mat-icon>
-            <span style="font-size: 16px">{{ menu.group }}</span>
+            <mat-icon matListItemIcon style="margin-right: 30px">
+              folder</mat-icon
+            >
+            <span style="font-size: 16px">{{ menu.text }}</span>
           </mat-expansion-panel-header>
           <mat-nav-list>
             <mat-list-item
-              *ngFor="let submenu of menu.resources"
+              *ngFor="let submenu of menu.children"
               [routerLink]="submenu.routerLink"
               routerLinkActive="active-link"
             >

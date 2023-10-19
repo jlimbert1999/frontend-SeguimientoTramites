@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { GroupedMails, GroupedResponse } from '../models/salida.interface';
-import { groupedOutbox } from '../interfaces';
+import { groupedCommunication } from '../interfaces';
 
 const base_url = environment.base_url;
 
@@ -16,7 +15,7 @@ export class OutboxService {
   getOutboxOfAccount(limit: number, offset: number) {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
-      .get<{ mails: groupedOutbox[]; length: number }>(
+      .get<{ mails: groupedCommunication[]; length: number }>(
         `${base_url}/communication/outbox`,
         {
           params,
@@ -34,7 +33,7 @@ export class OutboxService {
       .set('limit', limit)
       .set('text', text);
     return this.http
-      .get<{ mails: groupedOutbox[]; length: number }>(
+      .get<{ mails: groupedCommunication[]; length: number }>(
         `${base_url}/salidas/search/${text}`,
         { params }
       )

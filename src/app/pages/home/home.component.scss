@@ -48,10 +48,6 @@ h1.example-app-name {
   backdrop-filter: blur(2px);
 }
 
-.mat-mdc-list-item-icon {
-  color: rgba(0, 0, 0, 255);
-}
-
 mat-sidenav {
   width: 300px;
 }
@@ -107,7 +103,7 @@ mat-card-subtitle {
 }
 
 ::ng-deep .mat-expansion-panel .mat-mdc-list-item {
-  padding-left: 15px !important;
+  padding-left: 0px !important;
 }
 
 .active-link {
@@ -116,10 +112,6 @@ mat-card-subtitle {
 .active-link span {
   color: white;
 }
-
 .mat-badge-medium.mat-badge-above .mat-badge-content {
   top: unset;
-}
-.examplet {
-  background-color: aqua;
 }

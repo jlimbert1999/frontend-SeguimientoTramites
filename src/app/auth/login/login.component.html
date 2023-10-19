@@ -1,58 +1,95 @@
-<section class="ftco-section" [@fadeInDownOnEnter]>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-12 col-lg-10">
-                <div class="wrap d-md-flex" style="background-color: #002c48; color: white;">
-                    <div class="img">
-                    </div>
-                    <div class="login-wrap p-4 p-md-5">
-                        <div class="d-flex">
-                            <div class="w-100">
-                                <h3 class="mb-4" style="color: white;">Inicio de sesion</h3>
-                            </div>
-                        </div>
-                        <form [formGroup]="loginForm" (submit)="login()" autocomplete="off" action="#"
-                            class="signin-form">
-                            <img src="" alt="">
-                            <div class="form-group mb-3">
-                                <label class="label" style="color: white;" for="name">Nombre de usuario</label>
-                                <mat-form-field appearance="fill">
-                                    <input formControlName="login" matInput placeholder="Ingrese su nombre de usuario"
-                                        required>
-                                </mat-form-field>
-                            </div>
-                            <div class="form-group mb-3">
-                                <label class="label" style="color: white;" for="password">Contraseña</label>
-                                <mat-form-field appearance="fill">
-                                    <input formControlName="password" matInput [type]="hide ? 'password' : 'text'"
-                                        placeholder="Ingrese su contraseña">
-                                    <button type="button" mat-icon-button matSuffix (click)="hide = !hide"
-                                        [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                                    </button>
-                                </mat-form-field>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="d-grid gap-2">
-                                    <button mat-button style="font-size: 20px;" type="submit" class="golden-btn">INGRESAR</button>
-                                </div>
-                            </div>
-                            <div class="form-group d-md-flex">
-                                <div class="w-50 text-left">
-                                    <br>
-                                    <div class="form-check">
-                                        <p><mat-checkbox formControlName="remember">
-                                                <span style="color: white;">Recordar nombre
-                                                    usuario</span> </mat-checkbox></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
+<section class="ftco-section animate__animated animate__fadeInDown">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-12 col-lg-10">
+        <div
+          class="wrap d-md-flex"
+          style="background-color: #002c48; color: white"
+        >
+          <div class="img"></div>
+          <div class="login-wrap p-4 p-md-5">
+            <div class="d-flex">
+              <div class="w-100">
+                <h3 class="mb-4" style="color: white">Inicio de sesion</h3>
+              </div>
             </div>
+            <form
+              [formGroup]="loginForm"
+              (submit)="login()"
+              autocomplete="off"
+              action="#"
+              class="signin-form"
+            >
+              <img src="" alt="" />
+              <div class="form-group mb-3">
+                <label class="label" style="color: white" for="name"
+                  >Nombre de usuario</label
+                >
+                <mat-form-field appearance="fill">
+                  <input
+                    formControlName="login"
+                    matInput
+                    placeholder="Ingrese su nombre de usuario"
+                    required
+                  />
+                </mat-form-field>
+              </div>
+              <div class="form-group mb-3">
+                <label class="label" style="color: white" for="password"
+                  >Contraseña</label
+                >
+                <mat-form-field appearance="fill">
+                  <input
+                    formControlName="password"
+                    matInput
+                    [type]="hidePassword ? 'password' : 'text'"
+                    placeholder="Ingrese su contraseña"
+                  />
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matSuffix
+                    (click)="hidePassword = !hidePassword"
+                    [attr.aria-label]="'Hide password'"
+                    [attr.aria-pressed]="hidePassword"
+                  >
+                    <mat-icon>{{
+                      hidePassword ? "visibility_off" : "visibility"
+                    }}</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+
+              <div class="form-group">
+                <div class="d-grid gap-2">
+                  <button
+                    mat-button
+                    style="font-size: 20px"
+                    type="submit"
+                    class="golden-btn"
+                  >
+                    INGRESAR
+                  </button>
+                </div>
+              </div>
+              <div class="form-group d-md-flex">
+                <div class="w-50 text-left">
+                  <br />
+                  <div class="form-check">
+                    <p>
+                      <mat-checkbox formControlName="remember">
+                        <span style="color: white"
+                          >Recordar nombre usuario</span
+                        >
+                      </mat-checkbox>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </section>

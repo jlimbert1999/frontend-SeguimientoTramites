@@ -70,23 +70,6 @@ export class HomeComponent {
           this.router.navigateByUrl('bandejas/entrada');
         });
       });
-    // this.socketService.listenUserConection().subscribe(users => {
-    //   this.socketService.onlineUsers = users
-    // })
-
-    // this.socketService.listenMails().subscribe(mail => {
-    //   this.bandejaService.Mails = [mail, ...this.bandejaService.Mails]
-    //   this.notificationService.showNotificationNewMail(mail.emisor.funcionario)
-    // })
-    // this.socketService.listenExpel().subscribe(message => {
-    //   Swal.fire({
-    //     icon: 'info',
-    //     title: 'USTED HA SIDO EXPULSADO DEL GRUPO DE TRABAJO',
-    //     text: message,
-    //     confirmButtonText: 'Aceptar'
-    //   })
-    //   this.logout()
-    // })
   }
   ngOnDestroy(): void {
     this.mobileQuery!.removeListener(this._mobileQueryListener);

@@ -1,5 +1,5 @@
 <div
-  *ngIf="procedure"
+  *ngIf="!isLoading"
   class="animate__animated animate__fadeInLeft animate__faster"
 >
   <mat-toolbar color="primary">
@@ -20,7 +20,7 @@
     <mat-tab-group mat-align-tabs="center">
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon class="example-tab-icon">info</mat-icon>
+          <mat-icon class="tab-icon">info</mat-icon>
           Informacion
         </ng-template>
         <div [ngSwitch]="procedure.group">
@@ -37,22 +37,29 @@
       </mat-tab>
       <mat-tab *ngIf="Observations.length > 0">
         <ng-template mat-tab-label>
-          <mat-icon class="example-tab-icon">push_pin</mat-icon>
+          <mat-icon class="tab-icon">push_pin</mat-icon>
           Observaciones
         </ng-template>
         <app-observations [observations]="Observations"></app-observations>
       </mat-tab>
-      <mat-tab *ngIf="Events.length > 0">
+      <mat-tab *ngIf="Observations.length > 0">
         <ng-template mat-tab-label>
-          <mat-icon class="example-tab-icon">list_alt</mat-icon>
+          <mat-icon class="tab-icon">push_pin</mat-icon>
+          Observaciones
+        </ng-template>
+        <app-observations [observations]="Observations"></app-observations>
+      </mat-tab>
+      <mat-tab *ngIf="events.length > 0">
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">list_alt</mat-icon>
           Eventos
         </ng-template>
-        <app-events-procedure [events]="Events"></app-events-procedure>
+        <app-timeline [timeline]="events"></app-timeline>
       </mat-tab>
       <ng-container *ngIf="workflow.length > 0">
         <mat-tab>
           <ng-template mat-tab-label>
-            <mat-icon class="example-tab-icon">groups</mat-icon>
+            <mat-icon class="tab-icon">groups</mat-icon>
             Flujo de trabajo
           </ng-template>
           <app-list-workflow
@@ -62,7 +69,7 @@
         </mat-tab>
         <mat-tab>
           <ng-template mat-tab-label>
-            <mat-icon class="example-tab-icon">account_tree</mat-icon>
+            <mat-icon class="tab-icon">account_tree</mat-icon>
             Flujo de trabajo grafico
           </ng-template>
           <app-graph-workflow [workflow]="workflow"></app-graph-workflow>

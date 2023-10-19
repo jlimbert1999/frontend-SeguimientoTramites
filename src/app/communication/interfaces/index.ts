@@ -1,4 +1,3 @@
-export * from './inbox.interface';
 export * from './outbox.interface';
 export * from './participant.interface';
 export * from './workflow.interface';

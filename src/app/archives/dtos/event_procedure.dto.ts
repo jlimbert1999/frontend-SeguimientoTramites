@@ -1,9 +1,9 @@
 import { stateProcedure } from 'src/app/procedures/interfaces';
 
-export class ArchiveDto {
+export class EventProcedureDto {
   constructor(
     public procedure: string,
     public description: string,
-    public state: stateProcedure
+    public stateProcedure: stateProcedure
   ) {}
 }

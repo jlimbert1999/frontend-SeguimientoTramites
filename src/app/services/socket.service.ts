@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
-import { userSocket } from 'src/app/auth/models/account.model';
 import { environment } from 'src/environments/environment';
-import { inbox } from '../communication/interfaces';
 import { communication } from '../communication/interfaces/communication';
+import { userSocket } from '../auth/interfaces';
 @Injectable({
   providedIn: 'root',
 })
@@ -44,6 +43,13 @@ export class SocketService {
   listenCancelMail(): Observable<string> {
     return new Observable((observable) => {
       this.socket.on('cancel-mail', (id_mail: string) => {
+        observable.next(id_mail);
+      });
+    });
+  }
+  listenUnarchives() {
+    return new Observable((observable) => {
+      this.socket.on('unarchive-mail', (id_mail: string) => {
         observable.next(id_mail);
       });
     });

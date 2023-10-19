@@ -13,8 +13,8 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ProcedureService } from '../../services/procedure.service';
 import { ExternalProcedure } from '../../models';
 import { ArchivoService } from 'src/app/archives/services/archivo.service';
-import { ArchiveDto } from 'src/app/archives/dtos/archive.dto';
 import { stateProcedure } from '../../interfaces';
+import { EventProcedureDto } from 'src/app/archives/dtos/event_procedure.dto';
 
 @Component({
   selector: 'app-externos',
@@ -160,10 +160,10 @@ export class ExternosComponent implements OnInit {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        const archive: ArchiveDto = {
+        const archive: EventProcedureDto = {
           procedure: procedure._id,
           description: result.value,
-          state: stateProcedure.CONCLUIDO,
+          stateProcedure: stateProcedure.CONCLUIDO,
         };
         this.archivosService
           .archiveProcedure(procedure._id, archive)

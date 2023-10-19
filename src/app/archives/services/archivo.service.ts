@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { ArchiveDto } from '../dtos/archive.dto';
+import { EventProcedureDto } from '../dtos/event_procedure.dto';
 import { communication } from 'src/app/communication/interfaces';
 
 const base_url = environment.base_url;
@@ -39,24 +39,24 @@ export class ArchivoService {
       );
   }
 
-  archiveProcedure(id_procedure: string, archive: ArchiveDto) {
+  archiveProcedure(id_procedure: string, archive: EventProcedureDto) {
     return this.http.post<{ message: string }>(
       `${base_url}/archive/procedure/${id_procedure}`,
       archive
     );
   }
 
-  archiveMail(id_mail: string, archive: ArchiveDto) {
+  archiveMail(id_mail: string, archive: EventProcedureDto) {
     return this.http.post<{ message: string }>(
       `${base_url}/archive/mail/${id_mail}`,
       archive
     );
   }
 
-  unarchive(id_archive: string, description: string) {
+  unarchive(id_archive: string, eventDto: EventProcedureDto) {
     return this.http.post<any>(
       `${base_url}/archive/mail/restart/${id_archive}`,
-      { description }
+      eventDto
     );
   }
 }

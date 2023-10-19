@@ -16,11 +16,10 @@ import { OutboxService } from '../../services/outbox.service';
 import { InternosService } from 'src/app/procedures/services/internos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
-import { GroupedMails, Salida } from '../../models/salida.interface';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { SocketService } from 'src/app/services/socket.service';
 import { ExternosService } from 'src/app/procedures/services/externos.service';
-import { communication, groupedOutbox } from '../../interfaces';
+import { communication, groupedCommunication } from '../../interfaces';
 import { MatSelectionList } from '@angular/material/list';
 
 @Component({
@@ -47,7 +46,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     'Moccasins',
     'Sneakers',
   ];
-  dataSource: groupedOutbox[] = [];
+  dataSource: groupedCommunication[] = [];
   displayedColumns = [
     'alterno',
     'descripcion',
@@ -58,7 +57,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     'expand',
   ];
   isLoadingResults = true;
-  expandedElement: Salida | null;
+  expandedElement: communication | null;
   resulstLenght: number = 0;
 
   constructor(
@@ -120,68 +119,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     }
   }
 
-  cancelOneSend(imbox: Salida) {
-    Swal.fire({
-      title: `Cancelar el envio del tramite?`,
-      text: `El funcionario ${createFullName(
-        imbox.receptor.funcionario!
-      )} ya no podra ver el tramite.`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.outboxService.cancelOneSend(imbox._id).subscribe((message) => {
-          this.socketService.emitCancelMail(imbox.receptor.cuenta);
-          const index = this.dataSource.findIndex(
-            (mail) =>
-              mail._id.account === imbox.emisor.cuenta &&
-              mail._id.procedure._id === imbox.tramite._id &&
-              mail._id.outboundDate === imbox.fecha_envio
-          );
-          const sendings = this.dataSource[index].sendings.filter(
-            (item) => item._id !== imbox._id
-          );
-          if (sendings.length === 0) {
-            this.Get();
-            Swal.fire({
-              icon: 'success',
-              title: 'Todos los envios se cancelaron',
-              text: message,
-              confirmButtonText: 'Aceptar',
-            });
-          } else {
-            this.dataSource[index].sendings = sendings;
-          }
-        });
-      }
-    });
-  }
-
-  View(mail: GroupedMails) {
-    let params = {
-      limit: this.paginatorService.limit,
-      offset: this.paginatorService.offset,
-    };
-    if (this.paginatorService.textSearch !== '') {
-      // Object.assign(params, { type: this.paginatorService.type });
-      Object.assign(params, { text: this.paginatorService.textSearch });
-    }
-    if (mail.tipo === 'tramites_externos') {
-      this.router.navigate(
-        ['home/bandejas/salida/mail/ficha-externa', mail.tramite._id],
-        { queryParams: params }
-      );
-    } else {
-      this.router.navigate(
-        ['home/bandejas/salida/mail/ficha-interna', mail.tramite._id],
-        { queryParams: params }
-      );
-    }
-  }
+  View(mail: groupedCommunication) {}
 
   applyFilter(event: Event) {
     if (this.paginatorService.textSearch) {
@@ -197,7 +135,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     this.Get();
   }
 
-  cancelSend(mail: groupedOutbox, selectedSendIds: string[] | null) {
+  cancelSend(mail: groupedCommunication, selectedSendIds: string[] | null) {
     if (!selectedSendIds) return;
     Swal.fire({
       title: `Cancelar envios del tramite ${mail._id.procedure.code}?`,

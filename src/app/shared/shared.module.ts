@@ -15,10 +15,10 @@ import { TableReportPreceduresComponent } from './table-report-precedures/table-
 import { SimpleMatSelectSearchComponent } from './components/simple-mat-select-search/simple-mat-select-search.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ServerMatSelectSearchComponent } from './components/server-mat-select-search/server-mat-select-search.component';
-import { EventsProcedureComponent } from './events-procedure/events-procedure.component';
 import { BadgePipe } from './pipes/badge.pipe';
 import { RouterModule } from '@angular/router';
 import { InputSearchProceduresComponent } from './components/input-search-procedures/input-search-procedures.component';
+import { TimelineComponent } from './components/timeline/timeline.component';
 
 @NgModule({
   declarations: [
@@ -32,9 +32,9 @@ import { InputSearchProceduresComponent } from './components/input-search-proced
     TableReportPreceduresComponent,
     SimpleMatSelectSearchComponent,
     ServerMatSelectSearchComponent,
-    EventsProcedureComponent,
     BadgePipe,
     InputSearchProceduresComponent,
+    TimelineComponent,
   ],
   imports: [
     CommonModule,
@@ -46,6 +46,7 @@ import { InputSearchProceduresComponent } from './components/input-search-proced
     RouterModule,
   ],
   exports: [
+    TimelineComponent,
     GraphWorkflowComponent,
     ListWorkflowComponent,
     FullnamePipe,
@@ -56,7 +57,6 @@ import { InputSearchProceduresComponent } from './components/input-search-proced
     SimpleMatSelectSearchComponent,
     ServerMatSelectSearchComponent,
     InputSearchProceduresComponent,
-    EventsProcedureComponent,
     BadgePipe,
   ],
 })

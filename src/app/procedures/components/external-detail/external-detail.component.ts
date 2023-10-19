@@ -1,6 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, timer } from 'rxjs';
-import { LocationProcedure } from 'src/app/communication/models/workflow.interface';
 import { ExternalProcedure } from '../../models';
 
 @Component({
@@ -10,7 +9,6 @@ import { ExternalProcedure } from '../../models';
 })
 export class ExternalDetailComponent implements OnInit, OnDestroy {
   @Input() procedure: ExternalProcedure;
-  @Input() Location: LocationProcedure[] = [];
   sourceTimer = timer(0, 1000);
   timerSubscription: Subscription;
   duration: string = '';

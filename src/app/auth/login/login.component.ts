@@ -1,63 +1,57 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { fadeInDownOnEnterAnimation } from 'angular-animations';
+import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  animations: [
-    fadeInDownOnEnterAnimation(),
-  ]
 })
 export class LoginComponent implements OnInit {
-  hide = true;
+  hidePassword = true;
   loginForm = this.fb.group({
     login: ['', Validators.required],
     password: ['', Validators.required],
-    remember: [false]
-  })
-  recordar_user: string
+    remember: [false],
+  });
   constructor(
     private authService: AuthService,
     private router: Router,
-    private fb: FormBuilder,
-  ) { }
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     if (localStorage.getItem('token')) {
-      this.router.navigate(['/home'])
+      this.router.navigate(['/home']);
+      return;
     }
-
-    this.recordar_user = localStorage.getItem('login') || ''
-    if (this.recordar_user.length > 0) {
-      this.loginForm.controls['remember'].setValue(true)
-      this.loginForm.controls['login'].setValue(this.recordar_user)
+    const loginSaved = localStorage.getItem('login');
+    if (loginSaved) {
+      this.loginForm.controls['remember'].setValue(true);
+      this.loginForm.controls['login'].setValue(loginSaved);
     }
   }
   login() {
     if (this.loginForm.invalid) {
-      return
+      return;
     }
-    this.authService.login({
-      login: this.loginForm.get('login')?.value!,
-      password: this.loginForm.get('password')?.value!
-    }, this.loginForm.get('remember')?.value!).subscribe(data => {
-
-      // if (data.imbox > 0) {
-      //   this.notificationService.addNotificationEvent('Debe revisar su bandeja de entrada', `USTED TIENE ${data.number_mails} TRAMITES PENDIENTES`)
-      // }
-      if (data.resources.includes('externos')) {
-        this.router.navigateByUrl('/home/tramites/externos')
-      }
-      else if (data.resources.includes('internos')) {
-        this.router.navigateByUrl('/home/tramites/internos')
-      }
-      else {
-        this.router.navigateByUrl('')
-      }
-    })
+    this.authService
+      .login(
+        {
+          login: this.loginForm.get('login')?.value!,
+          password: this.loginForm.get('password')?.value!,
+        },
+        this.loginForm.get('remember')?.value!
+      )
+      .subscribe((resources) => {
+        if (resources.includes('external')) {
+          this.router.navigateByUrl('/tramites/externos');
+        } else if (resources.includes('internal')) {
+          this.router.navigateByUrl('/tramites/internos');
+        } else {
+          this.router.navigateByUrl('');
+        }
+      });
   }
 }

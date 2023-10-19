@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { fadeInOnEnterAnimation } from 'angular-animations';
 import { Observable } from 'rxjs';
-import { userSocket } from 'src/app/auth/models/account.model';
+import { userSocket } from 'src/app/auth/interfaces';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { SocketService } from 'src/app/services/socket.service';
 import Swal from 'sweetalert2';
@@ -10,17 +10,16 @@ import Swal from 'sweetalert2';
   selector: 'app-groupware',
   templateUrl: './groupware.component.html',
   styleUrls: ['./groupware.component.scss'],
-  animations:[
-    fadeInOnEnterAnimation(),
-  ]
+  animations: [fadeInOnEnterAnimation()],
 })
 export class GroupwareComponent implements OnInit {
-  textSearch: string = ''
-  constructor(public socketService: SocketService, private authService: AuthService) {
-  }
+  textSearch: string = '';
+  constructor(
+    public socketService: SocketService,
+    private authService: AuthService
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
   sendNotificacion(user: userSocket) {
     Swal.fire({
       icon: 'info',
@@ -30,23 +29,24 @@ export class GroupwareComponent implements OnInit {
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
       customClass: {
-        validationMessage: 'my-validation-message'
+        validationMessage: 'my-validation-message',
       },
       preConfirm: (value) => {
         if (!value) {
           Swal.showValidationMessage(
             '<i class="fa fa-info-circle"></i> Debe ingresar una descripcion'
-          )
+          );
         }
-      }
+      },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.socketService.sendNotificationToUser(user.id_account, result.value!)
+        this.socketService.sendNotificationToUser(
+          user.id_account,
+          result.value!
+        );
       }
-    })
-
+    });
   }
-
 
   kickUser(user: userSocket) {
     Swal.fire({
@@ -55,12 +55,14 @@ export class GroupwareComponent implements OnInit {
       text: `Ingrese un motivo`,
       input: 'textarea',
       showCancelButton: true,
-      confirmButtonText: 'Aceptar'
+      confirmButtonText: 'Aceptar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.socketService.sendNotificacionToExpelUser(user.id_account, result.value!)
+        this.socketService.sendNotificacionToExpelUser(
+          user.id_account,
+          result.value!
+        );
       }
-    })
+    });
   }
-
 }

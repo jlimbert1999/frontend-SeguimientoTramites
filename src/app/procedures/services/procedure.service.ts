@@ -1,10 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { external, groupProcedure, internal, observation } from '../interfaces';
-import { workflow } from 'src/app/communication/interfaces';
 import { map } from 'rxjs';
-import { ExternalProcedure, InternalProcedure, Procedure } from '../models';
+import { environment } from 'src/environments/environment';
+import {
+  eventProcedure,
+  external,
+  groupProcedure,
+  internal,
+  observation,
+} from '../interfaces';
+import { workflow } from 'src/app/communication/interfaces';
+import { ExternalProcedure, InternalProcedure } from '../models';
 const base_url = environment.base_url;
 @Injectable({
   providedIn: 'root',
@@ -18,6 +24,7 @@ export class ProcedureService {
         procedure: internal | external;
         workflow: workflow[];
         observations: observation[];
+        events: eventProcedure[];
       }>(`${base_url}/procedure/${id_procedure}`)
       .pipe(
         map((resp) => {
@@ -29,6 +36,7 @@ export class ProcedureService {
             procedure: Procedure,
             workflow: resp.workflow,
             observations: resp.observations,
+            events: resp.events,
           };
         })
       );

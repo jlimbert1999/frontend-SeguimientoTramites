@@ -20,7 +20,7 @@ import {
   createInternalRouteMap,
 } from 'src/app/procedures/helpers';
 import { ArchivoService } from 'src/app/archives/services/archivo.service';
-import { ArchiveDto } from 'src/app/archives/dtos/archive.dto';
+import { EventProcedureDto } from 'src/app/archives/dtos/event_procedure.dto';
 
 @Component({
   selector: 'app-inbox',
@@ -189,10 +189,10 @@ export class InboxComponent implements OnInit, OnDestroy {
     }).then((result) => {
       if (result.isConfirmed) {
         const { _id, procedure } = mail;
-        const archiveDto: ArchiveDto = {
+        const archiveDto: EventProcedureDto = {
           description: result.value,
           procedure: mail.procedure._id,
-          state: isSuspended
+          stateProcedure: isSuspended
             ? stateProcedure.SUSPENDIDO
             : stateProcedure.CONCLUIDO,
         };
