@@ -19,8 +19,8 @@ import {
   createExternalRouteMap,
   createInternalRouteMap,
 } from 'src/app/procedures/helpers';
-import { ArchivoService } from 'src/app/archives/services/archivo.service';
-import { EventProcedureDto } from 'src/app/archives/dtos/event_procedure.dto';
+import { EventProcedureDto } from 'src/app/procedures/dtos';
+import { ArchivoService } from 'src/app/procedures/services';
 
 @Component({
   selector: 'app-inbox',

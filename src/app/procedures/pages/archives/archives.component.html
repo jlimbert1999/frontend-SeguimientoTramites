@@ -10,7 +10,10 @@
         <ng-container matColumnDef="procedure">
           <th mat-header-cell *matHeaderCellDef>Tramite</th>
           <td mat-cell *matCellDef="let element">
-            {{ element.procedure.code }}
+            <a (click)="view(element)">
+              {{ element.procedure.code }}
+            </a>
+           
           </td>
         </ng-container>
         <ng-container matColumnDef="manager">

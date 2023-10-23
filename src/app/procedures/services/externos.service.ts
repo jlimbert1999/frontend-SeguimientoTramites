@@ -6,12 +6,23 @@ import { typeProcedure } from 'src/app/administration/interfaces';
 import { external } from '../interfaces/external.interface';
 import { ExternalProcedureDto } from '../dtos';
 import { NestedPartial } from 'src/app/shared/interfaces/nested-partial';
+import { searchProcedureParams } from '../interfaces';
 
 const base_url = environment.base_url;
 @Injectable({
   providedIn: 'root',
 })
 export class ExternosService {
+  paginationParams: {
+    limit: number;
+    offset: number;
+    length: number;
+  } = {
+    length: 0,
+    offset: 0,
+    limit: 10,
+  };
+
   constructor(private http: HttpClient) {}
 
   getSegments() {
@@ -49,12 +60,13 @@ export class ExternosService {
       })
       .pipe(
         map((resp) => {
+          this.paginationParams.length = resp.length;
           return { procedures: resp.procedures, length: resp.length };
         })
       );
   }
 
-  GetSearch(text: string, limit: number, offset: number) {
+  search(text: string, limit: number, offset: number) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
       .get<{ procedures: external[]; length: number }>(

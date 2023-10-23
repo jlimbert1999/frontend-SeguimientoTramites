@@ -18,7 +18,7 @@ import { ObservationsComponent } from './components/observations/observations.co
 import { ProcedureRoutingModule } from './procedure-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { SolicitantePipe } from './pipes/solicitante.pipe';
-import { ArchiveModule } from '../archives/archive.module';
+import { ArchivesComponent } from './pages/archives/archives.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +32,7 @@ import { ArchiveModule } from '../archives/archive.module';
     SolicitantePipe,
     FilterObservationsPipe,
     ObservationsComponent,
+    ArchivesComponent,
   ],
   imports: [
     CommonModule,
@@ -42,7 +43,6 @@ import { ArchiveModule } from '../archives/archive.module';
     ReactiveFormsModule,
     NgxMatSelectSearchModule,
     RouterModule,
-    ArchiveModule,
   ],
   providers: [
     {

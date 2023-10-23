@@ -12,9 +12,10 @@ import { external } from '../../interfaces/external.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ProcedureService } from '../../services/procedure.service';
 import { ExternalProcedure } from '../../models';
-import { ArchivoService } from 'src/app/archives/services/archivo.service';
 import { stateProcedure } from '../../interfaces';
-import { EventProcedureDto } from 'src/app/archives/dtos/event_procedure.dto';
+import { ArchivoService } from '../../services';
+import { EventProcedureDto } from '../../dtos';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-externos',
@@ -48,7 +49,7 @@ export class ExternosComponent implements OnInit {
   Get() {
     if (this.paginatorService.textSearch !== '') {
       this.externoService
-        .GetSearch(
+        .search(
           this.paginatorService.textSearch,
           this.paginatorService.limit,
           this.paginatorService.offset
@@ -177,31 +178,41 @@ export class ExternosComponent implements OnInit {
     });
   }
 
-  async applyFilter(text: string) {
+  applyFilter(text: string) {
     this.paginatorService.offset = 0;
     this.paginatorService.textSearch = text;
     this.Get();
   }
 
-  cancelSearch() {
-    // this.paginatorService.offset = 0;
-    // this.paginatorService.text = '';
+  cancelFilter() {
+    this.paginatorService.offset = 0;
+    this.paginatorService.textSearch = '';
     this.Get();
   }
 
   view(procedure: external) {
-    const params = {
+    let params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
       ...(this.paginatorService.textSearch !== '' && {
-        text: this.paginatorService.textSearch,
+        search: true,
       }),
     };
+    // if (this.paginatorService.textSearch)
     this.router.navigate(['/tramites/externos', procedure._id], {
       queryParams: params,
     });
   }
   get textSearch() {
     return this.paginatorService.textSearch;
+  }
+
+  get Pararam() {
+    return this.externoService.paginationParams;
+  }
+
+  test(event: PageEvent) {
+    this.externoService.paginationParams.limit = event.pageSize;
+    this.externoService.paginationParams.offset = event.pageIndex;
   }
 }

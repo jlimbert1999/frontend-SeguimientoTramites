@@ -11,6 +11,7 @@ export class PaginatorService {
   textSearch: string = '';
 
   constructor() {}
+
   set setPage(event: PageEvent) {
     this.limit = event.pageSize;
     this.offset = event.pageIndex;

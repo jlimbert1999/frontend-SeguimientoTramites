@@ -32,8 +32,6 @@ export class MailComponent implements OnInit {
   procedure: InternalProcedure | ExternalProcedure;
   workflow: workflow[] = [];
   observations: observation[] = [];
-  Events: any[] = [];
-  Location: any[] = [];
   constructor(
     private _location: Location,
     private activateRoute: ActivatedRoute,

@@ -1,26 +1,28 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchivoService } from '../../services/archivo.service';
 import { communication } from 'src/app/communication/interfaces';
-import { EventProcedureDto } from '../../dtos/event_procedure.dto';
 import { stateProcedure } from 'src/app/procedures/interfaces';
 import { SocketService } from 'src/app/services/socket.service';
 import { Subscription } from 'rxjs';
+import { EventProcedureDto } from '../../dtos/event_procedure.dto';
 
 @Component({
-  selector: 'app-administration',
-  templateUrl: './administration.component.html',
-  styleUrls: ['./administration.component.scss'],
+  selector: 'app-archives',
+  templateUrl: './archives.component.html',
+  styleUrls: ['./archives.component.scss'],
 })
-export class AdministrationComponent implements OnInit, OnDestroy {
+export class ArchivesComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['procedure', 'reference', 'manager', 'options'];
   dataSource: communication[] = [];
   subscription: Subscription;
   constructor(
     private readonly archiveService: ArchivoService,
     private readonly paginatorService: PaginatorService,
-    private readonly socketService: SocketService
+    private readonly socketService: SocketService,
+    private router: Router
   ) {
     this.Get();
   }
@@ -79,6 +81,19 @@ export class AdministrationComponent implements OnInit, OnDestroy {
           .unarchive(mail._id, archiveDto)
           .subscribe((data) => console.log(data));
       }
+    });
+  }
+
+  view(mail: communication) {
+    const params = {
+      limit: this.paginatorService.limit,
+      offset: this.paginatorService.offset,
+      ...(this.paginatorService.textSearch !== '' && {
+        text: this.paginatorService.textSearch,
+      }),
+    };
+    this.router.navigate(['/tramites/archivados', mail.procedure._id], {
+      queryParams: params,
     });
   }
 }

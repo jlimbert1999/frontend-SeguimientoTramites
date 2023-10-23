@@ -29,11 +29,6 @@ const routes: Routes = [
           ),
       },
       {
-        path: 'archivos',
-        loadChildren: () =>
-          import(`./archives/archive.module`).then((m) => m.ArchiveModule),
-      },
-      {
         path: 'bandejas',
         loadChildren: () =>
           import(`./communication/communication.module`).then(

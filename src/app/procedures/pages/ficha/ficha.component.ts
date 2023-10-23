@@ -19,7 +19,6 @@ export class FichaComponent implements OnInit {
   procedure: InternalProcedure | ExternalProcedure;
   workflow: workflow[] = [];
   Observations: any[] = [];
-  events: eventProcedure[] = [];
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -34,7 +33,6 @@ export class FichaComponent implements OnInit {
       this.procedureService.getFullProcedure(id).subscribe((data) => {
         this.procedure = data.procedure;
         this.workflow = data.workflow;
-        this.events = data.events;
         this.isLoading = false;
       });
     });

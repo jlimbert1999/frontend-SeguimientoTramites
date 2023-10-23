@@ -15,7 +15,6 @@ import { MaterialModule } from './angular-material/material.module';
 import { InterceptorService } from './services/interceptor.service';
 import { AuthModule } from './auth/auth.module';
 import { ReportesModule } from './Reportes/reportes.module';
-import { ArchiveModule } from './archives/archive.module';
 import { ProcedureModule } from './procedures/procedure.module';
 import { SharedModule } from './shared/shared.module';
 import { PresentationComponent } from './pages/presentation/presentation.component';
@@ -42,7 +41,6 @@ registerLocaleData(localeEs, 'es');
     ToastrModule.forRoot(),
     AdministrationModule,
     AuthModule,
-    ArchiveModule,
     ReportesModule,
     MaterialModule,
     CommunicationModule,
