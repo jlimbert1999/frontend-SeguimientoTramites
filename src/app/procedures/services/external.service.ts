@@ -12,7 +12,7 @@ const base_url = environment.base_url;
 @Injectable({
   providedIn: 'root',
 })
-export class ExternosService {
+export class ExternalService {
   paginationParams: {
     limit: number;
     offset: number;

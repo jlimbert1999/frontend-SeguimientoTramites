@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { fadeInOnEnterAnimation } from 'angular-animations';
 import { Observable } from 'rxjs';
 import { userSocket } from 'src/app/auth/interfaces';
 import { AuthService } from 'src/app/auth/services/auth.service';
@@ -10,7 +9,6 @@ import Swal from 'sweetalert2';
   selector: 'app-groupware',
   templateUrl: './groupware.component.html',
   styleUrls: ['./groupware.component.scss'],
-  animations: [fadeInOnEnterAnimation()],
 })
 export class GroupwareComponent implements OnInit {
   textSearch: string = '';

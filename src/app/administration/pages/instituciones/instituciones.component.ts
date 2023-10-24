@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { fadeInOnEnterAnimation } from 'angular-animations';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { InstitucionesService } from '../../services/instituciones.service';
 import { InstitutionDialogComponent } from '../../dialogs/institution-dialog/institution-dialog.component';
@@ -9,10 +8,7 @@ import { institution } from '../../interfaces/institution.interface';
 @Component({
   selector: 'app-instituciones',
   templateUrl: './instituciones.component.html',
-  styleUrls: ['./instituciones.component.scss'],
-  animations: [
-    fadeInOnEnterAnimation(),
-  ]
+  styleUrls: ['./instituciones.component.scss']
 })
 export class InstitucionesComponent implements OnInit {
   displayedColumns: string[] = ['sigla', 'nombre', 'situacion', 'options'];

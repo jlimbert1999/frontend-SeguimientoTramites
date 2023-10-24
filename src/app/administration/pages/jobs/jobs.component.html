@@ -1,5 +1,5 @@
 <app-toolbar title="CARGOS" (add)="add()" [showAdd]="true"></app-toolbar>
-<div class="container-fluid" [@fadeInOnEnter]>
+<div class="container-fluid">
     <mat-form-field class="example-full-width">
         <mat-label>Buscar cargos</mat-label>
         <input matInput [(ngModel)]="text" (keyup)="applyFilter($event)" placeholder="Nombre del cargo" #input>

@@ -1,7 +1,6 @@
 import { Content } from 'pdfmake/interfaces';
 import {
   createContainers,
-  createFirstContainerExternal,
   createFirstContainerInternal,
   createHeader,
   createRouteMap,

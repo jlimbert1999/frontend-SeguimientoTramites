@@ -1,18 +1,18 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ExternosService } from '../../services/externos.service';
-import { ExternalProcedureDto } from '../../dtos';
 import { NestedPartial } from 'src/app/shared/interfaces/nested-partial';
-import { external } from '../../interfaces';
 import { typeProcedure } from 'src/app/administration/interfaces';
+import { ExternalService } from '../../services/external.service';
+import { ExternalProcedureDto } from '../../dtos';
+import { external } from '../../interfaces';
 
 @Component({
-  selector: 'app-dialog-externo',
-  templateUrl: './dialog-externo.component.html',
-  styleUrls: ['./dialog-externo.component.scss'],
+  selector: 'app-external-dialog',
+  templateUrl: './external-dialog.component.html',
+  styleUrls: ['./external-dialog.component.scss'],
 })
-export class DialogExternoComponent implements OnInit {
+export class ExternalDialogComponent implements OnInit {
   segments: string[] = [];
   typesProcedures: typeProcedure[] = [];
   typeAplicant: 'NATURAL' | 'JURIDICO' = 'NATURAL';
@@ -27,9 +27,9 @@ export class DialogExternoComponent implements OnInit {
   RepresentanteFormGroup: FormGroup;
 
   constructor(
-    private externoService: ExternosService,
+    private externoService: ExternalService,
     private fb: FormBuilder,
-    public dialogRef: MatDialogRef<DialogExternoComponent>,
+    public dialogRef: MatDialogRef<ExternalDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: external
   ) {}
 
@@ -71,7 +71,7 @@ export class DialogExternoComponent implements OnInit {
       .map((el) => el.nombre);
   }
 
-  guardar() {
+  save() {
     if (this.data) {
       const updateProcedure: NestedPartial<ExternalProcedureDto> = {
         procedure: this.TramiteFormGroup.value,

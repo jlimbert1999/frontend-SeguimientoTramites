@@ -10,7 +10,7 @@ const base_url = environment.base_url;
 @Injectable({
   providedIn: 'root',
 })
-export class ArchivoService {
+export class ArchiveService {
   constructor(private http: HttpClient) {}
 
   getAll(limit: number, offset: number) {

@@ -3,14 +3,14 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { TDocumentDefinitions, Table, TableOfContent } from "pdfmake/interfaces";
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
-import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
 import { SendDataReportEvent } from "../models/sendData.model";
 import { createHeaderParamsPDF } from "../helpers/PDFHeaderParams";
+import { convertImagenABase64 } from "src/app/shared/helpers/imageBase64";
 
 
 export async function createPDFFicha({ params, data, group, title }: SendDataReportEvent) {
-    const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
-    const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
+    const logo: any = await convertImagenABase64('../../../assets/img/logo_alcaldia2.jpeg')
+    const logo2: any = await convertImagenABase64('../../../assets/img/sigamos_adelante.jpg')
     let docDefinition: TDocumentDefinitions
     docDefinition = {
         pageOrientation: 'landscape',

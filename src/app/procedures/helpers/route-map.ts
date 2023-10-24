@@ -4,11 +4,11 @@ import {
   TDocumentDefinitions,
   TableCell,
 } from 'pdfmake/interfaces';
-import { convertirImagenABase64 } from 'src/app/helpers/pdf/imageBase64';
 import * as moment from 'moment';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import { workflow } from 'src/app/communication/interfaces';
 import { ExternalProcedure, InternalProcedure } from '../models';
+import { convertImagenABase64 } from 'src/app/shared/helpers/imageBase64';
 const ordinales = require('ordinales-js');
 
 export async function createHeader(): Promise<Content> {
@@ -17,7 +17,7 @@ export async function createHeader(): Promise<Content> {
       style: 'cabecera',
       columns: [
         {
-          image: await convertirImagenABase64(
+          image: await convertImagenABase64(
             '../../../assets/img/logo_alcaldia2.jpeg'
           ),
           width: 150,
@@ -29,7 +29,7 @@ export async function createHeader(): Promise<Content> {
           alignment: 'center',
         },
         {
-          image: await convertirImagenABase64(
+          image: await convertImagenABase64(
             '../../../assets/img/logo_sacaba.jpeg'
           ),
           width: 70,

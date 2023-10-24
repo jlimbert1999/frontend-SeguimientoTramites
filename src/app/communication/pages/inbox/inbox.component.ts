@@ -20,7 +20,7 @@ import {
   createInternalRouteMap,
 } from 'src/app/procedures/helpers';
 import { EventProcedureDto } from 'src/app/procedures/dtos';
-import { ArchivoService } from 'src/app/procedures/services';
+import { ArchiveService } from 'src/app/procedures/services';
 
 @Component({
   selector: 'app-inbox',
@@ -48,7 +48,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     private router: Router,
     private socketService: SocketService,
     private procedureService: ProcedureService,
-    private archiveService: ArchivoService
+    private archiveService: ArchiveService
   ) {
     this.listenNewMails();
     this.listenCancelMails();
@@ -64,17 +64,17 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   Get() {
-    if (this.paginatorService.textSearch != '') {
-      this.inboxService
-        .searchInboxOfAccount(
-          this.paginatorService.limit,
-          this.paginatorService.offset,
-          this.paginatorService.textSearch
-        )
-        .subscribe((resp) => {
-          this.dataSource = resp.mails;
-          this.paginatorService.length = resp.length;
-        });
+    if (this.paginatorService.searchMode) {
+      // this.inboxService
+      //   .searchInboxOfAccount(
+      //     this.paginatorService.limit,
+      //     this.paginatorService.offset,
+      //     this.paginatorService.textSearch
+      //   )
+      //   .subscribe((resp) => {
+      //     this.dataSource = resp.mails;
+      //     this.paginatorService.length = resp.length;
+      //   });
     } else {
       this.inboxService
         .getInboxOfAccount(
@@ -204,10 +204,10 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   applyFilter(event: Event) {
-    this.paginatorService.offset = 0;
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.paginatorService.textSearch = filterValue;
-    this.Get();
+    // this.paginatorService.offset = 0;
+    // const filterValue = (event.target as HTMLInputElement).value;
+    // this.paginatorService.textSearch = filterValue;
+    // this.Get();
   }
 
   cancelSearch() {
@@ -265,6 +265,6 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   get textSearch() {
-    return this.paginatorService.textSearch;
+    return '';
   }
 }

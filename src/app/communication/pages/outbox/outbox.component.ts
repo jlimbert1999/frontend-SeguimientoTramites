@@ -8,19 +8,17 @@ import {
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/services/auth.service';
 
-import { fadeInOnEnterAnimation } from 'angular-animations';
 
 import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 import { OutboxService } from '../../services/outbox.service';
-import { InternosService } from 'src/app/procedures/services/internos.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { SocketService } from 'src/app/services/socket.service';
-import { ExternosService } from 'src/app/procedures/services/externos.service';
 import { communication, groupedCommunication } from '../../interfaces';
 import { MatSelectionList } from '@angular/material/list';
+import { ExternalService, InternalService } from 'src/app/procedures/services';
 
 @Component({
   selector: 'app-outbox',
@@ -35,7 +33,6 @@ import { MatSelectionList } from '@angular/material/list';
         animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
       ),
     ]),
-    fadeInOnEnterAnimation(),
   ],
 })
 export class OutboxComponent implements OnInit, AfterViewInit {
@@ -63,8 +60,8 @@ export class OutboxComponent implements OnInit, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     private authService: AuthService,
-    private externoService: ExternosService,
-    private internoService: InternosService,
+    private externoService: ExternalService,
+    private internoService: InternalService,
     private outboxService: OutboxService,
     public paginatorService: PaginatorService,
     private router: Router,
@@ -76,17 +73,17 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     this.Get();
   }
   Get() {
-    if (this.paginatorService.textSearch) {
-      this.outboxService
-        .Search(
-          this.paginatorService.limit,
-          this.paginatorService.offset,
-          this.paginatorService.textSearch
-        )
-        .subscribe((data) => {
-          this.dataSource = data.mails;
-          this.paginatorService.length = data.length;
-        });
+    if (this.paginatorService.searchMode) {
+      // this.outboxService
+      //   .Search(
+      //     this.paginatorService.limit,
+      //     this.paginatorService.offset,
+      //     this.paginatorService.textSearch
+      //   )
+      //   .subscribe((data) => {
+      //     this.dataSource = data.mails;
+      //     this.paginatorService.length = data.length;
+      //   });
     } else {
       this.outboxService
         .getOutboxOfAccount(
@@ -122,17 +119,17 @@ export class OutboxComponent implements OnInit, AfterViewInit {
   View(mail: groupedCommunication) {}
 
   applyFilter(event: Event) {
-    if (this.paginatorService.textSearch) {
-      this.paginatorService.offset = 0;
-      const filterValue = (event.target as HTMLInputElement).value;
-      this.paginatorService.textSearch = filterValue.toLowerCase();
-      this.Get();
-    }
+    // if (this.paginatorService.textSearch) {
+    //   this.paginatorService.offset = 0;
+    //   const filterValue = (event.target as HTMLInputElement).value;
+    //   this.paginatorService.textSearch = filterValue.toLowerCase();
+    //   this.Get();
+    // }
   }
   cancelSearch() {
-    this.paginatorService.offset = 0;
-    this.paginatorService.textSearch = '';
-    this.Get();
+    // this.paginatorService.offset = 0;
+    // this.paginatorService.textSearch = '';
+    // this.Get();
   }
 
   cancelSend(mail: groupedCommunication, selectedSendIds: string[] | null) {

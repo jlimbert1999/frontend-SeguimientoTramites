@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -8,7 +7,8 @@ export class PaginatorService {
   limit: number = 10;
   offset: number = 0;
   length: number = 0;
-  textSearch: string = '';
+  searchMode: boolean = false;
+  searchParams = new Map<string, string>();
 
   constructor() {}
 
@@ -21,6 +21,6 @@ export class PaginatorService {
     this.limit = 10;
     this.offset = 0;
     this.length = 0;
-    this.textSearch = '';
+    this.searchMode = false;
   }
 }

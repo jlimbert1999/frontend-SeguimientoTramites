@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, startWith, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { InternosService } from '../../services/internos.service';
+import { InternalService } from '../../services/internal.service';
 import { Officer } from 'src/app/administration/models/officer.model';
 import { typeProcedure } from 'src/app/administration/interfaces';
 import { InternalProcedureDto } from '../../dtos';
@@ -11,11 +11,11 @@ import { NestedPartial } from 'src/app/shared/interfaces/nested-partial';
 import { internal } from '../../interfaces';
 
 @Component({
-  selector: 'app-dialog-internos',
-  templateUrl: './dialog-internos.component.html',
-  styleUrls: ['./dialog-internos.component.scss'],
+  selector: 'app-internal-dialog',
+  templateUrl: './internal-dialog.component.html',
+  styleUrls: ['./internal-dialog.component.scss'],
 })
-export class DialogInternosComponent implements OnInit {
+export class InternalDialogComponent implements OnInit {
   typesProcedures: typeProcedure[] = [];
   filteredEmitter: Observable<Officer[]>;
   filteredReceiver: Observable<Officer[]>;
@@ -23,10 +23,10 @@ export class DialogInternosComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private internoService: InternosService,
+    private internoService: InternalService,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: internal,
-    public dialogRef: MatDialogRef<DialogInternosComponent>
+    public dialogRef: MatDialogRef<InternalDialogComponent>
   ) {}
 
   ngOnInit(): void {

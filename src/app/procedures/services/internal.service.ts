@@ -13,7 +13,7 @@ const base_url = environment.base_url;
 @Injectable({
   providedIn: 'root',
 })
-export class InternosService {
+export class InternalService {
   constructor(private http: HttpClient) {}
 
   Add(tramite: InternalProcedureDto) {

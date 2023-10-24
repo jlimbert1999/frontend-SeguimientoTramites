@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CargoService } from '../../services/cargo.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { fadeInOnEnterAnimation } from 'angular-animations';
 import { MatDialog } from '@angular/material/dialog';
 import { job } from '../../interfaces/job.interface';
 import { JobDialogComponent } from '../../dialogs/job-dialog/job-dialog.component';
@@ -9,10 +8,7 @@ import { JobDialogComponent } from '../../dialogs/job-dialog/job-dialog.componen
 @Component({
   selector: 'app-jobs',
   templateUrl: './jobs.component.html',
-  styleUrls: ['./jobs.component.scss'],
-  animations: [
-    fadeInOnEnterAnimation(),
-  ]
+  styleUrls: ['./jobs.component.scss']
 })
 export class JobsComponent {
   text: string = ''

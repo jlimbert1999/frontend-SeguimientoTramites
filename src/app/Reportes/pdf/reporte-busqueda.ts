@@ -3,11 +3,11 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { TDocumentDefinitions } from "pdfmake/interfaces";
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 import * as moment from 'moment';
-import { getBase64ImageFromUrl } from "src/assets/pdf-img/image-base64";
+import { convertImagenABase64 } from "src/app/shared/helpers/imageBase64";
 
 export async function PDF_busqueda(funcionario: string, grupo: 'INTERNO' | 'EXTERNO', parametros: any[], data: any[], total: number) {
-    const logo: any = await getBase64ImageFromUrl('../../../assets/img/logo_alcaldia2.jpeg')
-    const logo2: any = await getBase64ImageFromUrl('../../../assets/img/sigamos_adelante.jpg')
+    const logo: any = await convertImagenABase64('../../../assets/img/logo_alcaldia2.jpeg')
+    const logo2: any = await convertImagenABase64('../../../assets/img/sigamos_adelante.jpg')
     let tableParams: any[] = [
         [{ text: 'CAMPO', style: 'tableHeader', alignment: 'center' }, { text: 'VALOR A BUSCAR', style: 'tableHeader', alignment: 'center' }],
     ]

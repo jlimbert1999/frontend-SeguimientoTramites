@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { fadeInOnEnterAnimation } from 'angular-animations';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { CuentaService } from '../../services/cuenta.service';
 import { CreacionAsignacionComponent } from '../../dialogs/creacion-asignacion/creacion-asignacion.component';
@@ -16,9 +15,6 @@ import { account } from '../../interfaces/account.interface';
   selector: 'app-accounts',
   templateUrl: './accounts.component.html',
   styleUrls: ['./accounts.component.scss'],
-  animations: [
-    fadeInOnEnterAnimation(),
-  ]
 })
 export class AccountsComponent implements OnInit {
   accounts: account[] = []

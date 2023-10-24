@@ -63,7 +63,6 @@ export class MailComponent implements OnInit {
     this.activateRoute.queryParams.subscribe((data) => {
       this.paginatorService.limit = data['limit'];
       this.paginatorService.offset = data['offset'];
-      this.paginatorService.textSearch = data['text'] ? data['text'] : '';
       this._location.back();
     });
   }

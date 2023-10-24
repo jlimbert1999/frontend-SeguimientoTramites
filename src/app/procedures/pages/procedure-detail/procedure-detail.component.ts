@@ -3,18 +3,17 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { workflow } from 'src/app/communication/interfaces';
-import { eventProcedure, groupProcedure } from '../../interfaces';
-import { ExternalProcedure } from '../../models';
-import { InternalProcedure } from '../../models/internal.model';
+import { groupProcedure } from '../../interfaces';
 import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
 import { ProcedureService } from '../../services/procedure.service';
+import { ExternalProcedure, InternalProcedure } from '../../models';
 
 @Component({
-  selector: 'app-ficha',
-  templateUrl: './ficha.component.html',
-  styleUrls: ['./ficha.component.scss'],
+  selector: 'app-procedure-detail',
+  templateUrl: './procedure-detail.component.html',
+  styleUrls: ['./procedure-detail.component.scss'],
 })
-export class FichaComponent implements OnInit {
+export class ProcedureDetailComponent implements OnInit {
   isLoading: boolean = true;
   procedure: InternalProcedure | ExternalProcedure;
   workflow: workflow[] = [];
@@ -40,8 +39,10 @@ export class FichaComponent implements OnInit {
 
   back() {
     this.activateRoute.queryParams.subscribe((data) => {
+      const searchMode = String(data['search']).toLowerCase();
       this.paginatorService.limit = data['limit'];
       this.paginatorService.offset = data['offset'];
+      this.paginatorService.searchMode = searchMode === 'true' ? true : false;
       this._location.back();
     });
   }

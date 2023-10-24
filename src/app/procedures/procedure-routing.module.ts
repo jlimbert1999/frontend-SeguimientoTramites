@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { InternosComponent } from './pages/internos/internos.component';
-import { ExternosComponent } from './pages/externos/externos.component';
-import { FichaComponent } from './pages/ficha/ficha.component';
+import { InternalComponent } from './pages/internal/internal.component';
+import { ExternalComponent } from './pages/external/external.component';
+import { ProcedureDetailComponent } from './pages/procedure-detail/procedure-detail.component';
 import { ArchivesComponent } from './pages/archives/archives.component';
 
 const routes: Routes = [
-  { path: 'internos', component: InternosComponent },
-  { path: 'externos', component: ExternosComponent },
+  { path: 'internos', component: InternalComponent },
+  { path: 'externos', component: ExternalComponent },
   { path: 'archivados', component: ArchivesComponent },
-  { path: 'internos/:id', component: FichaComponent },
-  { path: 'externos/:id', component: FichaComponent },
-  { path: 'archivados/:id', component: FichaComponent },
+  { path: 'internos/:id', component: ProcedureDetailComponent },
+  { path: 'externos/:id', component: ProcedureDetailComponent },
+  { path: 'archivados/:id', component: ProcedureDetailComponent },
 ];
 
 @NgModule({

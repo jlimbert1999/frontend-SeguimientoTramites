@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { fadeInOnEnterAnimation } from 'angular-animations';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { DependenciasService } from '../../services/dependencias.service';
 import { DependenciaDialogComponent } from './dependencia-dialog/dependencia-dialog.component';
@@ -10,9 +9,6 @@ import { dependency } from '../../interfaces/dependency.interface';
   selector: 'app-dependencias',
   templateUrl: './dependencias.component.html',
   styleUrls: ['./dependencias.component.scss'],
-  animations: [
-    fadeInOnEnterAnimation(),
-  ]
 })
 export class DependenciasComponent implements OnInit {
   text: string = ''

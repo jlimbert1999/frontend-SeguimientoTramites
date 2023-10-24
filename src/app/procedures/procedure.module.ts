@@ -5,14 +5,14 @@ import { RouterModule } from '@angular/router';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 
-import { DialogExternoComponent } from './dialogs/dialog-externo/dialog-externo.component';
-import { DialogInternosComponent } from './dialogs/dialog-internos/dialog-internos.component';
+import { ExternalDialogComponent } from './dialogs/external-dialog/external-dialog.component';
+import { InternalDialogComponent } from './dialogs/internal-dialog/internal-dialog.component';
 import { ExternalDetailComponent } from './components/external-detail/external-detail.component';
-import { ExternosComponent } from './pages/externos/externos.component';
-import { FichaComponent } from './pages/ficha/ficha.component';
+import { ExternalComponent } from './pages/external/external.component';
+import { ProcedureDetailComponent } from './pages/procedure-detail/procedure-detail.component';
 import { FilterObservationsPipe } from './pipes/filter-observations.pipe';
 import { InternalDetailComponent } from './components/internal-detail/internal-detail.component';
-import { InternosComponent } from './pages/internos/internos.component';
+import { InternalComponent } from './pages/internal/internal.component';
 import { MaterialModule } from '../angular-material/material.module';
 import { ObservationsComponent } from './components/observations/observations.component';
 import { ProcedureRoutingModule } from './procedure-routing.module';
@@ -22,11 +22,11 @@ import { ArchivesComponent } from './pages/archives/archives.component';
 
 @NgModule({
   declarations: [
-    FichaComponent,
-    ExternosComponent,
-    InternosComponent,
-    DialogInternosComponent,
-    DialogExternoComponent,
+    ProcedureDetailComponent,
+    ExternalComponent,
+    InternalComponent,
+    InternalDialogComponent,
+    ExternalDialogComponent,
     InternalDetailComponent,
     ExternalDetailComponent,
     SolicitantePipe,

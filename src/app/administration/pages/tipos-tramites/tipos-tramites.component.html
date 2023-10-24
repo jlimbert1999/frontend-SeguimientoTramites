@@ -1,5 +1,5 @@
 <app-toolbar title="TIPOS DE TRAMITES" [showAdd]="true" (add)="Add()"></app-toolbar>
-<div class="container-fluid" [@fadeInOnEnter]>
+<div class="container-fluid">
     <mat-form-field class="example-full-width">
         <mat-label>Buscar tipo de tramite</mat-label>
         <input matInput [(ngModel)]="text" (keyup)="applyFilter($event)" placeholder="Nombre / Segmento" #input>

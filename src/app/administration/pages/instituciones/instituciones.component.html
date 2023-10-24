@@ -1,5 +1,5 @@
 <app-toolbar title="INSTITUCIONES" [showAdd]="true" (add)="Add()"></app-toolbar>
-<div class="container-fluid" [@fadeInOnEnter]>
+<div class="container-fluid">
     <mat-form-field>
         <mat-label>Buscar institucion</mat-label>
         <input matInput [(ngModel)]="text" (keyup)="applyFilter($event)" placeholder="Nombre / Sigla" #input>

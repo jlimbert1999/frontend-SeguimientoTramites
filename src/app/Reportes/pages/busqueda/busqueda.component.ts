@@ -6,7 +6,6 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { fadeInOnEnterAnimation } from 'angular-animations';
 import { ReporteService } from '../../services/reporte.service';
 import { Router } from '@angular/router';
 import { MatAccordion } from '@angular/material/expansion';
@@ -18,7 +17,6 @@ import { stateProcedure } from 'src/app/procedures/interfaces';
   selector: 'app-busqueda',
   templateUrl: './busqueda.component.html',
   styleUrls: ['./busqueda.component.scss'],
-  animations: [fadeInOnEnterAnimation()],
 })
 export class BusquedaComponent implements OnInit {
   groupProcedure: any = 'tramites_externos';

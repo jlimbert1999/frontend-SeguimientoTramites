@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { ArchivoService } from '../../services/archivo.service';
+import { ArchiveService } from '../../services/archive.service';
 import { communication } from 'src/app/communication/interfaces';
 import { stateProcedure } from 'src/app/procedures/interfaces';
 import { SocketService } from 'src/app/services/socket.service';
@@ -19,7 +19,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
   dataSource: communication[] = [];
   subscription: Subscription;
   constructor(
-    private readonly archiveService: ArchivoService,
+    private readonly archiveService: ArchiveService,
     private readonly paginatorService: PaginatorService,
     private readonly socketService: SocketService,
     private router: Router
@@ -88,9 +88,6 @@ export class ArchivesComponent implements OnInit, OnDestroy {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
-      ...(this.paginatorService.textSearch !== '' && {
-        text: this.paginatorService.textSearch,
-      }),
     };
     this.router.navigate(['/tramites/archivados', mail.procedure._id], {
       queryParams: params,

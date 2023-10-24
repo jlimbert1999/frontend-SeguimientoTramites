@@ -1,35 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import {
-  collapseOnLeaveAnimation,
-  expandOnEnterAnimation,
-  fadeInOnEnterAnimation,
-} from 'angular-animations';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import Swal from 'sweetalert2';
-import { DialogInternosComponent } from '../../dialogs/dialog-internos/dialog-internos.component';
-import { InternosService } from '../../services/internos.service';
+import { InternalDialogComponent } from '../../dialogs/internal-dialog/internal-dialog.component';
 import { Router } from '@angular/router';
 import { SocketService } from 'src/app/services/socket.service';
 import { createInternalRouteMap } from '../../helpers/internal-route-map';
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
 import { sendDetail } from 'src/app/communication/interfaces';
 import { internal } from '../../interfaces';
-import { ProcedureService } from '../../services/procedure.service';
 import { InternalProcedure } from '../../models';
+import { InternalService, ProcedureService } from '../../services';
 
 @Component({
-  selector: 'app-internos',
-  templateUrl: './internos.component.html',
-  styleUrls: ['./internos.component.scss'],
-  animations: [
-    fadeInOnEnterAnimation(),
-    expandOnEnterAnimation(),
-    collapseOnLeaveAnimation(),
-  ],
+  selector: 'app-internal',
+  templateUrl: './internal.component.html',
+  styleUrls: ['./internal.component.scss'],
 })
-export class InternosComponent implements OnInit {
+export class InternalComponent implements OnInit {
   displayedColumns: string[] = [
     'alterno',
     'detalle',
@@ -43,7 +32,7 @@ export class InternosComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private internoService: InternosService,
+    private internoService: InternalService,
     public procedureService: ProcedureService,
     private authService: AuthService,
     public paginatorService: PaginatorService,
@@ -55,17 +44,17 @@ export class InternosComponent implements OnInit {
     this.Get();
   }
   Get() {
-    if (this.paginatorService.textSearch !== '') {
-      this.internoService
-        .search(
-          this.paginatorService.limit,
-          this.paginatorService.offset,
-          this.paginatorService.textSearch
-        )
-        .subscribe((data) => {
-          this.dataSource = data.procedures;
-          this.paginatorService.length = data.length;
-        });
+    if (this.paginatorService.searchMode) {
+      // this.internoService
+      //   .search(
+      //     this.paginatorService.limit,
+      //     this.paginatorService.offset,
+      //     this.paginatorService.textSearch
+      //   )
+      //   .subscribe((data) => {
+      //     this.dataSource = data.procedures;
+      //     this.paginatorService.length = data.length;
+      //   });
     } else {
       this.internoService
         .Get(this.paginatorService.limit, this.paginatorService.offset)
@@ -74,10 +63,11 @@ export class InternosComponent implements OnInit {
           this.paginatorService.length = data.length;
         });
     }
+    console.log(this.paginatorService.searchParams);
   }
 
   Add() {
-    const dialogRef = this.dialog.open(DialogInternosComponent, {
+    const dialogRef = this.dialog.open(InternalDialogComponent, {
       width: '1000px',
       disableClose: true,
     });
@@ -92,7 +82,7 @@ export class InternosComponent implements OnInit {
     });
   }
   Edit(tramite: internal) {
-    const dialogRef = this.dialog.open(DialogInternosComponent, {
+    const dialogRef = this.dialog.open(InternalDialogComponent, {
       width: '1000px',
       disableClose: true,
       data: tramite,
@@ -132,15 +122,15 @@ export class InternosComponent implements OnInit {
   }
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.paginatorService.textSearch = filterValue.toLowerCase();
-    this.Get();
+    // const filterValue = (event.target as HTMLInputElement).value;
+    // this.paginatorService.textSearch = filterValue.toLowerCase();
+    // this.Get();
   }
 
   cancelSearch() {
-    this.paginatorService.offset = 0;
-    this.paginatorService.textSearch = '';
-    this.Get();
+    // this.paginatorService.offset = 0;
+    // this.paginatorService.textSearch = '';
+    // this.Get();
   }
 
   generateRouteMap(id_tramite: string) {
@@ -194,9 +184,6 @@ export class InternosComponent implements OnInit {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
-      ...(this.paginatorService.textSearch !== '' && {
-        text: this.paginatorService.textSearch,
-      }),
     };
     this.router.navigate(['/tramites/internos', procedure._id], {
       queryParams: params,

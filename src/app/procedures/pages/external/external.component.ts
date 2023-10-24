@@ -1,28 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
-import { ExternosService } from '../../services/externos.service';
-import { DialogExternoComponent } from '../../dialogs/dialog-externo/dialog-externo.component';
-import { createExternalRouteMap } from '../../helpers/external-route-map';
-import { Ficha } from '../../helpers/ficha';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { ExternalDialogComponent } from '../../dialogs/external-dialog/external-dialog.component';
+import { createExternalRouteMap, createTicket } from '../../helpers';
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
 import { sendDetail } from 'src/app/communication/interfaces';
-import { external } from '../../interfaces/external.interface';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { ProcedureService } from '../../services/procedure.service';
 import { ExternalProcedure } from '../../models';
-import { stateProcedure } from '../../interfaces';
-import { ArchivoService } from '../../services';
+import { external, stateProcedure } from '../../interfaces';
+import {
+  ArchiveService,
+  ExternalService,
+  ProcedureService,
+} from '../../services';
 import { EventProcedureDto } from '../../dtos';
-import { PageEvent } from '@angular/material/paginator';
+import { SweetAlertManager } from 'src/app/shared/helpers/alerts';
 
 @Component({
-  selector: 'app-externos',
-  templateUrl: './externos.component.html',
-  styleUrls: ['./externos.component.scss'],
+  selector: 'app-external',
+  templateUrl: './external.component.html',
+  styleUrls: ['./external.component.scss'],
 })
-export class ExternosComponent implements OnInit {
+export class ExternalComponent implements OnInit {
   dataSource: external[] = [];
   displayedColumns: string[] = [
     'alterno',
@@ -34,42 +34,42 @@ export class ExternosComponent implements OnInit {
     'opciones',
   ];
   stateProcedure: stateProcedure;
+  textSearch: string = '';
   constructor(
     public dialog: MatDialog,
     private router: Router,
-    private readonly externoService: ExternosService,
+    private readonly externalService: ExternalService,
     private readonly procedureService: ProcedureService,
     private readonly paginatorService: PaginatorService,
-    private readonly archivosService: ArchivoService
+    private readonly archiveService: ArchiveService
   ) {}
   ngOnInit(): void {
-    this.Get();
+    this.getSearchParams();
+    this.getData();
   }
 
-  Get() {
-    if (this.paginatorService.textSearch !== '') {
-      this.externoService
-        .search(
-          this.paginatorService.textSearch,
-          this.paginatorService.limit,
-          this.paginatorService.offset
-        )
-        .subscribe((data) => {
-          this.dataSource = data.procedures;
-          this.paginatorService.length = data.length;
-        });
+  getData() {
+    let subscription: Observable<{ procedures: external[]; length: number }>;
+    if (this.paginatorService.searchMode) {
+      subscription = this.externalService.search(
+        this.textSearch,
+        this.paginatorService.limit,
+        this.paginatorService.offset
+      );
     } else {
-      this.externoService
-        .Get(this.paginatorService.limit, this.paginatorService.offset)
-        .subscribe((data) => {
-          this.dataSource = data.procedures;
-          this.paginatorService.length = data.length;
-        });
+      subscription = this.externalService.Get(
+        this.paginatorService.limit,
+        this.paginatorService.offset
+      );
     }
+    subscription.subscribe((data) => {
+      this.dataSource = data.procedures;
+      this.paginatorService.length = data.length;
+    });
   }
 
   Add() {
-    const dialogRef = this.dialog.open(DialogExternoComponent, {
+    const dialogRef = this.dialog.open(ExternalDialogComponent, {
       width: '1000px',
       disableClose: true,
     });
@@ -84,16 +84,16 @@ export class ExternosComponent implements OnInit {
     });
   }
 
-  Edit(tramite: external) {
-    const dialogRef = this.dialog.open(DialogExternoComponent, {
+  Edit(procedure: external) {
+    const dialogRef = this.dialog.open(ExternalDialogComponent, {
       width: '1000px',
-      data: tramite,
+      data: procedure,
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe((result: external) => {
       if (result) {
         const indexFound = this.dataSource.findIndex(
-          (element) => element._id === tramite._id
+          (element) => element._id === procedure._id
         );
         this.dataSource[indexFound] = result;
         this.dataSource = [...this.dataSource];
@@ -136,37 +136,18 @@ export class ExternosComponent implements OnInit {
   }
 
   GenerateFicha(tramite: external) {
-    Ficha(tramite);
+    createTicket(tramite);
   }
 
   conclude(procedure: external) {
-    Swal.fire({
-      icon: 'question',
-      title: `¿Concluir tramite ${procedure.code}?`,
-      text: `Los tramites concluidos desde su administacion ya no podran ser desarchivados`,
-      input: 'textarea',
-      inputPlaceholder: 'Ingrese una referencia para concluir',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-      customClass: {
-        validationMessage: 'my-validation-message',
-      },
-      preConfirm: (value) => {
-        if (!value) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> La referencia es obligatoria!'
-          );
-        }
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
+    SweetAlertManager.showConfirmAlert(
+      (description) => {
         const archive: EventProcedureDto = {
           procedure: procedure._id,
-          description: result.value,
+          description,
           stateProcedure: stateProcedure.CONCLUIDO,
         };
-        this.archivosService
+        this.archiveService
           .archiveProcedure(procedure._id, archive)
           .subscribe((message) => {
             const indexFound = this.dataSource.findIndex(
@@ -174,45 +155,44 @@ export class ExternosComponent implements OnInit {
             );
             this.dataSource[indexFound].state = stateProcedure.CONCLUIDO;
           });
-      }
-    });
+      },
+      `¿Concluir el tramite ${procedure.code}?`,
+      'Los tramites concluidos desde su administacion no pueden ser desarchivados',
+      'Referencia para concluir'
+    );
   }
 
-  applyFilter(text: string) {
+  applyFilter() {
+    if (this.textSearch === '') return;
     this.paginatorService.offset = 0;
-    this.paginatorService.textSearch = text;
-    this.Get();
+    this.paginatorService.searchMode = true;
+    this.paginatorService.searchParams.set('text', this.textSearch);
+    this.getData();
   }
 
   cancelFilter() {
+    this.textSearch = '';
     this.paginatorService.offset = 0;
-    this.paginatorService.textSearch = '';
-    this.Get();
+    this.paginatorService.searchMode = false;
+    this.paginatorService.searchParams.clear();
+    this.getData();
   }
 
-  view(procedure: external) {
-    let params = {
+  showDetails(procedure: external) {
+    const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
-      ...(this.paginatorService.textSearch !== '' && {
-        search: true,
-      }),
+      ...(this.paginatorService.searchMode && { search: true }),
     };
-    // if (this.paginatorService.textSearch)
     this.router.navigate(['/tramites/externos', procedure._id], {
       queryParams: params,
     });
   }
-  get textSearch() {
-    return this.paginatorService.textSearch;
-  }
-
-  get Pararam() {
-    return this.externoService.paginationParams;
-  }
-
-  test(event: PageEvent) {
-    this.externoService.paginationParams.limit = event.pageSize;
-    this.externoService.paginationParams.offset = event.pageIndex;
+  getSearchParams() {
+    if (!this.paginatorService.searchMode) {
+      this.paginatorService.searchParams.clear();
+      return;
+    }
+    this.textSearch = this.paginatorService.searchParams.get('text')!;
   }
 }
