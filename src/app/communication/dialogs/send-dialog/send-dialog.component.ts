@@ -1,19 +1,13 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  UntypedFormControl,
-  Validators,
-} from '@angular/forms';
-import { ReplaySubject, Subject, map, switchMap, takeUntil } from 'rxjs';
-import Swal from 'sweetalert2';
+import { FormBuilder, FormControl, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ReplaySubject, Subject, map, switchMap, takeUntil } from 'rxjs';
 import { InboxService } from '../../services/inbox.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { dependency, institution } from 'src/app/administration/interfaces';
 import { sendDetail, receiver } from '../../interfaces';
 import { CreateMailDto } from '../../dto/create-mail.dto';
+import { AlertManager } from 'src/app/shared/helpers/alerts';
 
 @Component({
   selector: 'app-send-dialog',
@@ -27,9 +21,7 @@ export class SendDialogComponent implements OnInit, OnDestroy {
   selectedReceivers: receiver[] = [];
   public userCtrl = new FormControl();
   public userFilterCtrl: UntypedFormControl = new UntypedFormControl();
-  public filteredUsers: ReplaySubject<receiver[]> = new ReplaySubject<
-    receiver[]
-  >(1);
+  public filteredUsers: ReplaySubject<receiver[]> = new ReplaySubject<receiver[]>(1);
   protected _onDestroy = new Subject<void>();
 
   FormEnvio: FormGroup = this.fb.group({
@@ -57,60 +49,37 @@ export class SendDialogComponent implements OnInit, OnDestroy {
     });
   }
 
-  send() {
-    const mail = CreateMailDto.fromFormData(
-      this.FormEnvio.value,
-      this.data,
-      this.selectedReceivers
-    );
-    Swal.fire({
-      title: `Remitir el tramite ${this.data.procedure.code}?`,
-      text: `Numero de destinatarios: ${mail.receivers.length}`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Enviar',
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: 'Enviando el tramite....',
-          text: 'Por favor espere',
-          allowOutsideClick: false,
-        });
-        Swal.showLoading();
+  send(): void {
+    const mail = CreateMailDto.fromFormData(this.FormEnvio.value, this.data, this.selectedReceivers);
+    AlertManager.showQuestionAlert(
+      `¿Remitir el tramite ${this.data.procedure.code}?`,
+      `Numero de destinatarios: ${mail.receivers.length}`,
+      () => {
+        AlertManager.showLoadingAlert('Enviado el tramite.....', 'Por favor espere');
         this.inboxService.create(mail).subscribe((data) => {
-          Swal.close();
+          AlertManager.closeLoadingAlert();
           this.dialogRef.close(true);
         });
       }
-    });
+    );
   }
 
   addReceiver(account: receiver) {
     this.userCtrl.setValue(null);
-    const found = this.selectedReceivers.some(
-      (accountForSend) => accountForSend.id_account === account.id_account
-    );
-    if (!found) {
-      this.selectedReceivers.push(account);
-    }
+    const found = this.selectedReceivers.some((accountForSend) => accountForSend.id_account === account.id_account);
+    if (found) return;
+    this.selectedReceivers.push(account);
   }
   removeReceiver(account: receiver) {
-    this.selectedReceivers = this.selectedReceivers.filter(
-      (receiver) => receiver.id_account !== account.id_account
-    );
+    this.selectedReceivers = this.selectedReceivers.filter((receiver) => receiver.id_account !== account.id_account);
   }
 
   selectInstitution(institution: institution) {
     this.filteredUsers.next([]);
     this.receivers = [];
-    this.inboxService
-      .getDependenciesOfInstitution(institution._id)
-      .subscribe((data) => {
-        this.dependencies = data;
-      });
+    this.inboxService.getDependenciesOfInstitution(institution._id).subscribe((data) => {
+      this.dependencies = data;
+    });
   }
   selectDependencie(dependencie: dependency) {
     this.inboxService
@@ -121,9 +90,7 @@ export class SendDialogComponent implements OnInit, OnDestroy {
             takeUntil(this._onDestroy),
             map((onlineUsers) => {
               return data.map((account) => {
-                account.online = onlineUsers.some(
-                  (userSocket) => userSocket.id_account === account.id_account
-                );
+                account.online = onlineUsers.some((userSocket) => userSocket.id_account === account.id_account);
                 return account;
               });
             })
@@ -134,11 +101,9 @@ export class SendDialogComponent implements OnInit, OnDestroy {
         this.receivers = data;
         this.userCtrl.setValue(this.receivers);
         this.filteredUsers.next(this.receivers.slice());
-        this.userFilterCtrl.valueChanges
-          .pipe(takeUntil(this._onDestroy))
-          .subscribe(() => {
-            this.filterAccounts();
-          });
+        this.userFilterCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
+          this.filterAccounts();
+        });
       });
   }
   protected filterAccounts() {

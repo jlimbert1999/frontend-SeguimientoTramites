@@ -1,24 +1,16 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { AuthService } from 'src/app/auth/services/auth.service';
-
-
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { MatSelectionList } from '@angular/material/list';
 import { MatDialog } from '@angular/material/dialog';
-import Swal from 'sweetalert2';
+import { AuthService } from 'src/app/auth/services/auth.service';
 import { OutboxService } from '../../services/outbox.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { SocketService } from 'src/app/services/socket.service';
 import { communication, groupedCommunication } from '../../interfaces';
-import { MatSelectionList } from '@angular/material/list';
 import { ExternalService, InternalService } from 'src/app/procedures/services';
+import { AlertManager } from 'src/app/shared/helpers/alerts';
 
 @Component({
   selector: 'app-outbox',
@@ -28,34 +20,15 @@ import { ExternalService, InternalService } from 'src/app/procedures/services';
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),
       state('expanded', style({ height: '*' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-      ),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
 })
 export class OutboxComponent implements OnInit, AfterViewInit {
-  typesOfShoes: string[] = [
-    'Boots',
-    'Clogs',
-    'Loafers',
-    'Moccasins',
-    'Sneakers',
-  ];
+  displayedColumns = ['alterno', 'descripcion', 'estado', 'fecha_envio', 'situacion', 'opciones', 'expand'];
   dataSource: groupedCommunication[] = [];
-  displayedColumns = [
-    'alterno',
-    'descripcion',
-    'estado',
-    'fecha_envio',
-    'situacion',
-    'opciones',
-    'expand',
-  ];
   isLoadingResults = true;
   expandedElement: communication | null;
-  resulstLenght: number = 0;
 
   constructor(
     public dialog: MatDialog,
@@ -86,10 +59,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
       //   });
     } else {
       this.outboxService
-        .getOutboxOfAccount(
-          this.paginatorService.limit,
-          this.paginatorService.offset
-        )
+        .getOutboxOfAccount(this.paginatorService.limit, this.paginatorService.offset)
         .subscribe((data) => {
           this.dataSource = data.mails;
           this.paginatorService.length = data.length;
@@ -97,10 +67,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     }
   }
 
-  generar_hoja_ruta(
-    id_tramite: string,
-    tipo_hoja: 'tramites_externos' | 'tramites_internos'
-  ) {
+  generar_hoja_ruta(id_tramite: string, tipo_hoja: 'tramites_externos' | 'tramites_internos') {
     if (tipo_hoja === 'tramites_externos') {
       // this.externoService.getProcedure(id_tramite).subscribe((data) => {
       // externalRouteMap(data.procedure, data.workflow)
@@ -116,7 +83,15 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     }
   }
 
-  View(mail: groupedCommunication) {}
+  showDetail(mail: groupedCommunication) {
+    const params = {
+      limit: this.paginatorService.limit,
+      offset: this.paginatorService.offset,
+    };
+    this.router.navigate(['bandejas/salida', mail._id.procedure._id], {
+      queryParams: params,
+    });
+  }
 
   applyFilter(event: Event) {
     // if (this.paginatorService.textSearch) {
@@ -134,37 +109,20 @@ export class OutboxComponent implements OnInit, AfterViewInit {
 
   cancelSend(mail: groupedCommunication, selectedSendIds: string[] | null) {
     if (!selectedSendIds) return;
-    Swal.fire({
-      title: `Cancelar envios del tramite ${mail._id.procedure.code}?`,
-      text: `Envios a cancelar: ${selectedSendIds.length}`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.outboxService
-          .cancelMail(mail._id.procedure._id, selectedSendIds)
-          .subscribe((data) => {
-            if (mail.sendings.length === selectedSendIds.length) {
-              this.Get();
-            } else {
-              const index = this.dataSource.findIndex(
-                (item) => item._id === mail._id
-              );
-              this.dataSource[index].sendings = mail.sendings.filter(
-                (send) => !selectedSendIds.includes(send._id)
-              );
-            }
-            Swal.fire({
-              title: 'Envio cancelado',
-              text: data.message,
-              icon: 'success',
-              confirmButtonText: 'Aceptar',
-            });
-          });
+    AlertManager.showQuestionAlert(
+      `Cancelar envios del tramite ${mail._id.procedure.code}?`,
+      `Envios a cancelar: ${selectedSendIds.length}`,
+      () => {
+        this.outboxService.cancelMail(mail._id.procedure._id, selectedSendIds).subscribe((data) => {
+          if (mail.sendings.length === selectedSendIds.length) {
+            this.Get();
+          } else {
+            const index = this.dataSource.findIndex((item) => item._id === mail._id);
+            this.dataSource[index].sendings = mail.sendings.filter((send) => !selectedSendIds.includes(send._id));
+          }
+        });
       }
-    });
+    );
   }
   selectAllItemsList(list: MatSelectionList) {
     list._items.forEach((item) => {

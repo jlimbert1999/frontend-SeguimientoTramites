@@ -9,13 +9,9 @@ import { sendDetail } from 'src/app/communication/interfaces';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ExternalProcedure } from '../../models';
 import { external, stateProcedure } from '../../interfaces';
-import {
-  ArchiveService,
-  ExternalService,
-  ProcedureService,
-} from '../../services';
+import { ArchiveService, ExternalService, ProcedureService } from '../../services';
 import { EventProcedureDto } from '../../dtos';
-import { SweetAlertManager } from 'src/app/shared/helpers/alerts';
+import { AlertManager } from 'src/app/shared/helpers/alerts';
 
 @Component({
   selector: 'app-external',
@@ -24,15 +20,7 @@ import { SweetAlertManager } from 'src/app/shared/helpers/alerts';
 })
 export class ExternalComponent implements OnInit {
   dataSource: external[] = [];
-  displayedColumns: string[] = [
-    'alterno',
-    'detalle',
-    'estado',
-    'solicitante',
-    'fecha_registro',
-    'enviado',
-    'opciones',
-  ];
+  displayedColumns: string[] = ['alterno', 'detalle', 'estado', 'solicitante', 'fecha_registro', 'enviado', 'opciones'];
   stateProcedure: stateProcedure;
   textSearch: string = '';
   constructor(
@@ -57,10 +45,7 @@ export class ExternalComponent implements OnInit {
         this.paginatorService.offset
       );
     } else {
-      subscription = this.externalService.Get(
-        this.paginatorService.limit,
-        this.paginatorService.offset
-      );
+      subscription = this.externalService.Get(this.paginatorService.limit, this.paginatorService.offset);
     }
     subscription.subscribe((data) => {
       this.dataSource = data.procedures;
@@ -92,9 +77,7 @@ export class ExternalComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result: external) => {
       if (result) {
-        const indexFound = this.dataSource.findIndex(
-          (element) => element._id === procedure._id
-        );
+        const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
         this.dataSource[indexFound] = result;
         this.dataSource = [...this.dataSource];
       }
@@ -117,9 +100,7 @@ export class ExternalComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const indexFound = this.dataSource.findIndex(
-          (element) => element._id === procedure._id
-        );
+        const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
         this.dataSource[indexFound].send = true;
         this.dataSource = [...this.dataSource];
       }
@@ -128,10 +109,7 @@ export class ExternalComponent implements OnInit {
 
   generateRouteMap(id_procedure: string) {
     this.procedureService.getFullProcedure(id_procedure).subscribe((data) => {
-      createExternalRouteMap(
-        data.procedure as ExternalProcedure,
-        data.workflow
-      );
+      createExternalRouteMap(data.procedure as ExternalProcedure, data.workflow);
     });
   }
 
@@ -140,25 +118,21 @@ export class ExternalComponent implements OnInit {
   }
 
   conclude(procedure: external) {
-    SweetAlertManager.showConfirmAlert(
+    AlertManager.showConfirmAlert(
+      `¿Concluir el tramite ${procedure.code}?`,
+      'Los tramites concluidos desde su administacion no pueden ser desarchivados',
+      'Ingrese una referencia para concluir',
       (description) => {
         const archive: EventProcedureDto = {
           procedure: procedure._id,
           description,
           stateProcedure: stateProcedure.CONCLUIDO,
         };
-        this.archiveService
-          .archiveProcedure(procedure._id, archive)
-          .subscribe((message) => {
-            const indexFound = this.dataSource.findIndex(
-              (element) => element._id === procedure._id
-            );
-            this.dataSource[indexFound].state = stateProcedure.CONCLUIDO;
-          });
-      },
-      `¿Concluir el tramite ${procedure.code}?`,
-      'Los tramites concluidos desde su administacion no pueden ser desarchivados',
-      'Referencia para concluir'
+        this.archiveService.archiveProcedure(procedure._id, archive).subscribe(() => {
+          const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
+          this.dataSource[indexFound].state = stateProcedure.CONCLUIDO;
+        });
+      }
     );
   }
 

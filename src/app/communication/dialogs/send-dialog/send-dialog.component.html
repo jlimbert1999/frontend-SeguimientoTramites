@@ -32,19 +32,12 @@
                 noEntriesFoundLabel="Sin resultados"
               ></ngx-mat-select-search>
             </mat-option>
-            <mat-option
-              *ngFor="let user of filteredUsers | async"
-              [value]="user"
-            >
+            <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
               <span>{{ user.officer.fullname | titlecase }} - </span>
-              <small class="jobtitle fw-lighter">{{
-                user.officer.jobtitle | uppercase
-              }}</small>
-              <span
-                class="c-pill"
-                [ngClass]="user.online ? 'c-pill--success' : 'c-pill--danger'"
-                >{{ user.online ? "Conectado" : "Sin conexion" }}</span
-              >
+              <small class="jobtitle fw-lighter">{{ user.officer.jobtitle | uppercase }}</small>
+              <span class="c-pill" [ngClass]="user.online ? 'c-pill--success' : 'c-pill--danger'">{{
+                user.online ? "Conectado" : "Sin conexion"
+              }}</span>
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -54,20 +47,10 @@
       <label class="col-sm-2 col-form-label">Destinatarios:</label>
       <div class="col-sm-10">
         <mat-chip-listbox>
-          <mat-chip
-            *ngFor="let account of selectedReceivers"
-            (removed)="removeReceiver(account)"
-          >
-            <img
-              matChipAvatar
-              src="../../../assets/img/account.png"
-              alt="Photo of officer"
-            />
+          <mat-chip *ngFor="let account of selectedReceivers" (removed)="removeReceiver(account)">
+            <img matChipAvatar src="../../../assets/img/account.png" alt="Photo of officer" />
             {{ account.officer.fullWorkTitle }}
-            <button
-              matChipRemove
-              [attr.aria-label]="'remove ' + account.id_account"
-            >
+            <button matChipRemove [attr.aria-label]="'remove ' + account.id_account">
               <mat-icon>cancel</mat-icon>
             </button>
           </mat-chip>
@@ -77,18 +60,14 @@
     <div class="row mb-3">
       <label for="txtAlterno" class="col-sm-2 col-form-label">Tramite:</label>
       <div class="col-sm-10">
-        <a class="link-primary form-control" id="txtAlterno">{{
-          data.procedure.code
-        }}</a>
+        <a class="link-primary form-control" id="txtAlterno">{{ data.procedure.code }}</a>
       </div>
     </div>
     <div class="row">
       <mat-form-field class="example-full-width">
         <mat-label>Instruccion / Proveido</mat-label>
         <textarea formControlName="motivo" matInput required> </textarea>
-        <mat-error *ngIf="FormEnvio.controls['motivo'].invalid">
-          Ingrese el motivo
-        </mat-error>
+        <mat-error *ngIf="FormEnvio.controls['motivo'].invalid"> Ingrese el motivo </mat-error>
       </mat-form-field>
     </div>
 
@@ -97,9 +76,7 @@
         <mat-form-field class="example-full-width">
           <mat-label>Cantidad: hojas / anexos</mat-label>
           <input formControlName="cantidad" matInput required />
-          <mat-error *ngIf="FormEnvio.controls['cantidad'].invalid">
-            Ingrese la cantidad
-          </mat-error>
+          <mat-error *ngIf="FormEnvio.controls['cantidad'].invalid"> Ingrese la cantidad </mat-error>
         </mat-form-field>
       </div>
       <div class="col-sm-4">
@@ -113,12 +90,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-raised-button color="warn" mat-dialog-close>Cancelar</button>
-  <button
-    mat-raised-button
-    color="primary"
-    [disabled]="isDisabledButton"
-    (click)="send()"
-  >
-    Remitir
-  </button>
+  <button mat-raised-button color="primary" [disabled]="isDisabledButton" (click)="send()">Remitir</button>
 </mat-dialog-actions>

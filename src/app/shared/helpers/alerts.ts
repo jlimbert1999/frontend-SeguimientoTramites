@@ -1,12 +1,7 @@
 import Swal from 'sweetalert2';
 
-export class SweetAlertManager {
-  static showConfirmAlert(
-    callback: (result: string) => void,
-    title: string,
-    text: string,
-    placeholder: string
-  ) {
+export class AlertManager {
+  static showConfirmAlert(title: string, text: string, placeholder: string, callback: (result: string) => void) {
     Swal.fire({
       icon: 'question',
       title,
@@ -21,9 +16,7 @@ export class SweetAlertManager {
       },
       preConfirm: (value) => {
         if (!value) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Ingrese una descripcion para continuar.'
-          );
+          Swal.showValidationMessage('<i class="fa fa-info-circle"></i> Ingrese una descripcion para continuar.');
         }
       },
     }).then((result) => {
@@ -31,5 +24,44 @@ export class SweetAlertManager {
         callback(result.value);
       }
     });
+  }
+  static showQuestionAlert(title: string, subtitle: string, callback: () => void) {
+    Swal.fire({
+      title,
+      text: subtitle,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        callback();
+      }
+    });
+  }
+
+  static showSuccesAltert(title: string, subtitle: string, timer?: number) {
+    Swal.fire({
+      icon: 'success',
+      title,
+      text: subtitle,
+      timer,
+      confirmButtonText: 'Aceptar',
+      willClose: () => {
+        console.log('cerado');
+        clearInterval(timer);
+      },
+    });
+  }
+  static showLoadingAlert(title: string, subtitle: string) {
+    Swal.fire({
+      title,
+      text: subtitle,
+      allowOutsideClick: false,
+    });
+    Swal.showLoading();
+  }
+  static closeLoadingAlert() {
+    Swal.close();
   }
 }

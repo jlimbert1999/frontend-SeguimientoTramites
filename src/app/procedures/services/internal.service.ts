@@ -24,35 +24,27 @@ export class InternalService {
     );
   }
   Edit(id_tramite: string, tramite: NestedPartial<InternalProcedureDto>) {
-    return this.http
-      .put<internal>(`${base_url}/internal/${id_tramite}`, tramite)
-      .pipe(
-        map((resp) => {
-          return resp;
-        })
-      );
+    return this.http.put<internal>(`${base_url}/internal/${id_tramite}`, tramite).pipe(
+      map((resp) => {
+        return resp;
+      })
+    );
   }
 
   Get(limit: number, offset: number) {
     let params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
-      .get<{ ok: boolean; procedures: internal[]; length: number }>(
-        `${base_url}/internal`,
-        { params }
-      )
+      .get<{ ok: boolean; procedures: internal[]; length: number }>(`${base_url}/internal`, { params })
       .pipe(
         map((resp) => {
           return { procedures: resp.procedures, length: resp.length };
         })
       );
   }
-  search(limit: number, offset: number, text: string) {
+  search(text: string, limit: number, offset: number) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
-      .get<{ procedures: internal[]; length: number }>(
-        `${base_url}/internal/search/${text}`,
-        { params }
-      )
+      .get<{ procedures: internal[]; length: number }>(`${base_url}/internal/search/${text}`, { params })
       .pipe(
         map((resp) => {
           return { procedures: resp.procedures, length: resp.length };
@@ -66,20 +58,15 @@ export class InternalService {
   }
 
   getTypesProcedures() {
-    return this.http
-      .get<typeProcedure[]>(`${base_url}/internal/types-procedures`)
-      .pipe(
-        map((resp) => {
-          return resp;
-        })
-      );
+    return this.http.get<typeProcedure[]>(`${base_url}/internal/types-procedures`).pipe(
+      map((resp) => {
+        return resp;
+      })
+    );
   }
   conclude(id_tramite: string, descripcion: string) {
     return this.http
-      .put<{ ok: boolean; message: string }>(
-        `${base_url}/internos/concluir/${id_tramite}`,
-        { descripcion }
-      )
+      .put<{ ok: boolean; message: string }>(`${base_url}/internos/concluir/${id_tramite}`, { descripcion })
       .pipe(
         map((resp) => {
           return resp.message;
@@ -88,10 +75,7 @@ export class InternalService {
   }
   cancel(id_tramite: string, descripcion: string) {
     return this.http
-      .put<{ ok: boolean; message: string }>(
-        `${base_url}/internos/cancelar/${id_tramite}`,
-        { descripcion }
-      )
+      .put<{ ok: boolean; message: string }>(`${base_url}/internos/cancelar/${id_tramite}`, { descripcion })
       .pipe(
         map((resp) => {
           return resp.message;

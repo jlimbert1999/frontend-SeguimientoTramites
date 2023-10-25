@@ -4,25 +4,11 @@ import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Officer } from 'src/app/administration/models/officer.model';
 import { receiver } from '../interfaces/receiver.interface';
-import {
-  institution,
-  dependency,
-  account,
-} from 'src/app/administration/interfaces';
+import { institution, dependency, account } from 'src/app/administration/interfaces';
 import { CreateMailDto } from '../dto/create-mail.dto';
 import { communication, workflow } from '../interfaces';
-import {
-  external,
-  groupProcedure,
-  internal,
-  observation,
-  stateProcedure,
-} from 'src/app/procedures/interfaces';
-import {
-  ExternalProcedure,
-  InternalProcedure,
-  Procedure,
-} from 'src/app/procedures/models';
+import { external, groupProcedure, internal, observation, stateProcedure } from 'src/app/procedures/interfaces';
+import { ExternalProcedure, InternalProcedure, Procedure } from 'src/app/procedures/models';
 
 const base_url = environment.base_url;
 
@@ -33,14 +19,9 @@ export class InboxService {
   constructor(private http: HttpClient) {}
 
   getInboxOfAccount(limit: number, offset: number) {
-    const params = new HttpParams()
-      .set('offset', offset * limit)
-      .set('limit', limit);
+    const params = new HttpParams().set('offset', offset * limit).set('limit', limit);
     return this.http
-      .get<{ mails: communication[]; length: number }>(
-        `${base_url}/communication/inbox`,
-        { params }
-      )
+      .get<{ mails: communication[]; length: number }>(`${base_url}/communication/inbox`, { params })
       .pipe(
         map((resp) => {
           return { mails: resp.mails, length: resp.length };
@@ -48,15 +29,9 @@ export class InboxService {
       );
   }
   searchInboxOfAccount(limit: number, offset: number, text: string) {
-    let params = new HttpParams()
-      .set('offset', offset)
-      .set('limit', limit)
-      .set('text', text);
+    let params = new HttpParams().set('offset', offset).set('limit', limit).set('text', text);
     return this.http
-      .get<{ mails: communication[]; length: number }>(
-        `${base_url}/inbox/search/${text}`,
-        { params }
-      )
+      .get<{ mails: communication[]; length: number }>(`${base_url}/inbox/search/${text}`, { params })
       .pipe(
         map((resp) => {
           return { mails: resp.mails, length: resp.length };
@@ -65,23 +40,15 @@ export class InboxService {
   }
 
   acceptMail(id_mail: string) {
-    return this.http
-      .put<{ state: stateProcedure }>(
-        `${base_url}/communication/inbox/accept/${id_mail}`,
-        {}
-      )
-      .pipe(
-        map((resp) => {
-          return resp.state;
-        })
-      );
+    return this.http.put<{ state: stateProcedure }>(`${base_url}/communication/inbox/accept/${id_mail}`, {}).pipe(
+      map((resp) => {
+        return resp.state;
+      })
+    );
   }
   rejectMail(id_mail: string, rejectionReason: string) {
     return this.http
-      .put<{ message: string }>(
-        `${base_url}/communication/inbox/reject/${id_mail}`,
-        { rejectionReason }
-      )
+      .put<{ message: string }>(`${base_url}/communication/inbox/reject/${id_mail}`, { rejectionReason })
       .pipe(
         map((resp) => {
           return resp.message;
@@ -109,48 +76,37 @@ export class InboxService {
   //   )
   // }
   getInstitucions() {
-    return this.http
-      .get<institution[]>(`${base_url}/communication/institutions`)
-      .pipe(
-        map((resp) => {
-          return resp;
-        })
-      );
+    return this.http.get<institution[]>(`${base_url}/communication/institutions`).pipe(
+      map((resp) => {
+        return resp;
+      })
+    );
   }
   getDependenciesOfInstitution(id_institution: string) {
-    return this.http
-      .get<dependency[]>(
-        `${base_url}/communication/dependencies/${id_institution}`
-      )
-      .pipe(
-        map((resp) => {
-          return resp;
-        })
-      );
+    return this.http.get<dependency[]>(`${base_url}/communication/dependencies/${id_institution}`).pipe(
+      map((resp) => {
+        return resp;
+      })
+    );
   }
   getAccountsOfDependencie(id_dependencie: string) {
-    return this.http
-      .get<account[]>(`${base_url}/communication/accounts/${id_dependencie}`)
-      .pipe(
-        map((resp) => {
-          const receivers: receiver[] = resp.map((account) => {
-            return {
-              id_account: account._id,
-              officer: Officer.officerFromJson(account.funcionario),
-              online: false,
-            };
-          });
-          return receivers;
-        })
-      );
+    return this.http.get<account[]>(`${base_url}/communication/accounts/${id_dependencie}`).pipe(
+      map((resp) => {
+        const receivers: receiver[] = resp.map((account) => {
+          return {
+            id_account: account._id,
+            officer: Officer.officerFromJson(account.funcionario),
+            online: false,
+          };
+        });
+        return receivers;
+      })
+    );
   }
 
   Conclude(id_bandeja: string, description: string) {
     return this.http
-      .put<{ ok: boolean; message: string }>(
-        `${base_url}/entradas/concluir/${id_bandeja}`,
-        { description }
-      )
+      .put<{ ok: boolean; message: string }>(`${base_url}/entradas/concluir/${id_bandeja}`, { description })
       .pipe(
         map((resp) => {
           return resp.message;
@@ -162,23 +118,15 @@ export class InboxService {
     return this.http.get<communication>(`${base_url}/communication/${id_mail}`);
   }
   addObservation(id_procedure: string, description: string) {
-    return this.http.post<observation>(
-      `${base_url}/communication/inbox/observation/${id_procedure}`,
-      {
-        description,
-      }
-    );
+    return this.http.post<observation>(`${base_url}/communication/inbox/observation/${id_procedure}`, {
+      description,
+    });
   }
   repairObservation(id_observation: string) {
-    return this.http
-      .put<{ ok: boolean; state: string }>(
-        `${base_url}/entradas/corregir/${id_observation}`,
-        {}
-      )
-      .pipe(
-        map((resp) => {
-          return resp.state;
-        })
-      );
+    return this.http.put<{ ok: boolean; state: string }>(`${base_url}/entradas/corregir/${id_observation}`, {}).pipe(
+      map((resp) => {
+        return resp.state;
+      })
+    );
   }
 }

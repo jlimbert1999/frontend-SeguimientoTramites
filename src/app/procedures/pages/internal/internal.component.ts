@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AuthService } from 'src/app/auth/services/auth.service';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import Swal from 'sweetalert2';
-import { InternalDialogComponent } from '../../dialogs/internal-dialog/internal-dialog.component';
 import { Router } from '@angular/router';
-import { SocketService } from 'src/app/services/socket.service';
+import { Observable } from 'rxjs';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
+import { InternalDialogComponent } from '../../dialogs/internal-dialog/internal-dialog.component';
 import { createInternalRouteMap } from '../../helpers/internal-route-map';
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
 import { sendDetail } from 'src/app/communication/interfaces';
-import { internal } from '../../interfaces';
+import { internal, stateProcedure } from '../../interfaces';
 import { InternalProcedure } from '../../models';
-import { InternalService, ProcedureService } from '../../services';
+import { ArchiveService, InternalService, ProcedureService } from '../../services';
+import { AlertManager } from 'src/app/shared/helpers/alerts';
+import { EventProcedureDto } from '../../dtos';
 
 @Component({
   selector: 'app-internal',
@@ -19,51 +19,38 @@ import { InternalService, ProcedureService } from '../../services';
   styleUrls: ['./internal.component.scss'],
 })
 export class InternalComponent implements OnInit {
-  displayedColumns: string[] = [
-    'alterno',
-    'detalle',
-    'destinatario',
-    'estado',
-    'fecha',
-    'enviado',
-    'opciones',
-  ];
+  displayedColumns: string[] = ['alterno', 'detalle', 'destinatario', 'estado', 'fecha', 'enviado', 'opciones'];
   dataSource: internal[] = [];
+  textSearch: string = '';
 
   constructor(
+    private router: Router,
     private dialog: MatDialog,
     private internoService: InternalService,
     public procedureService: ProcedureService,
-    private authService: AuthService,
     public paginatorService: PaginatorService,
-    private router: Router,
-    private socketService: SocketService
+    private archiveService: ArchiveService
   ) {}
 
   ngOnInit(): void {
-    this.Get();
+    this.getSearchParams();
+    this.getData();
   }
-  Get() {
+  getData() {
+    let subscription: Observable<{ procedures: internal[]; length: number }>;
     if (this.paginatorService.searchMode) {
-      // this.internoService
-      //   .search(
-      //     this.paginatorService.limit,
-      //     this.paginatorService.offset,
-      //     this.paginatorService.textSearch
-      //   )
-      //   .subscribe((data) => {
-      //     this.dataSource = data.procedures;
-      //     this.paginatorService.length = data.length;
-      //   });
+      subscription = this.internoService.search(
+        this.textSearch,
+        this.paginatorService.limit,
+        this.paginatorService.offset
+      );
     } else {
-      this.internoService
-        .Get(this.paginatorService.limit, this.paginatorService.offset)
-        .subscribe((data) => {
-          this.dataSource = data.procedures;
-          this.paginatorService.length = data.length;
-        });
+      subscription = this.internoService.Get(this.paginatorService.limit, this.paginatorService.offset);
     }
-    console.log(this.paginatorService.searchParams);
+    subscription.subscribe((data) => {
+      this.dataSource = data.procedures;
+      this.paginatorService.length = data.length;
+    });
   }
 
   Add() {
@@ -89,9 +76,7 @@ export class InternalComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result: internal) => {
       if (result) {
-        const indexFound = this.dataSource.findIndex(
-          (element) => element._id === result._id
-        );
+        const indexFound = this.dataSource.findIndex((element) => element._id === result._id);
         this.dataSource[indexFound] = result;
         this.dataSource = [...this.dataSource];
       }
@@ -112,81 +97,68 @@ export class InternalComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        const indexFound = this.dataSource.findIndex(
-          (element) => element._id === procedure._id
-        );
+        const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
         this.dataSource[indexFound].send = true;
         this.dataSource = [...this.dataSource];
       }
     });
   }
 
-  applyFilter(event: Event) {
-    // const filterValue = (event.target as HTMLInputElement).value;
-    // this.paginatorService.textSearch = filterValue.toLowerCase();
-    // this.Get();
+  applyFilter() {
+    if (this.textSearch === '') return;
+    this.paginatorService.offset = 0;
+    this.paginatorService.searchMode = true;
+    this.paginatorService.searchParams.set('text', this.textSearch);
+    this.getData();
   }
 
-  cancelSearch() {
-    // this.paginatorService.offset = 0;
-    // this.paginatorService.textSearch = '';
-    // this.Get();
+  cancelFilter() {
+    this.textSearch = '';
+    this.paginatorService.offset = 0;
+    this.paginatorService.searchMode = false;
+    this.paginatorService.searchParams.clear();
+    this.getData();
   }
-
   generateRouteMap(id_tramite: string) {
     this.procedureService.getFullProcedure(id_tramite).subscribe((data) => {
-      createInternalRouteMap(
-        data.procedure as InternalProcedure,
-        data.workflow
-      );
+      createInternalRouteMap(data.procedure as InternalProcedure, data.workflow);
     });
   }
 
   conclude(procedure: internal) {
-    Swal.fire({
-      icon: 'question',
-      title: `Concluir el tramite ${procedure.code}?`,
-      text: `El tramite pasara a su seccion de archivos`,
-      inputPlaceholder: 'Ingrese una referencia para concluir',
-      input: 'textarea',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      customClass: {
-        validationMessage: 'my-validation-message',
-      },
-      preConfirm: (value) => {
-        if (!value) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Debe ingresar una referencia para concluir'
-          );
-        }
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.internoService
-          .conclude(procedure._id, result.value!)
-          .subscribe((message) => {
-            this.socketService.socket.emit(
-              'archive',
-              this.authService.account.id_dependency
-            );
-            Swal.fire(message, undefined, 'success');
-            const index = this.dataSource.findIndex(
-              (element) => element._id === procedure._id
-            );
-            // this.dataSource[index].state = 'CONCLUIDO';
-            this.dataSource = [...this.dataSource];
-          });
+    AlertManager.showConfirmAlert(
+      `¿Concluir el tramite ${procedure.code}?`,
+      'Los tramites concluidos desde su administacion no pueden ser desarchivados',
+      'Ingrese una referencia para concluir',
+      (description) => {
+        const archive: EventProcedureDto = {
+          procedure: procedure._id,
+          description,
+          stateProcedure: stateProcedure.CONCLUIDO,
+        };
+        this.archiveService.archiveProcedure(procedure._id, archive).subscribe(() => {
+          const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
+          this.dataSource[indexFound].state = stateProcedure.CONCLUIDO;
+        });
       }
-    });
+    );
   }
-  view(procedure: internal) {
+  showDetails(procedure: internal) {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
+      ...(this.paginatorService.searchMode && { search: true }),
     };
     this.router.navigate(['/tramites/internos', procedure._id], {
       queryParams: params,
     });
+  }
+
+  getSearchParams() {
+    if (!this.paginatorService.searchMode) {
+      this.paginatorService.searchParams.clear();
+      return;
+    }
+    this.textSearch = this.paginatorService.searchParams.get('text')!;
   }
 }

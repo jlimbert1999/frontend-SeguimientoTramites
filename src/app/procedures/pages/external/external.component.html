@@ -1,35 +1,14 @@
-<app-toolbar
-  class="custom-toolbar"
-  title="EXTERNOS"
-  [showAdd]="true"
-  (add)="Add()"
-></app-toolbar>
+<app-toolbar class="custom-toolbar" title="EXTERNOS" [showAdd]="true" (add)="Add()"></app-toolbar>
 <div class="container-fluid animate__animated animate__fadeIn">
   <div class="row">
     <div class="col-sm-12">
       <mat-form-field class="example-form-field">
-        <mat-label>Buscar tramite</mat-label>
-        <input
-          matInput
-          type="text"
-          placeholder="Alterno / Referencia / Solicitante"
-          [(ngModel)]="textSearch"
-        />
-        <button
-          *ngIf="textSearch"
-          (click)="cancelFilter()"
-          matSuffix
-          mat-icon-button
-          aria-label="Clear"
-        >
+        <mat-label>Buscar tramite externo</mat-label>
+        <input matInput type="text" placeholder="Alterno / Referencia / Solicitante" [(ngModel)]="textSearch" />
+        <button *ngIf="textSearch" (click)="cancelFilter()" matSuffix mat-icon-button aria-label="Clear">
           <mat-icon>close</mat-icon>
         </button>
-        <button
-          matSuffix
-          mat-icon-button
-          (click)="applyFilter()"
-          aria-label="Clear"
-        >
+        <button matSuffix mat-icon-button (click)="applyFilter()" aria-label="Clear">
           <mat-icon>search</mat-icon>
         </button>
       </mat-form-field>
@@ -84,29 +63,21 @@
         <ng-container matColumnDef="opciones">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let row">
-            <button
-              mat-icon-button
-              [matMenuTriggerFor]="menu"
-              aria-label="Example icon-button with a menu"
-            >
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Options menu">
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button
-                [disabled]="row.state === 'CONCLUIDO'"
-                mat-menu-item
-                (click)="Edit(row)"
-              >
+              <button mat-menu-item [disabled]="row.state !== 'INSCRITO'" (click)="Edit(row)">
                 <mat-icon>edit</mat-icon>
                 <span>Editar tramite</span>
               </button>
-              <button
-                mat-menu-item
-                [disabled]="row.state === 'CONCLUIDO' || row.send"
-                (click)="Send(row)"
-              >
+              <button mat-menu-item [disabled]="row.state !== 'INSCRITO' || row.send" (click)="Send(row)">
                 <mat-icon>send</mat-icon>
                 <span>Remitir tramite</span>
+              </button>
+              <button mat-menu-item [disabled]="row.state !== 'INSCRITO' || row.send" (click)="conclude(row)">
+                <mat-icon>domain_verification</mat-icon>
+                Concluir tramite
               </button>
               <button mat-menu-item (click)="GenerateFicha(row)">
                 <mat-icon>receipt_long</mat-icon>
@@ -116,27 +87,16 @@
                 <mat-icon>feed</mat-icon>
                 <span>Hoja de ruta</span>
               </button>
-              <button
-                mat-menu-item
-                [disabled]="row.state === 'CONCLUIDO' || row.send"
-                (click)="conclude(row)"
-              >
-                <mat-icon>domain_verification</mat-icon>
-                Concluir tramite
-              </button>
             </mat-menu>
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="4">Sin resultados para el termino</td>
+          <td class="mat-cell" colspan="4">Sin resultados</td>
         </tr>
       </table>
     </div>
-    <app-paginator
-      [pageSizeOptions]="[10, 20, 30, 50]"
-      (page)="getData()"
-    ></app-paginator>
+    <app-paginator [pageSizeOptions]="[10, 20, 30, 50]" (page)="getData()"></app-paginator>
   </div>
 </div>

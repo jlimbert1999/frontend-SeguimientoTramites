@@ -10,14 +10,11 @@ import { userSocket } from '../auth/interfaces';
 export class SocketService {
   socket: Socket;
   isOnline: boolean = false;
-  private onlineUsersSubject: BehaviorSubject<userSocket[]> =
-    new BehaviorSubject<userSocket[]>([]);
-  public onlineUsers$: Observable<userSocket[]> =
-    this.onlineUsersSubject.asObservable();
+  private onlineUsersSubject: BehaviorSubject<userSocket[]> = new BehaviorSubject<userSocket[]>([]);
+  public onlineUsers$: Observable<userSocket[]> = this.onlineUsersSubject.asObservable();
 
   private mailSubscription: Subject<communication> = new Subject();
-  public mailSubscription$: Observable<communication> =
-    this.mailSubscription.asObservable();
+  public mailSubscription$: Observable<communication> = this.mailSubscription.asObservable();
 
   constructor() {}
   setupSocketConnection(token: string) {
