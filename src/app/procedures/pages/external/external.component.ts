@@ -22,7 +22,6 @@ export class ExternalComponent implements OnInit {
   dataSource: external[] = [];
   displayedColumns: string[] = ['alterno', 'detalle', 'estado', 'solicitante', 'fecha_registro', 'enviado', 'opciones'];
   stateProcedure: stateProcedure;
-  textSearch: string = '';
   constructor(
     public dialog: MatDialog,
     private router: Router,
@@ -32,7 +31,6 @@ export class ExternalComponent implements OnInit {
     private readonly archiveService: ArchiveService
   ) {}
   ngOnInit(): void {
-    this.getSearchParams();
     this.getData();
   }
 
@@ -40,7 +38,7 @@ export class ExternalComponent implements OnInit {
     let subscription: Observable<{ procedures: external[]; length: number }>;
     if (this.paginatorService.searchMode) {
       subscription = this.externalService.search(
-        this.textSearch,
+        this.paginatorService.searchParams.get('text')!,
         this.paginatorService.limit,
         this.paginatorService.offset
       );
@@ -113,7 +111,7 @@ export class ExternalComponent implements OnInit {
     });
   }
 
-  GenerateFicha(tramite: external) {
+  generateTicket(tramite: external) {
     createTicket(tramite);
   }
 
@@ -136,22 +134,6 @@ export class ExternalComponent implements OnInit {
     );
   }
 
-  applyFilter() {
-    if (this.textSearch === '') return;
-    this.paginatorService.offset = 0;
-    this.paginatorService.searchMode = true;
-    this.paginatorService.searchParams.set('text', this.textSearch);
-    this.getData();
-  }
-
-  cancelFilter() {
-    this.textSearch = '';
-    this.paginatorService.offset = 0;
-    this.paginatorService.searchMode = false;
-    this.paginatorService.searchParams.clear();
-    this.getData();
-  }
-
   showDetails(procedure: external) {
     const params = {
       limit: this.paginatorService.limit,
@@ -161,12 +143,5 @@ export class ExternalComponent implements OnInit {
     this.router.navigate(['/tramites/externos', procedure._id], {
       queryParams: params,
     });
-  }
-  getSearchParams() {
-    if (!this.paginatorService.searchMode) {
-      this.paginatorService.searchParams.clear();
-      return;
-    }
-    this.textSearch = this.paginatorService.searchParams.get('text')!;
   }
 }

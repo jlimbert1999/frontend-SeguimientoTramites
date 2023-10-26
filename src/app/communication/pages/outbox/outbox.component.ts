@@ -2,10 +2,10 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MatSelectionList } from '@angular/material/list';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { OutboxService } from '../../services/outbox.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { Router } from '@angular/router';
 import { createFullName } from 'src/app/helpers/fullname.helper';
 import { SocketService } from 'src/app/services/socket.service';
 import { communication, groupedCommunication } from '../../interfaces';
@@ -43,20 +43,20 @@ export class OutboxComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {}
 
   ngOnInit(): void {
-    this.Get();
+    this.getData();
   }
-  Get() {
+  getData() {
     if (this.paginatorService.searchMode) {
-      // this.outboxService
-      //   .Search(
-      //     this.paginatorService.limit,
-      //     this.paginatorService.offset,
-      //     this.paginatorService.textSearch
-      //   )
-      //   .subscribe((data) => {
-      //     this.dataSource = data.mails;
-      //     this.paginatorService.length = data.length;
-      //   });
+      this.outboxService
+        .search(
+          this.paginatorService.limit,
+          this.paginatorService.offset,
+          this.paginatorService.searchParams.get('text')!
+        )
+        .subscribe((data) => {
+          this.dataSource = data.mails;
+          this.paginatorService.length = data.length;
+        });
     } else {
       this.outboxService
         .getOutboxOfAccount(this.paginatorService.limit, this.paginatorService.offset)
@@ -87,24 +87,11 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
+      ...(this.paginatorService.searchMode && { search: true }),
     };
     this.router.navigate(['bandejas/salida', mail._id.procedure._id], {
       queryParams: params,
     });
-  }
-
-  applyFilter(event: Event) {
-    // if (this.paginatorService.textSearch) {
-    //   this.paginatorService.offset = 0;
-    //   const filterValue = (event.target as HTMLInputElement).value;
-    //   this.paginatorService.textSearch = filterValue.toLowerCase();
-    //   this.Get();
-    // }
-  }
-  cancelSearch() {
-    // this.paginatorService.offset = 0;
-    // this.paginatorService.textSearch = '';
-    // this.Get();
   }
 
   cancelSend(mail: groupedCommunication, selectedSendIds: string[] | null) {
@@ -115,7 +102,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
       () => {
         this.outboxService.cancelMail(mail._id.procedure._id, selectedSendIds).subscribe((data) => {
           if (mail.sendings.length === selectedSendIds.length) {
-            this.Get();
+            this.getData();
           } else {
             const index = this.dataSource.findIndex((item) => item._id === mail._id);
             this.dataSource[index].sendings = mail.sendings.filter((send) => !selectedSendIds.includes(send._id));

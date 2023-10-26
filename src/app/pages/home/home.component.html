@@ -10,20 +10,10 @@
       <mat-card class="card-profile footer">
         <mat-card-header>
           <div mat-card-avatar class="card-profile-image"></div>
-          <mat-card-title
-            >{{
-              authService.account.officer.fullname | titlecase | slice : 0 : 25
-            }}
-          </mat-card-title>
-          <mat-card-subtitle>{{
-            authService.account.officer.jobtitle | slice : 0 : 25
-          }}</mat-card-subtitle>
+          <mat-card-title>{{ authService.account.officer.fullname | titlecase | slice : 0 : 25 }} </mat-card-title>
+          <mat-card-subtitle>{{ authService.account.officer.jobtitle | slice : 0 : 25 }}</mat-card-subtitle>
           <div style="flex-grow: 1"></div>
-          <button
-            mat-icon-button
-            [matMenuTriggerFor]="menu"
-            aria-label="Example icon-button with a menu"
-          >
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
@@ -56,10 +46,7 @@
 
       <ng-template #parentMenu let-menu="menu">
         <mat-divider></mat-divider>
-        <mat-list-item
-          [routerLink]="menu.routerLink"
-          routerLinkActive="active-link"
-        >
+        <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="active-link">
           <mat-icon matListItemIcon>{{ menu.icon }}</mat-icon>
           <span matListItemTitle>{{ menu.text }}</span>
         </mat-list-item>
@@ -69,9 +56,7 @@
         <mat-divider></mat-divider>
         <mat-expansion-panel [expanded]="true" [class.mat-elevation-z0]="true">
           <mat-expansion-panel-header>
-            <mat-icon matListItemIcon style="margin-right: 30px">
-              folder</mat-icon
-            >
+            <mat-icon matListItemIcon style="margin-right: 30px"> folder</mat-icon>
             <span style="font-size: 16px">{{ menu.text }}</span>
           </mat-expansion-panel-header>
           <mat-nav-list>
@@ -80,9 +65,7 @@
               [routerLink]="submenu.routerLink"
               routerLinkActive="active-link"
             >
-              <mat-icon matListItemIcon matBadgeColor="warn" matBadge="99">{{
-                submenu.icon
-              }}</mat-icon>
+              <mat-icon matListItemIcon matBadgeColor="warn" matBadge="99">{{ submenu.icon }}</mat-icon>
               <span matListItemTitle>{{ submenu.text }}</span>
             </mat-list-item>
           </mat-nav-list>
@@ -92,12 +75,7 @@
 
     <mat-sidenav-content>
       <div *ngIf="loader.loading$ | async" class="overlay">
-        <mat-spinner
-          mode="indeterminate"
-          [strokeWidth]="18"
-          [diameter]="200"
-          class="load-spiner"
-        ></mat-spinner>
+        <mat-spinner mode="indeterminate" [strokeWidth]="20" [diameter]="200" class="load-spiner"></mat-spinner>
       </div>
       <router-outlet></router-outlet>
     </mat-sidenav-content>

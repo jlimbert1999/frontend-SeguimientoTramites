@@ -1,5 +1,6 @@
 <app-toolbar title="BANDEJA SALIDA"></app-toolbar>
 <div class="container-fluid animate__animated animate__fadeIn">
+  <app-input-search-procedures placeholder="s" (searchEvent)="getData()"></app-input-search-procedures>
   <div class="example-container mat-elevation-z8">
     <div class="example-table-container">
       <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
@@ -40,18 +41,11 @@
         <ng-container matColumnDef="opciones">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let row">
-            <button
-              mat-icon-button
-              [matMenuTriggerFor]="menu"
-              aria-label="Example icon-button with a menu"
-            >
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button
-                (click)="generar_hoja_ruta(row.tramite._id, row.tipo)"
-                mat-menu-item
-              >
+              <button (click)="generar_hoja_ruta(row.tramite._id, row.tipo)" mat-menu-item>
                 <mat-icon>print</mat-icon>
                 <span>Hoja de ruta</span>
               </button>
@@ -60,46 +54,25 @@
         </ng-container>
 
         <ng-container matColumnDef="expand">
-          <th mat-header-cell *matHeaderCellDef aria-label="row actions">
-            &nbsp;
-          </th>
+          <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
           <td mat-cell *matCellDef="let element">
             <button
               mat-icon-button
               aria-label="expand row"
-              (click)="
-                expandedElement = expandedElement === element ? null : element;
-                $event.stopPropagation()
-              "
+              (click)="expandedElement = expandedElement === element ? null : element; $event.stopPropagation()"
             >
-              <mat-icon *ngIf="expandedElement !== element"
-                >keyboard_arrow_down</mat-icon
-              >
-              <mat-icon *ngIf="expandedElement === element"
-                >keyboard_arrow_up</mat-icon
-              >
+              <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+              <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
             </button>
           </td>
         </ng-container>
         <ng-container matColumnDef="expandedDetail">
-          <td
-            mat-cell
-            *matCellDef="let element"
-            [attr.colspan]="displayedColumns.length"
-          >
-            <div
-              class="example-element-detail"
-              [@detailExpand]="
-                element == expandedElement ? 'expanded' : 'collapsed'
-              "
-            >
+          <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+            <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
               <div class="expanded-contend p-2">
                 <section>
                   <div class="example-button-row">
-                    <button
-                      mat-stroked-button
-                      (click)="selectAllItemsList(shoes)"
-                    >
+                    <button mat-stroked-button (click)="selectAllItemsList(shoes)">
                       <mat-icon>checklist</mat-icon>
                       Marcar todo
                     </button>
@@ -144,16 +117,9 @@
           class="example-element-row"
           [class.example-expanded-row]="expandedElement === row"
         ></tr>
-        <tr
-          mat-row
-          *matRowDef="let row; columns: ['expandedDetail']"
-          class="example-detail-row"
-        ></tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
       </table>
     </div>
-    <app-paginator
-      (page)="Get()"
-      [pageSizeOptions]="[10, 20, 30, 50]"
-    ></app-paginator>
+    <app-paginator (page)="getData()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
   </div>
 </div>

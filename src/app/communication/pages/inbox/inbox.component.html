@@ -1,12 +1,13 @@
 <app-toolbar title="BANDEJA ENTRADA"></app-toolbar>
 <div class="container-fluid animate__animated animate__fadeIn">
+  <app-input-search-procedures (searchEvent)="getData()"></app-input-search-procedures>
   <div class="mat-elevation-z8">
     <div class="example-table-container">
       <table mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="code">
           <th mat-header-cell *matHeaderCellDef>Alterno</th>
           <td mat-cell *matCellDef="let row">
-            <a (click)="showDetails(row)">
+            <a (click)="showDetail(row)">
               {{ row.procedure.code }}
             </a>
           </td>
@@ -91,6 +92,6 @@
         ></tr>
       </table>
     </div>
-    <app-paginator (page)="Get()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
+    <app-paginator (page)="getData()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
   </div>
 </div>

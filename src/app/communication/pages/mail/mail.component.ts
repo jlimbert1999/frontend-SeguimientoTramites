@@ -8,17 +8,10 @@ import Swal from 'sweetalert2';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { showToast } from 'src/app/helpers/toats.helper';
 
-import {
-  groupProcedure,
-  observation,
-  stateProcedure,
-} from 'src/app/procedures/interfaces';
+import { groupProcedure, observation, stateProcedure } from 'src/app/procedures/interfaces';
 import { communication, statusMail, workflow } from '../../interfaces';
 import { ProcedureService } from 'src/app/procedures/services/procedure.service';
-import {
-  ExternalProcedure,
-  InternalProcedure,
-} from 'src/app/procedures/models';
+import { ExternalProcedure, InternalProcedure } from 'src/app/procedures/models';
 import { createExternalRouteMap } from 'src/app/procedures/helpers/external-route-map';
 import { CreateInternalProcedureDto } from 'src/app/procedures/dtos/create-internal.dto';
 import { createInternalRouteMap } from 'src/app/procedures/helpers/internal-route-map';
@@ -45,7 +38,6 @@ export class MailComponent implements OnInit {
     this.activateRoute.params.subscribe((params) => {
       this.entradaService.getMailDetails(params['id']).subscribe((data) => {
         this.mail = data;
-
         this.getFullDetailsProcedure(this.mail.procedure._id);
       });
     });
@@ -63,6 +55,8 @@ export class MailComponent implements OnInit {
     this.activateRoute.queryParams.subscribe((data) => {
       this.paginatorService.limit = data['limit'];
       this.paginatorService.offset = data['offset'];
+      const searchMode = String(data['search']).toLowerCase();
+      this.paginatorService.searchMode = searchMode === 'true' ? true : false;
       this._location.back();
     });
   }
@@ -127,9 +121,7 @@ export class MailComponent implements OnInit {
       },
       preConfirm: (value) => {
         if (!value) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Debe ingresar el motivo para el rechazo'
-          );
+          Swal.showValidationMessage('<i class="fa fa-info-circle"></i> Debe ingresar el motivo para el rechazo');
         }
       },
     }).then((result) => {
@@ -153,18 +145,14 @@ export class MailComponent implements OnInit {
       },
       preConfirm: (value) => {
         if (!value) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Ingrese la descripcion'
-          );
+          Swal.showValidationMessage('<i class="fa fa-info-circle"></i> Ingrese la descripcion');
         }
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.entradaService
-          .addObservation(this.procedure._id, result.value!)
-          .subscribe((observation) => {
-            console.log(observation);
-          });
+        this.entradaService.addObservation(this.procedure._id, result.value!).subscribe((observation) => {
+          console.log(observation);
+        });
       }
     });
   }
@@ -208,12 +196,10 @@ export class MailComponent implements OnInit {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.entradaService
-          .Conclude(this.mail._id, result.value!)
-          .subscribe((message) => {
-            showToast('success', message);
-            this.back();
-          });
+        this.entradaService.Conclude(this.mail._id, result.value!).subscribe((message) => {
+          showToast('success', message);
+          this.back();
+        });
       }
     });
   }

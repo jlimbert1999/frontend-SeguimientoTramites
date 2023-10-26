@@ -1,26 +1,35 @@
 import { Injectable } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
+interface paginationParams {
+  limit: number;
+  offset: number;
+}
 @Injectable({
   providedIn: 'root',
 })
 export class PaginatorService {
-  limit: number = 10;
-  offset: number = 0;
-  length: number = 0;
-  searchMode: boolean = false;
-  searchParams = new Map<string, string>();
+  public limit: number = 10;
+  public offset: number = 0;
+  public length: number = 0;
+  public searchMode: boolean = false;
+  public searchParams = new Map<string, string>();
 
   constructor() {}
 
-  set setPage(event: PageEvent) {
-    this.limit = event.pageSize;
-    this.offset = event.pageIndex;
+  set setPage({ limit, offset }: paginationParams) {
+    this.limit = limit;
+    this.offset = offset;
   }
 
-  resetPage() {
+  resetPagination() {
     this.limit = 10;
     this.offset = 0;
     this.length = 0;
     this.searchMode = false;
+  }
+
+  resetSearchParams() {
+    if (!this.searchMode) {
+      this.searchParams.clear();
+    }
   }
 }

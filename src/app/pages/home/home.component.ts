@@ -23,7 +23,6 @@ export class HomeComponent {
   numberMails$ = this.notificationService.number_mails$;
   private mailSubscription: Subscription;
   @ViewChild('snav') public sidenav: MatSidenav;
-
   private _mobileQueryListener: () => void;
 
   ngAfterViewInit() {
@@ -55,21 +54,16 @@ export class HomeComponent {
   ngOnInit(): void {
     this.socketService.listenUserConection();
     this.socketService.listenMails();
-    this.mailSubscription = this.mailSubscription =
-      this.socketService.mailSubscription$.subscribe((data) => {
-        const toast = this.toastr.info(
-          `${data.emitter.fullname} ha enviado un tramite`,
-          'Nuevo tramite recibido',
-          {
-            positionClass: 'toast-bottom-right',
-            closeButton: true,
-            timeOut: 7000,
-          }
-        );
-        toast.onTap.subscribe((action) => {
-          this.router.navigateByUrl('bandejas/entrada');
-        });
+    this.mailSubscription = this.mailSubscription = this.socketService.mailSubscription$.subscribe((data) => {
+      const toast = this.toastr.info(`${data.emitter.fullname} ha enviado un tramite`, 'Nuevo tramite recibido', {
+        positionClass: 'toast-bottom-right',
+        closeButton: true,
+        timeOut: 7000,
       });
+      toast.onTap.subscribe((action) => {
+        this.router.navigateByUrl('bandejas/entrada');
+      });
+    });
   }
   ngOnDestroy(): void {
     this.mobileQuery!.removeListener(this._mobileQueryListener);
@@ -78,7 +72,6 @@ export class HomeComponent {
   editAccount() {
     this.router.navigate(['home/perfil', this.authService.account.id_account]);
   }
-
   logout() {
     this.authService.logout();
     this.socketService.disconnect();

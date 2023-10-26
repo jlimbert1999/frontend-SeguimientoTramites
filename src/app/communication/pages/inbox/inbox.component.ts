@@ -25,7 +25,6 @@ export class InboxComponent implements OnInit, OnDestroy {
   private mailCancelSubscription: Subscription;
   displayedColumns: string[] = ['code', 'reference', 'state', 'emitter', 'outboundDate', 'options'];
   dataSource: communication[] = [];
-  textSearch: string;
 
   constructor(
     private router: Router,
@@ -41,7 +40,7 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.Get();
+    this.getData();
   }
 
   ngOnDestroy(): void {
@@ -49,18 +48,18 @@ export class InboxComponent implements OnInit, OnDestroy {
     if (this.mailCancelSubscription) this.mailCancelSubscription.unsubscribe();
   }
 
-  Get() {
+  getData() {
     if (this.paginatorService.searchMode) {
-      // this.inboxService
-      //   .searchInboxOfAccount(
-      //     this.paginatorService.limit,
-      //     this.paginatorService.offset,
-      //     this.paginatorService.textSearch
-      //   )
-      //   .subscribe((resp) => {
-      //     this.dataSource = resp.mails;
-      //     this.paginatorService.length = resp.length;
-      //   });
+      this.inboxService
+        .searchInboxOfAccount(
+          this.paginatorService.limit,
+          this.paginatorService.offset,
+          this.paginatorService.searchParams.get('text')!
+        )
+        .subscribe((resp) => {
+          this.dataSource = resp.mails;
+          this.paginatorService.length = resp.length;
+        });
     } else {
       this.inboxService
         .getInboxOfAccount(this.paginatorService.limit, this.paginatorService.offset)
@@ -87,7 +86,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.Get();
+        this.getData();
       }
     });
   }
@@ -104,7 +103,7 @@ export class InboxComponent implements OnInit, OnDestroy {
             this.dataSource[indexFound].status = statusMail.Received;
           },
           () => {
-            this.Get();
+            this.getData();
           }
         );
       }
@@ -117,7 +116,7 @@ export class InboxComponent implements OnInit, OnDestroy {
       'Ingrese el motivo del rechazo',
       (description) => {
         this.inboxService.rejectMail(mail._id, description).subscribe((message) => {
-          this.Get();
+          this.getData();
         });
       }
     );
@@ -134,26 +133,11 @@ export class InboxComponent implements OnInit, OnDestroy {
           stateProcedure: isSuspended ? stateProcedure.SUSPENDIDO : stateProcedure.CONCLUIDO,
         };
         this.archiveService.archiveMail(mail._id, archiveDto).subscribe(() => {
-          this.Get();
+          this.getData();
         });
       }
     );
   }
-
-  applyFilter(event: Event) {
-    // this.paginatorService.offset = 0;
-    // const filterValue = (event.target as HTMLInputElement).value;
-    // this.paginatorService.textSearch = filterValue;
-    // this.Get();
-  }
-
-  cancelSearch() {
-    // this.paginatorService.offset = 0;
-    // this.paginatorService.text = '';
-    // this.paginatorService.type = undefined;
-    // this.Get();
-  }
-
   generateRouteMap(mail: communication) {
     this.procedureService.getFullProcedure(mail.procedure._id).subscribe((data) => {
       const { procedure, workflow } = data;
@@ -170,10 +154,11 @@ export class InboxComponent implements OnInit, OnDestroy {
       }
     });
   }
-  showDetails(mail: communication) {
+  showDetail(mail: communication) {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
+      ...(this.paginatorService.searchMode && { search: true }),
     };
     this.router.navigate(['bandejas/entrada', mail._id], {
       queryParams: params,

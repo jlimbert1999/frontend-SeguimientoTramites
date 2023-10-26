@@ -15,28 +15,21 @@ export class OutboxService {
   getOutboxOfAccount(limit: number, offset: number) {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
-      .get<{ mails: groupedCommunication[]; length: number }>(
-        `${base_url}/communication/outbox`,
-        {
-          params,
-        }
-      )
+      .get<{ mails: groupedCommunication[]; length: number }>(`${base_url}/communication/outbox`, {
+        params,
+      })
       .pipe(
         map((resp) => {
           return { mails: resp.mails, length: resp.length };
         })
       );
   }
-  Search(limit: number, offset: number, text: string) {
-    let params = new HttpParams()
-      .set('offset', offset)
-      .set('limit', limit)
-      .set('text', text);
+  search(limit: number, offset: number, text: string) {
+    const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
-      .get<{ mails: groupedCommunication[]; length: number }>(
-        `${base_url}/salidas/search/${text}`,
-        { params }
-      )
+      .get<{ mails: groupedCommunication[]; length: number }>(`${base_url}/communication/outbox/search/${text}`, {
+        params,
+      })
       .pipe(
         map((resp) => {
           return { mails: resp.mails, length: resp.length };
@@ -45,31 +38,21 @@ export class OutboxService {
   }
 
   cancelMail(id_procedure: string, ids_mails: string[]) {
-    return this.http.delete<{ message: string }>(
-      `${base_url}/communication/outbox/${id_procedure}`,
-      {
-        body: { ids_mails },
-      }
-    );
+    return this.http.delete<{ message: string }>(`${base_url}/communication/outbox/${id_procedure}`, {
+      body: { ids_mails },
+    });
   }
 
   cancelOneSend(id_bandeja: string) {
-    return this.http
-      .delete<{ ok: boolean; message: string }>(
-        `${base_url}/salidas/${id_bandeja}`
-      )
-      .pipe(
-        map((resp) => {
-          return resp.message;
-        })
-      );
+    return this.http.delete<{ ok: boolean; message: string }>(`${base_url}/salidas/${id_bandeja}`).pipe(
+      map((resp) => {
+        return resp.message;
+      })
+    );
   }
   cancelAllSend(id_tramite: string, fecha_envio: string) {
     return this.http
-      .put<{ ok: boolean; message: string }>(
-        `${base_url}/salidas/all/${id_tramite}`,
-        { fecha_envio }
-      )
+      .put<{ ok: boolean; message: string }>(`${base_url}/salidas/all/${id_tramite}`, { fecha_envio })
       .pipe(
         map((resp) => {
           return resp.message;

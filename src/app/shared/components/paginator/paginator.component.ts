@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { PaginatorService } from '../../services/paginator.service';
 
@@ -20,10 +13,12 @@ export class PaginatorComponent implements OnInit, OnDestroy {
 
   constructor(private paginatorService: PaginatorService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.paginatorService.resetSearchParams();
+  }
 
-  setPage(event: PageEvent) {
-    this.paginatorService.setPage = event;
+  setPage({ pageIndex, pageSize }: PageEvent) {
+    this.paginatorService.setPage = { limit: pageSize, offset: pageIndex };
     this.page.emit();
   }
 
@@ -38,6 +33,6 @@ export class PaginatorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.paginatorService.resetPage();
+    this.paginatorService.resetPagination();
   }
 }

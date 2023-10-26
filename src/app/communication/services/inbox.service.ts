@@ -7,8 +7,7 @@ import { receiver } from '../interfaces/receiver.interface';
 import { institution, dependency, account } from 'src/app/administration/interfaces';
 import { CreateMailDto } from '../dto/create-mail.dto';
 import { communication, workflow } from '../interfaces';
-import { external, groupProcedure, internal, observation, stateProcedure } from 'src/app/procedures/interfaces';
-import { ExternalProcedure, InternalProcedure, Procedure } from 'src/app/procedures/models';
+import { observation, stateProcedure } from 'src/app/procedures/interfaces';
 
 const base_url = environment.base_url;
 
@@ -29,9 +28,9 @@ export class InboxService {
       );
   }
   searchInboxOfAccount(limit: number, offset: number, text: string) {
-    let params = new HttpParams().set('offset', offset).set('limit', limit).set('text', text);
+    const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
-      .get<{ mails: communication[]; length: number }>(`${base_url}/inbox/search/${text}`, { params })
+      .get<{ mails: communication[]; length: number }>(`${base_url}/communication/inbox/search/${text}`, { params })
       .pipe(
         map((resp) => {
           return { mails: resp.mails, length: resp.length };
