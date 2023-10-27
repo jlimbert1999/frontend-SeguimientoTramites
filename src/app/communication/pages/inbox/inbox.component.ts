@@ -9,7 +9,6 @@ import { SocketService } from 'src/app/services/socket.service';
 import { communication, sendDetail, statusMail } from '../../interfaces';
 import { ProcedureService, ArchiveService } from 'src/app/procedures/services';
 import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
-
 import { ExternalProcedure, InternalProcedure } from 'src/app/procedures/models';
 import { createExternalRouteMap, createInternalRouteMap } from 'src/app/procedures/helpers';
 import { EventProcedureDto } from 'src/app/procedures/dtos';

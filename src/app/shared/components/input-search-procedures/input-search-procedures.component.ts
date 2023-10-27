@@ -26,7 +26,7 @@ export class InputSearchProceduresComponent implements OnInit {
   }
 
   search() {
-    if (this.FormSearch.invalid) return;
+    if (this.FormSearch.invalid || this.FormSearch.value === '') return;
     this.paginatorService.searchMode = true;
     this.paginatorService.offset = 0;
     this.paginatorService.searchParams.set('text', this.FormSearch.value!);

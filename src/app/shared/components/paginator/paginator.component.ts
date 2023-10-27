@@ -16,6 +16,9 @@ export class PaginatorComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.paginatorService.resetSearchParams();
   }
+  ngOnDestroy(): void {
+    this.paginatorService.resetPagination();
+  }
 
   setPage({ pageIndex, pageSize }: PageEvent) {
     this.paginatorService.setPage = { limit: pageSize, offset: pageIndex };
@@ -30,9 +33,5 @@ export class PaginatorComponent implements OnInit, OnDestroy {
   }
   get length() {
     return this.paginatorService.length;
-  }
-
-  ngOnDestroy(): void {
-    this.paginatorService.resetPagination();
   }
 }

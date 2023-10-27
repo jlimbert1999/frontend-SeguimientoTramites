@@ -19,6 +19,7 @@ import { ProcedureRoutingModule } from './procedure-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { SolicitantePipe } from './pipes/solicitante.pipe';
 import { ArchivesComponent } from './pages/archives/archives.component';
+import { EventDialogComponent } from './dialogs/event-dialog/event-dialog.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { ArchivesComponent } from './pages/archives/archives.component';
     FilterObservationsPipe,
     ObservationsComponent,
     ArchivesComponent,
+    EventDialogComponent,
   ],
   imports: [
     CommonModule,

@@ -1,13 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
+import { MatDialog } from '@angular/material/dialog';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchiveService } from '../../services/archive.service';
 import { communication } from 'src/app/communication/interfaces';
 import { stateProcedure } from 'src/app/procedures/interfaces';
 import { SocketService } from 'src/app/services/socket.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { EventProcedureDto } from '../../dtos/event_procedure.dto';
+import { EventDialogComponent } from '../../dialogs/event-dialog/event-dialog.component';
+import { AlertManager } from 'src/app/shared/helpers/alerts';
 
 @Component({
   selector: 'app-archives',
@@ -15,82 +17,80 @@ import { EventProcedureDto } from '../../dtos/event_procedure.dto';
   styleUrls: ['./archives.component.scss'],
 })
 export class ArchivesComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['procedure', 'reference', 'manager', 'options'];
+  displayedColumns: string[] = ['procedure', 'reference', 'manager', 'show-detail', 'options'];
   dataSource: communication[] = [];
   subscription: Subscription;
   constructor(
     private readonly archiveService: ArchiveService,
     private readonly paginatorService: PaginatorService,
     private readonly socketService: SocketService,
+    private dialog: MatDialog,
     private router: Router
   ) {
-    this.Get();
+    this.getData();
   }
 
   ngOnInit(): void {
-    this.subscription = this.socketService
-      .listenUnarchives()
-      .subscribe((res) => {
-        this.dataSource = this.dataSource.filter(
-          (element) => element._id !== res
-        );
-      });
+    this.listenUnarchives();
   }
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  Get() {
-    this.archiveService
-      .getAll(this.paginatorService.limit, this.paginatorService.offset)
-      .subscribe((data) => {
-        console.log(data);
-        this.dataSource = data.archives;
-        this.paginatorService.length = data.length;
-      });
-  }
-
-  unarchive(mail: communication) {
-    Swal.fire({
-      icon: 'question',
-      title: `¿Desarchivar el tramite ${mail.procedure.code}?`,
-      text: `El tramite volvera a su bandeja de entrada`,
-      inputPlaceholder: 'Ingrese una referencia para desarchivar',
-      input: 'textarea',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-      customClass: {
-        validationMessage: 'my-validation-message',
-      },
-      preConfirm: (value) => {
-        if (!value) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> La referencia es obligatoria'
-          );
-        }
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const archiveDto: EventProcedureDto = {
-          description: result.value,
-          procedure: mail.procedure._id,
-          stateProcedure: stateProcedure.CONCLUIDO,
-        };
-        this.archiveService
-          .unarchive(mail._id, archiveDto)
-          .subscribe((data) => console.log(data));
-      }
+  getData() {
+    const subscription: Observable<{ archives: communication[]; length: number }> = this.paginatorService.isSearchMode
+      ? this.archiveService.search(
+          this.paginatorService.searchParams.get('text')!,
+          this.paginatorService.limit,
+          this.paginatorService.offset
+        )
+      : this.archiveService.getAll(this.paginatorService.limit, this.paginatorService.offset);
+    subscription.subscribe((data) => {
+      this.dataSource = data.archives;
+      this.paginatorService.length = data.length;
     });
   }
 
-  view(mail: communication) {
+  unarchive(mail: communication) {
+    AlertManager.showConfirmAlert(
+      `¿Desarchivar el tramite ${mail.procedure.code}?`,
+      `El tramite volvera a su bandeja de entrada`,
+      'Ingrese una referencia para desarchivar',
+      (description) => {
+        const archiveDto: EventProcedureDto = {
+          description,
+          procedure: mail.procedure._id,
+          stateProcedure: stateProcedure.CONCLUIDO,
+        };
+        this.archiveService.unarchiveMail(mail._id, archiveDto).subscribe((data) => {
+          // this.dataSource
+          console.log(data);
+        });
+      }
+    );
+  }
+
+  showDetails(mail: communication) {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
+      ...(this.paginatorService.searchMode && { search: true }),
     };
     this.router.navigate(['/tramites/archivados', mail.procedure._id], {
       queryParams: params,
+    });
+  }
+  showTimeline(mail: communication) {
+    this.dialog.open(EventDialogComponent, {
+      width: '1000px',
+      data: mail,
+      disableClose: true,
+    });
+  }
+
+  listenUnarchives() {
+    this.subscription = this.socketService.listenUnarchives().subscribe((res) => {
+      alert('SE HA DESARCHIVADO');
     });
   }
 }

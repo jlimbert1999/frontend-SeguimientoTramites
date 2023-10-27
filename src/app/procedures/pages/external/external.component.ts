@@ -35,16 +35,13 @@ export class ExternalComponent implements OnInit {
   }
 
   getData() {
-    let subscription: Observable<{ procedures: external[]; length: number }>;
-    if (this.paginatorService.searchMode) {
-      subscription = this.externalService.search(
-        this.paginatorService.searchParams.get('text')!,
-        this.paginatorService.limit,
-        this.paginatorService.offset
-      );
-    } else {
-      subscription = this.externalService.Get(this.paginatorService.limit, this.paginatorService.offset);
-    }
+    const subscription: Observable<{ procedures: external[]; length: number }> = this.paginatorService.isSearchMode
+      ? this.externalService.search(
+          this.paginatorService.searchParams.get('text')!,
+          this.paginatorService.limit,
+          this.paginatorService.offset
+        )
+      : this.externalService.Get(this.paginatorService.limit, this.paginatorService.offset);
     subscription.subscribe((data) => {
       this.dataSource = data.procedures;
       this.paginatorService.length = data.length;
@@ -96,7 +93,7 @@ export class ExternalComponent implements OnInit {
       data: data,
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe((result: external) => {
       if (result) {
         const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
         this.dataSource[indexFound].send = true;

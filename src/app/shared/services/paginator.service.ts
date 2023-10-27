@@ -28,8 +28,12 @@ export class PaginatorService {
   }
 
   resetSearchParams() {
-    if (!this.searchMode) {
-      this.searchParams.clear();
-    }
+    if (this.searchMode) return;
+    this.searchParams.clear();
+  }
+
+  get isSearchMode(): boolean {
+    if (!this.searchMode || this.searchParams.size === 0) return false;
+    return true;
   }
 }

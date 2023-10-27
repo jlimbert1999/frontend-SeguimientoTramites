@@ -21,7 +21,6 @@ import { EventProcedureDto } from '../../dtos';
 export class InternalComponent implements OnInit {
   displayedColumns: string[] = ['alterno', 'detalle', 'destinatario', 'estado', 'fecha', 'enviado', 'opciones'];
   dataSource: internal[] = [];
-  textSearch: string = '';
 
   constructor(
     private router: Router,
@@ -33,20 +32,16 @@ export class InternalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getSearchParams();
     this.getData();
   }
   getData() {
-    let subscription: Observable<{ procedures: internal[]; length: number }>;
-    if (this.paginatorService.searchMode) {
-      subscription = this.internoService.search(
-        this.textSearch,
-        this.paginatorService.limit,
-        this.paginatorService.offset
-      );
-    } else {
-      subscription = this.internoService.Get(this.paginatorService.limit, this.paginatorService.offset);
-    }
+    const subscription: Observable<{ procedures: internal[]; length: number }> = this.paginatorService.isSearchMode
+      ? this.internoService.search(
+          this.paginatorService.searchParams.get('text')!,
+          this.paginatorService.limit,
+          this.paginatorService.offset
+        )
+      : this.internoService.Get(this.paginatorService.limit, this.paginatorService.offset);
     subscription.subscribe((data) => {
       this.dataSource = data.procedures;
       this.paginatorService.length = data.length;
@@ -95,29 +90,13 @@ export class InternalComponent implements OnInit {
       data: data,
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((result: any) => {
+    dialogRef.afterClosed().subscribe((result: internal) => {
       if (result) {
         const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
         this.dataSource[indexFound].send = true;
         this.dataSource = [...this.dataSource];
       }
     });
-  }
-
-  applyFilter() {
-    if (this.textSearch === '') return;
-    this.paginatorService.offset = 0;
-    this.paginatorService.searchMode = true;
-    this.paginatorService.searchParams.set('text', this.textSearch);
-    this.getData();
-  }
-
-  cancelFilter() {
-    this.textSearch = '';
-    this.paginatorService.offset = 0;
-    this.paginatorService.searchMode = false;
-    this.paginatorService.searchParams.clear();
-    this.getData();
   }
   generateRouteMap(id_tramite: string) {
     this.procedureService.getFullProcedure(id_tramite).subscribe((data) => {
@@ -152,13 +131,5 @@ export class InternalComponent implements OnInit {
     this.router.navigate(['/tramites/internos', procedure._id], {
       queryParams: params,
     });
-  }
-
-  getSearchParams() {
-    if (!this.paginatorService.searchMode) {
-      this.paginatorService.searchParams.clear();
-      return;
-    }
-    this.textSearch = this.paginatorService.searchParams.get('text')!;
   }
 }

@@ -4,6 +4,7 @@ import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { EventProcedureDto } from '../dtos/event_procedure.dto';
 import { communication } from 'src/app/communication/interfaces';
+import { eventProcedure } from '../interfaces';
 
 const base_url = environment.base_url;
 
@@ -15,23 +16,14 @@ export class ArchiveService {
 
   getAll(limit: number, offset: number) {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
-    return this.http.get<{ archives: communication[]; length: number }>(
-      `${base_url}/archive`,
-      {
-        params,
-      }
-    );
+    return this.http.get<{ archives: communication[]; length: number }>(`${base_url}/archive`, {
+      params,
+    });
   }
-  search(text: string, group: string, limit: number, offset: number) {
-    const params = new HttpParams()
-      .set('offset', offset)
-      .set('limit', limit)
-      .set('text', text);
+  search(text: string, limit: number, offset: number) {
+    const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
-      .get<{ ok: boolean; archives: any[]; length: number }>(
-        `${base_url}/archivos/${group}`,
-        { params }
-      )
+      .get<{ archives: communication[]; length: number }>(`${base_url}/archive/search/${text}`, { params })
       .pipe(
         map((resp) => {
           return { archives: resp.archives, length: resp.length };
@@ -39,24 +31,16 @@ export class ArchiveService {
       );
   }
 
+  getEventsProcedure(id_procedure: string) {
+    return this.http.get<eventProcedure[]>(`${base_url}/archive/events/${id_procedure}`);
+  }
   archiveProcedure(id_procedure: string, archive: EventProcedureDto) {
-    return this.http.post<{ message: string }>(
-      `${base_url}/archive/procedure/${id_procedure}`,
-      archive
-    );
+    return this.http.post<{ message: string }>(`${base_url}/archive/procedure/${id_procedure}`, archive);
   }
-
   archiveMail(id_mail: string, archive: EventProcedureDto) {
-    return this.http.post<{ message: string }>(
-      `${base_url}/archive/mail/${id_mail}`,
-      archive
-    );
+    return this.http.post<{ message: string }>(`${base_url}/archive/mail/${id_mail}`, archive);
   }
-
-  unarchive(id_archive: string, eventDto: EventProcedureDto) {
-    return this.http.post<any>(
-      `${base_url}/archive/mail/restart/${id_archive}`,
-      eventDto
-    );
+  unarchiveMail(id_mail: string, eventDto: EventProcedureDto) {
+    return this.http.post<{ message: string }>(`${base_url}/archive/mail/restart/${id_mail}`, eventDto);
   }
 }

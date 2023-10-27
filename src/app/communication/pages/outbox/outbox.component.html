@@ -1,6 +1,9 @@
 <app-toolbar title="BANDEJA SALIDA"></app-toolbar>
 <div class="container-fluid animate__animated animate__fadeIn">
-  <app-input-search-procedures placeholder="s" (searchEvent)="getData()"></app-input-search-procedures>
+  <app-input-search-procedures
+    placeholder="Alterno / Referencia"
+    (searchEvent)="getData()"
+  ></app-input-search-procedures>
   <div class="example-container mat-elevation-z8">
     <div class="example-table-container">
       <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
