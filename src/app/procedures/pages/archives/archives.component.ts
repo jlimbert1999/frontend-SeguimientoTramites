@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable, Subscription } from 'rxjs';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchiveService } from '../../services/archive.service';
 import { communication } from 'src/app/communication/interfaces';
 import { stateProcedure } from 'src/app/procedures/interfaces';
 import { SocketService } from 'src/app/services/socket.service';
-import { Observable, Subscription } from 'rxjs';
 import { EventProcedureDto } from '../../dtos/event_procedure.dto';
 import { EventDialogComponent } from '../../dialogs/event-dialog/event-dialog.component';
 import { AlertManager } from 'src/app/shared/helpers/alerts';
@@ -62,9 +62,8 @@ export class ArchivesComponent implements OnInit, OnDestroy {
           procedure: mail.procedure._id,
           stateProcedure: stateProcedure.CONCLUIDO,
         };
-        this.archiveService.unarchiveMail(mail._id, archiveDto).subscribe((data) => {
-          // this.dataSource
-          console.log(data);
+        this.archiveService.unarchiveMail(mail._id, archiveDto).subscribe(() => {
+          this.dataSource = this.dataSource.filter((element) => element._id !== mail._id);
         });
       }
     );
@@ -82,15 +81,16 @@ export class ArchivesComponent implements OnInit, OnDestroy {
   }
   showTimeline(mail: communication) {
     this.dialog.open(EventDialogComponent, {
-      width: '1000px',
+      width: '1200px',
       data: mail,
       disableClose: true,
     });
   }
 
   listenUnarchives() {
-    this.subscription = this.socketService.listenUnarchives().subscribe((res) => {
-      alert('SE HA DESARCHIVADO');
+    this.subscription = this.socketService.listenUnarchives().subscribe((id_mail) => {
+      this.dataSource = this.dataSource.filter((element) => element._id !== id_mail);
+      this.dialog.closeAll();
     });
   }
 }

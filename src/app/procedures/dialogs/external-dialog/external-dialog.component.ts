@@ -17,14 +17,11 @@ export class ExternalDialogComponent implements OnInit {
   typesProcedures: typeProcedure[] = [];
   typeAplicant: 'NATURAL' | 'JURIDICO' = 'NATURAL';
   requeriments: string[] = [];
-  tipos_documento: string[] = [
-    'Carnet de identidad',
-    'Libreta servicio militar',
-    'Pasaporte',
-  ];
+  tipos_documento: string[] = ['Carnet de identidad', 'Libreta servicio militar', 'Pasaporte'];
   TramiteFormGroup: FormGroup;
   SolicitanteFormGroup: FormGroup;
   RepresentanteFormGroup: FormGroup;
+  segment: string;
 
   constructor(
     private externoService: ExternalService,
@@ -36,8 +33,7 @@ export class ExternalDialogComponent implements OnInit {
   ngOnInit(): void {
     if (this.data) {
       this.TramiteFormGroup = this.createFormProcedure('EDIT');
-      this.TramiteFormGroup.patchValue(this.data);
-      this.changeFormSolicitante(this.data.details.solicitante.tipo);
+      this.SolicitanteFormGroup = this.changeFormSolicitante(this.data.details.solicitante.tipo);
       this.SolicitanteFormGroup.patchValue(this.data.details.solicitante);
       if (this.data.details.representante) {
         this.changeFormRepresentante(true);
@@ -57,18 +53,15 @@ export class ExternalDialogComponent implements OnInit {
   getTypesProceduresBySegment(segment: string) {
     this.requeriments = [];
     this.TramiteFormGroup.get('type')?.setValue('');
-    this.externoService
-      .getTypesProceduresBySegment(segment)
-      .subscribe((data) => {
-        this.typesProcedures = data;
-      });
+    this.externoService.getTypesProceduresBySegment(segment).subscribe((data) => {
+      this.typesProcedures = data;
+    });
   }
 
   selectTypeProcedure(type: typeProcedure) {
     this.TramiteFormGroup.get('type')?.setValue(type._id);
-    this.requeriments = type.requerimientos
-      .filter((el) => el.activo)
-      .map((el) => el.nombre);
+    this.segment = type.segmento;
+    this.requeriments = type.requerimientos.filter((el) => el.activo).map((el) => el.nombre);
   }
 
   save() {
@@ -77,23 +70,20 @@ export class ExternalDialogComponent implements OnInit {
         procedure: this.TramiteFormGroup.value,
         details: {
           solicitante: this.SolicitanteFormGroup.value,
+          ...(this.data.details.representante && { representante: this.RepresentanteFormGroup.value }),
         },
       };
-      if (this.data.details.representante)
-        updateProcedure.details!.representante =
-          this.RepresentanteFormGroup.value;
-      this.externoService
-        .Edit(this.data._id, updateProcedure)
-        .subscribe((procedure) => {
-          this.dialogRef.close(procedure);
-        });
+      this.externoService.Edit(this.data._id, updateProcedure).subscribe((procedure) => {
+        this.dialogRef.close(procedure);
+      });
     } else {
-      const procedure = ExternalProcedureDto.fromForm(
-        this.TramiteFormGroup.value,
-        this.requeriments,
-        this.SolicitanteFormGroup.value,
-        this.RepresentanteFormGroup.value
-      );
+      const procedure = ExternalProcedureDto.fromForms({
+        segment: this.segment,
+        requeriments: this.requeriments,
+        formProcedure: this.TramiteFormGroup.value,
+        formApplicant: this.SolicitanteFormGroup.value,
+        formRepresentative: this.RepresentanteFormGroup.value,
+      });
       this.externoService.Add(procedure).subscribe((procedure) => {
         this.dialogRef.close(procedure);
       });
@@ -104,109 +94,59 @@ export class ExternalDialogComponent implements OnInit {
     this.typeAplicant = type;
     switch (type) {
       case 'NATURAL':
-        this.SolicitanteFormGroup = this.fb.group({
-          nombre: [
-            '',
-            [Validators.required, Validators.pattern('^[a-zA-Z ]*$')],
-          ],
-          paterno: [
-            '',
-            [Validators.required, Validators.pattern('^[a-zA-Z ]*$')],
-          ],
+        return this.fb.group({
+          nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
+          paterno: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
           materno: ['', Validators.pattern('^[a-zA-Z ]*$')],
           telefono: [
             '',
-            [
-              Validators.required,
-              Validators.minLength(8),
-              Validators.maxLength(10),
-              Validators.pattern('^[0-9]*$'),
-            ],
+            [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')],
           ],
           dni: [
             '',
-            [
-              Validators.required,
-              Validators.minLength(6),
-              Validators.maxLength(10),
-              Validators.pattern('^[0-9]*$'),
-            ],
+            [Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern('^[0-9]*$')],
           ],
           documento: ['', Validators.required],
           tipo: ['NATURAL'],
         });
         break;
       case 'JURIDICO':
-        this.SolicitanteFormGroup = this.fb.group({
-          nombre: [
-            '',
-            [Validators.required, Validators.pattern('^[a-zA-Z0-9 ,.]*$')],
-          ],
+        return (this.SolicitanteFormGroup = this.fb.group({
+          nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ,.]*$')]],
           telefono: [
             '',
-            [
-              Validators.required,
-              Validators.minLength(8),
-              Validators.maxLength(10),
-              Validators.pattern('^[0-9]*$'),
-            ],
+            [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')],
           ],
           tipo: ['JURIDICO'],
-        });
+        }));
         break;
     }
   }
   changeFormRepresentante(register: boolean) {
     this.RepresentanteFormGroup = register
       ? this.fb.group({
-          nombre: [
-            '',
-            [Validators.required, Validators.pattern('^[a-zA-Z ]*$')],
-          ],
-          paterno: [
-            '',
-            [Validators.required, Validators.pattern('^[a-zA-Z ]*$')],
-          ],
+          nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
+          paterno: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
           materno: ['', Validators.pattern('^[a-zA-Z ]*$')],
           documento: ['', Validators.required],
           dni: [
             '',
-            [
-              Validators.required,
-              Validators.minLength(6),
-              Validators.maxLength(10),
-              Validators.pattern('^[0-9]*$'),
-            ],
+            [Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern('^[0-9]*$')],
           ],
           telefono: [
             '',
-            [
-              Validators.required,
-              Validators.minLength(8),
-              Validators.maxLength(10),
-              Validators.pattern('^[0-9]*$'),
-            ],
+            [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')],
           ],
         })
       : this.fb.group({});
   }
 
   get registerRepresentative(): boolean {
-    return Object.keys(this.RepresentanteFormGroup.value).length > 0
-      ? true
-      : false;
+    return Object.keys(this.RepresentanteFormGroup.value).length > 0 ? true : false;
   }
 
   get validForms(): boolean {
-    const isTramiteValid = this.TramiteFormGroup.valid;
-    const isSolicitanteValid = this.SolicitanteFormGroup.valid;
-    const isRepresentanteValid = this.RepresentanteFormGroup.valid;
-    const disabled = !(
-      isTramiteValid &&
-      isSolicitanteValid &&
-      isRepresentanteValid
-    );
-    return disabled;
+    return !(this.TramiteFormGroup.valid && this.SolicitanteFormGroup.valid && this.RepresentanteFormGroup.valid);
   }
 
   getErrorMessageFormAplicant(controlName: string) {
@@ -244,9 +184,9 @@ export class ExternalDialogComponent implements OnInit {
           cite: [''],
         })
       : this.fb.group({
-          amount: ['', Validators.required],
-          reference: ['', Validators.required],
-          cite: [''],
+          amount: [this.data.amount, Validators.required],
+          reference: [this.data.reference, Validators.required],
+          cite: [this.data.cite],
         });
   }
 }

@@ -1,60 +1,47 @@
 import { applicant, representative } from '../interfaces';
-
+interface externalProperties {
+  segment: string;
+  formProcedure: any;
+  requeriments: string[];
+  formApplicant: any;
+  formRepresentative: any;
+}
 export class ExternalProcedureDto {
-  static fromForm(
-    FormProcedure: any,
-    requeriments: string[],
-    FormApplicant: any,
-    FormRepresentative: any
-  ) {
-    return Object.keys(FormRepresentative).length > 0
-      ? new ExternalProcedureDto(
-          FormProcedure['type'],
-          FormProcedure['cite'],
-          FormProcedure['reference'],
-          FormProcedure['amount'],
-          FormApplicant,
-          requeriments
-        )
-      : new ExternalProcedureDto(
-          FormProcedure['type'],
-          FormProcedure['cite'],
-          FormProcedure['reference'],
-          FormProcedure['amount'],
-          FormApplicant,
-          requeriments
-        );
+  static fromForms({ segment, requeriments, formProcedure, formApplicant, formRepresentative }: externalProperties) {
+    return new ExternalProcedureDto(
+      {
+        type: formProcedure['type'],
+        cite: formProcedure['cite'],
+        reference: formProcedure['reference'],
+        amount: formProcedure['amount'],
+        segment,
+      },
+      requeriments,
+      formApplicant,
+      Object.keys(formRepresentative).length > 0 ? formRepresentative : undefined
+    );
   }
-  procedure: {
-    cite: string;
-    reference: string;
-    amount: string;
-    type: string;
-  };
   details: {
-    requerimientos: string[];
+    requirements: string[];
     solicitante: applicant;
-    representante?: representative;
     pin: number;
+    representante?: representative;
   };
   constructor(
-    type: string,
-    cite: string,
-    reference: string,
-    amount: string,
-    applicant: applicant,
+    public procedure: {
+      cite: string;
+      reference: string;
+      amount: string;
+      type: string;
+      segment: string;
+    },
     requirements: string[],
+    applicant: applicant,
     representative?: representative
   ) {
-    this.procedure = {
-      cite,
-      reference,
-      amount,
-      type,
-    };
     this.details = {
+      requirements,
       solicitante: applicant,
-      requerimientos: requirements,
       pin: Math.floor(100000 + Math.random() * 900000),
     };
     if (representative) this.details.representante = representative;

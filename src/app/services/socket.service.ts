@@ -44,7 +44,7 @@ export class SocketService {
       });
     });
   }
-  listenUnarchives() {
+  listenUnarchives(): Observable<string> {
     return new Observable((observable) => {
       this.socket.on('unarchive-mail', (id_mail: string) => {
         observable.next(id_mail);

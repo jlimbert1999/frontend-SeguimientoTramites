@@ -23,8 +23,11 @@ export class StatePipe implements PipeTransform {
       case 'ANULADO':
         classSpan = 'text-bg-danger';
         break;
+      case stateProcedure.SUSPENDIDO:
+        classSpan = 'text-bg-info';
+        break;
       default:
-        classSpan = '';
+        classSpan = 'text-bg-light';
         break;
     }
     return classSpan;
