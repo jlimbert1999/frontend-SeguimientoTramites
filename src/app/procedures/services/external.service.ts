@@ -13,31 +13,17 @@ const base_url = environment.base_url;
   providedIn: 'root',
 })
 export class ExternalService {
-  paginationParams: {
-    limit: number;
-    offset: number;
-    length: number;
-  } = {
-    length: 0,
-    offset: 0,
-    limit: 10,
-  };
-
   constructor(private http: HttpClient) {}
 
   getSegments() {
-    return this.http
-      .get<{ _id: string }[]>(`${base_url}/external/segments`)
-      .pipe(
-        map((resp) => {
-          return resp.map((element) => element._id);
-        })
-      );
+    return this.http.get<{ _id: string }[]>(`${base_url}/external/segments`).pipe(
+      map((resp) => {
+        return resp.map((element) => element._id);
+      })
+    );
   }
   getTypesProceduresBySegment(segment: string) {
-    return this.http
-      .get<typeProcedure[]>(`${base_url}/external/segments/${segment}`)
-      .pipe(map((resp) => resp));
+    return this.http.get<typeProcedure[]>(`${base_url}/external/segments/${segment}`).pipe(map((resp) => resp));
   }
 
   Add(procedure: ExternalProcedureDto) {
@@ -48,31 +34,19 @@ export class ExternalService {
     );
   }
   Edit(id_procedure: string, procedure: NestedPartial<ExternalProcedureDto>) {
-    return this.http
-      .put<external>(`${base_url}/external/${id_procedure}`, procedure)
-      .pipe(map((resp) => resp));
+    return this.http.put<external>(`${base_url}/external/${id_procedure}`, procedure).pipe(map((resp) => resp));
   }
-  Get(limit: number, offset: number) {
+  findAll(limit: number, offset: number) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
-    return this.http
-      .get<{ procedures: external[]; length: number }>(`${base_url}/external`, {
-        params,
-      })
-      .pipe(
-        map((resp) => {
-          this.paginationParams.length = resp.length;
-          return { procedures: resp.procedures, length: resp.length };
-        })
-      );
+    return this.http.get<{ procedures: external[]; length: number }>(`${base_url}/external`, {
+      params,
+    });
   }
 
   search(text: string, limit: number, offset: number) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
-      .get<{ procedures: external[]; length: number }>(
-        `${base_url}/external/search/${text}`,
-        { params }
-      )
+      .get<{ procedures: external[]; length: number }>(`${base_url}/external/search/${text}`, { params })
       .pipe(
         map((resp) => {
           return { procedures: resp.procedures, length: resp.length };
@@ -82,10 +56,10 @@ export class ExternalService {
 
   addObservacion(descripcion: string, id_tramite: string, funcionario: string) {
     return this.http
-      .put<{ ok: boolean; observaciones: any }>(
-        `${base_url}/externos/observacion/${id_tramite}`,
-        { descripcion, funcionario }
-      )
+      .put<{ ok: boolean; observaciones: any }>(`${base_url}/externos/observacion/${id_tramite}`, {
+        descripcion,
+        funcionario,
+      })
       .pipe(
         map((resp) => {
           return resp.observaciones;
@@ -94,10 +68,7 @@ export class ExternalService {
   }
   putObservacion(id_tramite: string) {
     return this.http
-      .put<{ ok: boolean; estado: string }>(
-        `${base_url}/externos/observacion/corregir/${id_tramite}`,
-        {}
-      )
+      .put<{ ok: boolean; estado: string }>(`${base_url}/externos/observacion/corregir/${id_tramite}`, {})
       .pipe(
         map((resp) => {
           return resp.estado;
@@ -107,10 +78,7 @@ export class ExternalService {
 
   conclude(id_tramite: string, descripcion: string) {
     return this.http
-      .put<{ ok: boolean; message: string }>(
-        `${base_url}/externos/concluir/${id_tramite}`,
-        { descripcion }
-      )
+      .put<{ ok: boolean; message: string }>(`${base_url}/externos/concluir/${id_tramite}`, { descripcion })
       .pipe(
         map((resp) => {
           return resp.message;
@@ -119,10 +87,7 @@ export class ExternalService {
   }
   cancelProcedure(id_tramite: string, descripcion: string) {
     return this.http
-      .put<{ ok: boolean; message: string }>(
-        `${base_url}/externos/cancelar/${id_tramite}`,
-        { descripcion }
-      )
+      .put<{ ok: boolean; message: string }>(`${base_url}/externos/cancelar/${id_tramite}`, { descripcion })
       .pipe(
         map((resp) => {
           return resp.message;
@@ -130,15 +95,10 @@ export class ExternalService {
       );
   }
   unarchive(id_tramite: string) {
-    return this.http
-      .put<{ ok: boolean; message: string }>(
-        `${base_url}/externos/desarchivar/${id_tramite}`,
-        {}
-      )
-      .pipe(
-        map((resp) => {
-          return resp.message;
-        })
-      );
+    return this.http.put<{ ok: boolean; message: string }>(`${base_url}/externos/desarchivar/${id_tramite}`, {}).pipe(
+      map((resp) => {
+        return resp.message;
+      })
+    );
   }
 }

@@ -9,8 +9,7 @@ import { account } from '../../interfaces/account.interface';
 import { role } from '../../interfaces/role.interface';
 import { job } from '../../interfaces/job.interface';
 import { createAccountPDF } from '../../helpers/pdfs/pdf-account';
-
-
+import { matSelectSearchData } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-cuenta-dialog',
@@ -18,10 +17,10 @@ import { createAccountPDF } from '../../helpers/pdfs/pdf-account';
   styleUrls: ['./cuenta-dialog.component.scss'],
 })
 export class CuentaDialogComponent implements OnInit {
-  dependencias: dependency[] = [];
-  instituciones: institution[] = [];
-  roles: role[] = []
-  jobs: job[] = []
+  dependencias: matSelectSearchData[] = [];
+  instituciones: matSelectSearchData[] = [];
+  roles: role[] = [];
+  jobs: job[] = [];
   hidePassword = true;
 
   Form_Funcionario: FormGroup = this.fb.group({
@@ -31,7 +30,7 @@ export class CuentaDialogComponent implements OnInit {
     dni: ['', Validators.required],
     telefono: ['', [Validators.required, Validators.maxLength(8)]],
     cargo: [null],
-    direccion: ['SACABA', Validators.required]
+    direccion: ['SACABA', Validators.required],
   });
 
   Form_Cuenta: FormGroup = this.fb.group({
@@ -46,29 +45,21 @@ export class CuentaDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: account,
     public dialogRef: MatDialogRef<CuentaDialogComponent>,
     private cuentasService: CuentaService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    forkJoin([
-      this.cuentasService.getInstitutions(),
-      this.cuentasService.getRoles()
-    ]).subscribe(
-      data => {
-        this.instituciones = data[0]
-        this.roles = data[1]
-      }
-    )
+    forkJoin([this.cuentasService.getInstitutions(), this.cuentasService.getRoles()]).subscribe((data) => {
+      this.instituciones = data[0].map((institution) => ({ value: institution._id, text: institution.nombre }));
+      this.roles = data[1];
+    });
   }
 
   save() {
-    this.cuentasService.add(this.Form_Funcionario.value, this.Form_Cuenta.value).subscribe(result => {
-      createAccountPDF(result, this.Form_Cuenta.get('password')?.value)
-      this.dialogRef.close(result)
-    })
+    this.cuentasService.add(this.Form_Funcionario.value, this.Form_Cuenta.value).subscribe((result) => {
+      createAccountPDF(result, this.Form_Cuenta.get('password')?.value);
+      this.dialogRef.close(result);
+    });
   }
-
-
-
 
   eventChangeTab() {
     const nombre: string = this.Form_Funcionario.get('nombre')?.value;
@@ -76,27 +67,27 @@ export class CuentaDialogComponent implements OnInit {
     const paterno: string = this.Form_Funcionario.get('paterno')?.value;
     const dni: string = this.Form_Funcionario.get('dni')?.value;
     const login = nombre.charAt(0) + paterno + materno.charAt(0);
-    this.Form_Cuenta.get('login')?.setValue(login.trim().toUpperCase())
-    this.Form_Cuenta.get('password')?.setValue(dni.trim())
+    this.Form_Cuenta.get('login')?.setValue(login.trim().toUpperCase());
+    this.Form_Cuenta.get('password')?.setValue(dni.trim());
   }
-  getDependencies(institution: institution | null) {
-    this.Form_Cuenta.get('institucion')?.setValue(institution ? institution._id : '')
-    if (institution) {
-      this.cuentasService.getDependencies(institution._id).subscribe(data => {
-        this.dependencias = data
-      })
+  getDependencies(id_institution: string | null) {
+    this.Form_Cuenta.get('institucion')?.setValue(id_institution || '');
+    if (id_institution) {
+      this.cuentasService.getDependencies(id_institution).subscribe((data) => {
+        this.dependencias = data.map((dependency) => ({ value: dependency._id, text: dependency.nombre }));
+      });
     }
   }
-  selectDependency(dependency: dependency) {
-    this.Form_Cuenta.get('dependencia')?.setValue(dependency ? dependency._id : '')
+  selectDependency(id_dependency: string) {
+    this.Form_Cuenta.get('dependencia')?.setValue(id_dependency || '');
   }
   searchJob(value: string) {
-    this.cuentasService.getJobForOfficer(value).subscribe(data => {
-      this.jobs = data
-    })
+    this.cuentasService.getJobForOfficer(value).subscribe((data) => {
+      this.jobs = data;
+    });
   }
   selectJob(job: job | null) {
-    this.Form_Funcionario.get('cargo')?.setValue(job ? job._id : null)
+    this.Form_Funcionario.get('cargo')?.setValue(job ? job._id : null);
   }
 
   getErrorMessagesForm(control: AbstractControl) {
@@ -114,7 +105,4 @@ export class CuentaDialogComponent implements OnInit {
     }
     return '';
   }
-
-
-
 }

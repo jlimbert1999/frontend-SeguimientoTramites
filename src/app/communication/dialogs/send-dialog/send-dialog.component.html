@@ -6,7 +6,6 @@
         <app-simple-mat-select-search
           [data]="institutions"
           (eventSelectedOption)="selectInstitution($event)"
-          [pathPropertyOfObjectDisplay]="'nombre'"
           placehorder="Seleccione la institucion"
         ></app-simple-mat-select-search>
       </div>
@@ -14,7 +13,7 @@
         <app-simple-mat-select-search
           [data]="dependencies"
           (eventSelectedOption)="selectDependencie($event)"
-          [pathPropertyOfObjectDisplay]="'nombre'"
+        
           placehorder="Seleccione la dependencia"
         ></app-simple-mat-select-search>
       </div>

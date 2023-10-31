@@ -9,7 +9,7 @@ import { EditAccountDialogComponent } from '../../dialogs/edit-account-dialog/ed
 import { institution } from '../../interfaces/institution.interface';
 import { dependency } from '../../interfaces/dependency.interface';
 import { account } from '../../interfaces/account.interface';
-
+import { matSelectSearchData } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-accounts',
@@ -17,75 +17,73 @@ import { account } from '../../interfaces/account.interface';
   styleUrls: ['./accounts.component.scss'],
 })
 export class AccountsComponent implements OnInit {
-  accounts: account[] = []
-  displayedColumns = ['login', 'nombre', 'dependencia', 'institucion', 'activo', 'opciones']
-  institutions: institution[] = []
-  dependencies: dependency[] = []
-  text: string = ""
-  id_institucion: string | null
-  id_dependencia: string | null
+  accounts: account[] = [];
+  displayedColumns = ['login', 'nombre', 'dependencia', 'institucion', 'activo', 'opciones'];
+  institutions: matSelectSearchData[] = [];
+  dependencies: matSelectSearchData[] = [];
+  text: string = '';
+  id_institucion: string | null;
+  id_dependencia: string | null;
 
   constructor(
     public dialog: MatDialog,
     public accountService: CuentaService,
-    public paginatorService: PaginatorService,
+    public paginatorService: PaginatorService
   ) {
-    this.accountService.getInstitutions().subscribe(data => {
-      this.institutions = data
-    })
+    this.accountService.getInstitutions().subscribe((data) => {
+      this.institutions = data.map((institution) => ({ value: institution._id, text: institution.nombre }));
+    });
   }
 
   ngOnInit(): void {
-    this.Get()
+    this.Get();
   }
-
-
 
   Get() {
     if (this.text !== '' || this.id_institucion) {
-      this.accountService.search(
-        this.paginatorService.limit,
-        this.paginatorService.offset,
-        this.text,
-        this.id_institucion,
-        this.id_dependencia).subscribe(data => {
-          this.paginatorService.length = data.length
-          this.accounts = data.accounts
-        })
+      this.accountService
+        .search(
+          this.paginatorService.limit,
+          this.paginatorService.offset,
+          this.text,
+          this.id_institucion,
+          this.id_dependencia
+        )
+        .subscribe((data) => {
+          this.paginatorService.length = data.length;
+          this.accounts = data.accounts;
+        });
+    } else {
+      this.accountService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe((data) => {
+        this.paginatorService.length = data.length;
+        this.accounts = data.accounts;
+      });
     }
-    else {
-      this.accountService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-        this.paginatorService.length = data.length
-        this.accounts = data.accounts
-      })
-
-    }
-
   }
 
   Add() {
     const dialogRef = this.dialog.open(CuentaDialogComponent, {
-      width: '900px'
+      width: '900px',
     });
     dialogRef.afterClosed().subscribe((result: account) => {
       if (result) {
         if (this.paginatorService.limit === this.accounts.length) {
-          this.accounts.pop()
+          this.accounts.pop();
         }
-        this.accounts = [result, ...this.accounts]
+        this.accounts = [result, ...this.accounts];
       }
     });
   }
   addAccountWithAssign() {
     const dialogRef = this.dialog.open(CreacionAsignacionComponent, {
-      width: '900px'
+      width: '900px',
     });
     dialogRef.afterClosed().subscribe((result: account) => {
       if (result) {
         if (this.paginatorService.limit === this.accounts.length) {
-          this.accounts.pop()
+          this.accounts.pop();
         }
-        this.accounts = [result, ...this.accounts]
+        this.accounts = [result, ...this.accounts];
       }
     });
   }
@@ -97,18 +95,16 @@ export class AccountsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result: account) => {
       if (result) {
-        const indexFound = this.accounts.findIndex(cuenta => cuenta._id === result._id)
-        this.accounts[indexFound] = result
-        this.accounts = [...this.accounts]
+        const indexFound = this.accounts.findIndex((cuenta) => cuenta._id === result._id);
+        this.accounts[indexFound] = result;
+        this.accounts = [...this.accounts];
       }
     });
   }
 
-
-
   AddUser() {
     this.dialog.open(OfficerDialogComponent, {
-      width: '900px'
+      width: '900px',
     });
   }
   EditUser(account: account) {
@@ -131,44 +127,37 @@ export class AccountsComponent implements OnInit {
     // })
   }
 
-
-
-
-  getDependencias(institution: institution | null) {
-    if (institution) {
-      this.id_institucion = institution._id
-      this.accountService.getDependencies(institution._id).subscribe(data => {
-        this.dependencies = data
-      })
+  getDependencias(id_institution: string | null) {
+    if (id_institution) {
+      this.id_institucion = id_institution;
+      this.accountService.getDependencies(id_institution).subscribe((data) => {
+        this.dependencies = data.map((dependency) => ({ value: dependency._id, text: dependency.nombre }));
+      });
+    } else {
+      this.id_institucion = null;
+      this.id_dependencia = null;
+      this.dependencies = [];
     }
-    else {
-      this.id_institucion = null
-      this.id_dependencia = null
-      this.dependencies = []
-    }
-    this.paginatorService.offset = 0
-    this.Get()
+    this.paginatorService.offset = 0;
+    this.Get();
   }
-  getAccountsOfDependency(dependency: dependency | null) {
-    if (dependency) {
-      this.id_dependencia = dependency._id
+  getAccountsOfDependency(id_dependency: string | null) {
+    if (id_dependency) {
+      this.id_dependencia = id_dependency;
+    } else {
+      this.id_dependencia = null;
     }
-    else {
-      this.id_dependencia = null
-    }
-    this.Get()
+    this.Get();
   }
 
   applyFilter(event: Event) {
-    this.paginatorService.offset = 0
+    this.paginatorService.offset = 0;
     this.text = (event.target as HTMLInputElement).value;
-    this.Get()
+    this.Get();
   }
   cancelSearch() {
-    this.paginatorService.offset = 0
-    this.text = ''
-    this.Get()
+    this.paginatorService.offset = 0;
+    this.text = '';
+    this.Get();
   }
-
-
 }

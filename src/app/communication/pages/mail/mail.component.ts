@@ -38,13 +38,13 @@ export class MailComponent implements OnInit {
     this.activateRoute.params.subscribe((params) => {
       this.entradaService.getMailDetails(params['id']).subscribe((data) => {
         this.mail = data;
-        this.getFullDetailsProcedure(this.mail.procedure._id);
+        this.getFullDetailsProcedure(this.mail.procedure._id, this.mail.procedure.group);
       });
     });
   }
 
-  getFullDetailsProcedure(id_procedure: string) {
-    this.procedureService.getFullProcedure(id_procedure).subscribe((data) => {
+  getFullDetailsProcedure(id_procedure: string, group: groupProcedure) {
+    this.procedureService.getFullProcedure(id_procedure, group).subscribe((data) => {
       this.procedure = data.procedure;
       this.workflow = data.workflow;
       this.observations = data.observations;

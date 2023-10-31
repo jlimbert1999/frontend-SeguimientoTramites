@@ -8,7 +8,6 @@
           <div class="col-sm-2">
             <app-simple-mat-select-search
               [data]="segments"
-              [pathPropertyOfObjectDisplay]="''"
               [isRequired]="true"
               (eventSelectedOption)="getTypesProceduresBySegment($event)"
               [placehorder]="'Segmento'"
@@ -17,8 +16,7 @@
           </div>
           <div class="col-sm-10">
             <app-simple-mat-select-search
-              [data]="typesProcedures"
-              [pathPropertyOfObjectDisplay]="'nombre'"
+              [data]="typesProceduresSearchData"
               [isRequired]="true"
               (eventSelectedOption)="selectTypeProcedure($event)"
               [placehorder]="'Seleccione el tipo de tramite'"
@@ -66,20 +64,84 @@
     </mat-step>
     <mat-step [stepControl]="SolicitanteFormGroup" errorMessage="Campos incorrectos">
       <ng-template matStepLabel>Detalles solicitante</ng-template>
-      <div [ngSwitch]="typeAplicant">
-        <form [formGroup]="SolicitanteFormGroup">
-          <div *ngIf="!data" class="row">
-            <mat-form-field>
-              <mat-label>Seleccione el tipo de solicitante</mat-label>
-              <mat-select formControlName="" (selectionChange)="changeFormSolicitante($event.value)">
-                <mat-option [value]="'NATURAL'">SOLICITANTE NATURAL</mat-option>
-                <mat-option [value]="'JURIDICO'">SOLICITANTE JURIDICO</mat-option>
-              </mat-select>
-            </mat-form-field>
+      <div class="row" *ngIf="!data">
+        <mat-form-field>
+          <mat-label>Seleccione el tipo de solicitante</mat-label>
+          <mat-select [(ngModel)]="selectedtypeApplicant" (selectionChange)="createFormApplicant($event.value)">
+            <mat-option [value]="'NATURAL'">SOLICITANTE NATURAL</mat-option>
+            <mat-option [value]="'JURIDICO'">SOLICITANTE JURIDICO</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <form [formGroup]="SolicitanteFormGroup">
+        <div *ngIf="selectedtypeApplicant === 'NATURAL'; else elseTemplate">
+          <div class="row">
+            <div class="col-sm-4">
+              <mat-form-field class="example-full-width">
+                <mat-label>Nombres</mat-label>
+                <input matInput formControlName="nombre" class="uppercase" />
+                <mat-error *ngIf="SolicitanteFormGroup.get('nombre')?.invalid">{{
+                  getErrorMessageFormAplicant("nombre")
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-4">
+              <mat-form-field class="example-full-width">
+                <mat-label>Apellido paterno</mat-label>
+                <input matInput formControlName="paterno" class="uppercase" />
+                <mat-error *ngIf="SolicitanteFormGroup.get('paterno')?.invalid">{{
+                  getErrorMessageFormAplicant("paterno")
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-4">
+              <mat-form-field class="example-full-width">
+                <mat-label>Apellido materno</mat-label>
+                <input matInput formControlName="materno" class="uppercase" />
+                <mat-error *ngIf="SolicitanteFormGroup.get('materno')?.invalid">{{
+                  getErrorMessageFormAplicant("materno")
+                }}</mat-error>
+              </mat-form-field>
+            </div>
           </div>
-          <div *ngSwitchCase="'NATURAL'">
+          <div class="row">
+            <div class="col-sm-4">
+              <mat-form-field class="example-full-width" #TipoDoc>
+                <mat-label>Tipo documento</mat-label>
+                <mat-select formControlName="documento">
+                  <mat-option *ngFor="let document of documents" [value]="document">
+                    {{ document | uppercase }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="SolicitanteFormGroup.get('documento')?.invalid">{{
+                  getErrorMessageFormAplicant("documento")
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-4">
+              <mat-form-field class="example-full-width">
+                <mat-label>DNI</mat-label>
+                <input matInput formControlName="dni" />
+                <mat-error *ngIf="SolicitanteFormGroup.get('dni')?.invalid">{{
+                  getErrorMessageFormAplicant("dni")
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-4">
+              <mat-form-field class="example-full-width">
+                <mat-label>Telefono de referencia</mat-label>
+                <input matInput formControlName="telefono" />
+                <mat-error *ngIf="SolicitanteFormGroup.get('telefono')?.invalid">{{
+                  getErrorMessageFormAplicant("telefono")
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <ng-template #elseTemplate>
+          <form [formGroup]="SolicitanteFormGroup">
             <div class="row">
-              <div class="col-sm-4">
+              <div class="col-sm">
                 <mat-form-field class="example-full-width">
                   <mat-label>Nombres</mat-label>
                   <input matInput formControlName="nombre" class="uppercase" />
@@ -88,49 +150,7 @@
                   }}</mat-error>
                 </mat-form-field>
               </div>
-              <div class="col-sm-4">
-                <mat-form-field class="example-full-width">
-                  <mat-label>Apellido paterno</mat-label>
-                  <input matInput formControlName="paterno" class="uppercase" />
-                  <mat-error *ngIf="SolicitanteFormGroup.get('paterno')?.invalid">{{
-                    getErrorMessageFormAplicant("paterno")
-                  }}</mat-error>
-                </mat-form-field>
-              </div>
-              <div class="col-sm-4">
-                <mat-form-field class="example-full-width">
-                  <mat-label>Apellido materno</mat-label>
-                  <input matInput formControlName="materno" class="uppercase" />
-                  <mat-error *ngIf="SolicitanteFormGroup.get('materno')?.invalid">{{
-                    getErrorMessageFormAplicant("materno")
-                  }}</mat-error>
-                </mat-form-field>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-4">
-                <mat-form-field class="example-full-width" #TipoDoc>
-                  <mat-label>Tipo documento</mat-label>
-                  <mat-select formControlName="documento">
-                    <mat-option *ngFor="let documento of tipos_documento" [value]="documento">
-                      {{ documento | uppercase }}
-                    </mat-option>
-                  </mat-select>
-                  <mat-error *ngIf="SolicitanteFormGroup.get('documento')?.invalid">{{
-                    getErrorMessageFormAplicant("documento")
-                  }}</mat-error>
-                </mat-form-field>
-              </div>
-              <div class="col-sm-4">
-                <mat-form-field class="example-full-width">
-                  <mat-label>DNI</mat-label>
-                  <input matInput formControlName="dni" />
-                  <mat-error *ngIf="SolicitanteFormGroup.get('dni')?.invalid">{{
-                    getErrorMessageFormAplicant("dni")
-                  }}</mat-error>
-                </mat-form-field>
-              </div>
-              <div class="col-sm-4">
+              <div class="col-sm">
                 <mat-form-field class="example-full-width">
                   <mat-label>Telefono de referencia</mat-label>
                   <input matInput formControlName="telefono" />
@@ -140,44 +160,20 @@
                 </mat-form-field>
               </div>
             </div>
-          </div>
-          <div *ngSwitchCase="'JURIDICO'">
-            <form [formGroup]="SolicitanteFormGroup">
-              <div class="row">
-                <div class="col-sm">
-                  <mat-form-field class="example-full-width">
-                    <mat-label>Nombres</mat-label>
-                    <input matInput formControlName="nombre" class="uppercase" />
-                    <mat-error *ngIf="SolicitanteFormGroup.get('nombre')?.invalid">{{
-                      getErrorMessageFormAplicant("nombre")
-                    }}</mat-error>
-                  </mat-form-field>
-                </div>
-                <div class="col-sm">
-                  <mat-form-field class="example-full-width">
-                    <mat-label>Telefono de referencia</mat-label>
-                    <input matInput formControlName="telefono" />
-                    <mat-error *ngIf="SolicitanteFormGroup.get('telefono')?.invalid">{{
-                      getErrorMessageFormAplicant("telefono")
-                    }}</mat-error>
-                  </mat-form-field>
-                </div>
-              </div>
-            </form>
-          </div>
-        </form>
-      </div>
+          </form>
+        </ng-template>
+      </form>
       <div class="col-12" *ngIf="!data">
         <section class="example-section">
           <label class="example-margin">Tipo de registro:</label>
-          <mat-radio-group [value]="false" (change)="changeFormRepresentante($event.value)">
+          <mat-radio-group (change)="changeFormRepresentante($event.value)">
             <mat-radio-button class="example-margin" [value]="false"> SIN REPRESENTANTE LEGAL</mat-radio-button>
             <mat-radio-button class="example-margin" [value]="true">CON REPRESENTANTE LEGAL</mat-radio-button>
           </mat-radio-group>
         </section>
       </div>
     </mat-step>
-    <mat-step *ngIf="registerRepresentative" [stepControl]="RepresentanteFormGroup" errorMessage="Campos incorrectos">
+    <!-- <mat-step *ngIf="registerRepresentative" [stepControl]="RepresentanteFormGroup" errorMessage="Campos incorrectos">
       <form [formGroup]="RepresentanteFormGroup">
         <ng-template matStepLabel>Detalles representante</ng-template>
         <div class="row">
@@ -214,8 +210,8 @@
             <mat-form-field class="example-full-width" #TipoDoc>
               <mat-label>Tipo documento</mat-label>
               <mat-select formControlName="documento">
-                <mat-option *ngFor="let documento of tipos_documento" [value]="documento">
-                  {{ documento | uppercase }}
+                <mat-option *ngFor="let document of documents" [value]="document">
+                  {{ document | uppercase }}
                 </mat-option>
               </mat-select>
               <mat-error *ngIf="SolicitanteFormGroup.get('documento')?.invalid">{{
@@ -243,10 +239,10 @@
           </div>
         </div>
       </form>
-    </mat-step>
+    </mat-step> -->
   </mat-stepper>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-raised-button mat-dialog-close color="warn">Cancelar</button>
-  <button mat-raised-button color="primary" [disabled]="validForms" (click)="save()">Guardar</button>
+  <button mat-raised-button color="primary" (click)="save()">Guardar</button>
 </mat-dialog-actions>

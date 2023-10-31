@@ -1,22 +1,22 @@
 <div class="row">
-    <mat-radio-group [(ngModel)]="groupProcedure" (change)="selectGroupProcedure()">
-        <mat-radio-button value="tramites_externos">Externos</mat-radio-button>
-        <mat-radio-button value="tramites_internos">Internos</mat-radio-button>
-    </mat-radio-group>
+  <mat-radio-group [(ngModel)]="groupProcedure" (change)="selectGroupProcedure()">
+    <mat-radio-button value="tramites_externos">Externos</mat-radio-button>
+    <mat-radio-button value="tramites_internos">Internos</mat-radio-button>
+  </mat-radio-group>
 </div>
 
 <form [formGroup]="options">
-    <div class="row">
-        <mat-form-field appearance="fill" class="example-full-width">
-            <mat-label>Seleccione la institucion</mat-label>
-            <mat-select formControlName="institucion" (selectionChange)="selectInstitution($event.value)">
-                <mat-option *ngFor="let inst of institutions" [value]="inst.id_institucion">
-                    {{inst.nombre}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-    </div>
-    <div class="row">
+  <div class="row">
+    <mat-form-field appearance="fill" class="example-full-width">
+      <mat-label>Seleccione la institucion</mat-label>
+      <mat-select formControlName="institucion" (selectionChange)="selectInstitution($event.value)">
+        <mat-option *ngFor="let inst of institutions" [value]="inst.id_institucion">
+          {{ inst.nombre }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <!-- <div class="row">
         <app-simple-mat-select-search [pathPropertyOfObjectDisplay]="'nombre'"
             (eventSelectedOption)="selectDependencia($event)" [placehorder]="'Buscar dependencias'"
             [data]="dependencias"></app-simple-mat-select-search>
@@ -30,28 +30,28 @@
         <app-simple-mat-select-search [pathPropertyOfObjectDisplay]="'nombre'"
             (eventSelectedOption)="selectTypeProcedure($event)" [placehorder]="'Buscar tipo'"
             [data]="typesProcedures"></app-simple-mat-select-search>
-    </div>
-    <div class="row">
-        <mat-form-field appearance="fill">
-            <mat-label>Estdado</mat-label>
-            <mat-select formControlName="estado">
-                <mat-option *ngFor="let state of states" [value]="state">{{state}}</mat-option>
-            </mat-select>
-        </mat-form-field>
-    </div>
-    <div class="row">
-        <mat-form-field appearance="fill">
-            <mat-label>Ingrese un rango</mat-label>
-            <mat-date-range-input [rangePicker]="picker">
-                <input matStartDate formControlName="start" placeholder="Fecha inicial">
-                <input matEndDate formControlName="end" placeholder="Fecha final">
-            </mat-date-range-input>
-            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-date-range-picker #picker></mat-date-range-picker>
-            <mat-error *ngIf="options.controls.start.hasError('matStartDateInvalid')">Rango invalido</mat-error>
-            <mat-error *ngIf="options.controls.end.hasError('matEndDateInvalid')">Rango invalido</mat-error>
-        </mat-form-field>
-    </div>
+    </div> -->
+  <div class="row">
+    <mat-form-field appearance="fill">
+      <mat-label>Estdado</mat-label>
+      <mat-select formControlName="estado">
+        <mat-option *ngFor="let state of states" [value]="state">{{ state }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field appearance="fill">
+      <mat-label>Ingrese un rango</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate formControlName="start" placeholder="Fecha inicial" />
+        <input matEndDate formControlName="end" placeholder="Fecha final" />
+      </mat-date-range-input>
+      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+      <mat-error *ngIf="options.controls.start.hasError('matStartDateInvalid')">Rango invalido</mat-error>
+      <mat-error *ngIf="options.controls.end.hasError('matEndDateInvalid')">Rango invalido</mat-error>
+    </mat-form-field>
+  </div>
 </form>
 <button (click)="generateReport()" mat-raised-button color="primary">Generar</button>

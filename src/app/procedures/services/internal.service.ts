@@ -31,8 +31,9 @@ export class InternalService {
     );
   }
 
-  Get(limit: number, offset: number) {
-    let params = new HttpParams().set('limit', limit).set('offset', offset);
+  findAll(limit: number, offset: number) {
+    offset = offset * limit;
+    const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
       .get<{ ok: boolean; procedures: internal[]; length: number }>(`${base_url}/internal`, { params })
       .pipe(

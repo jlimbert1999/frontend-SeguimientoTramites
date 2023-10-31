@@ -12,13 +12,13 @@ const base_url = environment.base_url;
 export class ProcedureService {
   constructor(private http: HttpClient) {}
 
-  getFullProcedure(id_procedure: string) {
+  getFullProcedure(id_procedure: string, group: groupProcedure) {
     return this.http
       .get<{
         procedure: internal | external;
         workflow: workflow[];
         observations: observation[];
-      }>(`${base_url}/procedure/${id_procedure}`)
+      }>(`${base_url}/procedure/${group}/${id_procedure}`)
       .pipe(
         map((resp) => {
           const Procedure =

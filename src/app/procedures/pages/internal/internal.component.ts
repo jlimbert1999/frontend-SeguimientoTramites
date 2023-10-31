@@ -7,7 +7,7 @@ import { InternalDialogComponent } from '../../dialogs/internal-dialog/internal-
 import { createInternalRouteMap } from '../../helpers/internal-route-map';
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
 import { sendDetail } from 'src/app/communication/interfaces';
-import { internal, stateProcedure } from '../../interfaces';
+import { groupProcedure, internal, stateProcedure } from '../../interfaces';
 import { InternalProcedure } from '../../models';
 import { ArchiveService, InternalService, ProcedureService } from '../../services';
 import { AlertManager } from 'src/app/shared/helpers/alerts';
@@ -41,7 +41,7 @@ export class InternalComponent implements OnInit {
           this.paginatorService.limit,
           this.paginatorService.offset
         )
-      : this.internoService.Get(this.paginatorService.limit, this.paginatorService.offset);
+      : this.internoService.findAll(this.paginatorService.limit, this.paginatorService.offset);
     subscription.subscribe((data) => {
       this.dataSource = data.procedures;
       this.paginatorService.length = data.length;
@@ -98,8 +98,8 @@ export class InternalComponent implements OnInit {
       }
     });
   }
-  generateRouteMap(id_tramite: string) {
-    this.procedureService.getFullProcedure(id_tramite).subscribe((data) => {
+  generateRouteMap(id_tramite: string, group: groupProcedure) {
+    this.procedureService.getFullProcedure(id_tramite, group).subscribe((data) => {
       createInternalRouteMap(data.procedure as InternalProcedure, data.workflow);
     });
   }

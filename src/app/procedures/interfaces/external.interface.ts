@@ -9,6 +9,7 @@ export interface applicant {
   documento?: string;
   dni?: string;
 }
+
 export interface representative {
   nombre: string;
   telefono: string;

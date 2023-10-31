@@ -29,7 +29,8 @@ export class ProcedureDetailComponent implements OnInit {
   ngOnInit(): void {
     this.activateRoute.params.subscribe((params) => {
       const id = params['id'];
-      this.procedureService.getFullProcedure(id).subscribe((data) => {
+      const group = params['group'];
+      this.procedureService.getFullProcedure(id, group).subscribe((data) => {
         this.procedure = data.procedure;
         this.workflow = data.workflow;
         this.isLoading = false;

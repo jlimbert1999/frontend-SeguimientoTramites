@@ -8,6 +8,7 @@ import { dependency, institution } from 'src/app/administration/interfaces';
 import { sendDetail, receiver } from '../../interfaces';
 import { CreateMailDto } from '../../dto/create-mail.dto';
 import { AlertManager } from 'src/app/shared/helpers/alerts';
+import { matSelectSearchData } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-send-dialog',
@@ -15,8 +16,8 @@ import { AlertManager } from 'src/app/shared/helpers/alerts';
   styleUrls: ['./send-dialog.component.scss'],
 })
 export class SendDialogComponent implements OnInit, OnDestroy {
-  institutions: institution[] = [];
-  dependencies: dependency[] = [];
+  institutions: matSelectSearchData[] = [];
+  dependencies: matSelectSearchData[] = [];
   receivers: receiver[] = [];
   selectedReceivers: receiver[] = [];
   public userCtrl = new FormControl();
@@ -45,7 +46,7 @@ export class SendDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.inboxService.getInstitucions().subscribe((data) => {
-      this.institutions = data;
+      this.institutions = data.map((institution) => ({ value: institution._id, text: institution.nombre }));
     });
   }
 
@@ -74,16 +75,16 @@ export class SendDialogComponent implements OnInit, OnDestroy {
     this.selectedReceivers = this.selectedReceivers.filter((receiver) => receiver.id_account !== account.id_account);
   }
 
-  selectInstitution(institution: institution) {
+  selectInstitution(id_institution: string) {
     this.filteredUsers.next([]);
     this.receivers = [];
-    this.inboxService.getDependenciesOfInstitution(institution._id).subscribe((data) => {
-      this.dependencies = data;
+    this.inboxService.getDependenciesOfInstitution(id_institution).subscribe((data) => {
+      this.dependencies = data.map((dependency) => ({ value: dependency._id, text: dependency.nombre }));
     });
   }
-  selectDependencie(dependencie: dependency) {
+  selectDependencie(id_dependency: string) {
     this.inboxService
-      .getAccountsOfDependencie(dependencie._id)
+      .getAccountsOfDependencie(id_dependency)
       .pipe(
         switchMap((data) => {
           return this.socketService.onlineUsers$.pipe(

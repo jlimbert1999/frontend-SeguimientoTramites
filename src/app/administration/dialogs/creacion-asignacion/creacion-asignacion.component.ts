@@ -7,17 +7,18 @@ import { Officer } from '../../models/officer.model';
 import { institution } from '../../interfaces/institution.interface';
 import { dependency } from '../../interfaces/dependency.interface';
 import { role } from '../../interfaces/role.interface';
+import { matSelectSearchData } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-creacion-asignacion',
   templateUrl: './creacion-asignacion.component.html',
-  styleUrls: ['./creacion-asignacion.component.scss']
+  styleUrls: ['./creacion-asignacion.component.scss'],
 })
 export class CreacionAsignacionComponent implements OnInit {
-  dependencias: dependency[] = [];
-  institutions: institution[] = [];
-  roles: role[] = []
-  officers: Officer[] = []
+  dependencias: matSelectSearchData[] = [];
+  institutions: matSelectSearchData[] = [];
+  roles: role[] = [];
+  officers: Officer[] = [];
   hidePassword = true;
 
   Form_Cuenta: FormGroup = this.fb.group({
@@ -32,45 +33,40 @@ export class CreacionAsignacionComponent implements OnInit {
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<CreacionAsignacionComponent>,
     private cuentaService: CuentaService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    forkJoin([
-      this.cuentaService.getInstitutions(),
-      this.cuentaService.getRoles()
-    ]).subscribe(
-      data => {
-        this.institutions = data[0]
-        this.roles = data[1]
-      }
-    )
+    forkJoin([this.cuentaService.getInstitutions(), this.cuentaService.getRoles()]).subscribe((data) => {
+      this.institutions = data[0].map((institution) => ({ value: institution._id, text: institution.nombre }));
+      this.roles = data[1];
+    });
   }
   save() {
-    this.Form_Cuenta
-    this.cuentaService.addAccountWithAssign(this.Form_Cuenta.value).subscribe(account => {
-      this.dialogRef.close(account)
-    })
+    this.Form_Cuenta;
+    this.cuentaService.addAccountWithAssign(this.Form_Cuenta.value).subscribe((account) => {
+      this.dialogRef.close(account);
+    });
   }
 
   searchOfficer(text: string) {
-    this.cuentaService.getOfficersForAssign(text).subscribe(data => {
-      this.officers = data
-    })
+    this.cuentaService.getOfficersForAssign(text).subscribe((data) => {
+      this.officers = data;
+    });
   }
   selectOfficer(officer: Officer) {
-    this.Form_Cuenta.get('funcionario')?.setValue(officer._id)
+    this.Form_Cuenta.get('funcionario')?.setValue(officer._id);
     const login = officer.nombre.charAt(0) + officer.paterno + officer.materno.charAt(0);
-    this.Form_Cuenta.get('login')?.setValue(login.replace(/\s/g, "").toUpperCase())
-    this.Form_Cuenta.get('password')?.setValue(officer.dni.toString().replace(/\s/g, ""))
+    this.Form_Cuenta.get('login')?.setValue(login.replace(/\s/g, '').toUpperCase());
+    this.Form_Cuenta.get('password')?.setValue(officer.dni.toString().replace(/\s/g, ''));
   }
-  getDependencies(institution: institution) {
-    this.Form_Cuenta.get('institucion')?.setValue(institution ? institution._id : '')
-    this.cuentaService.getDependencies(institution._id).subscribe(data => {
-      this.dependencias = data
-    })
+  getDependencies(id_institution: string) {
+    this.Form_Cuenta.get('institucion')?.setValue(id_institution || '');
+    this.cuentaService.getDependencies(id_institution).subscribe((data) => {
+      this.dependencias = data.map((dependency) => ({ value: dependency._id, text: dependency.nombre }));
+    });
   }
-  selectDependency(dependency: dependency) {
-    this.Form_Cuenta.get('dependencia')?.setValue(dependency ? dependency._id : '')
+  selectDependency(id_dependency: string) {
+    this.Form_Cuenta.get('dependencia')?.setValue(id_dependency || '');
   }
 
   getErrorMessagesForm(control: AbstractControl) {
@@ -88,8 +84,4 @@ export class CreacionAsignacionComponent implements OnInit {
     }
     return '';
   }
-
-
-
-
 }

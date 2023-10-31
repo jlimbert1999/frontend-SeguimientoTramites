@@ -8,7 +8,7 @@ import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/s
 import { sendDetail } from 'src/app/communication/interfaces';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ExternalProcedure } from '../../models';
-import { external, stateProcedure } from '../../interfaces';
+import { external, groupProcedure, stateProcedure } from '../../interfaces';
 import { ArchiveService, ExternalService, ProcedureService } from '../../services';
 import { EventProcedureDto } from '../../dtos';
 import { AlertManager } from 'src/app/shared/helpers/alerts';
@@ -41,7 +41,7 @@ export class ExternalComponent implements OnInit {
           this.paginatorService.limit,
           this.paginatorService.offset
         )
-      : this.externalService.Get(this.paginatorService.limit, this.paginatorService.offset);
+      : this.externalService.findAll(this.paginatorService.limit, this.paginatorService.offset);
     subscription.subscribe((data) => {
       this.dataSource = data.procedures;
       this.paginatorService.length = data.length;
@@ -102,8 +102,8 @@ export class ExternalComponent implements OnInit {
     });
   }
 
-  generateRouteMap(id_procedure: string) {
-    this.procedureService.getFullProcedure(id_procedure).subscribe((data) => {
+  generateRouteMap(id_procedure: string, group: groupProcedure) {
+    this.procedureService.getFullProcedure(id_procedure, group).subscribe((data) => {
       createExternalRouteMap(data.procedure as ExternalProcedure, data.workflow);
     });
   }
@@ -137,7 +137,7 @@ export class ExternalComponent implements OnInit {
       offset: this.paginatorService.offset,
       ...(this.paginatorService.searchMode && { search: true }),
     };
-    this.router.navigate(['/tramites/externos', procedure._id], {
+    this.router.navigate([`tramites/detalle/${procedure.group}`, procedure._id], {
       queryParams: params,
     });
   }

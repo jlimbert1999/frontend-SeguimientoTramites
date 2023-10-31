@@ -1,116 +1,138 @@
 <h2 mat-dialog-title>REGISTRO CUENTA</h2>
 <mat-dialog-content>
-    <ng-container>
-        <mat-stepper headerPosition="bottom" (selectionChange)="eventChangeTab()" [linear]="false" #stepper>
-            <mat-step [stepControl]="Form_Funcionario">
-                <form [formGroup]="Form_Funcionario">
-                    <ng-template matStepLabel>Datos funcionario</ng-template>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <mat-form-field appearance="fill">
-                                <mat-label>Nombre</mat-label>
-                                <input class="uppercase" formControlName="nombre" matInput>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-md-4">
-                            <mat-form-field appearance="fill">
-                                <mat-label>Apellido paterno</mat-label>
-                                <input class="uppercase" formControlName="paterno" matInput>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-md-4">
-                            <mat-form-field appearance="fill">
-                                <mat-label>Apellido materno</mat-label>
-                                <input class="uppercase" formControlName="materno" matInput>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-md-4">
-                            <mat-form-field appearance="fill">
-                                <mat-label>Dni</mat-label>
-                                <input formControlName="dni" matInput>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-md-4">
-                            <mat-form-field appearance="fill">
-                                <mat-label>Telefono</mat-label>
-                                <input formControlName="telefono" matInput>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-md-4">
-                            <mat-form-field appearance="fill">
-                                <mat-label>Direccion</mat-label>
-                                <input formControlName="direccion" matInput>
-                            </mat-form-field>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8">
-                            <app-server-mat-select-search [allowNullValue]="true" [placeholder]="'Buscar cargo'"
-                                [pathPropertyOfObjectDisplay]="'nombre'" [data]="jobs"
-                                (eventSelectedOption)="selectJob($event)"
-                                (eventSearch)="searchJob($event)"></app-server-mat-select-search>
-                        </div>
-                    </div>
-                </form>
-            </mat-step>
-            <mat-step [stepControl]="Form_Cuenta">
-                <form [formGroup]="Form_Cuenta">
-                    <ng-template matStepLabel>Datos cuenta</ng-template>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <app-simple-mat-select-search [isRequired]="true" placehorder="Institucion"
-                                [data]="instituciones" [pathPropertyOfObjectDisplay]="'nombre'"
-                                (eventSelectedOption)="getDependencies($event)"></app-simple-mat-select-search>
-                        </div>
-                        <div class="col-md-8">
-                            <app-simple-mat-select-search [isRequired]="true" placehorder="Dependencia"
-                                [data]="dependencias" [pathPropertyOfObjectDisplay]="'nombre'"
-                                (eventSelectedOption)="selectDependency($event)"></app-simple-mat-select-search>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <mat-form-field appearance="fill" class="example-full-width">
-                                <mat-label>Login</mat-label>
-                                <input formControlName="login" matInput>
-                                <mat-error>{{ getErrorMessagesForm(Form_Cuenta.get('login')!) }}</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-6">
-                            <mat-form-field>
-                                <mat-label>Contraseña</mat-label>
-                                <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'">
-                                <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword"
-                                    [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
-                                    <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-                                </button>
-                                <mat-error>{{ getErrorMessagesForm(Form_Cuenta.get('password')!) }}</mat-error>
-                            </mat-form-field>
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4">
-                            <mat-form-field appearance="fill" class="example-full-width">
-                                <mat-label>Seleccione el rol</mat-label>
-                                <mat-select formControlName="rol">
-                                    <mat-option *ngFor="let rol of roles" [value]="rol._id">
-                                        {{rol.name}}
-                                    </mat-option>
-                                </mat-select>
-                                <mat-error>{{ getErrorMessagesForm(Form_Cuenta.get('login')!) }}</mat-error>
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </form>
-            </mat-step>
-        </mat-stepper>
-    </ng-container>
-
+  <ng-container>
+    <mat-stepper headerPosition="bottom" (selectionChange)="eventChangeTab()" [linear]="false" #stepper>
+      <mat-step [stepControl]="Form_Funcionario">
+        <form [formGroup]="Form_Funcionario">
+          <ng-template matStepLabel>Datos funcionario</ng-template>
+          <div class="row">
+            <div class="col-md-4">
+              <mat-form-field appearance="fill">
+                <mat-label>Nombre</mat-label>
+                <input class="uppercase" formControlName="nombre" matInput />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="fill">
+                <mat-label>Apellido paterno</mat-label>
+                <input class="uppercase" formControlName="paterno" matInput />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="fill">
+                <mat-label>Apellido materno</mat-label>
+                <input class="uppercase" formControlName="materno" matInput />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="fill">
+                <mat-label>Dni</mat-label>
+                <input formControlName="dni" matInput />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="fill">
+                <mat-label>Telefono</mat-label>
+                <input formControlName="telefono" matInput />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="fill">
+                <mat-label>Direccion</mat-label>
+                <input formControlName="direccion" matInput />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <app-server-mat-select-search
+                [allowNullValue]="true"
+                [placeholder]="'Buscar cargo'"
+                [pathPropertyOfObjectDisplay]="'nombre'"
+                [data]="jobs"
+                (eventSelectedOption)="selectJob($event)"
+                (eventSearch)="searchJob($event)"
+              ></app-server-mat-select-search>
+            </div>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="Form_Cuenta">
+        <form [formGroup]="Form_Cuenta">
+          <ng-template matStepLabel>Datos cuenta</ng-template>
+          <div class="row">
+            <div class="col-md-4">
+              <app-simple-mat-select-search
+                [isRequired]="true"
+                placehorder="Institucion"
+                [data]="instituciones"
+    
+                (eventSelectedOption)="getDependencies($event)"
+              ></app-simple-mat-select-search>
+            </div>
+            <div class="col-md-8">
+              <app-simple-mat-select-search
+                [isRequired]="true"
+                placehorder="Dependencia"
+                [data]="dependencias"
+      
+                (eventSelectedOption)="selectDependency($event)"
+              ></app-simple-mat-select-search>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Login</mat-label>
+                <input formControlName="login" matInput />
+                <mat-error>{{ getErrorMessagesForm(Form_Cuenta.get("login")!) }}</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-6">
+              <mat-form-field>
+                <mat-label>Contraseña</mat-label>
+                <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="hidePassword = !hidePassword"
+                  [attr.aria-label]="'Hide password'"
+                  [attr.aria-pressed]="hidePassword"
+                >
+                  <mat-icon>{{ hidePassword ? "visibility_off" : "visibility" }}</mat-icon>
+                </button>
+                <mat-error>{{ getErrorMessagesForm(Form_Cuenta.get("password")!) }}</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Seleccione el rol</mat-label>
+                <mat-select formControlName="rol">
+                  <mat-option *ngFor="let rol of roles" [value]="rol._id">
+                    {{ rol.name }}
+                  </mat-option>
+                </mat-select>
+                <mat-error>{{ getErrorMessagesForm(Form_Cuenta.get("login")!) }}</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </form>
+      </mat-step>
+    </mat-stepper>
+  </ng-container>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button mat-raised-button color="warn" mat-button mat-dialog-close>Cancelar</button>
-    <button mat-raised-button color="primary" mat-button
-    (click)="save()" [disabled]="Form_Funcionario.invalid || Form_Cuenta.invalid">Guardar</button>
+  <button mat-raised-button color="warn" mat-button mat-dialog-close>Cancelar</button>
+  <button
+    mat-raised-button
+    color="primary"
+    mat-button
+    (click)="save()"
+    [disabled]="Form_Funcionario.invalid || Form_Cuenta.invalid"
+  >
+    Guardar
+  </button>
 </mat-dialog-actions>

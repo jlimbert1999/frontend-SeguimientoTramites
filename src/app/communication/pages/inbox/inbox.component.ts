@@ -138,7 +138,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     );
   }
   generateRouteMap(mail: communication) {
-    this.procedureService.getFullProcedure(mail.procedure._id).subscribe((data) => {
+    this.procedureService.getFullProcedure(mail.procedure._id, mail.procedure.group).subscribe((data) => {
       const { procedure, workflow } = data;
       switch (procedure.group) {
         case groupProcedure.EXTERNAL:

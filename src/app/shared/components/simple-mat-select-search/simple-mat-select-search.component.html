@@ -1,16 +1,22 @@
-<mat-form-field class="example-full-width">
-    <mat-select (selectionChange)="selectOption($event.value)" [formControl]="bankCtrl" [placeholder]="placehorder"
-        #singleSelect>
-        <mat-option>
-            <ngx-mat-select-search noEntriesFoundLabel="No hay resultados" placeholderLabel="Buscar"
-                [formControl]="bankFilterCtrl"></ngx-mat-select-search>
-        </mat-option>
-        <mat-option *ngIf="allowNullValue" [value]="null">
-            -
-        </mat-option>
-        <mat-option *ngFor="let bank of filteredBanks | async" [value]="bank">
-            {{accessToPropertyObject(pathPropertyOfObjectDisplay, bank)}}
-        </mat-option>
-    </mat-select>
-    <mat-error *ngIf="bankCtrl.invalid">Seleccione una opcion</mat-error>
+<mat-form-field>
+  <mat-select
+    [required]="isRequired"
+    (selectionChange)="selectOption($event.value)"
+    [formControl]="bankCtrl"
+    [placeholder]="placehorder"
+    #singleSelect
+  >
+    <mat-option>
+      <ngx-mat-select-search
+        noEntriesFoundLabel="No hay resultados"
+        placeholderLabel="Buscar"
+        [formControl]="bankFilterCtrl"
+      ></ngx-mat-select-search>
+    </mat-option>
+    <mat-option *ngIf="allowNullValue" [value]="null"> - </mat-option>
+    <mat-option *ngFor="let bank of filteredBanks | async" [value]="bank.value">
+      {{ bank.text }}
+    </mat-option>
+  </mat-select>
+  <mat-error *ngIf="bankCtrl.invalid">Seleccione una opcion</mat-error>
 </mat-form-field>

@@ -5,11 +5,7 @@
     <button (click)="Add()" mat-icon-button matTooltip="Crear cuenta">
       <mat-icon>account_circle</mat-icon>
     </button>
-    <button
-      (click)="addAccountWithAssign()"
-      mat-icon-button
-      matTooltip="Asignar cuenta"
-    >
+    <button (click)="addAccountWithAssign()" mat-icon-button matTooltip="Asignar cuenta">
       <mat-icon>contact_emergency</mat-icon>
     </button>
   </mat-toolbar>
@@ -23,7 +19,6 @@
         [allowNullValue]="true"
         [data]="institutions"
         (eventSelectedOption)="getDependencias($event)"
-        [pathPropertyOfObjectDisplay]="'nombre'"
       ></app-simple-mat-select-search>
     </div>
     <div class="col-sm-5">
@@ -32,26 +27,13 @@
         [allowNullValue]="true"
         [data]="dependencies"
         (eventSelectedOption)="getAccountsOfDependency($event)"
-        [pathPropertyOfObjectDisplay]="'nombre'"
       ></app-simple-mat-select-search>
     </div>
     <div class="col-sm-4">
       <mat-form-field class="example-full-width">
         <mat-label>Buscar funcionario</mat-label>
-        <input
-          [(ngModel)]="text"
-          matInput
-          #myInput
-          (keyup)="applyFilter($event)"
-          placeholder="Nombre / DNI"
-        />
-        <button
-          *ngIf="text"
-          matSuffix
-          mat-icon-button
-          aria-label="Clear"
-          (click)="cancelSearch()"
-        >
+        <input [(ngModel)]="text" matInput #myInput (keyup)="applyFilter($event)" placeholder="Nombre / DNI" />
+        <button *ngIf="text" matSuffix mat-icon-button aria-label="Clear" (click)="cancelSearch()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>
@@ -63,9 +45,7 @@
         <ng-container matColumnDef="login">
           <th mat-header-cell *matHeaderCellDef>Login</th>
           <td mat-cell *matCellDef="let element">
-            <mat-icon style="color: royalblue; vertical-align: middle"
-              >account_circle</mat-icon
-            >
+            <mat-icon style="color: royalblue; vertical-align: middle">account_circle</mat-icon>
             {{ element.login }}
           </td>
         </ng-container>
@@ -73,9 +53,7 @@
           <th mat-header-cell *matHeaderCellDef>Funcionario</th>
           <td mat-cell *matCellDef="let element">
             <div [ngSwitch]="element.funcionario">
-              <div style="color: red" *ngSwitchCase="undefined">
-                SIN ASIGNAR
-              </div>
+              <div style="color: red" *ngSwitchCase="undefined">SIN ASIGNAR</div>
               <div *ngSwitchDefault>
                 {{ element.funcionario | fullname | titlecase }}
               </div>
@@ -98,23 +76,15 @@
           <th mat-header-cell *matHeaderCellDef>Situacion</th>
           <td mat-cell *matCellDef="let element">
             <ng-container [ngSwitch]="element.activo">
-              <span *ngSwitchCase="true" class="c-pill c-pill--success"
-                >Habilitado</span
-              >
-              <span *ngSwitchCase="false" class="c-pill c-pill--danger"
-                >Deshabilitado</span
-              >
+              <span *ngSwitchCase="true" class="c-pill c-pill--success">Habilitado</span>
+              <span *ngSwitchCase="false" class="c-pill c-pill--danger">Deshabilitado</span>
             </ng-container>
           </td>
         </ng-container>
         <ng-container matColumnDef="opciones">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element">
-            <button
-              mat-icon-button
-              [matMenuTriggerFor]="menu"
-              aria-label="Example icon-button with a menu"
-            >
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
@@ -124,9 +94,7 @@
               </button>
               <button (click)="disable(element._id)" mat-menu-item>
                 <mat-icon>delete</mat-icon>
-                <span>{{
-                  element.activo ? "Deshabilitar cuenta" : "Habilitar cuenta"
-                }}</span>
+                <span>{{ element.activo ? "Deshabilitar cuenta" : "Habilitar cuenta" }}</span>
               </button>
             </mat-menu>
           </td>
@@ -135,9 +103,6 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
-    <app-paginator
-      (page)="Get()"
-      [pageSizeOptions]="[10, 20, 30, 50]"
-    ></app-paginator>
+    <app-paginator (page)="Get()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
   </div>
 </div>
