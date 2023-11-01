@@ -19,7 +19,7 @@ import { EventProcedureDto } from '../../dtos';
   styleUrls: ['./internal.component.scss'],
 })
 export class InternalComponent implements OnInit {
-  displayedColumns: string[] = ['alterno', 'detalle', 'destinatario', 'estado', 'fecha', 'enviado', 'opciones'];
+  displayedColumns: string[] = ['code', 'reference', 'applicant', 'state', 'startDate', 'send', 'menu-options'];
   dataSource: internal[] = [];
 
   constructor(

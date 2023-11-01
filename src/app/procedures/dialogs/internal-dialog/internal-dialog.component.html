@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>{{ data ? "EDICION" : "REGISTRO" }} TRAMITE INTERNO</h2>
 <mat-dialog-content>
-  <form [formGroup]="TramiteFormGroup" class="example-form">
+  <form [formGroup]="TramiteFormGroup">
     <div class="row" *ngIf="!data">
       <mat-form-field>
         <mat-label>Seleccione el tipo de tramite</mat-label>
@@ -12,27 +12,19 @@
       </mat-form-field>
     </div>
     <div class="row">
-      <mat-form-field class="example-full-width">
+      <mat-form-field>
         <mat-label>Referencia del tramite</mat-label>
         <textarea formControlName="reference" matInput></textarea>
-        <mat-error
-          *ngIf="TramiteFormGroup.get('reference')!.hasError('required')"
-        >
+        <mat-error *ngIf="TramiteFormGroup.get('reference')!.hasError('required')">
           La referencia es <strong>requerida</strong>
         </mat-error>
       </mat-form-field>
     </div>
     <div class="row">
       <div class="col-sm-6">
-        <mat-form-field class="example-full-width">
+        <mat-form-field>
           <mat-label>Nombre del remitente</mat-label>
-          <input
-            type="text"
-            class="uppercase"
-            matInput
-            formControlName="fullname_emitter"
-            [matAutocomplete]="auto"
-          />
+          <input type="text" class="uppercase" matInput formControlName="fullname_emitter" [matAutocomplete]="auto" />
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option
               (onSelectionChange)="setJobTitle(option, 'jobtitle_emitter')"
@@ -42,28 +34,16 @@
               {{ option.fullname | titlecase }}
             </mat-option>
           </mat-autocomplete>
-          <mat-error
-            *ngIf="
-              TramiteFormGroup.get('fullname_emitter')!.hasError('required')
-            "
-          >
+          <mat-error *ngIf="TramiteFormGroup.get('fullname_emitter')!.hasError('required')">
             El nombre del remitente es <strong>requerido</strong>
           </mat-error>
         </mat-form-field>
       </div>
       <div class="col-sm-6">
-        <mat-form-field class="example-full-width">
+        <mat-form-field>
           <mat-label>Cargo del remitente</mat-label>
-          <input
-            class="uppercase"
-            formControlName="jobtitle_emitter"
-            matInput
-          />
-          <mat-error
-            *ngIf="
-              TramiteFormGroup.get('jobtitle_emitter')!.hasError('required')
-            "
-          >
+          <input class="uppercase" formControlName="jobtitle_emitter" matInput />
+          <mat-error *ngIf="TramiteFormGroup.get('jobtitle_emitter')!.hasError('required')">
             El cargo del remitente es <strong>requerido</strong>
           </mat-error>
         </mat-form-field>
@@ -71,15 +51,9 @@
     </div>
     <div class="row">
       <div class="col-sm-6">
-        <mat-form-field class="example-full-width">
+        <mat-form-field>
           <mat-label>Nombre del destinatario</mat-label>
-          <input
-            class="uppercase"
-            type="text"
-            matInput
-            formControlName="fullname_receiver"
-            [matAutocomplete]="auto1"
-          />
+          <input class="uppercase" type="text" matInput formControlName="fullname_receiver" [matAutocomplete]="auto1" />
           <mat-autocomplete matau #auto1="matAutocomplete">
             <mat-option
               (onSelectionChange)="setJobTitle(option, 'jobtitle_receiver')"
@@ -89,28 +63,16 @@
               {{ option.fullname | titlecase }}
             </mat-option>
           </mat-autocomplete>
-          <mat-error
-            *ngIf="
-              TramiteFormGroup.get('fullname_receiver')!.hasError('required')
-            "
-          >
+          <mat-error *ngIf="TramiteFormGroup.get('fullname_receiver')!.hasError('required')">
             El nombre del destinatario es <strong>requerido</strong>
           </mat-error>
         </mat-form-field>
       </div>
       <div class="col-sm-6">
-        <mat-form-field class="example-full-width">
+        <mat-form-field>
           <mat-label>Cargo del destinatario</mat-label>
-          <input
-            class="uppercase"
-            formControlName="jobtitle_receiver"
-            matInput
-          />
-          <mat-error
-            *ngIf="
-              TramiteFormGroup.get('jobtitle_receiver')!.hasError('required')
-            "
-          >
+          <input class="uppercase" formControlName="jobtitle_receiver" matInput />
+          <mat-error *ngIf="TramiteFormGroup.get('jobtitle_receiver')!.hasError('required')">
             El cargo del destinatario es <strong>requerido</strong>
           </mat-error>
         </mat-form-field>
@@ -118,18 +80,16 @@
     </div>
     <div class="row">
       <div class="col-sm-6">
-        <mat-form-field class="example-full-width">
+        <mat-form-field>
           <mat-label>CITE</mat-label>
           <input formControlName="cite" matInput />
         </mat-form-field>
       </div>
       <div class="col-sm-6">
-        <mat-form-field class="example-full-width">
+        <mat-form-field>
           <mat-label>Cant. Hojas / Anexos</mat-label>
           <input formControlName="amount" matInput />
-          <mat-error
-            *ngIf="TramiteFormGroup.get('amount')!.hasError('required')"
-          >
+          <mat-error *ngIf="TramiteFormGroup.get('amount')!.hasError('required')">
             La cantidad es <strong>requerida</strong>
           </mat-error>
         </mat-form-field>
@@ -139,12 +99,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-raised-button mat-dialog-close color="warn">Cancelar</button>
-  <button
-    mat-raised-button
-    color="primary"
-    [disabled]="TramiteFormGroup.invalid"
-    (click)="guardar()"
-  >
-    Guardar
-  </button>
+  <button mat-raised-button color="primary" [disabled]="TramiteFormGroup.invalid" (click)="guardar()">Guardar</button>
 </mat-dialog-actions>

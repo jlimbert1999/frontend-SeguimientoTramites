@@ -1,20 +1,19 @@
 import { applicant, representative } from '../interfaces';
 interface externalProperties {
-  segment: string;
   formProcedure: any;
   requeriments: string[];
   formApplicant: any;
   formRepresentative: any;
 }
 export class ExternalProcedureDto {
-  static fromForms({ segment, requeriments, formProcedure, formApplicant, formRepresentative }: externalProperties) {
+  static fromForms({ requeriments, formProcedure, formApplicant, formRepresentative }: externalProperties) {
     return new ExternalProcedureDto(
       {
         type: formProcedure['type'],
         cite: formProcedure['cite'],
         reference: formProcedure['reference'],
         amount: formProcedure['amount'],
-        segment,
+        segment: formProcedure['segment'],
       },
       requeriments,
       formApplicant,

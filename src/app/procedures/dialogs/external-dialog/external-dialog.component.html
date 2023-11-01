@@ -67,14 +67,14 @@
       <div class="row" *ngIf="!data">
         <mat-form-field>
           <mat-label>Seleccione el tipo de solicitante</mat-label>
-          <mat-select [(ngModel)]="selectedtypeApplicant" (selectionChange)="createFormApplicant($event.value)">
+          <mat-select [(ngModel)]="selectedtypeApplicant" (selectionChange)="createFormApplicant()">
             <mat-option [value]="'NATURAL'">SOLICITANTE NATURAL</mat-option>
             <mat-option [value]="'JURIDICO'">SOLICITANTE JURIDICO</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
       <form [formGroup]="SolicitanteFormGroup">
-        <div *ngIf="selectedtypeApplicant === 'NATURAL'; else elseTemplate">
+        <div *ngIf="selectedtypeApplicant === 'NATURAL'; else templateApplicat">
           <div class="row">
             <div class="col-sm-4">
               <mat-form-field class="example-full-width">
@@ -138,7 +138,7 @@
             </div>
           </div>
         </div>
-        <ng-template #elseTemplate>
+        <ng-template #templateApplicat>
           <form [formGroup]="SolicitanteFormGroup">
             <div class="row">
               <div class="col-sm">
@@ -166,14 +166,14 @@
       <div class="col-12" *ngIf="!data">
         <section class="example-section">
           <label class="example-margin">Tipo de registro:</label>
-          <mat-radio-group (change)="changeFormRepresentante($event.value)">
-            <mat-radio-button class="example-margin" [value]="false"> SIN REPRESENTANTE LEGAL</mat-radio-button>
-            <mat-radio-button class="example-margin" [value]="true">CON REPRESENTANTE LEGAL</mat-radio-button>
+          <mat-radio-group [(ngModel)]="registerRepresentative" (change)="createFormRepresentative()">
+            <mat-radio-button class="example-margin" [value]="false"> SIN REPRESENTANTE</mat-radio-button>
+            <mat-radio-button class="example-margin" [value]="true">CON REPRESENTANTE</mat-radio-button>
           </mat-radio-group>
         </section>
       </div>
     </mat-step>
-    <!-- <mat-step *ngIf="registerRepresentative" [stepControl]="RepresentanteFormGroup" errorMessage="Campos incorrectos">
+    <mat-step [stepControl]="RepresentanteFormGroup" errorMessage="Campos incorrectos" *ngIf="registerRepresentative">
       <form [formGroup]="RepresentanteFormGroup">
         <ng-template matStepLabel>Detalles representante</ng-template>
         <div class="row">
@@ -239,10 +239,10 @@
           </div>
         </div>
       </form>
-    </mat-step> -->
+    </mat-step>
   </mat-stepper>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-raised-button mat-dialog-close color="warn">Cancelar</button>
-  <button mat-raised-button color="primary" (click)="save()">Guardar</button>
+  <button mat-raised-button color="primary" [disabled]="!validForms" (click)="save()">Guardar</button>
 </mat-dialog-actions>

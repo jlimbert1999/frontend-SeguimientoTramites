@@ -7,33 +7,27 @@
   <div class="example-container mat-elevation-z8">
     <div class="example-table-container">
       <table mat-table [dataSource]="dataSource">
-        <ng-container matColumnDef="alterno">
+        <ng-container matColumnDef="code">
           <th mat-header-cell *matHeaderCellDef>Alterno</th>
           <td mat-cell *matCellDef="let element">
-            <a (click)="showDetails(element)">
+            <a class="link-primary" (click)="showDetails(element)">
               {{ element.code }}
             </a>
           </td>
         </ng-container>
-        <ng-container matColumnDef="detalle">
+        <ng-container matColumnDef="reference">
           <th mat-header-cell *matHeaderCellDef>Referencia</th>
           <td mat-cell *matCellDef="let element">
             {{ element.reference | uppercase }}
           </td>
         </ng-container>
-        <ng-container matColumnDef="solicitante">
-          <th mat-header-cell *matHeaderCellDef>Solicitante</th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.details.remitente.nombre | titlecase }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="destinatario">
+        <ng-container matColumnDef="applicant">
           <th mat-header-cell *matHeaderCellDef>Destinatario</th>
           <td mat-cell *matCellDef="let element">
             {{ element.details.destinatario.nombre | titlecase }}
           </td>
         </ng-container>
-        <ng-container matColumnDef="estado">
+        <ng-container matColumnDef="state">
           <th mat-header-cell *matHeaderCellDef>Estado</th>
           <td mat-cell *matCellDef="let element">
             <span class="badge" [ngClass]="element.state | state">
@@ -41,27 +35,21 @@
             </span>
           </td>
         </ng-container>
-        <ng-container matColumnDef="cite">
-          <th mat-header-cell *matHeaderCellDef>Cite</th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.cite !== "" ? element.cite : "S / C" }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="fecha">
+        <ng-container matColumnDef="startDate">
           <th mat-header-cell *matHeaderCellDef>Fecha</th>
           <td mat-cell *matCellDef="let element">
             {{ element.startDate | date : "short" }}
           </td>
         </ng-container>
-        <ng-container matColumnDef="enviado">
-          <th mat-header-cell *matHeaderCellDef>Enviado</th>
+        <ng-container matColumnDef="send">
+          <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element">
-            <mat-icon [ngClass]="element.send ? 'send' : 'pending'">{{
+            <mat-icon [ngClass]="element.send ? 'icon-send' : 'icon-pending'">{{
               element.send ? "mark_email_read" : "unsubscribe"
             }}</mat-icon>
           </td>
         </ng-container>
-        <ng-container matColumnDef="opciones">
+        <ng-container matColumnDef="menu-options">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let row">
             <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">

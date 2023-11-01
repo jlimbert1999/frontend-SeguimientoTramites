@@ -8,6 +8,10 @@ import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
 import { ProcedureService } from '../../services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from '../../models';
 
+const routess = {
+  externos: groupProcedure.EXTERNAL,
+  internos: groupProcedure.INTERNAL,
+};
 @Component({
   selector: 'app-procedure-detail',
   templateUrl: './procedure-detail.component.html',
@@ -29,12 +33,14 @@ export class ProcedureDetailComponent implements OnInit {
   ngOnInit(): void {
     this.activateRoute.params.subscribe((params) => {
       const id = params['id'];
-      const group = params['group'];
-      this.procedureService.getFullProcedure(id, group).subscribe((data) => {
-        this.procedure = data.procedure;
-        this.workflow = data.workflow;
-        this.isLoading = false;
-      });
+      const group: string = params['group'] || '';
+      const s = routess['externos'];
+
+      // this.procedureService.getFullProcedure(id, group).subscribe((data) => {
+      //   this.procedure = data.procedure;
+      //   this.workflow = data.workflow;
+      //   this.isLoading = false;
+      // });
     });
   }
 

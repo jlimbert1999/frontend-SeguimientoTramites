@@ -9,7 +9,7 @@ const routes: Routes = [
   { path: 'internos', component: InternalComponent },
   { path: 'externos', component: ExternalComponent },
   { path: 'archivados', component: ArchivesComponent },
-  { path: 'detalle/:group/:id', component: ProcedureDetailComponent },
+  { path: ':group/:id', component: ProcedureDetailComponent },
 ];
 
 @NgModule({

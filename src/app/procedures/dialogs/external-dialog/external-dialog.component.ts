@@ -1,10 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { matSelectSearchData } from 'src/app/shared/interfaces';
+import { NestedPartial, matSelectSearchData } from 'src/app/shared/interfaces';
 import { typeProcedure } from 'src/app/administration/interfaces';
 import { ExternalService } from '../../services/external.service';
 import { external, typeApplicant } from '../../interfaces';
+import { ExternalProcedureDto } from '../../dtos';
 
 @Component({
   selector: 'app-external-dialog',
@@ -18,8 +19,15 @@ export class ExternalDialogComponent implements OnInit {
   requeriments: string[] = [];
   documents: string[] = ['Carnet de identidad', 'Libreta servicio militar', 'Pasaporte'];
   selectedtypeApplicant: typeApplicant = 'NATURAL';
+  registerRepresentative: boolean = true;
 
-  TramiteFormGroup: FormGroup;
+  TramiteFormGroup: FormGroup = this.fb.group({
+    segment: ['', Validators.required],
+    amount: ['', Validators.required],
+    reference: ['', Validators.required],
+    type: ['', Validators.required],
+    cite: [''],
+  });
   SolicitanteFormGroup: FormGroup;
   RepresentanteFormGroup: FormGroup;
 
@@ -33,53 +41,45 @@ export class ExternalDialogComponent implements OnInit {
   ngOnInit(): void {
     if (this.data) {
       const { details, ...values } = this.data;
-      this.createFormProcedure('UPDATE');
-      this.createFormApplicant(this.data.details.solicitante.tipo);
+      this.TramiteFormGroup.removeControl('segment');
+      this.TramiteFormGroup.removeControl('type');
       this.TramiteFormGroup.patchValue(values);
-      this.SolicitanteFormGroup.patchValue(details.solicitante);
-      if (details.representante) {
-        this.createFormRepresentative('WITH');
-        this.RepresentanteFormGroup.patchValue(details.representante);
-      } else {
-        this.createFormRepresentative('WITHOUT');
-      }
+      this.registerRepresentative = details.representante ? true : false;
+      this.selectedtypeApplicant = details.solicitante.tipo;
     } else {
-      this.createFormProcedure('CREATE');
-      this.createFormApplicant('JURIDICO');
-      this.createFormRepresentative('WITHOUT');
       this.externoService.getSegments().subscribe((data) => {
         this.segments = data.map((segment) => ({ value: segment, text: segment }));
       });
     }
+    this.createFormApplicant();
+    this.createFormRepresentative();
+    this.SolicitanteFormGroup.patchValue(this.data?.details.solicitante || {});
+    this.RepresentanteFormGroup.patchValue(this.data?.details.representante || {});
   }
 
   save() {
-    // if (this.data) {
-    //   const updateProcedure: NestedPartial<ExternalProcedureDto> = {
-    //     procedure: this.TramiteFormGroup.value,
-    //     details: {
-    //       solicitante: this.SolicitanteFormGroup.value,
-    //       ...(this.data.details.representante && { representante: this.RepresentanteFormGroup.value }),
-    //     },
-    //   };
-    //   this.externoService.Edit(this.data._id, updateProcedure).subscribe((procedure) => {
-    //     this.dialogRef.close(procedure);
-    //   });
-    // } else {
-    //   const procedure = ExternalProcedureDto.fromForms({
-    //     segment: this.segment,
-    //     requeriments: this.requeriments,
-    //     formProcedure: this.TramiteFormGroup.value,
-    //     formApplicant: this.SolicitanteFormGroup.value,
-    //     formRepresentative: this.RepresentanteFormGroup.value,
-    //   });
-    //   this.externoService.Add(procedure).subscribe((procedure) => {
-    //     this.dialogRef.close(procedure);
-    //   });
-    // }
-    console.log('form procedure', this.TramiteFormGroup.value);
-    console.log('form applicant', this.SolicitanteFormGroup.value);
-    console.log('form representative', this.RepresentanteFormGroup.value);
+    if (this.data) {
+      const updateProcedure: NestedPartial<ExternalProcedureDto> = {
+        procedure: this.TramiteFormGroup.value,
+        details: {
+          solicitante: this.SolicitanteFormGroup.value,
+          ...(this.data.details.representante && { representante: this.RepresentanteFormGroup.value }),
+        },
+      };
+      this.externoService.Edit(this.data._id, updateProcedure).subscribe((procedure) => {
+        this.dialogRef.close(procedure);
+      });
+    } else {
+      const procedure = ExternalProcedureDto.fromForms({
+        requeriments: this.requeriments,
+        formProcedure: this.TramiteFormGroup.value,
+        formApplicant: this.SolicitanteFormGroup.value,
+        formRepresentative: this.RepresentanteFormGroup.value,
+      });
+      this.externoService.Add(procedure).subscribe((procedure) => {
+        this.dialogRef.close(procedure);
+      });
+    }
   }
   getTypesProceduresBySegment(segment: string) {
     this.TramiteFormGroup.get('segment')?.setValue(segment);
@@ -98,8 +98,37 @@ export class ExternalDialogComponent implements OnInit {
     const selectTypeProcedure = this.typesProcedures.find((type) => type._id === id_typeProcedure);
     this.requeriments = selectTypeProcedure!.requerimientos.filter((el) => el.activo).map((el) => el.nombre);
   }
-  changeFormRepresentante(register: boolean) {
-    this.RepresentanteFormGroup = register
+
+  createFormApplicant() {
+    this.SolicitanteFormGroup =
+      this.selectedtypeApplicant === 'NATURAL'
+        ? this.fb.group({
+            nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
+            paterno: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
+            materno: ['', Validators.pattern('^[a-zA-Z ]*$')],
+            telefono: [
+              '',
+              [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')],
+            ],
+            dni: [
+              '',
+              [Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern('^[0-9]*$')],
+            ],
+            documento: ['', Validators.required],
+            tipo: [this.selectedtypeApplicant],
+          })
+        : this.fb.group({
+            nombre: ['', Validators.required],
+            telefono: [
+              '',
+              [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')],
+            ],
+            tipo: [this.selectedtypeApplicant],
+          });
+  }
+
+  createFormRepresentative() {
+    this.RepresentanteFormGroup = this.registerRepresentative
       ? this.fb.group({
           nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
           paterno: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
@@ -115,64 +144,6 @@ export class ExternalDialogComponent implements OnInit {
           ],
         })
       : this.fb.group({});
-  }
-  get registerRepresentative(): boolean {
-    console.log(Object.keys(this.RepresentanteFormGroup.value).length);
-    return Object.keys(this.RepresentanteFormGroup.value).length > 0 ? true : false;
-  }
-  createFormProcedure(option: 'CREATE' | 'UPDATE') {
-    this.TramiteFormGroup =
-      option === 'CREATE'
-        ? this.fb.group({
-            segment: ['', Validators.required],
-            amount: ['', Validators.required],
-            reference: ['', Validators.required],
-            type: ['', Validators.required],
-            cite: [''],
-          })
-        : this.fb.group({
-            amount: ['', Validators.required],
-            reference: ['', Validators.required],
-            cite: [''],
-          });
-  }
-
-  createFormApplicant(typeApplicant: 'NATURAL' | 'JURIDICO') {
-    this.SolicitanteFormGroup = this.fb.group({
-      nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
-      paterno: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
-      materno: ['', Validators.pattern('^[a-zA-Z ]*$')],
-      telefono: [
-        '',
-        [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')],
-      ],
-      dni: [
-        '',
-        [Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern('^[0-9]*$')],
-      ],
-      documento: ['', Validators.required],
-      tipo: ['NATURAL'],
-    });
-  }
-
-  createFormRepresentative(option: 'WITH' | 'WITHOUT') {
-    this.RepresentanteFormGroup =
-      option === 'WITH'
-        ? this.fb.group({
-            nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
-            paterno: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
-            materno: ['', Validators.pattern('^[a-zA-Z ]*$')],
-            documento: ['', Validators.required],
-            dni: [
-              '',
-              [Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern('^[0-9]*$')],
-            ],
-            telefono: [
-              '',
-              [Validators.required, Validators.minLength(8), Validators.maxLength(10), Validators.pattern('^[0-9]*$')],
-            ],
-          })
-        : this.fb.group({});
   }
 
   getErrorMessageFormAplicant(controlName: string) {

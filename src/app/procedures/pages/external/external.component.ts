@@ -20,7 +20,7 @@ import { AlertManager } from 'src/app/shared/helpers/alerts';
 })
 export class ExternalComponent implements OnInit {
   dataSource: external[] = [];
-  displayedColumns: string[] = ['alterno', 'detalle', 'estado', 'solicitante', 'fecha_registro', 'enviado', 'opciones'];
+  displayedColumns: string[] = ['code', 'reference', 'applicant', 'state', 'startDate', 'send', 'menu-options'];
   stateProcedure: stateProcedure;
   constructor(
     public dialog: MatDialog,
@@ -48,7 +48,7 @@ export class ExternalComponent implements OnInit {
     });
   }
 
-  Add() {
+  add() {
     const dialogRef = this.dialog.open(ExternalDialogComponent, {
       width: '1000px',
       disableClose: true,
@@ -137,7 +137,7 @@ export class ExternalComponent implements OnInit {
       offset: this.paginatorService.offset,
       ...(this.paginatorService.searchMode && { search: true }),
     };
-    this.router.navigate([`tramites/detalle/${procedure.group}`, procedure._id], {
+    this.router.navigate([`/tramites`, 'externos', procedure._id], {
       queryParams: params,
     });
   }

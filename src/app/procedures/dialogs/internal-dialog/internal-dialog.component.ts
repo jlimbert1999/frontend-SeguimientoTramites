@@ -53,13 +53,8 @@ export class InternalDialogComponent implements OnInit {
 
   guardar() {
     if (this.data) {
-      const {
-        fullname_emitter,
-        fullname_receiver,
-        jobtitle_emitter,
-        jobtitle_receiver,
-        ...values
-      } = this.TramiteFormGroup.value;
+      const { fullname_emitter, fullname_receiver, jobtitle_emitter, jobtitle_receiver, ...values } =
+        this.TramiteFormGroup.value;
       const procedure: NestedPartial<InternalProcedureDto> = {
         procedure: values,
         details: {
@@ -73,17 +68,10 @@ export class InternalDialogComponent implements OnInit {
           },
         },
       };
-
-      this.internoService
-        .Edit(this.data._id, procedure)
-        .subscribe((procedure) => this.dialogRef.close(procedure));
+      this.internoService.Edit(this.data._id, procedure).subscribe((procedure) => this.dialogRef.close(procedure));
     } else {
-      const procedure = InternalProcedureDto.fromForm(
-        this.TramiteFormGroup.value
-      );
-      this.internoService
-        .Add(procedure)
-        .subscribe((procedure) => this.dialogRef.close(procedure));
+      const procedure = InternalProcedureDto.fromForm(this.TramiteFormGroup.value);
+      this.internoService.Add(procedure).subscribe((procedure) => this.dialogRef.close(procedure));
     }
   }
 
@@ -96,9 +84,7 @@ export class InternalDialogComponent implements OnInit {
 
   private _filterOfficers(value: string) {
     if (value === '') return [];
-    return this.internoService
-      .getParticipant(value)
-      .pipe((officers) => officers);
+    return this.internoService.getParticipant(value).pipe((officers) => officers);
   }
 
   setJobTitle(officer: Officer, formControlPath: string) {
@@ -112,14 +98,8 @@ export class InternalDialogComponent implements OnInit {
           reference: ['', Validators.required],
           cite: [this.authService.code],
           amount: ['', Validators.required],
-          fullname_emitter: [
-            this.authService.account.officer.fullname,
-            Validators.required,
-          ],
-          jobtitle_emitter: [
-            this.authService.account.officer.jobtitle,
-            Validators.required,
-          ],
+          fullname_emitter: [this.authService.account.officer.fullname, Validators.required],
+          jobtitle_emitter: [this.authService.account.officer.jobtitle, Validators.required],
           fullname_receiver: ['', Validators.required],
           jobtitle_receiver: ['', Validators.required],
         })
