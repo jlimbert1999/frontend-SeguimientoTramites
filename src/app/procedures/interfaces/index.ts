@@ -4,3 +4,6 @@ export * from './procedure.interface';
 export * from './observation.interface';
 export * from './event-procedure';
 export * from './search_procedure_params.interface';
+export * from './state-procedure.interface';
+export * from './group-procedure.interface';
+export * from './worker.interface';

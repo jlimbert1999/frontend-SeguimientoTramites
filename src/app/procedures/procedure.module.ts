@@ -9,7 +9,7 @@ import { ExternalDialogComponent } from './dialogs/external-dialog/external-dial
 import { InternalDialogComponent } from './dialogs/internal-dialog/internal-dialog.component';
 import { ExternalDetailComponent } from './components/external-detail/external-detail.component';
 import { ExternalComponent } from './pages/external/external.component';
-import { ProcedureDetailComponent } from './pages/procedure-detail/procedure-detail.component';
+import { DetailComponent } from './pages/detail/detail.component';
 import { FilterObservationsPipe } from './pipes/filter-observations.pipe';
 import { InternalDetailComponent } from './components/internal-detail/internal-detail.component';
 import { InternalComponent } from './pages/internal/internal.component';
@@ -23,7 +23,7 @@ import { EventDialogComponent } from './dialogs/event-dialog/event-dialog.compon
 
 @NgModule({
   declarations: [
-    ProcedureDetailComponent,
+    DetailComponent,
     ExternalComponent,
     InternalComponent,
     InternalDialogComponent,

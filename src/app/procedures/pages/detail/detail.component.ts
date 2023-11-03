@@ -8,16 +8,18 @@ import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
 import { ProcedureService } from '../../services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from '../../models';
 
-const routess = {
+const VALID_ROUTES: {
+  [key: string]: groupProcedure;
+} = {
   externos: groupProcedure.EXTERNAL,
   internos: groupProcedure.INTERNAL,
 };
 @Component({
-  selector: 'app-procedure-detail',
-  templateUrl: './procedure-detail.component.html',
-  styleUrls: ['./procedure-detail.component.scss'],
+  selector: 'app-detail',
+  templateUrl: './detail.component.html',
+  styleUrls: ['./detail.component.scss'],
 })
-export class ProcedureDetailComponent implements OnInit {
+export class DetailComponent implements OnInit {
   isLoading: boolean = true;
   procedure: InternalProcedure | ExternalProcedure;
   workflow: workflow[] = [];
@@ -32,19 +34,25 @@ export class ProcedureDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.activateRoute.params.subscribe((params) => {
-      const id = params['id'];
-      const group: string = params['group'] || '';
-      const s = routess['externos'];
-
-      // this.procedureService.getFullProcedure(id, group).subscribe((data) => {
-      //   this.procedure = data.procedure;
-      //   this.workflow = data.workflow;
-      //   this.isLoading = false;
-      // });
+      const id: string = params['id'];
+      const group: string = params['group'];
+      if (!id || !group) {
+        this._location.back();
+        return;
+      }
+      if (!Object.keys(VALID_ROUTES).includes(group)) {
+        this._location.back();
+        return;
+      }
+      this.procedureService.getFullProcedure(id, VALID_ROUTES[group]).subscribe((data) => {
+        this.procedure = data.procedure;
+        this.workflow = data.workflow;
+        this.isLoading = false;
+      });
     });
   }
 
-  back() {
+  backLocation() {
     this.activateRoute.queryParams.subscribe((data) => {
       const searchMode = String(data['search']).toLowerCase();
       this.paginatorService.limit = data['limit'];

@@ -1,13 +1,13 @@
-import { detailsInternal, internal } from '../interfaces';
+import { internalDetails, internal } from '../interfaces';
 import { Procedure } from './procedure.model';
 
 export class InternalProcedure extends Procedure {
-  details: detailsInternal;
+  details: internalDetails;
   static fromJson(data: internal) {
     return new InternalProcedure(data);
   }
-  constructor({ details, ...procedureProp }: internal) {
-    super(procedureProp);
+  constructor({ details, ...procedureProps }: internal) {
+    super(procedureProps);
     this.details = details;
   }
 }

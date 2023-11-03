@@ -5,12 +5,13 @@
     placeholder="Alterno / Referencia / Solicitante"
   ></app-input-search-procedures>
   <div class="example-container mat-elevation-z8">
-    <div class="example-table-container">
+    <div class="table-container">
       <table mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="code">
           <th mat-header-cell *matHeaderCellDef>Alterno</th>
           <td mat-cell *matCellDef="let row">
             <a class="link-primary" (click)="showDetails(row)">
+              {{row.isEditable}}
               {{ row.code }}
             </a>
           </td>

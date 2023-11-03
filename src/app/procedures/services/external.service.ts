@@ -1,12 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { map, pipe } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { typeProcedure } from 'src/app/administration/interfaces';
 import { external } from '../interfaces/external.interface';
 import { ExternalProcedureDto } from '../dtos';
 import { NestedPartial } from 'src/app/shared/interfaces/nested-partial';
 import { searchProcedureParams } from '../interfaces';
+import { ExternalProcedure } from '../models';
 
 const base_url = environment.base_url;
 @Injectable({
@@ -38,9 +39,16 @@ export class ExternalService {
   }
   findAll(limit: number, offset: number) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
-    return this.http.get<{ procedures: external[]; length: number }>(`${base_url}/external`, {
-      params,
-    });
+    return this.http
+      .get<{ procedures: external[]; length: number }>(`${base_url}/external`, {
+        params,
+      })
+      .pipe(
+        map((response) => {
+          const data = response.procedures.map((procedure) => ExternalProcedure.fromJson(procedure));
+          return { procedures: data, length: response.length };
+        })
+      );
   }
 
   search(text: string, limit: number, offset: number) {
@@ -48,8 +56,9 @@ export class ExternalService {
     return this.http
       .get<{ procedures: external[]; length: number }>(`${base_url}/external/search/${text}`, { params })
       .pipe(
-        map((resp) => {
-          return { procedures: resp.procedures, length: resp.length };
+        map((response) => {
+          const data = response.procedures.map((procedure) => ExternalProcedure.fromJson(procedure));
+          return { procedures: data, length: response.length };
         })
       );
   }

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MenuComponent } from './pages/menu/menu.component';
 import { BusquedaComponent } from './pages/busqueda/busqueda.component';
-import { ProcedureDetailComponent } from '../procedures/pages/procedure-detail/procedure-detail.component';
+import { DetailComponent } from '../procedures/pages/detail/detail.component';
 
 
 
@@ -14,7 +14,7 @@ const routes: Routes = [
     path: 'busquedas', component: BusquedaComponent
   },
   {
-    path: 'busquedas/:tipo/:id', component: ProcedureDetailComponent
+    path: 'busquedas/:tipo/:id', component: DetailComponent
   },
 ];
 

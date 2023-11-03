@@ -1,26 +1,26 @@
-import { detailsExternal, external } from '../interfaces';
+import { createExternalRouteMap } from '../helpers';
+import { externalDetails, external, worker } from '../interfaces';
 import { Procedure } from './procedure.model';
 
 export class ExternalProcedure extends Procedure {
-  details: detailsExternal;
+
+  generateRouteMap(): void {
+    // createExternalRouteMap();
+  }
+  details: externalDetails;
   static fromJson(data: external) {
     return new ExternalProcedure(data);
   }
-  constructor({ details, ...procedureProp }: external) {
-    super(procedureProp);
+  constructor({ details, ...procedureProps }: external) {
+    super(procedureProps);
     const { representante, ...detailsProp } = details;
     this.details = detailsProp;
-    if (details.representante)
-      this.details.representante = details.representante;
+    if (details.representante) this.details.representante = details.representante;
   }
 
   get fullNameApplicant() {
     return this.details.solicitante.tipo === 'NATURAL'
-      ? [
-          this.details.solicitante.nombre,
-          this.details.solicitante.paterno,
-          this.details.solicitante.paterno,
-        ]
+      ? [this.details.solicitante.nombre, this.details.solicitante.paterno, this.details.solicitante.paterno]
           .filter(Boolean)
           .join(' ')
       : this.details.solicitante.nombre;
@@ -28,11 +28,7 @@ export class ExternalProcedure extends Procedure {
 
   get fullNameRepresentative() {
     if (!this.details.representante) return 'SIN REPRESENTANTE';
-    return [
-      this.details.representante.nombre,
-      this.details.representante.paterno,
-      this.details.representante.paterno,
-    ]
+    return [this.details.representante.nombre, this.details.representante.paterno, this.details.representante.paterno]
       .filter(Boolean)
       .join(' ');
   }

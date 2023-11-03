@@ -1,5 +1,5 @@
 import { account, typeProcedure } from 'src/app/administration/interfaces';
-import { procedure, groupProcedure, stateProcedure } from '../interfaces';
+import { procedure, groupProcedure, stateProcedure, worker } from '../interfaces';
 import * as moment from 'moment';
 
 export abstract class Procedure {
@@ -11,11 +11,11 @@ export abstract class Procedure {
   state: stateProcedure;
   reference: string;
   amount: string;
-  send: boolean;
+  isSend: boolean;
   group: groupProcedure;
   startDate: Date;
   endDate?: Date;
-  completionReason?: string;
+
   constructor({
     _id,
     code,
@@ -28,7 +28,7 @@ export abstract class Procedure {
     send,
     startDate,
     endDate,
-    group
+    group,
   }: procedure) {
     this._id = _id;
     this.code = code;
@@ -38,7 +38,7 @@ export abstract class Procedure {
     this.state = state;
     this.reference = reference;
     this.amount = amount;
-    this.send = send;
+    this.isSend = send;
     this.startDate = new Date(startDate);
     this.group = group;
     if (endDate) this.endDate = new Date(endDate);
@@ -46,16 +46,8 @@ export abstract class Procedure {
 
   get fullNameManager() {
     if (!this.account.funcionario) return `DESVINCULADO`;
-    const jobtitle = this.account.funcionario.cargo
-      ? this.account.funcionario.cargo.nombre
-      : 'Sin cargo';
+    const jobtitle = this.account.funcionario.cargo ? this.account.funcionario.cargo.nombre : 'Sin cargo';
     return `${this.account.funcionario.nombre} ${this.account.funcionario.paterno} ${this.account.funcionario.materno} (${jobtitle})`;
-  }
-
-  get groupProcedre() {
-    return this.group === groupProcedure.EXTERNAL
-      ? 'Tramite externo'
-      : 'Tramite interno';
   }
 
   get citeCode() {
@@ -63,11 +55,21 @@ export abstract class Procedure {
     return this.cite;
   }
 
+  get isEditable(): boolean {
+    if (this.state !== stateProcedure.INSCRITO) return false;
+    return true;
+  }
+
+  get canBeManaged() {
+    if (this.state !== stateProcedure.INSCRITO || this.isSend) return false;
+    return true;
+  }
   getDuration(): string {
     const parts: string[] = [];
     const start = moment(this.startDate);
     const end = this.endDate ? moment(this.endDate) : moment(new Date());
     const duration = moment.duration(end.diff(start));
+
     if (duration.years() >= 1) {
       const years = Math.floor(duration.years());
       parts.push(years + ' ' + (years > 1 ? 'años' : 'año'));

@@ -121,7 +121,9 @@ export class MailComponent implements OnInit {
       },
       preConfirm: (value) => {
         if (!value) {
-          Swal.showValidationMessage('<i class="fa fa-info-circle"></i> Debe ingresar el motivo para el rechazo');
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Debe nuevos ingresar el motivo para el rechazo'
+          );
         }
       },
     }).then((result) => {

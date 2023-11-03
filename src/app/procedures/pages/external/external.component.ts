@@ -19,7 +19,7 @@ import { AlertManager } from 'src/app/shared/helpers/alerts';
   styleUrls: ['./external.component.scss'],
 })
 export class ExternalComponent implements OnInit {
-  dataSource: external[] = [];
+  dataSource: ExternalProcedure[] = [];
   displayedColumns: string[] = ['code', 'reference', 'applicant', 'state', 'startDate', 'send', 'menu-options'];
   stateProcedure: stateProcedure;
   constructor(
@@ -35,7 +35,8 @@ export class ExternalComponent implements OnInit {
   }
 
   getData() {
-    const subscription: Observable<{ procedures: external[]; length: number }> = this.paginatorService.isSearchMode
+    const subscription: Observable<{ procedures: ExternalProcedure[]; length: number }> = this.paginatorService
+      .isSearchMode
       ? this.externalService.search(
           this.paginatorService.searchParams.get('text')!,
           this.paginatorService.limit,
@@ -58,8 +59,8 @@ export class ExternalComponent implements OnInit {
         if (this.dataSource.length === this.paginatorService.limit) {
           this.dataSource.pop();
         }
-        this.dataSource = [result, ...this.dataSource];
-        this.Send(result);
+        // this.dataSource = [result, ...this.dataSource];
+        // this.Send(result);
       }
     });
   }
@@ -73,8 +74,8 @@ export class ExternalComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: external) => {
       if (result) {
         const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
-        this.dataSource[indexFound] = result;
-        this.dataSource = [...this.dataSource];
+        // this.dataSource[indexFound] = result;
+        // this.dataSource = [...this.dataSource];
       }
     });
   }
@@ -95,9 +96,9 @@ export class ExternalComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result: external) => {
       if (result) {
-        const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
-        this.dataSource[indexFound].send = true;
-        this.dataSource = [...this.dataSource];
+        // const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
+        // this.dataSource[indexFound].send = true;
+        // this.dataSource = [...this.dataSource];
       }
     });
   }

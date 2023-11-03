@@ -1,14 +1,10 @@
-import { groupProcedure, procedure } from './procedure.interface';
+import { groupProcedure, procedure, worker } from './';
 
-export interface worker {
-  nombre: string;
-  cargo: string;
-}
-export interface detailsInternal {
-  remitente: worker;
-  destinatario: worker;
-}
 export interface internal extends procedure {
   group: groupProcedure.INTERNAL;
-  details: detailsInternal;
+  details: internalDetails;
+}
+export interface internalDetails {
+  remitente: worker;
+  destinatario: worker;
 }

@@ -1,5 +1,19 @@
-import { groupProcedure, procedure } from './procedure.interface';
+import { groupProcedure, procedure } from './';
+
 export type typeApplicant = 'NATURAL' | 'JURIDICO';
+
+export interface external extends procedure {
+  group: groupProcedure.EXTERNAL;
+  details: externalDetails;
+}
+
+export interface externalDetails {
+  solicitante: applicant;
+  representante?: representative;
+  requirements: string[];
+  pin: number;
+}
+
 export interface applicant {
   nombre: string;
   telefono: string;
@@ -17,15 +31,4 @@ export interface representative {
   materno: string;
   documento: string;
   dni: string;
-}
-export interface detailsExternal {
-  solicitante: applicant;
-  representante?: representative;
-  requirements: string[];
-  pin: number;
-}
-
-export interface external extends procedure {
-  group: groupProcedure.EXTERNAL;
-  details: detailsExternal;
 }
