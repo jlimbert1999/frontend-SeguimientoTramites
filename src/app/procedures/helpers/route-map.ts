@@ -1,25 +1,74 @@
-import {
-  Content,
-  ContentTable,
-  TDocumentDefinitions,
-  TableCell,
-} from 'pdfmake/interfaces';
+import { Content, ContentTable, TDocumentDefinitions, TableCell } from 'pdfmake/interfaces';
 import * as moment from 'moment';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import { workflow } from 'src/app/communication/interfaces';
-import { ExternalProcedure, InternalProcedure } from '../models';
+import { Procedure } from '../models';
 import { convertImagenABase64 } from 'src/app/shared/helpers/imageBase64';
+import { groupProcedure } from '../interfaces';
 const ordinales = require('ordinales-js');
 
-export async function createHeader(): Promise<Content> {
+export async function createFormattedSheets(procedure: Procedure, workflow: workflow[]) {
+  const content: Content[] = [await createHeader(), createFirstContainer(procedure, workflow[0])];
+  const lastNumberPage = getLastPageNumber(workflow.length);
+  if (workflow.length > 0) {
+    content.push(createContainers(workflow), createWhiteContainers(workflow.length, lastNumberPage));
+  } else {
+    content.push(createWhiteContainers(workflow.length, lastNumberPage));
+  }
+  const docDefinition: TDocumentDefinitions = {
+    pageSize: 'LETTER',
+    pageMargins: [30, 30, 30, 30],
+    content: content,
+    footer: [
+      {
+        text: 'NOTA: Esta hoja de ruta de correspondencia, no debera ser separada ni extraviada del documento del cual se encuentra adherida, por constituirse parte indivisible del mismo',
+        margin: [30, -2],
+        fontSize: 7,
+        bold: true,
+      },
+      {
+        text: 'Direccion: Plaza 6 de agosto E-0415 - Telefono: No. Piloto 4701677 - 4702301 - 4703059 - Fax interno: 143',
+        fontSize: 7,
+        color: '#BC6C25',
+        margin: [30, 1],
+      },
+      {
+        text: 'E-mail: info@sacaba.gob.bo - Pagina web: www.sacaba.gob.bo',
+        fontSize: 7,
+        pageBreak: 'after',
+        color: '#BC6C25',
+        margin: [30, 1],
+      },
+    ],
+    styles: {
+      cabecera: {
+        margin: [0, 0, 0, 10],
+      },
+      header: {
+        fontSize: 10,
+        bold: true,
+      },
+      tableExample: {
+        fontSize: 8,
+        alignment: 'center',
+        margin: [0, 0, 0, 5],
+      },
+      selection_container: {
+        fontSize: 7,
+        alignment: 'center',
+        margin: [0, 10, 0, 0],
+      },
+    },
+  };
+  pdfMake.createPdf(docDefinition).print();
+}
+async function createHeader(): Promise<Content> {
   return [
     {
       style: 'cabecera',
       columns: [
         {
-          image: await convertImagenABase64(
-            '../../../assets/img/logo_alcaldia2.jpeg'
-          ),
+          image: await convertImagenABase64('../../../assets/img/logo_alcaldia2.jpeg'),
           width: 150,
           height: 60,
         },
@@ -29,9 +78,7 @@ export async function createHeader(): Promise<Content> {
           alignment: 'center',
         },
         {
-          image: await convertImagenABase64(
-            '../../../assets/img/logo_sacaba.jpeg'
-          ),
+          image: await convertImagenABase64('../../../assets/img/logo_sacaba.jpeg'),
           width: 70,
           height: 70,
         },
@@ -39,288 +86,39 @@ export async function createHeader(): Promise<Content> {
     },
   ];
 }
-
-export function createFirstContainerExternal(
-  procedure: ExternalProcedure,
-  firstSend?: workflow
-): ContentTable {
-  const sectionReceiver: TableCell[] = [];
-  const firstSendDetails = {
-    date: '',
-    hour: '',
-    quantity: '',
-    internalNumber: '',
-  };
-  if (firstSend) {
-    sectionReceiver.push([
-      `DESTINATARIO: ${firstSend.sendings[0].receiver.fullname}`,
-      `CARGO: ${firstSend.sendings[0].receiver.jobtitle}`,
-    ]);
-    firstSendDetails.quantity = firstSend.sendings[0].attachmentQuantity;
-    firstSendDetails.internalNumber = firstSend.sendings[0].internalNumber;
-    firstSendDetails.date = moment(firstSend._id.outboundDate).format(
-      'DD-MM-YYYY'
-    );
-    firstSendDetails.hour = moment(firstSend._id.outboundDate).format(
-      'HH:mm A'
-    );
-  } else {
-    sectionReceiver.push([`DESTINATARIO:`, `CARGO:`]);
-  }
-  return {
-    fontSize: 7,
-    table: {
-      widths: ['*'],
-      body: [
-        [{ text: 'PRIMERA PARTE', bold: true }],
-        [
-          {
-            border: [true, false, true, false],
-            style: 'selection_container',
-            fontSize: 6,
-            columns: [
-              {
-                width: 100,
-                table: {
-                  widths: [75, 5],
-                  body: [
-                    [
-                      {
-                        text: 'CORRESPONDENCIA INTERNA',
-                        border: [false, false, false, false],
-                      },
-                      { text: '', style: 'header' },
-                    ],
-                  ],
-                },
-              },
-              {
-                width: 100,
-                table: {
-                  widths: [75, 5],
-                  body: [
-                    [
-                      {
-                        text: 'CORRESPONDENCIA EXTERNA',
-                        border: [false, false, false, false],
-                      },
-                      { text: 'X', style: 'header' },
-                    ],
-                  ],
-                },
-              },
-              {
-                width: 50,
-                table: {
-                  widths: [30, 5],
-                  body: [
-                    [
-                      {
-                        text: 'COPIA\n\n',
-                        border: [false, false, false, false],
-                      },
-                      { text: '', style: 'header' },
-                    ],
-                  ],
-                },
-              },
-              {
-                width: '*',
-                table: {
-                  widths: [90, '*'],
-                  body: [
-                    [
-                      {
-                        text: 'NRO. UNICO DE CORRESPONDENCIA',
-                        border: [false, false, false, false],
-                      },
-                      {
-                        text: `${procedure.code}`,
-                        bold: true,
-                        fontSize: 11,
-                      },
-                    ],
-                  ],
-                },
-              },
-            ],
-          },
-        ],
-        [
-          {
-            border: [true, false, true, false],
-            columns: [
-              {
-                width: 60,
-                text: '',
-              },
-              {
-                fontSize: 5,
-                alignment: 'center',
-                table: {
-                  widths: [100, 70, 60, 80],
-                  body: [
-                    ['', 'FECHA', 'HORA', 'CANTIDAD DE HOJAS / ANEXOS'],
-                    [
-                      {
-                        text: 'EMISION / RECEPCION',
-                        border: [false, false, false, false],
-                        fontSize: 7,
-                      },
-                      {
-                        text: `${moment(procedure.startDate).format(
-                          'DD-MM-YYYY'
-                        )}`,
-                        fontSize: 8,
-                        border: [true, true, true, true],
-                      },
-                      {
-                        text: `${moment(procedure.startDate).format(
-                          'HH:mm A'
-                        )}`,
-                        fontSize: 8,
-                        border: [true, true, true, true],
-                      },
-                      {
-                        text: `${procedure.amount}`,
-                        fontSize: 6,
-                        border: [true, true, true, true],
-                      },
-                    ],
-                  ],
-                },
-                layout: {
-                  defaultBorder: false,
-                },
-              },
-              {
-                width: 120,
-                text: '',
-              },
-            ],
-          },
-        ],
-        [
-          {
-            border: [true, false, true, false],
-            table: {
-              widths: ['*', '*'],
-              body: [
-                [{ text: 'DATOS DE ORIGEN', bold: true }, ''],
-                [
-                  `CITE: ${procedure.cite} / TEL.: ${procedure.details.solicitante.telefono}`,
-                  {
-                    table: {
-                      widths: [85, 100, 40],
-                      body: [
-                        [
-                          { text: '', border: [false, false, false, false] },
-                          {
-                            text: 'NRO. REGISTRO INTERNO (Correlativo)',
-                            border: [false, false, false, false],
-                          },
-                          {
-                            text: `${firstSendDetails.internalNumber}`,
-                            fontSize: 9,
-                            alignment: 'center',
-                          },
-                        ],
-                      ],
-                    },
-                  },
-                ],
-                [
-                  `REMITENTE: ${procedure.fullNameApplicant}`,
-                  `CARGO: P. ${procedure.details.solicitante.tipo}`,
-                ],
-                ...sectionReceiver,
-                [{ text: `REFERENCIA: ${procedure.reference}`, colSpan: 2 }],
-              ],
+function createFirstContainer(procedure: Procedure, firstSend?: workflow): ContentTable {
+  const { applicantDetails } = procedure;
+  const firstSendDetails = firstSend
+    ? {
+        receiver: applicantDetails.receiver
+          ? { fullname: applicantDetails.receiver.nombre, jobtitle: applicantDetails.receiver.cargo }
+          : {
+              fullname: firstSend.sendings[0].emitter.fullname,
+              jobtitle: firstSend.sendings[0].emitter.jobtitle || '',
             },
-            layout: 'noBorders',
-          },
-        ],
-        [
-          {
-            border: [true, false, true, false],
-            columns: [
-              {
-                width: 65,
-                text: '',
-              },
-
-              {
-                fontSize: 5,
-                alignment: 'center',
-                table: {
-                  widths: [95, 70, 60, 80],
-                  body: [
-                    ['', 'FECHA', 'HORA', 'CANTIDAD DE HOJAS / ANEXOS'],
-                    [
-                      {
-                        text: 'SALIDA',
-                        border: [false, false, false, false],
-                        fontSize: 7,
-                      },
-                      {
-                        text: `${firstSendDetails.date}`,
-                        border: [true, true, true, true],
-                        fontSize: 8,
-                      },
-                      {
-                        text: `${firstSendDetails.hour}`,
-                        border: [true, true, true, true],
-                        fontSize: 8,
-                      },
-                      {
-                        text: `${firstSendDetails.quantity}`,
-                        border: [true, true, true, true],
-                        fontSize: 6,
-                      },
-                    ],
-                  ],
-                },
-                layout: {
-                  defaultBorder: false,
-                },
-              },
-              {
-                width: 100,
-                text: '',
-              },
-            ],
-          },
-        ],
-      ],
-    },
-  };
-}
-export function createFirstContainerInternal(
-  procedure: InternalProcedure,
-  firstSend?: workflow
-): ContentTable {
-  const firstSendDetails = {
-    date: '',
-    hour: '',
-    quantity: '',
-    internalNumber: '',
-  };
-  if (firstSend) {
-    firstSendDetails.quantity = firstSend.sendings[0].attachmentQuantity;
-    firstSendDetails.internalNumber = firstSend.sendings[0].internalNumber;
-    firstSendDetails.date = moment(firstSend._id.outboundDate).format(
-      'DD-MM-YYYY'
-    );
-    firstSendDetails.hour = moment(firstSend._id.outboundDate).format(
-      'HH:mm A'
-    );
-  }
+        quantity: firstSend.sendings[0].attachmentQuantity,
+        internalNumber: firstSend.sendings[0].internalNumber,
+        date: moment(firstSend._id.outboundDate).format('DD-MM-YYYY'),
+        hour: moment(firstSend._id.outboundDate).format('HH:mm A'),
+      }
+    : {
+        receiver: applicantDetails.receiver
+          ? { fullname: applicantDetails.receiver.nombre, jobtitle: applicantDetails.receiver.cargo }
+          : {
+              fullname: '',
+              jobtitle: '',
+            },
+        date: '',
+        hour: '',
+        quantity: '',
+        internalNumber: '',
+      };
   return {
     fontSize: 7,
     table: {
       widths: ['*'],
       body: [
-        [{ text: 'PRIMERA PARTE', bold: true }],
+        [{ text: 'este PRIMERA PARTE', bold: true }],
         [
           {
             border: [true, false, true, false],
@@ -337,7 +135,7 @@ export function createFirstContainerInternal(
                         text: 'CORRESPONDENCIA INTERNA',
                         border: [false, false, false, false],
                       },
-                      { text: 'X', style: 'header' },
+                      { text: procedure.group === groupProcedure.INTERNAL ? 'X' : '', style: 'header' },
                     ],
                   ],
                 },
@@ -352,7 +150,7 @@ export function createFirstContainerInternal(
                         text: 'CORRESPONDENCIA EXTERNA',
                         border: [false, false, false, false],
                       },
-                      { text: '', style: 'header' },
+                      { text: procedure.group === groupProcedure.EXTERNAL ? 'X' : '', style: 'header' },
                     ],
                   ],
                 },
@@ -416,9 +214,7 @@ export function createFirstContainerInternal(
                         fontSize: 7,
                       },
                       {
-                        text: `${moment(procedure.startDate).format(
-                          'DD-MM-YYYY'
-                        )}`,
+                        text: `${moment(procedure.startDate).format('DD-MM-YYYY')}`,
                         fontSize: 8,
                         border: [true, true, true, true],
                       },
@@ -475,14 +271,8 @@ export function createFirstContainerInternal(
                     },
                   },
                 ],
-                [
-                  `REMITENTE: ${procedure.details.remitente.nombre}`,
-                  `CARGO: ${procedure.details.remitente.cargo}`,
-                ],
-                [
-                  `DESTINATARIO: ${procedure.details.destinatario.nombre}`,
-                  `CARGO: ${procedure.details.destinatario.cargo}`,
-                ],
+                [`REMITENTE: ${applicantDetails.emiter.nombre}`, `CARGO: ${applicantDetails.emiter.cargo}`],
+                [`DESTINATARIO: ${firstSendDetails.receiver.fullname}`, `CARGO: ${firstSendDetails.receiver.fullname}`],
                 [{ text: `REFERENCIA: ${procedure.reference}`, colSpan: 2 }],
               ],
             },
@@ -544,8 +334,7 @@ export function createFirstContainerInternal(
     },
   };
 }
-
-export function createContainers(data: workflow[]) {
+function createContainers(data: workflow[]) {
   const cuadros: ContentTable[] = [];
   for (let index = 0; index < data.length; index++) {
     const receivers: string[] = [];
@@ -553,9 +342,7 @@ export function createContainers(data: workflow[]) {
     const sectionNumbers: TableCell[][] = [];
     if (data[index].sendings.length > 1) {
       data[index].sendings.forEach((element) => {
-        receivers.push(
-          `${element.receiver.fullname} (${element.receiver.jobtitle})`
-        );
+        receivers.push(`${element.receiver.fullname} (${element.receiver.jobtitle})`);
       });
       break;
     }
@@ -581,16 +368,7 @@ export function createContainers(data: workflow[]) {
           }
         : { date: '', hour: '', quantity: '', inNumber: '' };
       sectionDates.push(
-        [
-          '',
-          'FECHA',
-          'HORA',
-          'CANTIDAD DE HOJAS / ANEXOS',
-          '',
-          'FECHA',
-          'HORA',
-          'CANTIDAD DE HOJAS / ANEXOS',
-        ],
+        ['', 'FECHA', 'HORA', 'CANTIDAD DE HOJAS / ANEXOS', '', 'FECHA', 'HORA', 'CANTIDAD DE HOJAS / ANEXOS'],
         [
           {
             text: `INGRESO `,
@@ -666,9 +444,9 @@ export function createContainers(data: workflow[]) {
           [
             {
               margin: [0, 0, 0, 0],
-              text: `DESTINATARIO ${ordinales.toOrdinal(
-                index + 1
-              )} (NOMBRE Y CARGO): ${receivers.join(' // ')}`.toUpperCase(),
+              text: `DESTINATARIO ${ordinales.toOrdinal(index + 1)} (NOMBRE Y CARGO): ${receivers.join(
+                ' // '
+              )}`.toUpperCase(),
               colSpan: 2,
               alignment: 'left',
               border: [true, false, true, false],
@@ -754,7 +532,7 @@ export function createContainers(data: workflow[]) {
   return cuadros;
 }
 
-export function createWhiteContainers(initRange: number, endRange: number) {
+function createWhiteContainers(initRange: number, endRange: number) {
   const cuadros: ContentTable[] = [];
   for (let index = initRange + 1; index <= endRange; index++) {
     cuadros.push({
@@ -767,9 +545,7 @@ export function createWhiteContainers(initRange: number, endRange: number) {
           [
             {
               margin: [0, 10, 0, 0],
-              text: `DESTINATARIO ${ordinales.toOrdinal(
-                index
-              )} (NOMBRE Y CARGO):`.toUpperCase(),
+              text: `DESTINATARIO ${ordinales.toOrdinal(index)} (NOMBRE Y CARGO):`.toUpperCase(),
               colSpan: 2,
               alignment: 'left',
               border: [true, false, true, false],
@@ -797,10 +573,7 @@ export function createWhiteContainers(initRange: number, endRange: number) {
                         ],
                       },
                     },
-                    [
-                      { text: 'INSTRUCCION / PROVEIDO' },
-                      { text: ``, bold: true },
-                    ],
+                    [{ text: 'INSTRUCCION / PROVEIDO' }, { text: ``, bold: true }],
                   ],
                 ],
               },
@@ -904,61 +677,11 @@ export function createWhiteContainers(initRange: number, endRange: number) {
   }
   return cuadros;
 }
-
-export function getLastPageNumber(lengthData: number): number {
+function getLastPageNumber(lengthData: number): number {
   if (lengthData <= 8) return 8;
   const firstTerm = 3;
   const increment = 5;
   const termsBefore = Math.ceil((lengthData - firstTerm) / increment);
   const nextTerm = firstTerm + termsBefore * increment;
   return nextTerm;
-}
-
-export async function createRouteMap(content: Content[]) {
-  const docDefinition: TDocumentDefinitions = {
-    pageSize: 'LETTER',
-    pageMargins: [30, 30, 30, 30],
-    content: content,
-    footer: [
-      {
-        text: 'NOTA: Esta hoja de ruta de correspondencia, no debera ser separada ni extraviada del documento del cual se encuentra adherida, por constituirse parte indivisible del mismo',
-        margin: [30, -2],
-        fontSize: 7,
-        bold: true,
-      },
-      {
-        text: 'Direccion: Plaza 6 de agosto E-0415 - Telefono: No. Piloto 4701677 - 4702301 - 4703059 - Fax interno: 143',
-        fontSize: 7,
-        color: '#BC6C25',
-        margin: [30, 1],
-      },
-      {
-        text: 'E-mail: info@sacaba.gob.bo - Pagina web: www.sacaba.gob.bo',
-        fontSize: 7,
-        pageBreak: 'after',
-        color: '#BC6C25',
-        margin: [30, 1],
-      },
-    ],
-    styles: {
-      cabecera: {
-        margin: [0, 0, 0, 10],
-      },
-      header: {
-        fontSize: 10,
-        bold: true,
-      },
-      tableExample: {
-        fontSize: 8,
-        alignment: 'center',
-        margin: [0, 0, 0, 5],
-      },
-      selection_container: {
-        fontSize: 7,
-        alignment: 'center',
-        margin: [0, 10, 0, 0],
-      },
-    },
-  };
-  pdfMake.createPdf(docDefinition).print();
 }

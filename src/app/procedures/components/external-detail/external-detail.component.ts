@@ -19,9 +19,7 @@ export class ExternalDetailComponent implements OnInit, OnDestroy {
   }
 
   createTimer() {
-    this.timerSubscription = this.sourceTimer.subscribe(
-      (val) => (this.duration = this.procedure.getDuration())
-    );
+    this.timerSubscription = this.sourceTimer.subscribe(() => (this.duration = this.procedure.getDuration()));
   }
 
   ngOnDestroy(): void {

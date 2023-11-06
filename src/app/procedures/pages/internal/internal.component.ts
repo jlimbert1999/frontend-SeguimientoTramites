@@ -2,16 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { InternalDialogComponent } from '../../dialogs/internal-dialog/internal-dialog.component';
-import { createInternalRouteMap } from '../../helpers/internal-route-map';
+
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
-import { sendDetail } from 'src/app/communication/interfaces';
-import { groupProcedure, internal, stateProcedure } from '../../interfaces';
-import { InternalProcedure } from '../../models';
+import { InternalDialogComponent } from '../../dialogs/internal-dialog/internal-dialog.component';
+
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchiveService, InternalService, ProcedureService } from '../../services';
+
+import { createRouteMap } from '../../helpers';
 import { AlertManager } from 'src/app/shared/helpers/alerts';
+
+import { ProcedureTransferDetails } from 'src/app/communication/models/procedure-transfer-datais.mode';
 import { EventProcedureDto } from '../../dtos';
+import { InternalProcedure } from '../../models';
+import { groupProcedure, internal, stateProcedure } from '../../interfaces';
 
 @Component({
   selector: 'app-internal',
@@ -20,7 +24,7 @@ import { EventProcedureDto } from '../../dtos';
 })
 export class InternalComponent implements OnInit {
   displayedColumns: string[] = ['code', 'reference', 'applicant', 'state', 'startDate', 'send', 'menu-options'];
-  dataSource: internal[] = [];
+  dataSource: InternalProcedure[] = [];
 
   constructor(
     private router: Router,
@@ -35,7 +39,8 @@ export class InternalComponent implements OnInit {
     this.getData();
   }
   getData() {
-    const subscription: Observable<{ procedures: internal[]; length: number }> = this.paginatorService.isSearchMode
+    const subscription: Observable<{ procedures: InternalProcedure[]; length: number }> = this.paginatorService
+      .isSearchMode
       ? this.internoService.search(
           this.paginatorService.searchParams.get('text')!,
           this.paginatorService.limit,
@@ -48,59 +53,56 @@ export class InternalComponent implements OnInit {
     });
   }
 
-  Add() {
-    const dialogRef = this.dialog.open(InternalDialogComponent, {
+  add() {
+    const dialogRef = this.dialog.open<InternalDialogComponent, undefined, InternalProcedure>(InternalDialogComponent, {
       width: '1000px',
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((result: internal) => {
-      if (result) {
+    dialogRef.afterClosed().subscribe((createdProcedure) => {
+      if (createdProcedure) {
         if (this.dataSource.length === this.paginatorService.limit) {
           this.dataSource.pop();
         }
-        this.dataSource = [result, ...this.dataSource];
+        this.dataSource = [createdProcedure, ...this.dataSource];
         this.paginatorService.length++;
+        this.send(createdProcedure);
       }
     });
   }
-  Edit(tramite: internal) {
-    const dialogRef = this.dialog.open(InternalDialogComponent, {
-      width: '1000px',
-      disableClose: true,
-      data: tramite,
-    });
-    dialogRef.afterClosed().subscribe((result: internal) => {
-      if (result) {
-        const indexFound = this.dataSource.findIndex((element) => element._id === result._id);
-        this.dataSource[indexFound] = result;
+  edit(tramite: InternalProcedure) {
+    const dialogRef = this.dialog.open<InternalDialogComponent, InternalProcedure, InternalProcedure>(
+      InternalDialogComponent,
+      {
+        width: '1000px',
+        disableClose: true,
+        data: tramite,
+      }
+    );
+    dialogRef.afterClosed().subscribe((updatedProcedure) => {
+      if (updatedProcedure) {
+        const indexFound = this.dataSource.findIndex((element) => element._id === updatedProcedure._id);
+        this.dataSource[indexFound] = updatedProcedure;
         this.dataSource = [...this.dataSource];
       }
     });
   }
-  Send(procedure: internal) {
-    const data: sendDetail = {
-      attachmentQuantity: procedure.amount,
-      procedure: {
-        _id: procedure._id,
-        code: procedure.code,
-      },
-    };
-    const dialogRef = this.dialog.open(SendDialogComponent, {
+  send(procedure: InternalProcedure) {
+    const dialogRef = this.dialog.open<SendDialogComponent, ProcedureTransferDetails, string>(SendDialogComponent, {
       width: '1200px',
-      data: data,
+      data: ProcedureTransferDetails.fromfirstSend(procedure),
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((result: internal) => {
-      if (result) {
+    dialogRef.afterClosed().subscribe((message) => {
+      if (message) {
         const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
-        this.dataSource[indexFound].send = true;
+        this.dataSource[indexFound].isSend = true;
         this.dataSource = [...this.dataSource];
       }
     });
   }
   generateRouteMap(id_tramite: string, group: groupProcedure) {
     this.procedureService.getFullProcedure(id_tramite, group).subscribe((data) => {
-      createInternalRouteMap(data.procedure as InternalProcedure, data.workflow);
+      createRouteMap(data.procedure, data.workflow);
     });
   }
 

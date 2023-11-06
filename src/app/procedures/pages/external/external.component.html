@@ -11,7 +11,6 @@
           <th mat-header-cell *matHeaderCellDef>Alterno</th>
           <td mat-cell *matCellDef="let row">
             <a class="link-primary" (click)="showDetails(row)">
-              {{row.isEditable}}
               {{ row.code }}
             </a>
           </td>
@@ -25,7 +24,7 @@
         <ng-container matColumnDef="applicant">
           <th mat-header-cell *matHeaderCellDef>Solicitante</th>
           <td mat-cell *matCellDef="let row">
-            {{ row.details.solicitante | solicitante }}
+            {{ row.fullNameApplicant }}
           </td>
         </ng-container>
         <ng-container matColumnDef="state">
@@ -45,8 +44,8 @@
         <ng-container matColumnDef="send">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let row">
-            <mat-icon [ngClass]="row.send ? 'icon-send' : 'icon-pending'">{{
-              row.send ? "mark_email_read" : "unsubscribe"
+            <mat-icon [ngStyle]="row.isSend ? { color: 'green' } : { color: 'red' }">{{
+              row.isSend ? "mark_email_read" : "unsubscribe"
             }}</mat-icon>
           </td>
         </ng-container>
@@ -57,15 +56,15 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item [disabled]="row.state !== 'INSCRITO'" (click)="Edit(row)">
+              <button mat-menu-item [disabled]="!row.isEditable" (click)="edit(row)">
                 <mat-icon>edit</mat-icon>
                 <span>Editar tramite</span>
               </button>
-              <button mat-menu-item [disabled]="row.state !== 'INSCRITO' || row.send" (click)="Send(row)">
+              <button mat-menu-item [disabled]="!row.canBeManaged" (click)="send(row)">
                 <mat-icon>send</mat-icon>
-                <span>Remitir tramite</span>
+                <span>Remitir tramite </span>
               </button>
-              <button mat-menu-item [disabled]="row.state !== 'INSCRITO' || row.send" (click)="conclude(row)">
+              <button mat-menu-item [disabled]="!row.canBeManaged" (click)="conclude(row)">
                 <mat-icon>domain_verification</mat-icon>
                 Concluir tramite
               </button>

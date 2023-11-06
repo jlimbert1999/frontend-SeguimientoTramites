@@ -1,16 +1,12 @@
-import { createExternalRouteMap } from '../helpers';
 import { externalDetails, external, worker } from '../interfaces';
 import { Procedure } from './procedure.model';
 
 export class ExternalProcedure extends Procedure {
-
-  generateRouteMap(): void {
-    // createExternalRouteMap();
-  }
   details: externalDetails;
-  static fromJson(data: external) {
+  static toModel(data: external) {
     return new ExternalProcedure(data);
   }
+
   constructor({ details, ...procedureProps }: external) {
     super(procedureProps);
     const { representante, ...detailsProp } = details;
@@ -31,5 +27,11 @@ export class ExternalProcedure extends Procedure {
     return [this.details.representante.nombre, this.details.representante.paterno, this.details.representante.paterno]
       .filter(Boolean)
       .join(' ');
+  }
+
+  override get applicantDetails(): { emiter: worker; receiver?: worker | undefined } {
+    return {
+      emiter: { nombre: this.fullNameApplicant, cargo: `P. ${this.details.solicitante.tipo}` },
+    };
   }
 }

@@ -6,9 +6,9 @@ import { Officer } from 'src/app/administration/models/officer.model';
 import { InternalProcedureDto } from '../dtos';
 import { officer, typeProcedure } from 'src/app/administration/interfaces';
 import { NestedPartial } from 'src/app/shared/interfaces/nested-partial';
-import { internal, procedure } from '../interfaces';
-import { InternalProcedure } from '../models/internal.model';
-import { workflow } from 'src/app/communication/interfaces';
+import { internal } from '../interfaces';
+import { InternalProcedure } from '../models';
+
 const base_url = environment.base_url;
 @Injectable({
   providedIn: 'root',
@@ -17,18 +17,14 @@ export class InternalService {
   constructor(private http: HttpClient) {}
 
   Add(tramite: InternalProcedureDto) {
-    return this.http.post<internal>(`${base_url}/internal`, tramite).pipe(
-      map((resp) => {
-        return resp;
-      })
-    );
+    return this.http
+      .post<internal>(`${base_url}/internal`, tramite)
+      .pipe(map((response) => InternalProcedure.toModel(response)));
   }
   Edit(id_tramite: string, tramite: NestedPartial<InternalProcedureDto>) {
-    return this.http.put<internal>(`${base_url}/internal/${id_tramite}`, tramite).pipe(
-      map((resp) => {
-        return resp;
-      })
-    );
+    return this.http
+      .put<internal>(`${base_url}/internal/${id_tramite}`, tramite)
+      .pipe(map((response) => InternalProcedure.toModel(response)));
   }
 
   findAll(limit: number, offset: number) {
@@ -37,8 +33,9 @@ export class InternalService {
     return this.http
       .get<{ ok: boolean; procedures: internal[]; length: number }>(`${base_url}/internal`, { params })
       .pipe(
-        map((resp) => {
-          return { procedures: resp.procedures, length: resp.length };
+        map((response) => {
+          const model = response.procedures.map((procedure) => InternalProcedure.toModel(procedure));
+          return { procedures: model, length: response.length };
         })
       );
   }
@@ -47,8 +44,9 @@ export class InternalService {
     return this.http
       .get<{ procedures: internal[]; length: number }>(`${base_url}/internal/search/${text}`, { params })
       .pipe(
-        map((resp) => {
-          return { procedures: resp.procedures, length: resp.length };
+        map((response) => {
+          const model = response.procedures.map((procedure) => InternalProcedure.toModel(procedure));
+          return { procedures: model, length: response.length };
         })
       );
   }

@@ -6,6 +6,8 @@ import { external, groupProcedure, internal, observation } from '../interfaces';
 import { ExternalProcedure, InternalProcedure } from '../models';
 import { workflow } from 'src/app/communication/interfaces';
 const base_url = environment.base_url;
+
+type VALID_PROCEDURE = internal | external;
 @Injectable({
   providedIn: 'root',
 })
@@ -15,16 +17,21 @@ export class ProcedureService {
   getFullProcedure(id_procedure: string, group: groupProcedure) {
     return this.http
       .get<{
-        procedure: internal | external;
+        procedure: VALID_PROCEDURE;
         workflow: workflow[];
         observations: observation[];
       }>(`${base_url}/procedure/${group}/${id_procedure}`)
       .pipe(
         map((resp) => {
-          const Procedure =
-            resp.procedure.group === groupProcedure.EXTERNAL
-              ? ExternalProcedure.fromJson(resp.procedure)
-              : InternalProcedure.fromJson(resp.procedure);
+          let Procedure: ExternalProcedure | InternalProcedure;
+          switch (resp.procedure.group) {
+            case groupProcedure.EXTERNAL:
+              Procedure = ExternalProcedure.toModel(resp.procedure);
+              break;
+            default:
+              Procedure = InternalProcedure.toModel(resp.procedure);
+              break;
+          }
           return {
             procedure: Procedure,
             workflow: resp.workflow,

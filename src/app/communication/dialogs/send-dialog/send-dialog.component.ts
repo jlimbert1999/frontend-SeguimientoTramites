@@ -2,13 +2,14 @@ import { FormBuilder, FormControl, FormGroup, UntypedFormControl, Validators } f
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ReplaySubject, Subject, map, switchMap, takeUntil } from 'rxjs';
+
 import { InboxService } from '../../services/inbox.service';
 import { SocketService } from 'src/app/services/socket.service';
-import { dependency, institution } from 'src/app/administration/interfaces';
-import { sendDetail, receiver } from '../../interfaces';
+import { receiver } from '../../interfaces';
 import { CreateMailDto } from '../../dto/create-mail.dto';
 import { AlertManager } from 'src/app/shared/helpers/alerts';
 import { matSelectSearchData } from 'src/app/shared/interfaces';
+import { ProcedureTransferDetails } from '../../models/procedure-transfer-datais.mode';
 
 @Component({
   selector: 'app-send-dialog',
@@ -35,7 +36,7 @@ export class SendDialogComponent implements OnInit, OnDestroy {
     private inboxService: InboxService,
     private socketService: SocketService,
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: sendDetail,
+    @Inject(MAT_DIALOG_DATA) public data: ProcedureTransferDetails,
     public dialogRef: MatDialogRef<SendDialogComponent>
   ) {}
 

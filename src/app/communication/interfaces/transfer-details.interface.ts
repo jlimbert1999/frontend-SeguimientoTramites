@@ -1,4 +1,4 @@
-export interface sendDetail {
+export interface TransferDetails {
   id_mail?: string;
   attachmentQuantity: string;
   procedure: {

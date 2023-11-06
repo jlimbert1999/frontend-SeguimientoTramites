@@ -22,8 +22,8 @@ export class InternalDialogComponent implements OnInit {
   TramiteFormGroup: FormGroup;
 
   constructor(
-    private authService: AuthService,
-    private internoService: InternalService,
+    private readonly authService: AuthService,
+    private readonly internoService: InternalService,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: internal,
     public dialogRef: MatDialogRef<InternalDialogComponent>
@@ -45,13 +45,14 @@ export class InternalDialogComponent implements OnInit {
       this.internoService.getTypesProcedures().subscribe((data) => {
         this.typesProcedures = data;
         this.TramiteFormGroup.get('type')?.setValue(data[0]._id);
+        this.TramiteFormGroup.get('segment')?.setValue(data[0].segmento);
       });
     }
     this.filteredEmitter = this.setAutocomplete('fullname_emitter');
     this.filteredReceiver = this.setAutocomplete('fullname_receiver');
   }
 
-  guardar() {
+  save() {
     if (this.data) {
       const { fullname_emitter, fullname_receiver, jobtitle_emitter, jobtitle_receiver, ...values } =
         this.TramiteFormGroup.value;
@@ -95,6 +96,7 @@ export class InternalDialogComponent implements OnInit {
     return mode === 'ADD'
       ? this.fb.group({
           type: ['', Validators.required],
+          segment: ['', Validators.required],
           reference: ['', Validators.required],
           cite: [this.authService.code],
           amount: ['', Validators.required],

@@ -1,20 +1,19 @@
 import { account, typeProcedure } from 'src/app/administration/interfaces';
 import { procedure, groupProcedure, stateProcedure, worker } from '../interfaces';
 import * as moment from 'moment';
-
 export abstract class Procedure {
-  _id: string;
-  code: string;
-  cite: string;
-  type: typeProcedure;
-  account: account;
+  readonly _id: string;
+  readonly code: string;
+  readonly type: typeProcedure;
+  readonly account: account;
+  readonly group: groupProcedure;
+  readonly startDate: Date;
+  readonly endDate?: Date;
   state: stateProcedure;
+  cite: string;
   reference: string;
   amount: string;
   isSend: boolean;
-  group: groupProcedure;
-  startDate: Date;
-  endDate?: Date;
 
   constructor({
     _id,
@@ -96,4 +95,5 @@ export abstract class Procedure {
     }
     return parts.join(', ');
   }
+  abstract get applicantDetails(): { emiter: worker; receiver?: worker };
 }

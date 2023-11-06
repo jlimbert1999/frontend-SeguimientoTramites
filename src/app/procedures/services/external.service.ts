@@ -28,25 +28,25 @@ export class ExternalService {
   }
 
   Add(procedure: ExternalProcedureDto) {
-    return this.http.post<external>(`${base_url}/external`, procedure).pipe(
-      map((resp) => {
-        return resp;
-      })
-    );
+    return this.http
+      .post<external>(`${base_url}/external`, procedure)
+      .pipe(map((response) => ExternalProcedure.toModel(response)));
   }
   Edit(id_procedure: string, procedure: NestedPartial<ExternalProcedureDto>) {
-    return this.http.put<external>(`${base_url}/external/${id_procedure}`, procedure).pipe(map((resp) => resp));
+    return this.http
+      .put<external>(`${base_url}/external/${id_procedure}`, procedure)
+      .pipe(map((response) => ExternalProcedure.toModel(response)));
   }
   findAll(limit: number, offset: number) {
-    const params = new HttpParams().set('limit', limit).set('offset', offset);
+    const params = new HttpParams().set('limit', limit).set('offset', offset * limit);
     return this.http
       .get<{ procedures: external[]; length: number }>(`${base_url}/external`, {
         params,
       })
       .pipe(
         map((response) => {
-          const data = response.procedures.map((procedure) => ExternalProcedure.fromJson(procedure));
-          return { procedures: data, length: response.length };
+          const model = response.procedures.map((procedure) => ExternalProcedure.toModel(procedure));
+          return { procedures: model, length: response.length };
         })
       );
   }
@@ -57,8 +57,8 @@ export class ExternalService {
       .get<{ procedures: external[]; length: number }>(`${base_url}/external/search/${text}`, { params })
       .pipe(
         map((response) => {
-          const data = response.procedures.map((procedure) => ExternalProcedure.fromJson(procedure));
-          return { procedures: data, length: response.length };
+          const model = response.procedures.map((procedure) => ExternalProcedure.toModel(procedure));
+          return { procedures: model, length: response.length };
         })
       );
   }

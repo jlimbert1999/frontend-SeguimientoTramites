@@ -6,13 +6,14 @@ import { InboxService } from '../../services/inbox.service';
 import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.component';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { SocketService } from 'src/app/services/socket.service';
-import { communication, sendDetail, statusMail } from '../../interfaces';
+import { communication, statusMail } from '../../interfaces';
 import { ProcedureService, ArchiveService } from 'src/app/procedures/services';
 import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
 import { ExternalProcedure, InternalProcedure } from 'src/app/procedures/models';
-import { createExternalRouteMap, createInternalRouteMap } from 'src/app/procedures/helpers';
 import { EventProcedureDto } from 'src/app/procedures/dtos';
 import { AlertManager } from 'src/app/shared/helpers/alerts';
+import { createRouteMap } from 'src/app/procedures/helpers';
+import { ProcedureTransferDetails } from '../../models/procedure-transfer-datais.mode';
 
 @Component({
   selector: 'app-inbox',
@@ -70,21 +71,12 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   send(mail: communication) {
-    const { procedure, attachmentQuantity } = mail;
-    const data: sendDetail = {
-      id_mail: mail._id,
-      attachmentQuantity,
-      procedure: {
-        _id: procedure._id,
-        code: procedure.code,
-      },
-    };
-    const dialogRef = this.dialog.open(SendDialogComponent, {
+    const dialogRef = this.dialog.open<SendDialogComponent, ProcedureTransferDetails, string>(SendDialogComponent, {
       width: '1200px',
-      data,
+      data: ProcedureTransferDetails.fromSend(mail),
     });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+    dialogRef.afterClosed().subscribe((message) => {
+      if (message) {
         this.getData();
       }
     });
@@ -139,18 +131,7 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
   generateRouteMap(mail: communication) {
     this.procedureService.getFullProcedure(mail.procedure._id, mail.procedure.group).subscribe((data) => {
-      const { procedure, workflow } = data;
-      switch (procedure.group) {
-        case groupProcedure.EXTERNAL:
-          createExternalRouteMap(procedure as ExternalProcedure, workflow);
-          break;
-        case groupProcedure.INTERNAL:
-          createInternalRouteMap(procedure as InternalProcedure, workflow);
-          break;
-        default:
-          alert('Group procedure is not defined');
-          break;
-      }
+      createRouteMap(data.procedure, data.workflow);
     });
   }
   showDetail(mail: communication) {

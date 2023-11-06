@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { PaginatorService } from '../../services/paginator.service';
+import { PaginatorService } from '../../../services/paginator.service';
 import { FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -8,17 +8,18 @@ import { FormControl, Validators } from '@angular/forms';
   styleUrls: ['./input-search-procedures.component.scss'],
 })
 export class InputSearchProceduresComponent implements OnInit {
+  @Input() placeholder = 'Buscar....';
+  @Output() searchEvent = new EventEmitter<undefined>();
   FormSearch = new FormControl('', [
     Validators.minLength(4),
     Validators.pattern(/^[^/!@#$%^&*()_+{}\[\]:;<>,.?~\\]*$/),
   ]);
-  @Input() placeholder = 'Buscar....';
-  @Output() searchEvent = new EventEmitter<undefined>();
   constructor(private paginatorService: PaginatorService) {}
-  ngOnInit(): void {
+  ngOnInit(): void {  
+    if (!this.paginatorService.searchMode) return;
     const searchText = this.paginatorService.searchParams.get('text');
     if (!searchText) {
-      this.paginatorService.searchMode = false;
+      this.paginatorService.resetPagination();
       this.paginatorService.searchParams.clear();
       return;
     }
@@ -35,7 +36,7 @@ export class InputSearchProceduresComponent implements OnInit {
   cancel() {
     this.FormSearch.setValue('');
     this.FormSearch.setErrors(null);
-    this.paginatorService.searchMode = false;
+    this.paginatorService.resetPagination();
     this.paginatorService.searchParams.clear();
     this.searchEvent.emit();
   }

@@ -4,6 +4,7 @@ export class InternalProcedureDto {
   static fromForm(FormProcedure: any) {
     return new InternalProcedureDto(
       {
+        segment: FormProcedure['segment'],
         type: FormProcedure['type'],
         cite: FormProcedure['cite'],
         reference: FormProcedure['reference'],
@@ -24,6 +25,7 @@ export class InternalProcedureDto {
 
   constructor(
     public procedure: {
+      segment: string;
       cite: string;
       reference: string;
       amount: string;

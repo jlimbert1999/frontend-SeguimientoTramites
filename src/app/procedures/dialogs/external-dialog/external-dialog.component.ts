@@ -19,7 +19,7 @@ export class ExternalDialogComponent implements OnInit {
   requeriments: string[] = [];
   documents: string[] = ['Carnet de identidad', 'Libreta servicio militar', 'Pasaporte'];
   selectedtypeApplicant: typeApplicant = 'NATURAL';
-  registerRepresentative: boolean = true;
+  registerRepresentative: boolean = false;
 
   TramiteFormGroup: FormGroup = this.fb.group({
     segment: ['', Validators.required],

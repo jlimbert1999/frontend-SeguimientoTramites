@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../angular-material/material.module';
-import { GraphWorkflowComponent } from './components/graph-workflow/graph-workflow.component';
-import { ListWorkflowComponent } from './components/list-workflow/list-workflow.component';
+import { GraphWorkflowComponent } from './components/procedures/graph-workflow/graph-workflow.component';
+import { ListWorkflowComponent } from './components/procedures/list-workflow/list-workflow.component';
 import { FullnamePipe } from './pipes/fullname.pipe';
 import { PaginatorComponent } from './components/paginator/paginator.component';
 import { InternalDetailComponent } from '../procedures/components/internal-detail/internal-detail.component';
@@ -17,7 +17,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ServerMatSelectSearchComponent } from './components/server-mat-select-search/server-mat-select-search.component';
 import { BadgePipe } from './pipes/badge.pipe';
 import { RouterModule } from '@angular/router';
-import { InputSearchProceduresComponent } from './components/input-search-procedures/input-search-procedures.component';
+import { InputSearchProceduresComponent } from './components/procedures/input-search-procedures/input-search-procedures.component';
 import { TimelineComponent } from './components/timeline/timeline.component';
 
 @NgModule({

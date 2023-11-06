@@ -12,9 +12,7 @@ import { groupProcedure, observation, stateProcedure } from 'src/app/procedures/
 import { communication, statusMail, workflow } from '../../interfaces';
 import { ProcedureService } from 'src/app/procedures/services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from 'src/app/procedures/models';
-import { createExternalRouteMap } from 'src/app/procedures/helpers/external-route-map';
-import { CreateInternalProcedureDto } from 'src/app/procedures/dtos/create-internal.dto';
-import { createInternalRouteMap } from 'src/app/procedures/helpers/internal-route-map';
+import { createRouteMap } from 'src/app/procedures/helpers';
 @Component({
   selector: 'app-mail',
   templateUrl: './mail.component.html',
@@ -211,17 +209,7 @@ export class MailComponent implements OnInit {
   }
 
   generateRouteMap() {
-    switch (this.procedure.group) {
-      case groupProcedure.EXTERNAL:
-        createExternalRouteMap(this.external, this.workflow);
-        break;
-      case groupProcedure.INTERNAL:
-        createInternalRouteMap(this.internal, this.workflow);
-        break;
-      default:
-        alert('Group procedure is not defined');
-        break;
-    }
+    createRouteMap(this.procedure, this.workflow);
   }
 
   get external() {

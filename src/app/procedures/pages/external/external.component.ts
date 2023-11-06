@@ -2,16 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { ExternalDialogComponent } from '../../dialogs/external-dialog/external-dialog.component';
-import { createExternalRouteMap, createTicket } from '../../helpers';
+
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
-import { sendDetail } from 'src/app/communication/interfaces';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { ExternalProcedure } from '../../models';
-import { external, groupProcedure, stateProcedure } from '../../interfaces';
-import { ArchiveService, ExternalService, ProcedureService } from '../../services';
-import { EventProcedureDto } from '../../dtos';
+import { ExternalDialogComponent } from '../../dialogs/external-dialog/external-dialog.component';
+
 import { AlertManager } from 'src/app/shared/helpers/alerts';
+import { createRouteMap, createTicket } from '../../helpers';
+
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
+import { ArchiveService, ExternalService, ProcedureService } from '../../services';
+
+import { ProcedureTransferDetails } from 'src/app/communication/models/procedure-transfer-datais.mode';
+import { ExternalProcedure } from '../../models';
+import { EventProcedureDto } from '../../dtos';
+import { external, groupProcedure, stateProcedure } from '../../interfaces';
 
 @Component({
   selector: 'app-external',
@@ -21,7 +25,6 @@ import { AlertManager } from 'src/app/shared/helpers/alerts';
 export class ExternalComponent implements OnInit {
   dataSource: ExternalProcedure[] = [];
   displayedColumns: string[] = ['code', 'reference', 'applicant', 'state', 'startDate', 'send', 'menu-options'];
-  stateProcedure: stateProcedure;
   constructor(
     public dialog: MatDialog,
     private router: Router,
@@ -50,62 +53,57 @@ export class ExternalComponent implements OnInit {
   }
 
   add() {
-    const dialogRef = this.dialog.open(ExternalDialogComponent, {
+    const dialogRef = this.dialog.open<ExternalDialogComponent, undefined, ExternalProcedure>(ExternalDialogComponent, {
       width: '1000px',
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((result: external) => {
-      if (result) {
+    dialogRef.afterClosed().subscribe((createdProcedure) => {
+      if (createdProcedure) {
         if (this.dataSource.length === this.paginatorService.limit) {
           this.dataSource.pop();
         }
-        // this.dataSource = [result, ...this.dataSource];
-        // this.Send(result);
+        this.dataSource = [createdProcedure, ...this.dataSource];
+        this.send(createdProcedure);
       }
     });
   }
 
-  Edit(procedure: external) {
-    const dialogRef = this.dialog.open(ExternalDialogComponent, {
-      width: '1000px',
-      data: procedure,
-      disableClose: true,
-    });
-    dialogRef.afterClosed().subscribe((result: external) => {
-      if (result) {
+  edit(procedure: ExternalProcedure) {
+    const dialogRef = this.dialog.open<ExternalDialogComponent, ExternalProcedure, ExternalProcedure>(
+      ExternalDialogComponent,
+      {
+        width: '1000px',
+        data: procedure,
+        disableClose: true,
+      }
+    );
+    dialogRef.afterClosed().subscribe((updatedProcedure) => {
+      if (updatedProcedure) {
         const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
-        // this.dataSource[indexFound] = result;
-        // this.dataSource = [...this.dataSource];
+        this.dataSource[indexFound] = updatedProcedure;
+        this.dataSource = [...this.dataSource];
       }
     });
   }
 
-  Send(procedure: external) {
-    const { _id, code, amount } = procedure;
-    const data: sendDetail = {
-      attachmentQuantity: amount,
-      procedure: {
-        _id,
-        code,
-      },
-    };
-    const dialogRef = this.dialog.open(SendDialogComponent, {
+  send(procedure: ExternalProcedure) {
+    const dialogRef = this.dialog.open<SendDialogComponent, ProcedureTransferDetails, string>(SendDialogComponent, {
       width: '1200px',
-      data: data,
+      data: ProcedureTransferDetails.fromfirstSend(procedure),
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((result: external) => {
-      if (result) {
-        // const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
-        // this.dataSource[indexFound].send = true;
-        // this.dataSource = [...this.dataSource];
+    dialogRef.afterClosed().subscribe((message) => {
+      if (message) {
+        const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
+        this.dataSource[indexFound].isSend = true;
+        this.dataSource = [...this.dataSource];
       }
     });
   }
 
   generateRouteMap(id_procedure: string, group: groupProcedure) {
     this.procedureService.getFullProcedure(id_procedure, group).subscribe((data) => {
-      createExternalRouteMap(data.procedure as ExternalProcedure, data.workflow);
+      createRouteMap(data.procedure, data.workflow);
     });
   }
 

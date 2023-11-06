@@ -9,74 +9,38 @@
           <div class="card-body">
             <h5 class="card-title">
               {{ procedure.code }} /
-              <span class="badge" [ngClass]="procedure.state | state">{{
-                procedure.state
-              }}</span>
+              <span class="badge" [ngClass]="procedure.state | state">{{ procedure.state }}</span>
             </h5>
-            <h6 class="card-subtitle mb-2 text-muted">
-              Encargado: {{ procedure.fullNameManager }}
-            </h6>
+            <h6 class="card-subtitle mb-2 text-muted">Encargado: {{ procedure.fullNameManager }}</h6>
             <hr />
             <form class="row g-3">
               <div class="col-12">
                 <label for="txtType" class="form-label">Tipo de tramite</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="txtType"
-                  [value]="procedure.type.nombre"
-                  readonly
-                />
+                <input type="text" class="form-control" id="txtType" [value]="procedure.type.nombre" readonly />
               </div>
               <div class="col-12">
-                <label for="txtDescription" class="form-label"
-                  >Descripcion</label
-                >
-                <textarea class="form-control" id="txtDescription" readonly>{{
-                  procedure.reference
-                }}</textarea>
+                <label for="txtDescription" class="form-label">Descripcion</label>
+                <textarea class="form-control" id="txtDescription" readonly>{{ procedure.reference }}</textarea>
               </div>
               <div class="col-md-4">
                 <label for="txtCantidad" class="form-label">Cantidad</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="txtCantidad"
-                  [value]="procedure.amount"
-                  readonly
-                />
+                <input type="text" class="form-control" id="txtCantidad" [value]="procedure.amount" readonly />
               </div>
               <div class="col-md-4">
                 <label for="txtCite" class="form-label">Cite</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="txtCite"
-                  [value]="procedure.citeCode"
-                  readonly
-                />
+                <input type="text" class="form-control" id="txtCite" [value]="procedure.citeCode" readonly />
               </div>
               <div class="col-md-4">
                 <label for="txtPin" class="form-label">Pin</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="txtPin"
-                  [value]="procedure.details.pin"
-                  readonly
-                />
+                <input type="text" class="form-control" id="txtPin" [value]="procedure.details.pin" readonly />
               </div>
             </form>
           </div>
           <div class="card-footer">
-            <small class="text-body-secondary fs-6"
-              >FECHA REGISTRO: {{ procedure.startDate | date : "short" }}</small
-            >
+            <small class="text-body-secondary fs-6">FECHA REGISTRO: {{ procedure.startDate | date : "short" }}</small>
           </div>
           <div *ngIf="procedure.endDate" class="card-footer">
-            <small class="text-body-secondary fs-6"
-              >FECHA CONCLUSION: {{ procedure.endDate | date : "short" }}</small
-            >
+            <small class="text-body-secondary fs-6">FECHA CONCLUSION: {{ procedure.endDate | date : "short" }}</small>
           </div>
         </div>
       </div>
@@ -85,16 +49,9 @@
       <div class="shadow rounded">
         <div class="card bg-transparent">
           <div class="card-body">
-            <h5 class="card-title">
-              Solicitante: {{ procedure.details.solicitante.tipo }}
-            </h5>
+            <h5 class="card-title">Solicitante: {{ procedure.details.solicitante.tipo }}</h5>
             <hr />
-            <div
-              *ngIf="
-                procedure.details.solicitante.tipo === 'NATURAL';
-                else applicantTemplate
-              "
-            >
+            <div *ngIf="procedure.details.solicitante.tipo === 'NATURAL'; else applicantTemplate">
               <form class="row g-3">
                 <div class="col-md-8">
                   <label for="txtFirstName" class="form-label">Nombre</label>
@@ -173,12 +130,7 @@
           <div class="card-body">
             <h5 class="card-title">Representante</h5>
             <hr />
-            <div
-              *ngIf="
-                procedure.details.representante;
-                else representativeTemplate
-              "
-            >
+            <div *ngIf="procedure.details.representante; else representativeTemplate">
               <form class="row g-3">
                 <div class="col-md-8">
                   <label for="txtFirstName" class="form-label">Nombre</label>
@@ -224,6 +176,27 @@
             </div>
             <ng-template #representativeTemplate>
               <p class="fw-bold text-center">Sin representante</p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12">
+      <div class="shadow rounded">
+        <div class="card bg-transparent">
+          <div class="card-body">
+            <h5 class="card-title">Requerimientos</h5>
+            <hr />
+            <ol
+              *ngIf="procedure.details.requirements.length > 0; else noRequirementsTemplate"
+              class="list-group list-group-numbered"
+            >
+              <li *ngFor="let requirement of procedure.details.requirements" class="list-group-item">
+                {{ requirement }}
+              </li>
+            </ol>
+            <ng-template #noRequirementsTemplate>
+              <p class="fw-bold text-center">No se presentaron requerimientos</p>
             </ng-template>
           </div>
         </div>
