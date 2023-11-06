@@ -1,23 +1,15 @@
 <div *ngIf="mail" class="animate__animated animate__fadeInLeft">
   <p>
     <mat-toolbar color="primary">
-      <button (click)="back()" mat-icon-button>
+      <button (click)="backLocation()" mat-icon-button>
         <mat-icon>arrow_back</mat-icon>
       </button>
       <span>{{ mail.procedure.code }}</span>
       <span class="example-spacer"></span>
-      <button
-        mat-icon-button
-        (click)="generateRouteMap()"
-        matTooltip="Hoja de ruta"
-      >
+      <button mat-icon-button (click)="generateRouteMap()" matTooltip="Hoja de ruta">
         <mat-icon>description</mat-icon>
       </button>
-      <button
-        mat-icon-button
-        (click)="addObservation()"
-        matTooltip="Agregar observacion"
-      >
+      <button mat-icon-button (click)="addObservation()" matTooltip="Agregar observacion">
         <mat-icon>attach_file</mat-icon>
       </button>
       <!-- <button
@@ -44,12 +36,8 @@
         <div class="me-auto">
           <mat-card-header>
             <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>
-              {{ mail.emitter.fullname | titlecase }}</mat-card-title
-            >
-            <mat-card-subtitle>{{
-              mail.emitter.jobtitle | uppercase
-            }}</mat-card-subtitle>
+            <mat-card-title> {{ mail.emitter.fullname | titlecase }}</mat-card-title>
+            <mat-card-subtitle>{{ mail.emitter.jobtitle | uppercase }}</mat-card-subtitle>
           </mat-card-header>
         </div>
         <div class="p-3">
@@ -63,23 +51,16 @@
             <p class="card-text">{{ mail.reference }}</p>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-              Cantidad: {{ mail.attachmentQuantity }}
-            </li>
+            <li class="list-group-item">Cantidad: {{ mail.attachmentQuantity }}</li>
           </ul>
+          <div *ngIf="mail.status === 'pending'" class="card-footer text-bg-danger">
+            USTED AUN NO HA ACEPTADO ESTE TRAMITE
+          </div>
         </div>
       </mat-card-content>
-      <mat-card-actions
-        class="action-row-buttons"
-        *ngIf="mail.status === 'pending'"
-        align="end"
-      >
-        <button mat-raised-button color="warn" (click)="rejectMail()">
-          Rechazar
-        </button>
-        <button mat-raised-button color="primary" (click)="acceptMail()">
-          Aceptar
-        </button>
+      <mat-card-actions class="action-row-buttons" *ngIf="mail.status === 'pending'" align="end">
+        <button mat-raised-button color="warn" (click)="rejectMail()">Rechazar</button>
+        <button mat-raised-button color="primary" (click)="acceptMail()">Aceptar</button>
       </mat-card-actions>
     </mat-card>
     <mat-tab-group *ngIf="procedure" mat-align-tabs="center">
@@ -96,9 +77,7 @@
             <div *ngSwitchCase="group.INTERNAL">
               <app-internal-detail [procedure]="internal"></app-internal-detail>
             </div>
-            <div *ngSwitchDefault>
-              Type procedure not define {{ procedure.group }}
-            </div>
+            <div *ngSwitchDefault>Type procedure not define {{ procedure.group }}</div>
           </div>
         </div>
       </mat-tab>
@@ -107,20 +86,14 @@
           <mat-icon class="tab-icon">push_pin</mat-icon>
           Observaciones
         </ng-template>
-        <app-observations
-          [observations]="observations"
-          (setNewState)="setNewStateProcedure($event)"
-        ></app-observations>
+        <app-observations [observations]="observations" (setNewState)="setNewStateProcedure($event)"></app-observations>
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon class="tab-icon">groups</mat-icon>
           Flujo de trabajo
         </ng-template>
-        <app-list-workflow
-          [workflow]="workflow"
-          [startDate]="procedure.startDate"
-        ></app-list-workflow>
+        <app-list-workflow [workflow]="workflow" [startDate]="procedure.startDate"></app-list-workflow>
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>

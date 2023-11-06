@@ -38,9 +38,11 @@ export class OutboxService {
   }
 
   cancelMail(id_procedure: string, ids_mails: string[]) {
-    return this.http.delete<{ message: string }>(`${base_url}/communication/outbox/${id_procedure}`, {
-      body: { ids_mails },
-    });
+    return this.http
+      .delete<{ message: string }>(`${base_url}/communication/outbox/${id_procedure}`, {
+        body: { ids_mails },
+      })
+      .pipe(map((resp) => resp.message));
   }
 
   cancelOneSend(id_bandeja: string) {

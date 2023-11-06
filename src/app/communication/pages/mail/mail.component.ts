@@ -2,17 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
+
 import { InboxService } from '../../services/inbox.service';
 import Swal from 'sweetalert2';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { showToast } from 'src/app/helpers/toats.helper';
 
 import { groupProcedure, observation, stateProcedure } from 'src/app/procedures/interfaces';
 import { communication, statusMail, workflow } from '../../interfaces';
 import { ProcedureService } from 'src/app/procedures/services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from 'src/app/procedures/models';
 import { createRouteMap } from 'src/app/procedures/helpers';
+import { AlertManager } from 'src/app/shared/helpers/alerts';
 @Component({
   selector: 'app-mail',
   templateUrl: './mail.component.html',
@@ -26,7 +26,7 @@ export class MailComponent implements OnInit {
   constructor(
     private _location: Location,
     private activateRoute: ActivatedRoute,
-    private entradaService: InboxService,
+    private inboxService: InboxService,
     private paginatorService: PaginatorService,
     private procedureService: ProcedureService,
     public dialog: MatDialog
@@ -34,7 +34,7 @@ export class MailComponent implements OnInit {
 
   ngOnInit(): void {
     this.activateRoute.params.subscribe((params) => {
-      this.entradaService.getMailDetails(params['id']).subscribe((data) => {
+      this.inboxService.getMailDetails(params['id']).subscribe((data) => {
         this.mail = data;
         this.getFullDetailsProcedure(this.mail.procedure._id, this.mail.procedure.group);
       });
@@ -49,7 +49,7 @@ export class MailComponent implements OnInit {
     });
   }
 
-  back() {
+  backLocation() {
     this.activateRoute.queryParams.subscribe((data) => {
       this.paginatorService.limit = data['limit'];
       this.paginatorService.offset = data['offset'];
@@ -81,54 +81,35 @@ export class MailComponent implements OnInit {
   }
 
   acceptMail() {
-    Swal.fire({
-      title: `¿Aceptar tramite ${this.mail.procedure.code}?`,
-      text: `El tramite sera marcado como aceptado`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.entradaService.acceptMail(this.mail._id).subscribe(
-          (newState) => {
+    AlertManager.showQuestionAlert(
+      `¿Aceptar tramite ${this.mail.procedure.code}?`,
+      `El tramite sera marcado como aceptado`,
+      () => {
+        this.inboxService.acceptMail(this.mail._id).subscribe(
+          (resp) => {
+            this.mail.procedure.state = resp.state;
             this.mail.status = statusMail.Received;
-            this.procedure.state = newState;
+            AlertManager.showSuccesToast(3000, resp.message);
           },
-          (HttpError: HttpErrorResponse) => {
-            if (HttpError.status === 404) {
-              this.back();
-            }
+          () => {
+            this._location.back();
           }
         );
       }
-    });
+    );
   }
   rejectMail() {
-    Swal.fire({
-      icon: 'question',
-      title: `¿Rechazar tramite ${this.mail.procedure.code}?`,
-      text: `El tramite sera devuelto al funcionario ${this.mail.emitter.fullname}`,
-      input: 'textarea',
-      inputPlaceholder: 'Ingrese el motivo del rechazo',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-      customClass: {
-        validationMessage: 'my-validation-message',
-      },
-      preConfirm: (value) => {
-        if (!value) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Debe nuevos ingresar el motivo para el rechazo'
-          );
-        }
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.back();
+    AlertManager.showConfirmAlert(
+      `¿Rechazar tramite ${this.mail.procedure.code}?`,
+      `El tramite sera devuelto al funcionario emisor`,
+      'Ingrese el motivo del rechazo',
+      (description) => {
+        this.inboxService.rejectMail(this.mail._id, description).subscribe((message) => {
+          AlertManager.showSuccesToast(3000, message);
+          this.backLocation();
+        });
       }
-    });
+    );
   }
   addObservation() {
     Swal.fire({
@@ -150,7 +131,7 @@ export class MailComponent implements OnInit {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.entradaService.addObservation(this.procedure._id, result.value!).subscribe((observation) => {
+        this.inboxService.addObservation(this.procedure._id, result.value!).subscribe((observation) => {
           console.log(observation);
         });
       }
@@ -196,9 +177,8 @@ export class MailComponent implements OnInit {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.entradaService.Conclude(this.mail._id, result.value!).subscribe((message) => {
-          showToast('success', message);
-          this.back();
+        this.inboxService.Conclude(this.mail._id, result.value!).subscribe((message) => {
+          this.backLocation();
         });
       }
     });

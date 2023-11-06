@@ -39,10 +39,9 @@ export class InboxService {
   }
 
   acceptMail(id_mail: string) {
-    return this.http.put<{ state: stateProcedure }>(`${base_url}/communication/inbox/accept/${id_mail}`, {}).pipe(
-      map((resp) => {
-        return resp.state;
-      })
+    return this.http.put<{ state: stateProcedure; message: string }>(
+      `${base_url}/communication/inbox/accept/${id_mail}`,
+      {}
     );
   }
   rejectMail(id_mail: string, rejectionReason: string) {

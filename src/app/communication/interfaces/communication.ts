@@ -1,12 +1,13 @@
 import { Procedure } from 'src/app/procedures/models';
 import { participant } from './participant.interface';
 import { statusMail } from './status-mail';
+import { procedure } from 'src/app/procedures/interfaces';
 
 export interface communication {
   _id: string;
   emitter: participant;
   receiver: participant;
-  procedure: Procedure;
+  procedure: procedure;
   reference: string;
   attachmentQuantity: string;
   internalNumber: string;

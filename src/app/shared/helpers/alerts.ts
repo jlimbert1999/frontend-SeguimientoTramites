@@ -64,4 +64,18 @@ export class AlertManager {
   static closeLoadingAlert() {
     Swal.close();
   }
+
+  static showSuccesToast(timer: number, message: string) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'bottom',
+      showConfirmButton: false,
+      timer,
+      timerProgressBar: true,
+    });
+    Toast.fire({
+      icon: 'success',
+      title: message,
+    });
+  }
 }

@@ -2,17 +2,19 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { InboxService } from '../../services/inbox.service';
+
 import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.component';
+
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { SocketService } from 'src/app/services/socket.service';
-import { communication, statusMail } from '../../interfaces';
 import { ProcedureService, ArchiveService } from 'src/app/procedures/services';
-import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
-import { ExternalProcedure, InternalProcedure } from 'src/app/procedures/models';
-import { EventProcedureDto } from 'src/app/procedures/dtos';
+import { SocketService } from 'src/app/services/socket.service';
+import { InboxService } from '../../services/inbox.service';
+
 import { AlertManager } from 'src/app/shared/helpers/alerts';
+import { stateProcedure } from 'src/app/procedures/interfaces';
 import { createRouteMap } from 'src/app/procedures/helpers';
+import { EventProcedureDto } from 'src/app/procedures/dtos';
+import { communication, statusMail } from '../../interfaces';
 import { ProcedureTransferDetails } from '../../models/procedure-transfer-datais.mode';
 
 @Component({
@@ -77,7 +79,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((message) => {
       if (message) {
-        this.getData();
+        this.removeMail(mail._id);
       }
     });
   }
@@ -88,10 +90,11 @@ export class InboxComponent implements OnInit, OnDestroy {
       `El tramite sera marcado como aceptado`,
       () => {
         this.inboxService.acceptMail(mail._id).subscribe(
-          (newState) => {
+          (resp) => {
             const indexFound = this.dataSource.findIndex((item) => item._id === mail._id);
-            this.dataSource[indexFound].procedure.state = newState;
+            this.dataSource[indexFound].procedure.state = resp.state;
             this.dataSource[indexFound].status = statusMail.Received;
+            AlertManager.showSuccesToast(3000, resp.message);
           },
           () => {
             this.getData();
@@ -107,7 +110,8 @@ export class InboxComponent implements OnInit, OnDestroy {
       'Ingrese el motivo del rechazo',
       (description) => {
         this.inboxService.rejectMail(mail._id, description).subscribe((message) => {
-          this.getData();
+          this.removeMail(mail._id);
+          AlertManager.showSuccesToast(3000, message);
         });
       }
     );
@@ -148,12 +152,18 @@ export class InboxComponent implements OnInit, OnDestroy {
   listenNewMails() {
     this.mailSubscription = this.socketService.mailSubscription$.subscribe((data) => {
       if (this.paginatorService.limit === this.dataSource.length) this.dataSource.pop();
+      this.paginatorService.length += 1;
       this.dataSource = [data, ...this.dataSource];
     });
   }
   listenCancelMails() {
     this.mailCancelSubscription = this.socketService.listenCancelMail().subscribe((id_mail) => {
-      this.dataSource = this.dataSource.filter((item) => item._id !== id_mail);
+      this.removeMail(id_mail);
     });
+  }
+
+  removeMail(id_mail: string) {
+    this.dataSource = this.dataSource.filter((item) => item._id !== id_mail);
+    this.paginatorService.length -= 1;
   }
 }

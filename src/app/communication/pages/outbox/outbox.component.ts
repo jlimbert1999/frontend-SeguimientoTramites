@@ -3,14 +3,14 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MatSelectionList } from '@angular/material/list';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/auth/services/auth.service';
+
 import { OutboxService } from '../../services/outbox.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { createFullName } from 'src/app/helpers/fullname.helper';
-import { SocketService } from 'src/app/services/socket.service';
 import { communication, groupedCommunication } from '../../interfaces';
-import { ExternalService, InternalService } from 'src/app/procedures/services';
 import { AlertManager } from 'src/app/shared/helpers/alerts';
+import { ProcedureService } from 'src/app/procedures/services';
+import { createRouteMap } from 'src/app/procedures/helpers';
+import { groupProcedure } from 'src/app/procedures/interfaces';
 
 @Component({
   selector: 'app-outbox',
@@ -25,20 +25,17 @@ import { AlertManager } from 'src/app/shared/helpers/alerts';
   ],
 })
 export class OutboxComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['alterno', 'descripcion', 'estado', 'fecha_envio', 'situacion', 'opciones', 'expand'];
+  displayedColumns = ['code', 'reference', 'state', 'startDate', 'expand', 'menu-options'];
   dataSource: groupedCommunication[] = [];
   isLoadingResults = true;
   expandedElement: communication | null;
 
   constructor(
     public dialog: MatDialog,
-    private authService: AuthService,
-    private externoService: ExternalService,
-    private internoService: InternalService,
     private outboxService: OutboxService,
     public paginatorService: PaginatorService,
-    private router: Router,
-    private socketService: SocketService
+    public procedureService: ProcedureService,
+    private router: Router
   ) {}
   ngAfterViewInit(): void {}
 
@@ -67,20 +64,10 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     }
   }
 
-  generar_hoja_ruta(id_tramite: string, tipo_hoja: 'tramites_externos' | 'tramites_internos') {
-    if (tipo_hoja === 'tramites_externos') {
-      // this.externoService.getProcedure(id_tramite).subscribe((data) => {
-      // externalRouteMap(data.procedure, data.workflow)
-      // HojaRutaExterna(data.procedure, data.workflow, this.authService.account.id_account)
-      // });
-    } else {
-      // this.internoService
-      //   .getAllDataInternalProcedure(id_tramite)
-      //   .subscribe((data) => {
-      //     // HojaRutaInterna(data.procedure, data.workflow, this.authService.account.id_account)
-      //     // internalRouteMap(data.procedure, data.workflow)
-      //   });
-    }
+  generateRouteMap(mail: communication) {
+    this.procedureService.getFullProcedure(mail.procedure._id, mail.procedure.group).subscribe((data) => {
+      createRouteMap(data.procedure, data.workflow);
+    });
   }
 
   showDetail(mail: groupedCommunication) {
@@ -89,7 +76,8 @@ export class OutboxComponent implements OnInit, AfterViewInit {
       offset: this.paginatorService.offset,
       ...(this.paginatorService.searchMode && { search: true }),
     };
-    this.router.navigate(['bandejas/salida', mail._id.procedure._id], {
+
+    this.router.navigate(['bandejas/salida', this.getUrlToNavigate(mail._id.procedure.group), mail._id.procedure._id], {
       queryParams: params,
     });
   }
@@ -97,16 +85,17 @@ export class OutboxComponent implements OnInit, AfterViewInit {
   cancelSend(mail: groupedCommunication, selectedSendIds: string[] | null) {
     if (!selectedSendIds) return;
     AlertManager.showQuestionAlert(
-      `Cancelar envios del tramite ${mail._id.procedure.code}?`,
+      `¿Cancelar envios del tramite ${mail._id.procedure.code}?`,
       `Envios a cancelar: ${selectedSendIds.length}`,
       () => {
-        this.outboxService.cancelMail(mail._id.procedure._id, selectedSendIds).subscribe((data) => {
-          if (mail.sendings.length === selectedSendIds.length) {
-            this.getData();
-          } else {
-            const index = this.dataSource.findIndex((item) => item._id === mail._id);
-            this.dataSource[index].sendings = mail.sendings.filter((send) => !selectedSendIds.includes(send._id));
+        this.outboxService.cancelMail(mail._id.procedure._id, selectedSendIds).subscribe((message) => {
+          const index = this.dataSource.findIndex((item) => item._id === mail._id);
+          this.dataSource[index].sendings = mail.sendings.filter((send) => !selectedSendIds.includes(send._id));
+          if (this.dataSource[index].sendings.length === 0) {
+            this.dataSource = this.dataSource.filter((item) => item._id !== mail._id);
+            this.paginatorService.length -= 1;
           }
+          AlertManager.showSuccesAltert('Envio cancelado correctamente', message);
         });
       }
     );
@@ -117,5 +106,13 @@ export class OutboxComponent implements OnInit, AfterViewInit {
         item.selected = true;
       }
     });
+  }
+
+  getUrlToNavigate(group: groupProcedure): string {
+    const validRoutes = {
+      ExternalDetail: 'externos',
+      InternalDetail: 'internos',
+    };
+    return validRoutes[group];
   }
 }

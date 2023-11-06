@@ -6,11 +6,11 @@ import { Observable } from 'rxjs';
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
 import { ExternalDialogComponent } from '../../dialogs/external-dialog/external-dialog.component';
 
-import { AlertManager } from 'src/app/shared/helpers/alerts';
-import { createRouteMap, createTicket } from '../../helpers';
-
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchiveService, ExternalService, ProcedureService } from '../../services';
+
+import { AlertManager } from 'src/app/shared/helpers/alerts';
+import { createRouteMap, createTicket } from '../../helpers';
 
 import { ProcedureTransferDetails } from 'src/app/communication/models/procedure-transfer-datais.mode';
 import { ExternalProcedure } from '../../models';
@@ -136,7 +136,7 @@ export class ExternalComponent implements OnInit {
       offset: this.paginatorService.offset,
       ...(this.paginatorService.searchMode && { search: true }),
     };
-    this.router.navigate([`/tramites`, 'externos', procedure._id], {
+    this.router.navigate([`tramites`, 'externos', procedure._id], {
       queryParams: params,
     });
   }

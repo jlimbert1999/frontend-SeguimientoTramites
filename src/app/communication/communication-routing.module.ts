@@ -8,9 +8,9 @@ import { DetailComponent } from '../procedures/pages/detail/detail.component';
 
 const routes: Routes = [
   { path: 'entrada', component: InboxComponent },
-  { path: 'salida', component: OutboxComponent },
   { path: 'entrada/:id', component: MailComponent },
-  { path: 'salida/:id', component: DetailComponent },
+  { path: 'salida', component: OutboxComponent },
+  { path: 'salida/:group/:id', component: DetailComponent },
 ];
 
 @NgModule({
