@@ -6,10 +6,15 @@ import { Officer } from 'src/app/administration/models/officer.model';
 import { receiver } from '../interfaces/receiver.interface';
 import { institution, dependency, account } from 'src/app/administration/interfaces';
 import { CreateMailDto } from '../dto/create-mail.dto';
-import { communication, workflow } from '../interfaces';
+import { communication, statusMail, workflow } from '../interfaces';
 import { observation, stateProcedure } from 'src/app/procedures/interfaces';
 
 const base_url = environment.base_url;
+
+interface searchParams {
+  text: string;
+  status?: statusMail;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -17,8 +22,9 @@ const base_url = environment.base_url;
 export class InboxService {
   constructor(private http: HttpClient) {}
 
-  getInboxOfAccount(limit: number, offset: number) {
-    const params = new HttpParams().set('offset', offset * limit).set('limit', limit);
+  getInboxOfAccount(limit: number, offset: number, status?: statusMail) {
+    let params = new HttpParams().set('offset', offset * limit).set('limit', limit);
+    if (status) params = params.append('status', status);
     return this.http
       .get<{ mails: communication[]; length: number }>(`${base_url}/communication/inbox`, { params })
       .pipe(
@@ -27,8 +33,9 @@ export class InboxService {
         })
       );
   }
-  searchInboxOfAccount(limit: number, offset: number, text: string) {
-    const params = new HttpParams().set('offset', offset).set('limit', limit);
+  searchInboxOfAccount(limit: number, offset: number, { text, status }: searchParams) {
+    let params = new HttpParams().set('offset', offset * limit).set('limit', limit);
+    if (status) params = params.append('status', status);
     return this.http
       .get<{ mails: communication[]; length: number }>(`${base_url}/communication/inbox/search/${text}`, { params })
       .pipe(
@@ -65,14 +72,6 @@ export class InboxService {
         })
       );
   }
-
-  // GetAccounts(text: string) {
-  //   return this.http.get<{ ok: boolean, cuentas: AccountForSend[] }>(`${base_url}/entradas/users/${text}`).pipe(
-  //     map(resp => {
-  //       return resp.cuentas
-  //     })
-  //   )
-  // }
   getInstitucions() {
     return this.http.get<institution[]>(`${base_url}/communication/institutions`).pipe(
       map((resp) => {

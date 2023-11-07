@@ -1,15 +1,19 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
+
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchiveService } from '../../services/archive.service';
-import { communication } from 'src/app/communication/interfaces';
-import { stateProcedure } from 'src/app/procedures/interfaces';
 import { SocketService } from 'src/app/services/socket.service';
-import { EventProcedureDto } from '../../dtos/event_procedure.dto';
+
 import { EventDialogComponent } from '../../dialogs/event-dialog/event-dialog.component';
+
 import { AlertManager } from 'src/app/shared/helpers/alerts';
+
+import { communication } from 'src/app/communication/interfaces';
+import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
+import { EventProcedureDto } from '../../dtos/event_procedure.dto';
 
 @Component({
   selector: 'app-archives',
@@ -75,7 +79,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
       offset: this.paginatorService.offset,
       ...(this.paginatorService.searchMode && { search: true }),
     };
-    this.router.navigate(['/tramites/archivados', mail.procedure._id], {
+    this.router.navigate(['/tramites/archivados/', this.getUrlToNavigate(mail.procedure.group), mail.procedure._id], {
       queryParams: params,
     });
   }
@@ -92,5 +96,12 @@ export class ArchivesComponent implements OnInit, OnDestroy {
       this.dataSource = this.dataSource.filter((element) => element._id !== id_mail);
       this.dialog.closeAll();
     });
+  }
+  getUrlToNavigate(group: groupProcedure): string {
+    const validRoutes = {
+      ExternalDetail: 'externos',
+      InternalDetail: 'internos',
+    };
+    return validRoutes[group];
   }
 }

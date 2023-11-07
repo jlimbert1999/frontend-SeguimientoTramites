@@ -35,6 +35,8 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { PortalModule } from '@angular/cdk/portal';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatSliderModule } from '@angular/material/slider';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+
 @NgModule({
   declarations: [],
   imports: [CommonModule],
@@ -74,6 +76,7 @@ import { MatSliderModule } from '@angular/material/slider';
     PortalModule,
     OverlayModule,
     MatSliderModule,
+    ScrollingModule,
   ],
 })
 export class MaterialModule {}

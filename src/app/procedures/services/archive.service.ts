@@ -15,7 +15,7 @@ export class ArchiveService {
   constructor(private http: HttpClient) {}
 
   getAll(limit: number, offset: number) {
-    const params = new HttpParams().set('offset', offset).set('limit', limit);
+    const params = new HttpParams().set('offset', offset * limit).set('limit', limit);
     return this.http.get<{ archives: communication[]; length: number }>(`${base_url}/archive`, {
       params,
     });
@@ -30,12 +30,11 @@ export class ArchiveService {
         })
       );
   }
-
   getEventsProcedure(id_procedure: string) {
     return this.http.get<eventProcedure[]>(`${base_url}/archive/events/${id_procedure}`);
   }
-  archiveProcedure(id_procedure: string, archive: EventProcedureDto) {
-    return this.http.post<{ message: string }>(`${base_url}/archive/procedure/${id_procedure}`, archive);
+  archiveProcedure(archive: EventProcedureDto) {
+    return this.http.post<{ message: string }>(`${base_url}/archive/procedure`, archive);
   }
   archiveMail(id_mail: string, archive: EventProcedureDto) {
     return this.http.post<{ message: string }>(`${base_url}/archive/mail/${id_mail}`, archive);

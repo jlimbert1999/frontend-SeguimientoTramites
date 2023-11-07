@@ -117,9 +117,10 @@ export class InternalComponent implements OnInit {
           description,
           stateProcedure: stateProcedure.CONCLUIDO,
         };
-        this.archiveService.archiveProcedure(procedure._id, archive).subscribe(() => {
+        this.archiveService.archiveProcedure(archive).subscribe((data) => {
           const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
           this.dataSource[indexFound].state = stateProcedure.CONCLUIDO;
+          AlertManager.showSuccesToast(3000, data.message);
         });
       }
     );

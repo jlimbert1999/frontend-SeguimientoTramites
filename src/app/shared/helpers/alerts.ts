@@ -65,7 +65,7 @@ export class AlertManager {
     Swal.close();
   }
 
-  static showSuccesToast(timer: number, message: string) {
+  static showSuccesToast(timer: number = 3000, message: string) {
     const Toast = Swal.mixin({
       toast: true,
       position: 'bottom',

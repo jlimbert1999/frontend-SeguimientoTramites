@@ -9,6 +9,7 @@ const routes: Routes = [
   { path: 'internos', component: InternalComponent },
   { path: 'externos', component: ExternalComponent },
   { path: 'archivados', component: ArchivesComponent },
+  { path: 'archivados/:group/:id', component: DetailComponent },
   { path: ':group/:id', component: DetailComponent },
 ];
 

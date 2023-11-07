@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { eventProcedure } from '../../interfaces';
 import { ArchiveService } from '../../services';
@@ -16,7 +16,7 @@ export class EventDialogComponent {
   }
   getProcedureEvents() {
     this.archiveService.getEventsProcedure(this.data.procedure._id).subscribe((resp) => {
-      this.events = resp;
+      this.events = [...resp];
     });
   }
 }

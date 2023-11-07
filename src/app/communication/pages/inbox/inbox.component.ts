@@ -27,6 +27,7 @@ export class InboxComponent implements OnInit, OnDestroy {
   private mailCancelSubscription: Subscription;
   displayedColumns: string[] = ['code', 'reference', 'state', 'emitter', 'outboundDate', 'options'];
   dataSource: communication[] = [];
+  status?: statusMail;
 
   constructor(
     private router: Router,
@@ -39,6 +40,7 @@ export class InboxComponent implements OnInit, OnDestroy {
   ) {
     this.listenNewMails();
     this.listenCancelMails();
+    this.status = paginatorService.searchParams.get('status') as statusMail;
   }
 
   ngOnInit(): void {
@@ -53,18 +55,17 @@ export class InboxComponent implements OnInit, OnDestroy {
   getData() {
     if (this.paginatorService.searchMode) {
       this.inboxService
-        .searchInboxOfAccount(
-          this.paginatorService.limit,
-          this.paginatorService.offset,
-          this.paginatorService.searchParams.get('text')!
-        )
+        .searchInboxOfAccount(this.paginatorService.limit, this.paginatorService.offset, {
+          text: this.paginatorService.searchParams.get('text')!,
+          status: this.status,
+        })
         .subscribe((resp) => {
           this.dataSource = resp.mails;
           this.paginatorService.length = resp.length;
         });
     } else {
       this.inboxService
-        .getInboxOfAccount(this.paginatorService.limit, this.paginatorService.offset)
+        .getInboxOfAccount(this.paginatorService.limit, this.paginatorService.offset, this.status)
         .subscribe((resp) => {
           this.dataSource = resp.mails;
           this.paginatorService.length = resp.length;
@@ -127,8 +128,9 @@ export class InboxComponent implements OnInit, OnDestroy {
           procedure: mail.procedure._id,
           stateProcedure: isSuspended ? stateProcedure.SUSPENDIDO : stateProcedure.CONCLUIDO,
         };
-        this.archiveService.archiveMail(mail._id, archiveDto).subscribe(() => {
-          this.getData();
+        this.archiveService.archiveMail(mail._id, archiveDto).subscribe((data) => {
+          AlertManager.showSuccesToast(3000, data.message);
+          this.removeMail(mail._id);
         });
       }
     );
@@ -139,6 +141,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     });
   }
   showDetail(mail: communication) {
+    if (this.status) this.paginatorService.searchParams.set('status', this.status);
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
@@ -165,5 +168,10 @@ export class InboxComponent implements OnInit, OnDestroy {
   removeMail(id_mail: string) {
     this.dataSource = this.dataSource.filter((item) => item._id !== id_mail);
     this.paginatorService.length -= 1;
+  }
+
+  applyExtraFilters() {
+    this.paginatorService.offset = 0;
+    this.getData();
   }
 }
