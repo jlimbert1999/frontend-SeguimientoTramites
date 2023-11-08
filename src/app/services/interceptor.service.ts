@@ -18,14 +18,8 @@ import { LoaderService } from '../auth/services/loader.service';
 })
 export class InterceptorService {
   constructor(private loadingService: LoaderService, private router: Router) {}
-  intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
-    const headers = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${localStorage.getItem('token') || ''}`
-    );
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token') || ''}`);
     const reqClone = req.clone({
       headers,
     });
@@ -46,7 +40,11 @@ export class InterceptorService {
     if (error.status === 401) {
       this.router.navigate(['/login']);
     } else if (error.status === 403) {
-      Swal.fire('Sin autorizacion', error.error.message, 'warning');
+      Swal.fire(
+        'Sin autorizacion',
+        'Esta cuenta no tiene los permisos necesarios para realizar esta accion',
+        'warning'
+      );
     } else if (error.status === 404) {
       Swal.fire({
         title: 'El recurso solicitado no existe',
@@ -61,12 +59,7 @@ export class InterceptorService {
         text: 'La operacion no se pudo completar',
         confirmButtonText: 'Aceptar',
       });
-    } else if (
-      error.status < 500 &&
-      error.status >= 400 &&
-      error.status !== 401 &&
-      error.status !== 404
-    ) {
+    } else if (error.status < 500 && error.status >= 400 && error.status !== 401 && error.status !== 404) {
       Swal.fire({
         title: 'Solicitud incorrecta',
         text: error.error.message,

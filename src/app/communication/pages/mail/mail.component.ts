@@ -112,30 +112,16 @@ export class MailComponent implements OnInit {
     );
   }
   addObservation() {
-    Swal.fire({
-      icon: 'question',
-      title: `¿Observar el tramite: ${this.procedure.code}?`,
-      text: `El estado pasara a ser observado hasta su correccion`,
-      input: 'textarea',
-      inputPlaceholder: 'Ingrese la descripcion de la observacion',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-      customClass: {
-        validationMessage: 'my-validation-message',
-      },
-      preConfirm: (value) => {
-        if (!value) {
-          Swal.showValidationMessage('<i class="fa fa-info-circle"></i> Ingrese la descripcion');
-        }
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.inboxService.addObservation(this.procedure._id, result.value!).subscribe((observation) => {
-          console.log(observation);
+    AlertManager.showConfirmAlert(
+      `¿Observar el tramite: ${this.procedure.code}?`,
+      `El tramite se mostrara como "OBSERVADO" hasta que usted marque como corregida la observacion`,
+      'Ingrese la descripcion de la observacion',
+      (description) => {
+        this.procedureService.addObservation(this.procedure._id, description).subscribe((observation) => {
+          this.observations = [observation, ...this.observations];
         });
       }
-    });
+    );
   }
   send() {
     // const dialogRef = this.dialog.open(SendDialogComponent, {

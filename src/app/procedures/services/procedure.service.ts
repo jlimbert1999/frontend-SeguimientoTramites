@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { external, groupProcedure, internal, observation } from '../interfaces';
+import { external, groupProcedure, internal, observation, stateProcedure } from '../interfaces';
 import { ExternalProcedure, InternalProcedure } from '../models';
 import { workflow } from 'src/app/communication/interfaces';
 const base_url = environment.base_url;
@@ -39,5 +39,14 @@ export class ProcedureService {
           };
         })
       );
+  }
+
+  addObservation(id_procedure: string, description: string) {
+    return this.http.post<observation>(`${base_url}/procedure/${id_procedure}/observation`, {
+      description,
+    });
+  }
+  repairObservation(id_observation: string) {
+    return this.http.put<stateProcedure>(`${base_url}/entradas/corregir/${id_observation}`, {});
   }
 }

@@ -114,16 +114,4 @@ export class InboxService {
   getMailDetails(id_mail: string) {
     return this.http.get<communication>(`${base_url}/communication/${id_mail}`);
   }
-  addObservation(id_procedure: string, description: string) {
-    return this.http.post<observation>(`${base_url}/communication/inbox/observation/${id_procedure}`, {
-      description,
-    });
-  }
-  repairObservation(id_observation: string) {
-    return this.http.put<{ ok: boolean; state: string }>(`${base_url}/entradas/corregir/${id_observation}`, {}).pipe(
-      map((resp) => {
-        return resp.state;
-      })
-    );
-  }
 }

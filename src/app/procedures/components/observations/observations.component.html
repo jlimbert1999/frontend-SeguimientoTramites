@@ -1,26 +1,24 @@
-<div class="container-fluid">
+<div class="container">
   <div class="col-12 text-center p-2">
-    <mat-radio-group
-      [(ngModel)]="filter"
-      (change)="filterObservation()"
-      aria-label="Select an option"
-    >
+    <mat-radio-group [(ngModel)]="filter" (change)="filterObservation()" aria-label="Select an option">
       <mat-radio-button [value]="false">Todas</mat-radio-button>
       <mat-radio-button [value]="true">Mis observaciones</mat-radio-button>
     </mat-radio-group>
   </div>
   <div class="col-12">
     <mat-list>
-      <mat-list-item
-        *ngFor="let observation of observations | filterObservations : filter"
-      >
-        <span matListItemTitle>{{ observation.description }}</span>
-        <span matListItemLine
-          >{{ observation.isSolved }} -
-          {{ observation.date | date : "short" }}</span
-        >
+      <mat-list-item *ngFor="let observation of observations | filterObservations : filter">
+        <mat-icon matListItemIcon>person</mat-icon>
+        <p matListItemTitle>
+          {{ observation.fullnameOfficer }} /
+          <span class="badge rounded-pill ml-2" [ngClass]="observation.isSolved ? 'bg-success' : 'bg-danger'">
+            {{ observation.isSolved ? "RESUELTO" : "PENDIENTE" }}
+          </span>
+        </p>
+        <div matListItemLine>{{ observation.description }}</div>
+        <p matListItemLine>Fecha: {{ observation.date | date : "short" }}</p>
         <span matListItemMeta>
-          <button mat-icon-button color="primary">
+          <button mat-icon-button color="primary" matTooltip="Corregir">
             <mat-icon>build</mat-icon>
           </button>
         </span>

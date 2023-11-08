@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { InboxService } from 'src/app/communication/services/inbox.service';
 import { observation } from 'src/app/procedures/interfaces';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-observations',
