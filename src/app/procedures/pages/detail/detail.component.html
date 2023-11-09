@@ -23,19 +23,12 @@
           <div *ngSwitchDefault>Type procedure not define {{ procedure.group }}</div>
         </div>
       </mat-tab>
-      <mat-tab *ngIf="Observations.length > 0">
+      <mat-tab *ngIf="observations.length > 0">
         <ng-template mat-tab-label>
           <mat-icon class="tab-icon">push_pin</mat-icon>
           Observaciones
         </ng-template>
-        <app-observations [observations]="Observations"></app-observations>
-      </mat-tab>
-      <mat-tab *ngIf="Observations.length > 0">
-        <ng-template mat-tab-label>
-          <mat-icon class="tab-icon">push_pin</mat-icon>
-          Observaciones
-        </ng-template>
-        <app-observations [observations]="Observations"></app-observations>
+        <app-observations [observations]="observations"></app-observations>
       </mat-tab>
       <ng-container *ngIf="workflow.length > 0">
         <mat-tab>

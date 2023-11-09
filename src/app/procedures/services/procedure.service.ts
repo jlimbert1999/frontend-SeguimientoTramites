@@ -47,6 +47,8 @@ export class ProcedureService {
     });
   }
   repairObservation(id_observation: string) {
-    return this.http.put<stateProcedure>(`${base_url}/entradas/corregir/${id_observation}`, {});
+    return this.http
+      .put<{ state: stateProcedure }>(`${base_url}/procedure/observation/${id_observation}`, {})
+      .pipe(map((resp) => resp.state));
   }
 }

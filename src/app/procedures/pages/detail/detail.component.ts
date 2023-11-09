@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { workflow } from 'src/app/communication/interfaces';
-import { groupProcedure } from '../../interfaces';
+import { groupProcedure, observation } from '../../interfaces';
 import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
 import { ProcedureService } from '../../services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from '../../models';
@@ -24,7 +24,7 @@ export class DetailComponent implements OnInit {
   isLoading: boolean = true;
   procedure: InternalProcedure | ExternalProcedure;
   workflow: workflow[] = [];
-  Observations: any[] = [];
+  observations: observation[] = [];
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -48,6 +48,7 @@ export class DetailComponent implements OnInit {
       this.procedureService.getFullProcedure(id, VALID_ROUTES[group]).subscribe((data) => {
         this.procedure = data.procedure;
         this.workflow = data.workflow;
+        this.observations = data.observations;
         this.isLoading = false;
       });
     });
@@ -56,8 +57,8 @@ export class DetailComponent implements OnInit {
   backLocation() {
     this.activateRoute.queryParams.subscribe((data) => {
       const searchMode = String(data['search']).toLowerCase();
-      this.paginatorService.limit = data['limit'];
-      this.paginatorService.offset = data['offset'];
+      this.paginatorService.limit = data['limit'] ?? 10;
+      this.paginatorService.offset = data['offset'] ?? 0;
       this.paginatorService.searchMode = searchMode === 'true' ? true : false;
       this._location.back();
     });

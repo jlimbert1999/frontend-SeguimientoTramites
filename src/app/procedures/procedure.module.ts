@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 import { ExternalDialogComponent } from './dialogs/external-dialog/external-dialog.component';
 import { InternalDialogComponent } from './dialogs/internal-dialog/internal-dialog.component';
@@ -52,10 +52,6 @@ import { EventDialogComponent } from './dialogs/event-dialog/event-dialog.compon
       useValue: { showError: true },
     },
   ],
-  exports: [
-    InternalDetailComponent,
-    ExternalDetailComponent,
-    ObservationsComponent,
-  ],
+  exports: [InternalDetailComponent, ExternalDetailComponent, ObservationsComponent],
 })
 export class ProcedureModule {}

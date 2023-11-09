@@ -5,11 +5,10 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { LoaderService } from 'src/app/auth/services/loader.service';
-import { NotificationService } from 'src/app/home-old/services/notification.service';
 import { SocketService } from 'src/app/services/socket.service';
-import { ThemeService } from 'src/app/home-old/services/theme.service';
 import { SidenavService } from 'src/app/shared/services/sidenav.service';
 import { Subscription } from 'rxjs';
+import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +19,6 @@ export class HomeComponent {
   mobileQuery: MediaQueryList;
   Menu: any = this.authService.menu;
   loading$ = this.loader.loading$;
-  numberMails$ = this.notificationService.number_mails$;
   private mailSubscription: Subscription;
   @ViewChild('snav') public sidenav: MatSidenav;
   private _mobileQueryListener: () => void;
@@ -40,7 +38,6 @@ export class HomeComponent {
     private toastr: ToastrService,
     public loader: LoaderService,
     private router: Router,
-    private notificationService: NotificationService,
     private sidenavService: SidenavService,
     public themeService: ThemeService
   ) {

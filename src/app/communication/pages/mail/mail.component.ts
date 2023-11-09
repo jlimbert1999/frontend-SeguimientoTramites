@@ -59,27 +59,6 @@ export class MailComponent implements OnInit {
     });
   }
 
-  generar() {
-    // const List =
-    //   this.Workflow.length > 0
-    //     ? createListWorkflow(
-    //         this.Workflow,
-    //         [
-    //           {
-    //             id_root: this.Workflow[0].emisor.cuenta._id,
-    //             startDate: this.procedure.fecha_registro,
-    //           },
-    //         ],
-    //         []
-    //       )
-    //     : [];
-    // if (this.Mail.tipo === 'tramites_externos') {
-    //   PDF_FichaExterno(this.Tramite, List, this.Location);
-    // } else {
-    //   PDF_FichaInterno(this.Tramite, List, this.Location);
-    // }
-  }
-
   acceptMail() {
     AlertManager.showQuestionAlert(
       `¿Aceptar tramite ${this.mail.procedure.code}?`,
@@ -118,11 +97,26 @@ export class MailComponent implements OnInit {
       'Ingrese la descripcion de la observacion',
       (description) => {
         this.procedureService.addObservation(this.procedure._id, description).subscribe((observation) => {
+          this.procedure.state = stateProcedure.OBSERVADO;
           this.observations = [observation, ...this.observations];
         });
       }
     );
   }
+  solvedObservation(id_observation: string) {
+    AlertManager.showQuestionAlert(
+      '¿Marcar la observacion como corregida?',
+      'Si todas las observaciones son corregidas el tramite dejara de estar "OBSERVADO"',
+      () => {
+        this.procedureService.repairObservation(id_observation).subscribe((state) => {
+          this.procedure.state = state;
+          const index = this.observations.findIndex((obs) => obs._id === id_observation);
+          this.observations[index].isSolved = true;
+        });
+      }
+    );
+  }
+
   send() {
     // const dialogRef = this.dialog.open(SendDialogComponent, {
     //   width: '1200px',
@@ -169,11 +163,6 @@ export class MailComponent implements OnInit {
       }
     });
   }
-
-  setNewStateProcedure(state: any) {
-    this.procedure.state = state;
-  }
-
   generateRouteMap() {
     createRouteMap(this.procedure, this.workflow);
   }

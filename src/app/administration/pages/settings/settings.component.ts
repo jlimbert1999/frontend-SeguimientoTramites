@@ -7,8 +7,8 @@ import {
 } from '@angular/forms';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Location } from '@angular/common';
-import { ThemeService } from 'src/app/home-old/services/theme.service';
 import { account } from '../../interfaces';
+import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
   selector: 'app-settings',

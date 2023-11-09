@@ -16,24 +16,19 @@ const routes: Routes = [
       { path: 'main', component: PresentationComponent },
       {
         path: 'configuraciones',
-        loadChildren: () =>
-          import(`./administration/administration.module`).then(
-            (m) => m.AdministrationModule
-          ),
+        loadChildren: () => import(`./administration/administration.module`).then((m) => m.AdministrationModule),
       },
       {
         path: 'tramites',
-        loadChildren: () =>
-          import(`./procedures/procedure.module`).then(
-            (m) => m.ProcedureModule
-          ),
+        loadChildren: () => import(`./procedures/procedure.module`).then((m) => m.ProcedureModule),
       },
       {
         path: 'bandejas',
-        loadChildren: () =>
-          import(`./communication/communication.module`).then(
-            (m) => m.CommunicationModule
-          ),
+        loadChildren: () => import(`./communication/communication.module`).then((m) => m.CommunicationModule),
+      },
+      {
+        path: 'reportes',
+        loadChildren: () => import(`./reports/reports.module`).then((m) => m.ReportsModule),
       },
     ],
   },

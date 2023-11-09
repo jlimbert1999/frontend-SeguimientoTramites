@@ -1,6 +1,6 @@
 <div class="container">
   <div class="col-12 text-center p-2">
-    <mat-radio-group [(ngModel)]="filter" (change)="filterObservation()" aria-label="Select an option">
+    <mat-radio-group [(ngModel)]="filter" aria-label="Select an option">
       <mat-radio-button [value]="false">Todas</mat-radio-button>
       <mat-radio-button [value]="true">Mis observaciones</mat-radio-button>
     </mat-radio-group>
@@ -17,11 +17,16 @@
         </p>
         <div matListItemLine>{{ observation.description }}</div>
         <p matListItemLine>Fecha: {{ observation.date | date : "short" }}</p>
-        <span matListItemMeta>
-          <button mat-icon-button color="primary" matTooltip="Corregir">
-            <mat-icon>build</mat-icon>
-          </button>
-        </span>
+        <button
+          matListItemMeta
+          mat-icon-button
+          color="primary"
+          matTooltip="Corregir"
+          *ngIf="id_account === observation.account && enableOptions"
+          (click)="markAsSolved(observation)"
+        >
+          <mat-icon>build</mat-icon>
+        </button>
       </mat-list-item>
     </mat-list>
   </div>

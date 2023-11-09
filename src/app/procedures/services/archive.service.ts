@@ -15,7 +15,7 @@ export class ArchiveService {
   constructor(private http: HttpClient) {}
 
   getAll(limit: number, offset: number) {
-    const params = new HttpParams().set('offset', offset * limit).set('limit', limit);
+    const params = new HttpParams().set('limit', limit).set('offset', offset * limit);
     return this.http.get<{ archives: communication[]; length: number }>(`${base_url}/archive`, {
       params,
     });

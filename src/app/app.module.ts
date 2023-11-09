@@ -1,10 +1,9 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { registerLocaleData } from '@angular/common';
-import { LOCALE_ID } from '@angular/core';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import localeEs from '@angular/common/locales/es';
 import { RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
@@ -38,7 +37,6 @@ registerLocaleData(localeEs, 'es');
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot(),
     AdministrationModule,
     AuthModule,
     ReportesModule,
@@ -47,6 +45,7 @@ registerLocaleData(localeEs, 'es');
     ProcedureModule,
     SharedModule,
     RouterModule,
+    ToastrModule.forRoot(),
   ],
 })
 export class AppModule {}
