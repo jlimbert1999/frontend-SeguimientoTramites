@@ -67,19 +67,19 @@
 				"serve": {
 					"builder": "@angular-devkit/build-angular:dev-server",
 					"configurations": {
-						"production": {
-							"browserTarget": "frontend_contrataciones:build:production"
+            "production": {
+              "buildTarget": "frontend_contrataciones:build:production"
 						},
-						"development": {
-							"browserTarget": "frontend_contrataciones:build:development"
+            "development": {
+              "buildTarget": "frontend_contrataciones:build:development"
 						}
 					},
 					"defaultConfiguration": "development"
 				},
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n",
-					"options": {
-						"browserTarget": "frontend_contrataciones:build"
+          "options": {
+            "buildTarget": "frontend_contrataciones:build"
 					}
 				},
 				"test": {
