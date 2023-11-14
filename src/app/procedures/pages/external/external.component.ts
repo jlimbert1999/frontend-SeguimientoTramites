@@ -10,7 +10,7 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchiveService, ExternalService, ProcedureService } from '../../services';
 
 import { AlertManager } from 'src/app/shared/helpers/alerts';
-import { createRouteMap, createTicket } from '../../helpers';
+import { EnumToString, createRouteMap, createTicket } from '../../helpers';
 
 import { ProcedureTransferDetails } from 'src/app/communication/models/procedure-transfer-datais.mode';
 import { ExternalProcedure } from '../../models';
@@ -137,7 +137,7 @@ export class ExternalComponent implements OnInit {
       offset: this.paginatorService.offset,
       ...(this.paginatorService.searchMode && { search: true }),
     };
-    this.router.navigate([`tramites`, 'externos', procedure._id], {
+    this.router.navigate([`tramites`, EnumToString(procedure.group), procedure._id], {
       queryParams: params,
     });
   }

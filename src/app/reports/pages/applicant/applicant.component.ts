@@ -1,11 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { groupProcedure, typeApplicant } from 'src/app/procedures/interfaces';
-import { ReportService } from '../../services/report.service';
-import { searchParamsApplicant, tableProcedureData } from '../../interfaces';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { Router } from '@angular/router';
 
+import { typeApplicant } from 'src/app/procedures/interfaces';
+import { EnumToString } from 'src/app/procedures/helpers';
+
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
+import { ReportService } from '../../services/report.service';
+import { searchParamsApplicant, tableProcedureData } from '../../interfaces';
+
+type validSearchProperty = 'solicitante' | 'representante';
 @Component({
   selector: 'app-applicant',
   templateUrl: './applicant.component.html',
@@ -19,15 +23,14 @@ export class ApplicantComponent implements OnInit {
 
   public datasource: tableProcedureData[] = [];
   public typeApplicant: typeApplicant = 'NATURAL';
-  public typeSearch: 'solicitante' | 'representante' = 'solicitante';
+  public typeSearch: validSearchProperty = 'solicitante';
   public formApplicant: FormGroup;
 
   ngOnInit(): void {
     this.changeFormApplicant();
-    if (this.paginatorService.searchMode) {
-      this.formApplicant.patchValue(Object.fromEntries(this.paginatorService.searchParams));
-      this.search();
-    }
+    if (!this.paginatorService.searchMode) return;
+    this.restartSearchParams();
+    this.search();
   }
   changeFormApplicant() {
     this.formApplicant =
@@ -51,18 +54,24 @@ export class ApplicantComponent implements OnInit {
   }
 
   showDetails(procedure: tableProcedureData) {
-    for (const [key, value] of Object.entries(this.formApplicant.value)) {
-      console.log(value);
-      if (value) this.paginatorService.searchParams.set(key, value as string);
-    }
-    this.router.navigate(['reportes', 'solicitante', 'externos', procedure._id], { queryParams: { search: true } });
+    Object.entries(this.formApplicant.value).forEach(([key, value]) => {
+      this.paginatorService.searchParams.set(key, String(value));
+    });
+    this.paginatorService.searchParams.set('typeApplicant', this.typeApplicant);
+    this.paginatorService.searchParams.set('typeSearch', this.typeSearch);
+    const params = {
+      limit: this.paginatorService.limit,
+      offset: this.paginatorService.offset,
+      search: true,
+    };
+    this.router.navigate(['reportes', 'solicitante', EnumToString(procedure.group), procedure._id], {
+      queryParams: params,
+    });
   }
 
   search() {
-    const applicantProps = Object.entries(this.formApplicant.value).reduce(
-      (acc, [k, v]) => (v ? { ...acc, [k]: v } : acc),
-      {}
-    );
+    const applicantProps = this.getValidParamsForm();
+    applicantProps.tipo = this.typeApplicant;
     if (Object.keys(applicantProps).length === 0) return;
     this._reportService
       .searchProcedureByApplicant(
@@ -74,5 +83,25 @@ export class ApplicantComponent implements OnInit {
         this.datasource = resp.procedures;
         this.paginatorService.length = resp.length;
       });
+  }
+  generateReport() {
+    this.paginatorService.offset = 0;
+    this.search();
+  }
+  getValidParamsForm(): searchParamsApplicant {
+    return Object.entries(this.formApplicant.value).reduce(
+      (acc, [key, value]) => (value ? { ...acc, [key]: value } : acc),
+      {}
+    );
+  }
+  restartSearchParams() {
+    this.formApplicant.patchValue(Object.fromEntries(this.paginatorService.searchParams));
+    this.typeApplicant = (this.paginatorService.searchParams.get('typeApplicant') as typeApplicant) ?? 'NATURAL';
+    this.typeSearch = (this.paginatorService.searchParams.get('typeSearch') as validSearchProperty) ?? 'solicitante';
+  }
+
+  resetForm() {
+    this.formApplicant.reset();
+    this.datasource = [];
   }
 }

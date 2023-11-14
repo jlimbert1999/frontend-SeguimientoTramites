@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { NgModule } from '@angular/core';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
@@ -30,11 +30,11 @@ import { EventDialogComponent } from './dialogs/event-dialog/event-dialog.compon
     ExternalDialogComponent,
     InternalDetailComponent,
     ExternalDetailComponent,
+    ObservationsComponent,
+    EventDialogComponent,
+    ArchivesComponent,
     SolicitantePipe,
     FilterObservationsPipe,
-    ObservationsComponent,
-    ArchivesComponent,
-    EventDialogComponent,
   ],
   imports: [
     CommonModule,

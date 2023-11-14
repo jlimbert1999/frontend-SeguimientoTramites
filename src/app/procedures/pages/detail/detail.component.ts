@@ -5,16 +5,10 @@ import { Location } from '@angular/common';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { workflow } from 'src/app/communication/interfaces';
 import { groupProcedure, observation } from '../../interfaces';
-import { PDF_FichaExterno } from 'src/app/Reportes/pdf/reporte-ficha-externa';
 import { ProcedureService } from '../../services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from '../../models';
+import { stringToEnum } from '../../helpers';
 
-const VALID_ROUTES: {
-  [key: string]: groupProcedure;
-} = {
-  externos: groupProcedure.EXTERNAL,
-  internos: groupProcedure.INTERNAL,
-};
 @Component({
   selector: 'app-detail',
   templateUrl: './detail.component.html',
@@ -41,11 +35,12 @@ export class DetailComponent implements OnInit {
         this._location.back();
         return;
       }
-      if (!Object.keys(VALID_ROUTES).includes(group)) {
+      const groupProcedure = stringToEnum(group);
+      if (!groupProcedure) {
         this._location.back();
         return;
       }
-      this.procedureService.getFullProcedure(id, VALID_ROUTES[group]).subscribe((data) => {
+      this.procedureService.getFullProcedure(id, groupProcedure!).subscribe((data) => {
         this.procedure = data.procedure;
         this.workflow = data.workflow;
         this.observations = data.observations;

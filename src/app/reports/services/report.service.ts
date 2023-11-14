@@ -22,7 +22,7 @@ export class ReportService {
     applicant: searchParamsApplicant,
     typeSearch: 'solicitante' | 'representante'
   ) {
-    const params = new HttpParams().set('limit', limit).set('offset', offset);
+    const params = new HttpParams().set('limit', limit).set('offset', offset * limit);
     return this.http
       .post<{ procedures: external[]; length: number }>(`${base_url}/reports/procedure/${typeSearch}`, applicant, {
         params,
