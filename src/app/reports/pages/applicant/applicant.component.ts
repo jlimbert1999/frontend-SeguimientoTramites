@@ -28,9 +28,10 @@ export class ApplicantComponent implements OnInit {
 
   ngOnInit(): void {
     this.changeFormApplicant();
-    if (!this.paginatorService.searchMode) return;
-    this.restartSearchParams();
-    this.search();
+    if (this.paginatorService.searchMode) {
+      this.restartSearchParams();
+      this.search();
+    }
   }
   changeFormApplicant() {
     this.formApplicant =
@@ -40,21 +41,16 @@ export class ApplicantComponent implements OnInit {
             paterno: ['', [Validators.minLength(3)]],
             materno: ['', [Validators.minLength(3)]],
             telefono: ['', [Validators.minLength(7)]],
-            dni: ['', [Validators.minLength(7)]],
+            dni: ['', [Validators.minLength(6)]],
           })
         : this._fb.group({
             nombre: ['', [Validators.minLength(3)]],
-            telefono: ['', [Validators.minLength(7)]],
+            telefono: ['', [Validators.minLength(6)]],
           });
-  }
-  changeTypeSearch() {
-    this.typeApplicant = 'NATURAL';
-    this.datasource = [];
-    this.changeFormApplicant();
   }
 
   showDetails(procedure: tableProcedureData) {
-    Object.entries(this.formApplicant.value).forEach(([key, value]) => {
+    Object.entries(this.getValidParamsForm()).forEach(([key, value]) => {
       this.paginatorService.searchParams.set(key, String(value));
     });
     this.paginatorService.searchParams.set('typeApplicant', this.typeApplicant);
@@ -71,8 +67,8 @@ export class ApplicantComponent implements OnInit {
 
   search() {
     const applicantProps = this.getValidParamsForm();
-    applicantProps.tipo = this.typeApplicant;
     if (Object.keys(applicantProps).length === 0) return;
+    applicantProps.tipo = this.typeApplicant;
     this._reportService
       .searchProcedureByApplicant(
         { limit: this.paginatorService.limit, offset: this.paginatorService.offset },
@@ -95,13 +91,16 @@ export class ApplicantComponent implements OnInit {
     );
   }
   restartSearchParams() {
-    this.formApplicant.patchValue(Object.fromEntries(this.paginatorService.searchParams));
     this.typeApplicant = (this.paginatorService.searchParams.get('typeApplicant') as typeApplicant) ?? 'NATURAL';
     this.typeSearch = (this.paginatorService.searchParams.get('typeSearch') as validSearchProperty) ?? 'solicitante';
+    this.changeFormApplicant();
+    this.formApplicant.patchValue(Object.fromEntries(this.paginatorService.searchParams));
   }
 
   resetForm() {
-    this.formApplicant.reset();
     this.datasource = [];
+    this.formApplicant.reset();
+    this.paginatorService.searchParams.clear();
+    this.paginatorService.resetPagination();
   }
 }

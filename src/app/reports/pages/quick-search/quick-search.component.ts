@@ -1,6 +1,6 @@
+import { FormControl, Validators } from '@angular/forms';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormControl, Validators } from '@angular/forms';
 import { AlertManager } from 'src/app/shared/helpers/alerts';
 import { ReportService } from '../../services/report.service';
 
@@ -16,7 +16,7 @@ export class QuickSearchComponent {
 
   searchProcedure() {
     if (this.formSearch.invalid) return;
-    AlertManager.showLoadingAlert('Buscando tramite.....', 'Preparando vistas');
+    AlertManager.showLoadingAlert('Buscando tramite...', 'Preparando vistas');
     this.reportService.searchProcedureByCode(this.formSearch.value!).subscribe((resp) => {
       AlertManager.closeLoadingAlert();
       this.router.navigate([`reportes`, 'busqueda', 'externos', resp._id]);
