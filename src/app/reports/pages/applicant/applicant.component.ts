@@ -7,7 +7,7 @@ import { EnumToString } from 'src/app/procedures/helpers';
 
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ReportService } from '../../services/report.service';
-import { searchParamsApplicant, tableProcedureData } from '../../interfaces';
+import { searchParamsApplicant, procedureTableData } from '../../interfaces';
 
 type validSearchProperty = 'solicitante' | 'representante';
 @Component({
@@ -21,7 +21,7 @@ export class ApplicantComponent implements OnInit {
   private paginatorService = inject(PaginatorService);
   private router = inject(Router);
 
-  public datasource: tableProcedureData[] = [];
+  public datasource: procedureTableData[] = [];
   public typeApplicant: typeApplicant = 'NATURAL';
   public typeSearch: validSearchProperty = 'solicitante';
   public formApplicant: FormGroup;
@@ -49,7 +49,7 @@ export class ApplicantComponent implements OnInit {
           });
   }
 
-  showDetails(procedure: tableProcedureData) {
+  showDetails(procedure: procedureTableData) {
     Object.entries(this.getValidParamsForm()).forEach(([key, value]) => {
       this.paginatorService.searchParams.set(key, String(value));
     });

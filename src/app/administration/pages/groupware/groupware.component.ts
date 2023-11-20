@@ -12,10 +12,7 @@ import Swal from 'sweetalert2';
 })
 export class GroupwareComponent implements OnInit {
   textSearch: string = '';
-  constructor(
-    public socketService: SocketService,
-    private authService: AuthService
-  ) {}
+  constructor(public socketService: SocketService, private authService: AuthService) {}
 
   ngOnInit(): void {}
   sendNotificacion(user: userSocket) {
@@ -31,17 +28,12 @@ export class GroupwareComponent implements OnInit {
       },
       preConfirm: (value) => {
         if (!value) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Debe ingresar una descripcion'
-          );
+          Swal.showValidationMessage('<i class="fa fa-info-circle"></i> Debe ingresar una descripcion');
         }
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.socketService.sendNotificationToUser(
-          user.id_account,
-          result.value!
-        );
+        this.socketService.sendNotificationToUser(user.id_account, result.value!);
       }
     });
   }
@@ -56,10 +48,7 @@ export class GroupwareComponent implements OnInit {
       confirmButtonText: 'Aceptar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.socketService.sendNotificacionToExpelUser(
-          user.id_account,
-          result.value!
-        );
+        this.socketService.sendNotificacionToExpelUser(user.id_account, result.value!);
       }
     });
   }

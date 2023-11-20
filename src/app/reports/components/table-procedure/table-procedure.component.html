@@ -1,5 +1,5 @@
 <table mat-table [dataSource]="dataSource">
-  @for (item of tableColumns; track $index) {
+  @for (item of colums; track $index) {
   <ng-container matColumnDef="{{ item.columnDef }}">
     <th mat-header-cell *matHeaderCellDef>{{ item.header }}</th>
     <td mat-cell *matCellDef="let element">

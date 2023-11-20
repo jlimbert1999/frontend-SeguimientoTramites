@@ -45,7 +45,7 @@ export class HomeComponent {
     this.themeService.startTheme();
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
-    this.socketService.setupSocketConnection(this.authService.token);
+    // this.socketService.setupSocketConnection(this.authService.token);
   }
 
   ngOnInit(): void {

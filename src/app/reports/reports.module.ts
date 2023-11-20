@@ -9,9 +9,16 @@ import { ApplicantComponent } from './pages/applicant/applicant.component';
 import { TableProcedureComponent } from './components/table-procedure/table-procedure.component';
 import { SharedModule } from '../shared/shared.module';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { AvancedSearchComponent } from './pages/avanced-search/avanced-search.component';
 
 @NgModule({
-  declarations: [QuickSearchComponent, ApplicantComponent, TableProcedureComponent, DashboardComponent],
+  declarations: [
+    QuickSearchComponent,
+    ApplicantComponent,
+    TableProcedureComponent,
+    DashboardComponent,
+    AvancedSearchComponent,
+  ],
   imports: [CommonModule, ReportsRoutingModule, MaterialModule, FormsModule, ReactiveFormsModule, SharedModule],
 })
 export class ReportsModule {}
