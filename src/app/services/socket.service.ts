@@ -10,7 +10,7 @@ import { userSocket } from '../auth/interfaces';
 export class SocketService {
   socket: Socket;
   isOnline: boolean = false;
-  public onlineUsers = signal<userSocket[]>([]);
+  // public onlineUsers = signal<userSocket[]>([]);
   private onlineUsersSubject: BehaviorSubject<userSocket[]> = new BehaviorSubject<userSocket[]>([]);
   public onlineUsers$: Observable<userSocket[]> = this.onlineUsersSubject.asObservable();
 
@@ -32,8 +32,8 @@ export class SocketService {
   }
   listenUserConection() {
     this.socket.on('listar', (data) => {
-      this.onlineUsers.set(data);
-      // this.onlineUsersSubject.next(data);
+      // this.onlineUsers.set(data);
+      this.onlineUsersSubject.next(data);
     });
   }
   listenMails() {
