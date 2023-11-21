@@ -12,7 +12,6 @@ import {
 import { FormControl, Validators } from '@angular/forms';
 import { MatSelect } from '@angular/material/select';
 import { ReplaySubject, Subject, takeUntil } from 'rxjs';
-import { matSelectSearchData } from '../../interfaces';
 
 @Component({
   selector: 'app-simple-mat-select-search',
@@ -20,7 +19,7 @@ import { matSelectSearchData } from '../../interfaces';
   styleUrls: ['./simple-mat-select-search.component.scss'],
 })
 export class SimpleMatSelectSearchComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
-  @Input({ required: true }) data: matSelectSearchData[] = [];
+  @Input({ required: true }) data: any[] = [];
   @Input() placehorder: string = 'Seleccione';
   @Input() isRequired: boolean;
   @Input() allowNullValue: boolean = false;

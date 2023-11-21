@@ -9,7 +9,6 @@ import { EditAccountDialogComponent } from '../../dialogs/edit-account-dialog/ed
 import { institution } from '../../interfaces/institution.interface';
 import { dependency } from '../../interfaces/dependency.interface';
 import { account } from '../../interfaces/account.interface';
-import { matSelectSearchData } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-accounts',
@@ -19,8 +18,8 @@ import { matSelectSearchData } from 'src/app/shared/interfaces';
 export class AccountsComponent implements OnInit {
   accounts: account[] = [];
   displayedColumns = ['login', 'nombre', 'dependencia', 'institucion', 'activo', 'opciones'];
-  institutions: matSelectSearchData[] = [];
-  dependencies: matSelectSearchData[] = [];
+  institutions: any[] = [];
+  dependencies: any[] = [];
   text: string = '';
   id_institucion: string | null;
   id_dependencia: string | null;

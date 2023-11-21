@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { NestedPartial, matSelectSearchData } from 'src/app/shared/interfaces';
+import { NestedPartial } from 'src/app/shared/interfaces';
 import { typeProcedure } from 'src/app/administration/interfaces';
 import { ExternalService } from '../../services/external.service';
 import { external, typeApplicant } from '../../interfaces';
@@ -13,8 +13,8 @@ import { ExternalProcedureDto } from '../../dtos';
   styleUrls: ['./external-dialog.component.scss'],
 })
 export class ExternalDialogComponent implements OnInit {
-  segments: matSelectSearchData[] = [];
-  typesProceduresSearchData: matSelectSearchData[] = [];
+  segments: any[] = [];
+  typesProceduresSearchData: any[] = [];
   typesProcedures: typeProcedure[] = [];
   requeriments: string[] = [];
   documents: string[] = ['Carnet de identidad', 'Libreta servicio militar', 'Pasaporte'];

@@ -12,17 +12,9 @@ const base_url = environment.base_url;
   providedIn: 'root',
 })
 export class ReportService {
-  constructor(private http: HttpClient) {
-
-  }
-
-  getProcedureSegments(type: 'INTERNO' | 'EXTERNO') {
-    return this.http
-      .get<{ _id: string }[]>(`${base_url}/reports/procedure/segments/${type}`)
-      .pipe(map((resp) => resp.map((el) => el._id)));
-  }
-  getProceduresBySegment(segment: string) {
-    return this.http.get<typeProcedure[]>(`${base_url}/reports/procedure/segment/${segment}`);
+  constructor(private http: HttpClient) {}
+  getProceduresByText(text: string) {
+    return this.http.get<typeProcedure[]>(`${base_url}/reports/types-procedures/${text}`);
   }
 
   searchProcedureByCode(code: string) {
@@ -61,15 +53,11 @@ export class ReportService {
       );
   }
 
-  searchProcedureByProperties({ limit, offset }: paginationParams, form: any) {
+  searchProcedureByProperties({ limit, offset }: paginationParams, form: Object) {
     const params = new HttpParams().set('limit', limit).set('offset', offset * limit);
-    return this.http.post<{ procedures: procedure[]; length: number }>(
-      `${base_url}/reports/procedure`,
-      this.getValidParamsForm(form),
-      {
-        params,
-      }
-    );
+    return this.http.post<{ procedures: procedure[]; length: number }>(`${base_url}/reports/procedure`, form, {
+      params,
+    });
   }
 
   getValidParamsForm(form: Object) {

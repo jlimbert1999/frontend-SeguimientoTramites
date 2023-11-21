@@ -1,78 +1,52 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ReplaySubject, Subject, filter, takeUntil, tap } from 'rxjs';
+import { ReplaySubject, Subject, debounceTime, filter, takeUntil, tap } from 'rxjs';
+import { MatSelectSearchData } from '../../interfaces';
 
-interface MatSelectSearchData {
-  _id: string;
-  [key: string]: any;
-}
 @Component({
   selector: 'app-server-mat-select-search',
   templateUrl: './server-mat-select-search.component.html',
-  styleUrls: ['./server-mat-select-search.component.scss']
+  styleUrls: ['./server-mat-select-search.component.scss'],
 })
-export class ServerMatSelectSearchComponent implements OnChanges {
+export class ServerMatSelectSearchComponent<T> {
+  @Output() searchEvent: EventEmitter<string> = new EventEmitter();
+  @Output() eventSelectedOption: EventEmitter<T> = new EventEmitter();
+  @Input() placeholder: string;
+  @Input() allowNullValue: boolean = false;
 
-  @Output() eventSearch: EventEmitter<any> = new EventEmitter();
-  @Output() eventSelectedOption: EventEmitter<any> = new EventEmitter();
-  @Input() initialValue?: any
-  @Input() data: any[] = []
-  @Input() pathPropertyOfObjectDisplay: string
-  @Input() placeholder: string
-  @Input() allowNullValue: boolean = false
-  /** list of banks */
-  protected banks: MatSelectSearchData[] = [];
-
-  /** control for the selected bank for server side filtering */
-  public bankServerSideCtrl: FormControl = new FormControl();
-
-  /** control for filter for server side. */
-  public bankServerSideFilteringCtrl: FormControl = new FormControl();
-
-  /** indicate search operation is in progress */
+  @Input() set options(values: MatSelectSearchData<T>[]) {
+    this.filteredServerSideOptions.next(values);
+  }
+  public optionsServerSideCtrl: FormControl = new FormControl();
+  public optionServerSideFilteringCtrl = new FormControl();
   public searching: boolean = false;
-
-  /** list of banks filtered after simulating server side search */
-  public filteredServerSideBanks: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-
-  /** Subject that emits when the component has been destroyed. */
+  public filteredServerSideOptions: ReplaySubject<MatSelectSearchData<T>[]> = new ReplaySubject(1);
   protected _onDestroy = new Subject<void>();
 
   ngOnInit() {
-    if (this.initialValue) {
-      this.filteredServerSideBanks.next([this.initialValue])
-      this.bankServerSideCtrl.patchValue(this.initialValue)
-    }
-    // listen for search field value changes
-    this.bankServerSideFilteringCtrl.valueChanges
+    this.optionServerSideFilteringCtrl.valueChanges
       .pipe(
-        filter(search => !!search),
-        tap(() => this.searching = true),
-        takeUntil(this._onDestroy)).subscribe(text => {
+        filter((search) => !!search),
+        tap(() => (this.searching = true)),
+        takeUntil(this._onDestroy),
+        debounceTime(800)
+      )
+      .subscribe(
+        (value: string) => {
           this.searching = false;
-          if (text || text !== '') {
-            this.eventSearch.emit(text)
-          }
+          this.searchEvent.emit(value);
         },
-          error => {
-            // no errors in our simulated example
-            this.searching = false;
-            // handle error...
-          });
+        () => {
+          this.searching = false;
+        }
+      );
   }
 
   ngOnDestroy() {
     this._onDestroy.next();
     this._onDestroy.complete();
   }
-  accessToPropertyObject(path: string, object: any) {
-    return path.split('.').reduce((o, i) => o[i], object)
+  selectOption(data: T) {
+    this.eventSelectedOption.emit(data);
   }
-  ngOnChanges(changes: SimpleChanges): void {
-    this.filteredServerSideBanks.next(this.data)
-  }
-  selectOption(data: MatSelectSearchData) {
-    this.eventSelectedOption.emit(data)
-  }
-
 }

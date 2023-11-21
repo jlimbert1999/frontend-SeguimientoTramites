@@ -8,7 +8,6 @@ import { SocketService } from 'src/app/services/socket.service';
 import { receiver } from '../../interfaces';
 import { CreateMailDto } from '../../dto/create-mail.dto';
 import { AlertManager } from 'src/app/shared/helpers/alerts';
-import { matSelectSearchData } from 'src/app/shared/interfaces';
 import { ProcedureTransferDetails } from '../../models/procedure-transfer-datais.mode';
 
 @Component({
@@ -17,8 +16,8 @@ import { ProcedureTransferDetails } from '../../models/procedure-transfer-datais
   styleUrls: ['./send-dialog.component.scss'],
 })
 export class SendDialogComponent implements OnInit, OnDestroy {
-  institutions: matSelectSearchData[] = [];
-  dependencies: matSelectSearchData[] = [];
+  institutions: any[] = [];
+  dependencies: any[] = [];
   receivers: receiver[] = [];
   selectedReceivers: receiver[] = [];
   public userCtrl = new FormControl();

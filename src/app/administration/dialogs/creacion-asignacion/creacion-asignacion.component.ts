@@ -7,7 +7,6 @@ import { Officer } from '../../models/officer.model';
 import { institution } from '../../interfaces/institution.interface';
 import { dependency } from '../../interfaces/dependency.interface';
 import { role } from '../../interfaces/role.interface';
-import { matSelectSearchData } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-creacion-asignacion',
@@ -15,8 +14,8 @@ import { matSelectSearchData } from 'src/app/shared/interfaces';
   styleUrls: ['./creacion-asignacion.component.scss'],
 })
 export class CreacionAsignacionComponent implements OnInit {
-  dependencias: matSelectSearchData[] = [];
-  institutions: matSelectSearchData[] = [];
+  dependencias: any[] = [];
+  institutions: any[] = [];
   roles: role[] = [];
   officers: Officer[] = [];
   hidePassword = true;

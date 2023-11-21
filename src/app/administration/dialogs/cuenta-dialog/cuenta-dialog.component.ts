@@ -9,7 +9,6 @@ import { account } from '../../interfaces/account.interface';
 import { role } from '../../interfaces/role.interface';
 import { job } from '../../interfaces/job.interface';
 import { createAccountPDF } from '../../helpers/pdfs/pdf-account';
-import { matSelectSearchData } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-cuenta-dialog',
@@ -17,8 +16,8 @@ import { matSelectSearchData } from 'src/app/shared/interfaces';
   styleUrls: ['./cuenta-dialog.component.scss'],
 })
 export class CuentaDialogComponent implements OnInit {
-  dependencias: matSelectSearchData[] = [];
-  instituciones: matSelectSearchData[] = [];
+  dependencias: any[] = [];
+  instituciones: any[] = [];
   roles: role[] = [];
   jobs: job[] = [];
   hidePassword = true;
