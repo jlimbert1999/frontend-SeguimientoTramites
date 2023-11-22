@@ -1,13 +1,13 @@
-<mat-form-field class="example-full-width">
+<mat-form-field>
   <mat-select
+    [formControl]="optionServerSideCtrl"
     (selectionChange)="selectOption($event.value)"
-    [formControl]="optionsServerSideCtrl"
     [placeholder]="placeholder"
   >
     <mat-option>
       <ngx-mat-select-search
         [placeholderLabel]="'Texto a buscar'"
-        [noEntriesFoundLabel]="'No se encontraron resultados'"
+        noEntriesFoundLabel="No se encontraron resultados"
         [formControl]="optionServerSideFilteringCtrl"
         [searching]="searching"
       ></ngx-mat-select-search>

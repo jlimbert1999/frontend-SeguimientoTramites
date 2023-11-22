@@ -9,15 +9,17 @@ import { MatSelectSearchData } from '../../interfaces';
   styleUrls: ['./server-mat-select-search.component.scss'],
 })
 export class ServerMatSelectSearchComponent<T> {
-  @Output() searchEvent: EventEmitter<string> = new EventEmitter();
-  @Output() eventSelectedOption: EventEmitter<T> = new EventEmitter();
-  @Input() placeholder: string;
-  @Input() allowNullValue: boolean = false;
-
-  @Input() set options(values: MatSelectSearchData<T>[]) {
+  @Input() placeholder: string = 'Filtrar informacion';
+  @Input({ required: true }) set options(values: MatSelectSearchData<T>[]) {
     this.filteredServerSideOptions.next(values);
   }
-  public optionsServerSideCtrl: FormControl = new FormControl();
+  @Input() set currentOption(value: T) {
+    this.optionServerSideCtrl.setValue(value);
+  }
+  @Output() keyupEvent: EventEmitter<string> = new EventEmitter();
+  @Output() selectEvent: EventEmitter<T> = new EventEmitter();
+
+  public optionServerSideCtrl: FormControl = new FormControl();
   public optionServerSideFilteringCtrl = new FormControl();
   public searching: boolean = false;
   public filteredServerSideOptions: ReplaySubject<MatSelectSearchData<T>[]> = new ReplaySubject(1);
@@ -29,12 +31,12 @@ export class ServerMatSelectSearchComponent<T> {
         filter((search) => !!search),
         tap(() => (this.searching = true)),
         takeUntil(this._onDestroy),
-        debounceTime(800)
+        debounceTime(300)
       )
       .subscribe(
         (value: string) => {
           this.searching = false;
-          this.searchEvent.emit(value);
+          this.keyupEvent.emit(value);
         },
         () => {
           this.searching = false;
@@ -47,6 +49,6 @@ export class ServerMatSelectSearchComponent<T> {
     this._onDestroy.complete();
   }
   selectOption(data: T) {
-    this.eventSelectedOption.emit(data);
+    this.selectEvent.emit(data);
   }
 }

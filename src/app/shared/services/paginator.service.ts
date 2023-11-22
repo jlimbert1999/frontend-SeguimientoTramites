@@ -7,13 +7,12 @@ interface paginationParams {
   providedIn: 'root',
 })
 export class PaginatorService {
-  public limit: number = 10;
+  public limit = 10;
   public offset: number = 0;
   public length: number = 0;
   public searchMode: boolean = false;
   public searchParams = new Map<string, string>();
-
-  constructor() {}
+  public cacheStore: Record<string, any[]> = {};
 
   set setPage({ limit, offset }: paginationParams) {
     this.limit = limit;
@@ -30,6 +29,7 @@ export class PaginatorService {
   resetSearchParams() {
     if (this.searchMode) return;
     this.searchParams.clear();
+    this.cacheStore = {};
   }
 
   get isSearchMode(): boolean {

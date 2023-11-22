@@ -1,12 +1,13 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { procedure, stateProcedure } from 'src/app/procedures/interfaces';
+
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { ReportService } from '../../services/report.service';
-import { procedureTableColumns, procedureTableData } from '../../interfaces';
-import { EnumToString } from 'src/app/procedures/helpers';
 import { MatSelectSearchData } from 'src/app/shared/interfaces';
+import { EnumToString } from 'src/app/procedures/helpers';
+import { procedure, stateProcedure } from 'src/app/procedures/interfaces';
+import { procedureTableColumns, procedureTableData } from '../../interfaces';
+import { ReportService } from '../../services/report.service';
 
 @Component({
   selector: 'app-avanced-search',
@@ -14,7 +15,6 @@ import { MatSelectSearchData } from 'src/app/shared/interfaces';
   styleUrl: './avanced-search.component.scss',
 })
 export class AvancedSearchComponent implements OnInit {
-  public typeProcedures: MatSelectSearchData<string>[] = [];
   public formProcedure: FormGroup = this.fb.group({
     code: ['', [Validators.minLength(4)]],
     state: [''],
@@ -31,24 +31,27 @@ export class AvancedSearchComponent implements OnInit {
     { columnDef: 'state', header: 'Estado' },
     { columnDef: 'startDate', header: 'Fecha' },
   ];
+  matSelectOptions: MatSelectSearchData<string>[] = [];
+  initialValue: string | undefined;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private reportService: ReportService,
-    private paginatorService: PaginatorService
+    public paginatorService: PaginatorService
   ) {}
 
   ngOnInit(): void {
-    this.restartSearchParams();
+    this.loadSearchParams();
+    this.search();
   }
   searchTypesProcedures(text: string) {
-    this.reportService.getProceduresByText(text).subscribe((resp) => {
-      this.typeProcedures = resp.map((type) => ({ text: type.nombre, value: type._id }));
+    this.reportService.getProceduresByText(text).subscribe((types) => {
+      this.matSelectOptions = types.map((type) => ({ text: type.nombre, value: type._id }));
     });
   }
-  selectTypeProcedure(_id: string) {
-    this.formProcedure.get('type')?.setValue(_id);
+  selectTypeProcedure(id: string = '') {
+    this.formProcedure.get('type')?.setValue(id);
   }
 
   search() {
@@ -61,13 +64,12 @@ export class AvancedSearchComponent implements OnInit {
   }
 
   showDetails(procedure: procedureTableData) {
-    const validParams = this.reportService.getValidParamsForm(this.formProcedure.value);
-    this.paginatorService.searchParams = new Map(Object.entries(validParams));
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
       search: true,
     };
+    this.saveSearchParams();
     this.router.navigate(['reportes', 'busqueda-avanzada', EnumToString(procedure.group), procedure._id], {
       queryParams: params,
     });
@@ -80,15 +82,19 @@ export class AvancedSearchComponent implements OnInit {
 
   reset() {
     this.formProcedure.reset({});
-    this.typeProcedures = [];
   }
 
-  restartSearchParams() {
+  saveSearchParams() {
+    const validParams = this.reportService.getValidParamsForm(this.formProcedure.value);
+    this.paginatorService.searchParams = new Map(Object.entries(validParams));
+    this.paginatorService.cacheStore['matSelectOptions'] = this.matSelectOptions;
+  }
+  loadSearchParams() {
     if (!this.paginatorService.searchMode) return;
     this.formProcedure.patchValue(Object.fromEntries(this.paginatorService.searchParams));
-    this.search();
+    this.matSelectOptions = this.paginatorService.cacheStore['matSelectOptions'];
+    this.initialValue = this.formProcedure.get('type')?.value;
   }
-
   get statesProcedure() {
     return Object.values(stateProcedure);
   }

@@ -56,7 +56,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     if (this.paginatorService.searchMode) {
       this.inboxService
         .searchInboxOfAccount(this.paginatorService.limit, this.paginatorService.offset, {
-          text: this.paginatorService.searchParams.get('text')!,
+          text: this.paginatorService.searchParams.get('text')! as string,
           status: this.status,
         })
         .subscribe((resp) => {

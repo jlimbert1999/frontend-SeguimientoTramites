@@ -44,7 +44,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
   getData() {
     const subscription: Observable<{ archives: communication[]; length: number }> = this.paginatorService.isSearchMode
       ? this.archiveService.search(
-          this.paginatorService.searchParams.get('text')!,
+          this.paginatorService.searchParams.get('text')! as string,
           this.paginatorService.limit,
           this.paginatorService.offset
         )

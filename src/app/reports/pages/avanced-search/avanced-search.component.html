@@ -1,4 +1,4 @@
-<div class="container-fluid mt-2 animate__animated animate__fadeIn">
+<div class="container mt-2 animate__animated animate__fadeIn">
   <mat-accordion>
     <mat-expansion-panel expanded="true">
       <mat-expansion-panel-header>
@@ -41,6 +41,7 @@
             </mat-form-field>
           </div>
         </div>
+
         <div class="row mt-2">
           <span>Propiedades de grupo</span>
           <hr />
@@ -56,9 +57,10 @@
           <div class="col-sm-6">
             <app-server-mat-select-search
               placeholder="Tipo de tramite"
-              [options]="typeProcedures"
-              (searchEvent)="searchTypesProcedures($event)"
-              (eventSelectedOption)="selectTypeProcedure($event)"
+              [options]="matSelectOptions"
+              [currentOption]="initialValue"
+              (keyupEvent)="searchTypesProcedures($event)"
+              (selectEvent)="selectTypeProcedure($event)"
             ></app-server-mat-select-search>
           </div>
         </div>
@@ -79,7 +81,6 @@
         (showDetails)="showDetails($event)"
       ></app-table-procedure>
     </div>
-    <app-paginator [pageSizeOptions]="[10, 20, 30]" (page)="search()"></app-paginator>
+    <app-paginator [pageSizeOptions]="[5, 10, 30, 50]" (page)="search()"></app-paginator>
   </div>
-  <pre>{{ formProcedure.value | json }}</pre>
 </div>

@@ -48,7 +48,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
         .search(
           this.paginatorService.limit,
           this.paginatorService.offset,
-          this.paginatorService.searchParams.get('text')!
+          this.paginatorService.searchParams.get('text')! as string
         )
         .subscribe((data) => {
           this.dataSource = data.mails;
