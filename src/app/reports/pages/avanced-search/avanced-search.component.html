@@ -57,8 +57,8 @@
           <div class="col-sm-6">
             <app-server-mat-select-search
               placeholder="Tipo de tramite"
-              [options]="matSelectOptions"
-              [currentOption]="initialValue"
+              [options]="matSelectOptions()"
+              [currentOption]="initialMatSelectValue"
               (keyupEvent)="searchTypesProcedures($event)"
               (selectEvent)="selectTypeProcedure($event)"
             ></app-server-mat-select-search>

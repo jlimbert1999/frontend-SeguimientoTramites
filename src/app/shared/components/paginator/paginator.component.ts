@@ -8,12 +8,12 @@ import { PaginatorService } from '../../services/paginator.service';
   styleUrls: ['./paginator.component.scss'],
 })
 export class PaginatorComponent implements OnInit, OnDestroy {
+  public pageOptions: number[] = [];
   @Input({ required: true }) set pageSizeOptions(options: number[]) {
     this.paginatorService.limit = options[0] ?? 10;
     this.pageOptions = options;
   }
   @Output('page') page: EventEmitter<undefined> = new EventEmitter();
-  public pageOptions: number[] = [];
 
   constructor(private paginatorService: PaginatorService) {}
 

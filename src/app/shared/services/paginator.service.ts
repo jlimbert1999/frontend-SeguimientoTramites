@@ -7,7 +7,7 @@ interface paginationParams {
   providedIn: 'root',
 })
 export class PaginatorService {
-  public limit = 10;
+  public limit: number = 10;
   public offset: number = 0;
   public length: number = 0;
   public searchMode: boolean = false;
