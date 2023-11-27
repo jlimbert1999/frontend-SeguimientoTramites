@@ -19,7 +19,8 @@ import { BadgePipe } from './pipes/badge.pipe';
 import { RouterModule } from '@angular/router';
 import { InputSearchProceduresComponent } from './components/procedures/input-search-procedures/input-search-procedures.component';
 import { TimelineComponent } from './components/timeline/timeline.component';
-
+import { NgxEchartsModule } from 'ngx-echarts';
+import { LineComponent } from './components/charts/line/line.component';
 @NgModule({
   declarations: [
     GraphWorkflowComponent,
@@ -35,6 +36,7 @@ import { TimelineComponent } from './components/timeline/timeline.component';
     BadgePipe,
     InputSearchProceduresComponent,
     TimelineComponent,
+    LineComponent,
   ],
   imports: [
     CommonModule,
@@ -44,6 +46,9 @@ import { TimelineComponent } from './components/timeline/timeline.component';
     NgxMatSelectSearchModule,
     FormsModule,
     RouterModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts'),
+    }),
   ],
   exports: [
     TimelineComponent,
@@ -58,6 +63,7 @@ import { TimelineComponent } from './components/timeline/timeline.component';
     ServerMatSelectSearchComponent,
     InputSearchProceduresComponent,
     BadgePipe,
+    LineComponent
   ],
 })
 export class SharedModule {}

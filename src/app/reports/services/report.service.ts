@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { external, groupProcedure, procedure } from 'src/app/procedures/interfaces';
 import { environment } from 'src/environments/environment';
-import { procedureTableData, searchParamsApplicant } from '../interfaces';
+import { dependentDetails, procedureTableData, searchParamsApplicant } from '../interfaces';
 import { paginationParams } from 'src/app/shared/interfaces';
 import { map } from 'rxjs';
 import { typeProcedure } from 'src/app/administration/interfaces';
@@ -58,6 +58,9 @@ export class ReportService {
     return this.http.post<{ procedures: procedure[]; length: number }>(`${base_url}/reports/procedure`, form, {
       params,
     });
+  }
+  getDetailsDependentsByUnit() {
+    return this.http.get<dependentDetails[]>(`${base_url}/reports/dependents`);
   }
 
   getValidParamsForm(form: Object) {

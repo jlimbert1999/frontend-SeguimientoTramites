@@ -10,6 +10,7 @@ import { TableProcedureComponent } from './components/table-procedure/table-proc
 import { SharedModule } from '../shared/shared.module';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { AvancedSearchComponent } from './pages/avanced-search/avanced-search.component';
+import { DependentsComponent } from './pages/dependents/dependents.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { AvancedSearchComponent } from './pages/avanced-search/avanced-search.co
     TableProcedureComponent,
     DashboardComponent,
     AvancedSearchComponent,
+    DependentsComponent,
   ],
   imports: [CommonModule, ReportsRoutingModule, MaterialModule, FormsModule, ReactiveFormsModule, SharedModule],
 })
