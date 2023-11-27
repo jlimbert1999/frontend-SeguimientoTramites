@@ -1,10 +1,12 @@
-export interface systemMenu {
+export interface Menu {
   text: string;
   icon: string;
-  routerLink?: string;
-  children?: {
-    text: string;
-    icon: string;
-    routerLink: string;
-  }[];
+  children?: Child[];
+  routerLink: string;
+}
+
+export interface Child {
+  text: string;
+  icon: string;
+  routerLink: string;
 }

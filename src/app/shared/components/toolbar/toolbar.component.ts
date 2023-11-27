@@ -1,7 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
-import { SidenavService } from '../../services/sidenav.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -21,7 +20,7 @@ export class ToolbarComponent {
  
 
 
-  constructor(public sidenavService: SidenavService) {
+  constructor() {
   }
 
   call_Add() {
@@ -33,6 +32,6 @@ export class ToolbarComponent {
   }
 
   hideMenu() {
-    this.sidenavService.toggle();
+
   }
 }

@@ -1,9 +1,6 @@
 <p>
     <mat-toolbar color="primary">
-        <button type="button" mat-icon-button (click)="hideMenu()" *ngIf="sidenavService.isHandset$ | async"
-            aria-label="Example icon-button with menu icon">
-            <mat-icon>menu</mat-icon>
-        </button>
+        
         <span>{{title}}</span>
         <span class="example-spacer"></span>
         <button *ngIf="showPDF" matTooltip="Generar PDF" mat-icon-button (click)="call_pdf()"

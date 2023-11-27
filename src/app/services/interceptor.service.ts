@@ -1,29 +1,21 @@
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpEvent,
-  HttpEventType,
-  HttpHandler,
-  HttpHeaders,
-  HttpRequest,
-} from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
+import { catchError, finalize, Observable, throwError } from 'rxjs';
 import Swal from 'sweetalert2';
-import { LoaderService } from '../auth/services/loader.service';
+import { AppearanceService } from './appearance.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InterceptorService {
-  constructor(private loadingService: LoaderService, private router: Router) {}
+  constructor(private router: Router, private appearanceService: AppearanceService) {}
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token') || ''}`);
     const reqClone = req.clone({
       headers,
     });
-    this.loadingService.show();
+    this.appearanceService.loading.set(true);
     return next.handle(reqClone).pipe(
       catchError((Error: HttpErrorResponse) => {
         console.log('new Error', Error);
@@ -31,7 +23,7 @@ export class InterceptorService {
         return throwError(() => Error);
       }),
       finalize(() => {
-        this.loadingService.hide();
+        this.appearanceService.loading.set(false);
       })
     );
   }

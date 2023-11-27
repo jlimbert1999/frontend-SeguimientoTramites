@@ -1,4 +1,14 @@
-<app-toolbar class="custom-toolbar" title="EXTERNOS" [showAdd]="true" (add)="add()"></app-toolbar>
+<p>
+  <mat-toolbar color="primary">
+    <sidenav-button></sidenav-button>
+    <span>EXTERNOS</span>
+    <span class="toolbar-spacer"></span>
+    <button mat-icon-button (click)="add()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </mat-toolbar>
+</p>
+
 <div class="container-fluid animate__animated animate__fadeIn">
   <app-input-search-procedures
     (searchEvent)="getData()"

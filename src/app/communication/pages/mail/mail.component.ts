@@ -29,10 +29,10 @@ export class MailComponent implements OnInit {
     private inboxService: InboxService,
     private paginatorService: PaginatorService,
     private procedureService: ProcedureService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
   ) {}
-
   ngOnInit(): void {
+    
     this.activateRoute.params.subscribe((params) => {
       this.inboxService.getMailDetails(params['id']).subscribe((data) => {
         this.mail = data;

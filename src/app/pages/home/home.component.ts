@@ -1,14 +1,12 @@
-import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild, effect } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
+import { MediaMatcher } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { AuthService } from 'src/app/auth/services/auth.service';
-import { LoaderService } from 'src/app/auth/services/loader.service';
-import { SocketService } from 'src/app/services/socket.service';
-import { SidenavService } from 'src/app/shared/services/sidenav.service';
 import { Subscription } from 'rxjs';
-import { ThemeService } from 'src/app/services/theme.service';
+import { AuthService } from 'src/app/auth/services/auth.service';
+import { SocketService } from 'src/app/services/socket.service';
+import { AppearanceService } from 'src/app/services/appearance.service';
+import { ToastService } from 'src/app/shared/services/toast.service';
 
 @Component({
   selector: 'app-home',
@@ -16,58 +14,60 @@ import { ThemeService } from 'src/app/services/theme.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
+  @ViewChild('snav') public sidenav: MatSidenav;
   mobileQuery: MediaQueryList;
   Menu: any = this.authService.menu;
-  loading$ = this.loader.loading$;
   private mailSubscription: Subscription;
-  @ViewChild('snav') public sidenav: MatSidenav;
+  private userSubscription: Subscription;
   private _mobileQueryListener: () => void;
-
-  ngAfterViewInit() {
-    this.sidenavService.sideNavToggleSubject.subscribe(() => {
-      this.sidenav.toggle();
-    });
-    this.sidenav.open();
-  }
 
   constructor(
     changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher,
-    public authService: AuthService,
-    public socketService: SocketService,
-    private toastr: ToastrService,
-    public loader: LoaderService,
+    private authService: AuthService,
+    private socketService: SocketService,
     private router: Router,
-    private sidenavService: SidenavService,
-    public themeService: ThemeService
+    private appearanceService: AppearanceService,
+    private toastService: ToastService
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    this.themeService.startTheme();
+    this.appearanceService.startTheme();
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
-    // this.socketService.setupSocketConnection(this.authService.token);
+    effect(() => {
+      if (this.sidenav) this.sidenav.toggle();
+      return this.appearanceService.toggleSidenav();
+    });
   }
 
   ngOnInit(): void {
-    this.socketService.listenUserConection();
-    this.socketService.listenMails();
-    this.mailSubscription = this.mailSubscription = this.socketService.mailSubscription$.subscribe((data) => {
-      const toast = this.toastr.info(`${data.emitter.fullname} ha enviado un tramite`, 'Nuevo tramite recibido', {
-        positionClass: 'toast-bottom-right',
-        closeButton: true,
-        timeOut: 7000,
-      });
-      toast.onTap.subscribe((action) => {
-        this.router.navigateByUrl('bandejas/entrada');
-      });
-    });
+    this.socketService.listenUserConnection();
+    this.listenUserConnections();
   }
+
   ngOnDestroy(): void {
     this.mobileQuery!.removeListener(this._mobileQueryListener);
     if (this.mailSubscription) this.mailSubscription.unsubscribe();
   }
+  get isLoaging() {
+    return this.appearanceService.loading();
+  }
   editAccount() {
     this.router.navigate(['home/perfil', this.authService.account.id_account]);
+  }
+
+  listenMails() {
+    this.socketService.listenMails();
+    this.mailSubscription = this.socketService.mailSubscription$.subscribe((data) => {
+      this.toastService.showToast({
+        title: 'NUEVO TRAMITE RECIBIDO',
+        message: `${data.emitter.fullname} ha enviado un tramite`,
+        onActionRouteNavigate: '/',
+      });
+    });
+  }
+  listenUserConnections() {
+    this.userSubscription = this.socketService.onlineUsers$.subscribe();
   }
   logout() {
     this.authService.logout();

@@ -1,13 +1,7 @@
-<div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
-  <mat-sidenav-container class="example-sidenav-container" [ngClass]="">
-    <mat-sidenav
-      #snav
-      [mode]="mobileQuery.matches ? 'over' : 'side'"
-      [fixedInViewport]="mobileQuery.matches"
-      [opened]="mobileQuery.matches === false"
-      class="panel"
-    >
-      <mat-card class="card-profile footer">
+<div class="main-container" [class.is-mobile]="mobileQuery.matches">
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches">
+      <!-- <mat-card class="card-profile footer">
         <mat-card-header>
           <div mat-card-avatar class="card-profile-image"></div>
           <mat-card-title>{{ authService.account.officer.fullname | titlecase | slice : 0 : 25 }} </mat-card-title>
@@ -32,8 +26,7 @@
             </button>
           </mat-menu>
         </mat-card-header>
-      </mat-card>
-
+      </mat-card> -->
       <mat-nav-list>
         <ng-container *ngFor="let menu of Menu">
           <ng-container
@@ -45,7 +38,6 @@
       </mat-nav-list>
 
       <ng-template #parentMenu let-menu="menu">
-        <mat-divider></mat-divider>
         <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="active-link">
           <mat-icon matListItemIcon>{{ menu.icon }}</mat-icon>
           <span matListItemTitle>{{ menu.text }}</span>
@@ -53,7 +45,6 @@
       </ng-template>
 
       <ng-template #childMenu let-menu="menu">
-        <mat-divider></mat-divider>
         <mat-expansion-panel [expanded]="true" [class.mat-elevation-z0]="true">
           <mat-expansion-panel-header>
             <mat-icon matListItemIcon style="margin-right: 30px"> {{ menu.icon }}</mat-icon>
@@ -74,9 +65,9 @@
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <div *ngIf="loader.loading$ | async" class="overlay">
-        <mat-spinner mode="indeterminate" [strokeWidth]="20" [diameter]="200" class="load-spiner"></mat-spinner>
-      </div>
+      @if (isLoaging) {
+      <progress-spinner></progress-spinner>
+      }
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>

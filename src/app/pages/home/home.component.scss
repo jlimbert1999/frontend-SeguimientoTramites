@@ -1,4 +1,4 @@
-.example-container {
+.main-container {
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -8,112 +8,15 @@
   right: 0;
 }
 
-.example-is-mobile .example-toolbar {
-  position: fixed;
-  /* Make sure the toolbar will stay on top of the content as it scrolls past. */
-  z-index: 5;
-}
-
-h1.example-app-name {
-  margin-left: 8px;
-}
-
-.example-sidenav-container {
-  /* When the sidenav is not fixed, stretch the sidenav container to fill the available space. This
-       causes `<mat-sidenav-content>` to act as our scrolling element for desktop layouts. */
+.sidenav-container {
   flex: 1;
 }
 
-.example-is-mobile .example-sidenav-container {
-  /* When the sidenav is fixed, don't constrain the height of the sidenav container. This allows the
-       `<body>` to be our scrolling element for mobile layouts. */
+.is-mobile .sidenav-container {
   flex: 1 0 auto;
 }
 
-.load-spiner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-  backdrop-filter: blur(2px);
-}
-
-mat-sidenav {
-  width: 300px;
-}
-
-/* mat-icon {
-    vertical-align: middle;
-    margin-right: 29px;
-    color: #1E88E5;
-} */
-
-.card-profile {
-  width: 300px;
-}
-
-.card-profile,
-mat-card-title,
-mat-card-subtitle {
-  font-size: 12px;
-}
-
-.card-profile,
-mat-card-subtitle {
-  font-size: 10px;
-}
-
-.card-profile-image {
-  background-image: url("../../../assets/img/account.png");
-  background-size: cover;
-}
-
-.footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-::ng-deep .mat-expansion-panel-header {
-  padding: 0 16px !important;
-}
-
-::ng-deep .mat-mdc-nav-list .mat-icon {
-  margin-right: 20px;
-  vertical-align: middle;
-}
-
-::ng-deep .mat-mdc-expansion-panel-body {
-  padding: 0 !important;
-}
-
-::ng-deep .mat-expansion-panel-header {
-  height: 48px !important;
-}
-
-::ng-deep .mat-expansion-panel .mat-mdc-list-item {
-  padding-left: 0px !important;
-}
 
 .active-link {
   background-color: #3a86ff;
-}
-
-.active-link span {
-  color: white;
-}
-
-.mat-badge-medium.mat-badge-above .mat-badge-content {
-  top: unset;
 }

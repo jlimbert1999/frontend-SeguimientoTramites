@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, effect } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -154,6 +154,7 @@ export class InboxComponent implements OnInit, OnDestroy {
 
   listenNewMails() {
     this.mailSubscription = this.socketService.mailSubscription$.subscribe((data) => {
+      console.log('envet substripction', data);
       if (this.paginatorService.limit === this.dataSource.length) this.dataSource.pop();
       this.paginatorService.length += 1;
       this.dataSource = [data, ...this.dataSource];

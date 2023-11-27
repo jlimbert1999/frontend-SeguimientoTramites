@@ -8,7 +8,7 @@ import {
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Location } from '@angular/common';
 import { account } from '../../interfaces';
-import { ThemeService } from 'src/app/services/theme.service';
+import { AppearanceService } from 'src/app/services/appearance.service';
 
 @Component({
   selector: 'app-settings',
@@ -39,7 +39,7 @@ export class SettingsComponent implements OnInit {
     private authService: AuthService,
     private _location: Location,
     private fb: FormBuilder,
-    public themeService: ThemeService
+    public themeService: AppearanceService
   ) {
     this.authService.getMyAuthDetalis().subscribe((account) => {
       this.myAccount = account;

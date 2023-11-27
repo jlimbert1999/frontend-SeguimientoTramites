@@ -20,6 +20,7 @@ import { SharedModule } from '../shared/shared.module';
 import { SolicitantePipe } from './pipes/solicitante.pipe';
 import { ArchivesComponent } from './pages/archives/archives.component';
 import { EventDialogComponent } from './dialogs/event-dialog/event-dialog.component';
+import { SidenavButtonComponent } from '../shared/components/sidenav-button/sidenav-button.component';
 
 @NgModule({
   declarations: [

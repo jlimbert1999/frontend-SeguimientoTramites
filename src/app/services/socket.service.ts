@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
@@ -9,8 +9,6 @@ import { userSocket } from '../auth/interfaces';
 })
 export class SocketService {
   socket: Socket;
-  isOnline: boolean = false;
-  // public onlineUsers = signal<userSocket[]>([]);
   private onlineUsersSubject: BehaviorSubject<userSocket[]> = new BehaviorSubject<userSocket[]>([]);
   public onlineUsers$: Observable<userSocket[]> = this.onlineUsersSubject.asObservable();
 
@@ -27,12 +25,10 @@ export class SocketService {
     if (this.socket) {
       this.socket.removeAllListeners();
       this.socket.disconnect();
-      this.isOnline = false;
     }
   }
-  listenUserConection() {
+  listenUserConnection() {
     this.socket.on('listar', (data) => {
-      // this.onlineUsers.set(data);
       this.onlineUsersSubject.next(data);
     });
   }
