@@ -9,7 +9,7 @@ import { InternalDialogComponent } from '../../dialogs/internal-dialog/internal-
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchiveService, InternalService, ProcedureService } from '../../services';
 
-import { EnumToString, createRouteMap } from '../../helpers';
+import { createRouteMap } from '../../helpers';
 import { AlertManager } from 'src/app/shared/helpers/alerts';
 
 import { ProcedureTransferDetails } from 'src/app/communication/models/procedure-transfer-datais.mode';
@@ -131,7 +131,7 @@ export class InternalComponent implements OnInit {
       offset: this.paginatorService.offset,
       ...(this.paginatorService.searchMode && { search: true }),
     };
-    this.router.navigate(['tramites', EnumToString(procedure.group), procedure._id], {
+    this.router.navigate(['tramites/internos', procedure.group, procedure._id], {
       queryParams: params,
     });
   }

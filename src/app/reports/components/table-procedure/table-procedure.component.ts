@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { procedureTableColumns, procedureTableData } from '../../interfaces';
+import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
 
 @Component({
   selector: 'app-table-procedure',
@@ -8,15 +8,16 @@ import { procedureTableColumns, procedureTableData } from '../../interfaces';
 })
 export class TableProcedureComponent {
   public displayedColumns: string[] = [];
-  public colums: procedureTableColumns[] = [];
-  @Input() public dataSource: procedureTableData[] = [];
-  @Input() set tableColumns(values: procedureTableColumns[]) {
+  public colums: ProcedureTableColumns[] = [];
+
+  @Input() dataSource: ProcedureTableData[] = [];
+  @Input() set tableColumns(values: ProcedureTableColumns[]) {
     this.colums = values;
     this.displayedColumns = values.map(({ columnDef }) => columnDef);
   }
-  @Output() showDetails = new EventEmitter<procedureTableData>();
+  @Output() showDetails = new EventEmitter<ProcedureTableData>();
 
-  viewDetails(element: procedureTableData) {
+  viewDetails(element: ProcedureTableData) {
     this.showDetails.emit(element);
   }
 }

@@ -2,21 +2,20 @@
   <mat-select
     [required]="isRequired"
     (selectionChange)="selectOption($event.value)"
-    [formControl]="bankCtrl"
+    [formControl]="optionCtrl"
     [placeholder]="placehorder"
     #singleSelect
   >
     <mat-option>
       <ngx-mat-select-search
-        noEntriesFoundLabel="No hay resultados"
-        placeholderLabel="Buscar"
-        [formControl]="bankFilterCtrl"
+        placeholderLabel="Texto a buscar"
+        noEntriesFoundLabel="No se encontraron resultados"
+        [formControl]="optionFilterCtrl"
       ></ngx-mat-select-search>
     </mat-option>
-    <mat-option *ngIf="allowNullValue" [value]="null"> - </mat-option>
-    <mat-option *ngFor="let bank of filteredBanks | async" [value]="bank.value">
+    <mat-option *ngFor="let bank of filteredOptions | async" [value]="bank.value">
       {{ bank.text }}
     </mat-option>
   </mat-select>
-  <mat-error *ngIf="bankCtrl.invalid">Seleccione una opcion</mat-error>
+  <mat-error *ngIf="optionCtrl.invalid">Seleccione una opcion</mat-error>
 </mat-form-field>

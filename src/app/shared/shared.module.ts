@@ -21,7 +21,7 @@ import { InputSearchProceduresComponent } from './components/procedures/input-se
 import { TimelineComponent } from './components/timeline/timeline.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { LineComponent } from './components/charts/line/line.component';
-import { SidenavButtonComponent } from './components/sidenav-button/sidenav-button.component';
+import { SidenavButtonComponent } from './components/buttons/sidenav-button/sidenav-button.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 @NgModule({
   declarations: [

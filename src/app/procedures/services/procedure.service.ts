@@ -5,22 +5,19 @@ import { environment } from 'src/environments/environment';
 import { external, groupProcedure, internal, observation, stateProcedure } from '../interfaces';
 import { ExternalProcedure, InternalProcedure } from '../models';
 import { workflow } from 'src/app/communication/interfaces';
-const base_url = environment.base_url;
-
-type VALID_PROCEDURE = internal | external;
 @Injectable({
   providedIn: 'root',
 })
 export class ProcedureService {
+  base_url = environment.base_url;
   constructor(private http: HttpClient) {}
-
   getFullProcedure(id_procedure: string, group: groupProcedure) {
     return this.http
       .get<{
-        procedure: VALID_PROCEDURE;
+        procedure: internal | external;
         workflow: workflow[];
         observations: observation[];
-      }>(`${base_url}/procedure/${group}/${id_procedure}`)
+      }>(`${this.base_url}/procedure/${group}/${id_procedure}`)
       .pipe(
         map((resp) => {
           let Procedure: ExternalProcedure | InternalProcedure;
@@ -42,13 +39,13 @@ export class ProcedureService {
   }
 
   addObservation(id_procedure: string, description: string) {
-    return this.http.post<observation>(`${base_url}/procedure/${id_procedure}/observation`, {
+    return this.http.post<observation>(`${this.base_url}/procedure/${id_procedure}/observation`, {
       description,
     });
   }
   repairObservation(id_observation: string) {
     return this.http
-      .put<{ state: stateProcedure }>(`${base_url}/procedure/observation/${id_observation}`, {})
+      .put<{ state: stateProcedure }>(`${this.base_url}/procedure/observation/${id_observation}`, {})
       .pipe(map((resp) => resp.state));
   }
 }

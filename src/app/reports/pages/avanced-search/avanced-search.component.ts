@@ -8,8 +8,8 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { typeProcedure } from 'src/app/administration/interfaces';
 import { EnumToString } from 'src/app/procedures/helpers';
 
-import { procedureTableColumns, procedureTableData } from '../../interfaces';
 import { ReportService } from '../../services/report.service';
+import { ProcedureTableColumns } from '../../interfaces';
 @Component({
   selector: 'app-avanced-search',
   templateUrl: './avanced-search.component.html',
@@ -26,7 +26,7 @@ export class AvancedSearchComponent implements OnInit {
     group: [''],
   });
   public datasource: procedure[] = [];
-  public displaycolums: procedureTableColumns[] = [
+  public displaycolums: ProcedureTableColumns[] = [
     { columnDef: 'code', header: 'Alterno' },
     { columnDef: 'reference', header: 'Referencia' },
     { columnDef: 'state', header: 'Estado' },
@@ -66,7 +66,7 @@ export class AvancedSearchComponent implements OnInit {
     });
   }
 
-  showDetails(procedure: procedureTableData) {
+  showDetails(procedure: any) {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,

@@ -6,7 +6,7 @@ import { MatSelectSearchData } from '../../interfaces';
 @Component({
   selector: 'app-server-mat-select-search',
   templateUrl: './server-mat-select-search.component.html',
-  styleUrls: ['./server-mat-select-search.component.scss'],
+  styles: '',
 })
 export class ServerMatSelectSearchComponent<T> {
   @Input() placeholder: string = 'Filtrar informacion';

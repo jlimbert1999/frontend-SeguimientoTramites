@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -7,12 +7,13 @@ import { workflow } from 'src/app/communication/interfaces';
 import { groupProcedure, observation } from '../../interfaces';
 import { ProcedureService } from '../../services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from '../../models';
-import { stringToEnum } from '../../helpers';
 
 @Component({
   selector: 'app-detail',
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
+  // standalone: true,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailComponent implements OnInit {
   isLoading: boolean = true;
@@ -21,26 +22,19 @@ export class DetailComponent implements OnInit {
   observations: observation[] = [];
 
   constructor(
-    private activateRoute: ActivatedRoute,
+    private route: ActivatedRoute,
     private paginatorService: PaginatorService,
     private procedureService: ProcedureService,
     private _location: Location
   ) {}
 
   ngOnInit(): void {
-    this.activateRoute.params.subscribe((params) => {
-      const id: string = params['id'];
-      const group: string = params['group'];
-      if (!id || !group) {
+    this.route.params.subscribe(({ group, id }) => {
+      if (!Object.values(groupProcedure).includes(group)) {
         this._location.back();
         return;
       }
-      const groupProcedure = stringToEnum(group);
-      if (!groupProcedure) {
-        this._location.back();
-        return;
-      }
-      this.procedureService.getFullProcedure(id, groupProcedure!).subscribe((data) => {
+      this.procedureService.getFullProcedure(id, group).subscribe((data) => {
         this.procedure = data.procedure;
         this.workflow = data.workflow;
         this.observations = data.observations;
@@ -50,7 +44,7 @@ export class DetailComponent implements OnInit {
   }
 
   backLocation() {
-    this.activateRoute.queryParams.subscribe((data) => {
+    this.route.queryParams.subscribe((data) => {
       const searchMode = String(data['search']).toLowerCase();
       this.paginatorService.limit = data['limit'] ?? 10;
       this.paginatorService.offset = data['offset'] ?? 0;

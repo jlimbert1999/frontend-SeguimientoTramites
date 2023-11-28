@@ -1,28 +1,23 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription, timer } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { interval, map } from 'rxjs';
 import { ExternalProcedure } from '../../models';
 
 @Component({
   selector: 'app-external-detail',
   templateUrl: './external-detail.component.html',
-  styleUrls: ['./external-detail.component.scss'],
+  styles: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExternalDetailComponent implements OnInit, OnDestroy {
-  @Input() procedure: ExternalProcedure;
-  sourceTimer = timer(0, 1000);
-  timerSubscription: Subscription;
-  duration: string = '';
-
-  constructor() {}
-  ngOnInit(): void {
-    this.createTimer();
-  }
-
-  createTimer() {
-    this.timerSubscription = this.sourceTimer.subscribe(() => (this.duration = this.procedure.getDuration()));
-  }
-
-  ngOnDestroy(): void {
-    this.timerSubscription.unsubscribe();
-  }
+export class ExternalDetailComponent {
+  @Input({ required: true }) procedure: ExternalProcedure;
+  $timer = interval(1000);
+  duration = toSignal(
+    this.$timer.pipe(
+      map(() => {
+        return this.procedure.getDuration();
+      })
+    ),
+    { initialValue: 'Calculando.....' }
+  );
 }

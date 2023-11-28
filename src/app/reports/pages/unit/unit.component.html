@@ -1,0 +1,62 @@
+<div class="animate__animated animate__fadeIn">
+  <report-title title="Reporte: Unidad"></report-title>
+  <div class="container">
+    <mat-accordion>
+      <mat-expansion-panel expanded="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title> PARAMETROS BUSQUEDA </mat-panel-title>
+        </mat-expansion-panel-header>
+        <form [formGroup]="formSearch">
+          <div class="row">
+            <div class="col-sm-2">
+              <mat-form-field>
+                <mat-label>Estado:</mat-label>
+                <mat-select formControlName="status">
+                  @for (status of validStatus; track $index) {
+                  <mat-option [value]="status.value">{{ status.text }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-7">
+              <simple-mat-select-search
+                (selectEvent)="selectMatSearchOption($event)"
+                [options]="matSelectOptions()"
+              ></simple-mat-select-search>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-label>Rango de ingreso</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                  <input matStartDate formControlName="start" placeholder="Fecha inicial" />
+                  <input matEndDate formControlName="end" placeholder="Fecha final" />
+                </mat-date-range-input>
+                <mat-hint>Seleccione un intervalo</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+                @if (formSearch.invalid) {
+                <mat-error>Este campo es obligatorio</mat-error>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+          <mat-action-row>
+            <button mat-button color="primary" [disabled]="this.formSearch.invalid" (click)="generateReport()">
+              BUSCAR
+            </button>
+          </mat-action-row>
+        </form>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <div class="example-container mat-elevation-z8 mt-2">
+      <div class="table-container">
+        <app-table-procedure
+          [tableColumns]="displaycolums"
+          [dataSource]="datasource()"
+          (showDetails)="showDetails($event)"
+        ></app-table-procedure>
+      </div>
+      <app-paginator [pageSizeOptions]="[5, 10, 30, 50]" (page)="search()"></app-paginator>
+    </div>
+  </div>
+</div>

@@ -1,30 +1,23 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription, timer } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { interval, map } from 'rxjs';
 import { InternalProcedure } from '../../models';
 
 @Component({
   selector: 'app-internal-detail',
   templateUrl: './internal-detail.component.html',
-  styleUrls: ['./internal-detail.component.scss'],
+  styles: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InternalDetailComponent implements OnInit, OnDestroy {
-  @Input() procedure: InternalProcedure;
-  sourceTimer = timer(0, 1000);
-  timerSubscription: Subscription;
-  duration: string = '';
-
-  constructor() {}
-  ngOnInit(): void {
-    this.createTimer();
-  }
-
-  ngOnDestroy(): void {
-    this.timerSubscription.unsubscribe();
-  }
-
-  createTimer() {
-    this.timerSubscription = this.sourceTimer.subscribe(
-      (val) => (this.duration = this.procedure.getDuration())
-    );
-  }
+export class InternalDetailComponent {
+  @Input({ required: true }) procedure: InternalProcedure;
+  $timer = interval(1000);
+  duration = toSignal(
+    this.$timer.pipe(
+      map(() => {
+        return this.procedure.getDuration();
+      })
+    ),
+    { initialValue: 'Calculando.....' }
+  );
 }

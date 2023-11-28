@@ -1,49 +1,32 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { MatSelect } from '@angular/material/select';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { MatSelectSearchData } from '../../interfaces';
 
 @Component({
-  selector: 'app-simple-mat-select-search',
+  selector: 'simple-mat-select-search',
   templateUrl: './simple-mat-select-search.component.html',
-  styleUrls: ['./simple-mat-select-search.component.scss'],
+  styles: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SimpleMatSelectSearchComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
-  @Input({ required: true }) data: any[] = [];
-  @Input() placehorder: string = 'Seleccione';
-  @Input() isRequired: boolean;
-  @Input() allowNullValue: boolean = false;
-  @Output() eventSelectedOption: EventEmitter<string> = new EventEmitter();
-
-  ngOnChanges(): void {
-    this.filteredBanks.next(this.data.slice());
+export class SimpleMatSelectSearchComponent<T> {
+  @Input() placehorder: string = 'Seleccione una opcion';
+  @Input({ required: true }) set options(values: MatSelectSearchData<T>[]) {
+    this.data = values;
+    this.filteredOptions.next(values);
   }
+  @Input() isRequired: boolean = false;
+  @Output() selectEvent: EventEmitter<T> = new EventEmitter();
 
-  public bankCtrl: FormControl = new FormControl('');
-  public bankFilterCtrl: FormControl = new FormControl();
-  public filteredBanks: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-  @ViewChild('singleSelect') singleSelect: MatSelect;
+  public data: MatSelectSearchData<T>[] = [];
+  public optionCtrl: FormControl = new FormControl('');
+  public optionFilterCtrl: FormControl = new FormControl();
+  public filteredOptions: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
   protected _onDestroy = new Subject<void>();
 
-  ngAfterViewInit(): void {
-    if (this.isRequired) this.bankCtrl.addValidators(Validators.required);
-    this.bankCtrl.updateValueAndValidity();
-  }
-
   ngOnInit(): void {
-    this.filteredBanks.next(this.data.slice());
-    this.bankFilterCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
-      this.filterBanks();
+    this.optionFilterCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
+      this.filterOptions();
     });
   }
 
@@ -52,26 +35,21 @@ export class SimpleMatSelectSearchComponent implements OnInit, OnDestroy, OnChan
     this._onDestroy.complete();
   }
 
-  protected filterBanks() {
+  protected filterOptions() {
     if (!this.data) {
       return;
     }
-    let search = this.bankFilterCtrl.value;
+    let search = this.optionFilterCtrl.value;
     if (!search) {
-      this.filteredBanks.next(this.data.slice());
+      this.filteredOptions.next(this.data.slice());
       return;
     } else {
       search = search.toLowerCase();
     }
-    this.filteredBanks.next(this.data.filter((element) => element.text.toLowerCase().indexOf(search) > -1));
+    this.filteredOptions.next(this.data.filter((element) => element.text.toLowerCase().indexOf(search) > -1));
   }
 
-  selectOption(selectedValue: string) {
-    this.eventSelectedOption.emit(selectedValue);
-  }
-
-  accessToPropertyObject(path: string, object: any) {
-    if (path === '') return object;
-    return path.split('.').reduce((o, i) => o[i], object);
+  selectOption(value: T) {
+    this.selectEvent.emit(value);
   }
 }

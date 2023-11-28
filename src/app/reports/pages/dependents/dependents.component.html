@@ -1,33 +1,36 @@
-<div class="container mt-3 animate__animated animate__fadeIn">
-  <div class="row gy-2">
-    @for (dependent of dependents(); track $index) {
-    <div class="col-12">
-      <div class="card bg-transparent shadow-lg p-3 bg-body-tertiary rounded">
-        <div class="row">
-          <div class="col-8">
-            <div class="card-body">
-              @if (dependent._id.funcionario) {
-              <h5 class="card-title">{{ dependent._id.funcionario | fullname | titlecase }}</h5>
-              <h6 class="card-subtitle mb-2 text-body-secondary">{{ dependent._id.funcionario.cargo?.nombre }}</h6>
-              } @else {
-              <h5 class="card-title">SIN FUNCIONARIO</h5>
-              }
+<div class="animate__animated animate__fadeIn">
+  <report-title title="Reporte: Dependientes"></report-title>
+  <div class="container">
+    <div class="row gy-2">
+      @for (dependent of dependents(); track $index) {
+      <div class="col-12">
+        <div class="card bg-transparent shadow-lg p-3 bg-body-tertiary rounded">
+          <div class="row">
+            <div class="col-8">
+              <div class="card-body">
+                @if (dependent._id.funcionario) {
+                <h5 class="card-title">{{ dependent._id.funcionario | fullname | titlecase }}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">{{ dependent._id.funcionario.cargo?.nombre }}</h6>
+                } @else {
+                <h5 class="card-title">SIN FUNCIONARIO</h5>
+                }
+              </div>
             </div>
-          </div>
-          <div class="col-4">
-            <ul class="list-group">
-              @for (detail of dependent.details; track $index) {
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                @switch (detail.status ) { @case ('rejected') { RECHAZADOS } @case ('pending') { PENDIENTES } @case
-                ('received') { RECIBIDOS } @default { ARCHIVADOS } }
-                <span class="badge bg-primary rounded-pill">{{ detail.total }}</span>
-              </li>
-              }
-            </ul>
+            <div class="col-4">
+              <ul class="list-group">
+                @for (detail of dependent.details; track $index) {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  @switch (detail.status ) { @case ('rejected') { RECHAZADOS } @case ('pending') { PENDIENTES } @case
+                  ('received') { RECIBIDOS } @default { ARCHIVADOS } }
+                  <span class="badge bg-primary rounded-pill">{{ detail.total }}</span>
+                </li>
+                }
+              </ul>
+            </div>
           </div>
         </div>
       </div>
+      }
     </div>
-    }
   </div>
 </div>

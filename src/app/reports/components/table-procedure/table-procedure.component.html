@@ -9,8 +9,8 @@
       <span class="badge" [ngClass]="element['state'] | state">
         {{ element.state }}
       </span>
-      } @case ('startDate') {
-      {{ element["startDate"] | date : "short" : "-400" }}
+      } @case ('date') {
+      {{ element["date"] | date : "short" : "-400" }}
       } @default {
       {{ element[item.columnDef] }}
       }}

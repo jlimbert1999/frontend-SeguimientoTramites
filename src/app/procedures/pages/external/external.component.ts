@@ -137,7 +137,7 @@ export class ExternalComponent implements OnInit {
       offset: this.paginatorService.offset,
       ...(this.paginatorService.searchMode && { search: true }),
     };
-    this.router.navigate([`tramites`, EnumToString(procedure.group), procedure._id], {
+    this.router.navigate([`tramites/externos`, procedure.group, procedure._id], {
       queryParams: params,
     });
   }
