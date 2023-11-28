@@ -28,42 +28,32 @@
         </mat-card-header>
       </mat-card> -->
       <mat-nav-list>
-        <ng-container *ngFor="let menu of Menu">
-          <ng-container
-            [ngTemplateOutlet]="menu.children ? childMenu : parentMenu"
-            [ngTemplateOutletContext]="{ menu: menu }"
-          >
-          </ng-container>
-        </ng-container>
-      </mat-nav-list>
-
-      <ng-template #parentMenu let-menu="menu">
-        <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="active-link">
-          <mat-icon matListItemIcon>{{ menu.icon }}</mat-icon>
-          <span matListItemTitle>{{ menu.text }}</span>
+        @for (item of menu; track $index) { 
+          @if(item.children){
+          <mat-expansion-panel [expanded]="true" [class.mat-elevation-z0]="true">
+            <mat-expansion-panel-header>
+              <mat-icon matListItemIcon style="margin-right: 30px"> {{ item.icon }}</mat-icon>
+              <span style="font-size: 16px">{{ item.text }}</span>
+            </mat-expansion-panel-header>
+            <mat-nav-list>
+              <mat-list-item
+                *ngFor="let submenu of item.children"
+                [routerLink]="submenu.routerLink"
+                routerLinkActive="active-link"
+              >
+                <mat-icon matListItemIcon>{{ submenu.icon }}</mat-icon>
+                <span matListItemTitle>{{ submenu.text }}</span>
+              </mat-list-item>
+            </mat-nav-list>
+          </mat-expansion-panel>
+        } @else {
+        <mat-list-item [routerLink]="item.routerLink" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.text }}</span>
         </mat-list-item>
-      </ng-template>
-
-      <ng-template #childMenu let-menu="menu">
-        <mat-expansion-panel [expanded]="true" [class.mat-elevation-z0]="true">
-          <mat-expansion-panel-header>
-            <mat-icon matListItemIcon style="margin-right: 30px"> {{ menu.icon }}</mat-icon>
-            <span style="font-size: 16px">{{ menu.text }}</span>
-          </mat-expansion-panel-header>
-          <mat-nav-list>
-            <mat-list-item
-              *ngFor="let submenu of menu.children"
-              [routerLink]="submenu.routerLink"
-              routerLinkActive="active-link"
-            >
-              <mat-icon matListItemIcon>{{ submenu.icon }}</mat-icon>
-              <span matListItemTitle>{{ submenu.text }}</span>
-            </mat-list-item>
-          </mat-nav-list>
-        </mat-expansion-panel>
-      </ng-template>
+        } }
+      </mat-nav-list>
     </mat-sidenav>
-
     <mat-sidenav-content>
       @if (isLoaging) {
       <progress-spinner></progress-spinner>

@@ -15,11 +15,7 @@ export class LoginComponent implements OnInit {
     password: ['', Validators.required],
     remember: [false],
   });
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private fb: FormBuilder
-  ) {}
+  constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     if (localStorage.getItem('token')) {
@@ -33,9 +29,7 @@ export class LoginComponent implements OnInit {
     }
   }
   login() {
-    if (this.loginForm.invalid) {
-      return;
-    }
+    if (this.loginForm.invalid) return;
     this.authService
       .login(
         {
@@ -44,14 +38,8 @@ export class LoginComponent implements OnInit {
         },
         this.loginForm.get('remember')?.value!
       )
-      .subscribe((resources) => {
-        if (resources.includes('external')) {
-          this.router.navigateByUrl('/tramites/externos');
-        } else if (resources.includes('internal')) {
-          this.router.navigateByUrl('/tramites/internos');
-        } else {
-          this.router.navigateByUrl('');
-        }
+      .subscribe(() => {
+        this.router.navigate(['/']);
       });
   }
 }

@@ -22,6 +22,6 @@ export class ObservationsComponent implements OnInit {
   }
 
   get id_account() {
-    return this.authService.account.id_account;
+    return this.authService.account()?.id_account;
   }
 }

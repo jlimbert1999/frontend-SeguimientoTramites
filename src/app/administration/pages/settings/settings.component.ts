@@ -1,10 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormGroupDirective,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Location } from '@angular/common';
 import { account } from '../../interfaces';
@@ -41,10 +36,10 @@ export class SettingsComponent implements OnInit {
     private fb: FormBuilder,
     public themeService: AppearanceService
   ) {
-    this.authService.getMyAuthDetalis().subscribe((account) => {
-      this.myAccount = account;
-      console.log(account);
-    });
+    // this.authService.getMyAuthDetalis().subscribe((account) => {
+    //   this.myAccount = account;
+    //   console.log(account);
+    // });
   }
   ngOnInit(): void {
     if (localStorage.getItem('theme')) this.darkTheme = true;
@@ -62,12 +57,10 @@ export class SettingsComponent implements OnInit {
   }
 
   save() {
-    this.authService
-      .updateMyAccount(this.Form_Cuenta.get('password')?.value)
-      .subscribe((newAccount) => {
-        this.myAccount = newAccount;
-        this.formDirective.resetForm();
-      });
+    // this.authService.updateMyAccount(this.Form_Cuenta.get('password')?.value).subscribe((newAccount) => {
+    //   this.myAccount = newAccount;
+    //   this.formDirective.resetForm();
+    // });
   }
   toggleDarkTheme() {
     this.themeService.isDarkTheme(this.darkTheme);

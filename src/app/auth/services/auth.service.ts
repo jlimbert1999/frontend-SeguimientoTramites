@@ -1,73 +1,69 @@
-import { Injectable } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import jwtDecode from 'jwt-decode';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import jwtDecode from 'jwt-decode';
-import { account } from 'src/app/administration/interfaces';
-import { jwtPayload, Menu } from '../interfaces';
-const base_url = environment.base_url;
+
+import { environment } from 'src/environments/environment';
+import { authStatus, jwtPayload, menu } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  account: jwtPayload;
-  code: string;
-  resources: string[];
-  menu: Menu[] = [];
-  constructor(private http: HttpClient, private router: Router) {}
+  private readonly base_url: string = environment.base_url;
+  private _account = signal<jwtPayload | undefined>(undefined);
+  private _authStatus = signal<authStatus>(authStatus.notAuthenticated);
+  private _menu = signal<menu[]>([]);
 
-  get token() {
-    return localStorage.getItem('token') || '';
-  }
+  public account = computed(() => this._account());
+  public authStatus = computed(() => this._authStatus());
+  public menu = computed(() => this._menu());
+
+  constructor(private http: HttpClient, private router: Router) {}
 
   login(formData: { login: string; password: string }, remember: boolean) {
     remember ? localStorage.setItem('login', formData.login) : localStorage.removeItem('login');
-    return this.http.post<{ token: string; resources: string[] }>(`${base_url}/auth`, formData).pipe(
-      map((resp) => {
-        localStorage.setItem('token', resp.token);
-        this.account = jwtDecode(resp.token);
-        this.resources = resp.resources;
-        return resp.resources;
-      })
-    );
+    return this.http
+      .post<{ token: string }>(`${this.base_url}/auth`, formData)
+      .pipe(map(({ token }) => this.setAuthentication(token)));
   }
+
   checkAuthStatus(): Observable<boolean> {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.logout();
+      return of(false);
+    }
     return this.http
       .get<{
         token: string;
-        resources: string[];
-        code: string;
-        menu: Menu[];
-      }>(`${base_url}/auth`)
+        menu: menu[];
+      }>(`${this.base_url}/auth`)
       .pipe(
-        map((resp) => {
-          this.account = jwtDecode(resp.token);
-          this.resources = resp.resources;
-          localStorage.setItem('token', resp.token);
-          this.menu = resp.menu;
-          return true;
+        map(({ menu, token }) => {
+          this._menu.set(menu);
+          return this.setAuthentication(token);
         }),
-        catchError((err) => {
+        catchError(() => {
+          this._authStatus.set(authStatus.notAuthenticated);
           return of(false);
         })
       );
   }
-  getMyAuthDetalis() {
-    return this.http.get<account>(`${base_url}/auth/${this.account.id_account}`).pipe(map((resp) => resp));
-  }
-  updateMyAccount(password: string) {
-    return this.http
-      .put<account>(`${base_url}/auth/${this.account.id_account}`, {
-        password,
-      })
-      .pipe(map((resp) => resp));
+
+  private setAuthentication(token: string): boolean {
+    this._account.set(jwtDecode(token));
+    this._authStatus.set(authStatus.authenticated);
+    localStorage.setItem('token', token);
+    return true;
   }
 
   logout() {
     localStorage.removeItem('token');
+    this._authStatus.set(authStatus.notAuthenticated);
+    this._account.set(undefined);
     this.router.navigate(['/login']);
   }
 }

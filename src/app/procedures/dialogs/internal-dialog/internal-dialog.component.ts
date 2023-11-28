@@ -98,10 +98,10 @@ export class InternalDialogComponent implements OnInit {
           type: ['', Validators.required],
           segment: ['', Validators.required],
           reference: ['', Validators.required],
-          cite: [this.authService.code],
+          cite: ['000-000'],
           amount: ['', Validators.required],
-          fullname_emitter: [this.authService.account.officer.fullname, Validators.required],
-          jobtitle_emitter: [this.authService.account.officer.jobtitle, Validators.required],
+          fullname_emitter: [this.authService.account()?.officer.fullname, Validators.required],
+          jobtitle_emitter: [this.authService.account()?.officer.jobtitle, Validators.required],
           fullname_receiver: ['', Validators.required],
           jobtitle_receiver: ['', Validators.required],
         })

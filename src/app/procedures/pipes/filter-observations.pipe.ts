@@ -10,6 +10,6 @@ export class FilterObservationsPipe implements PipeTransform {
   private authService = inject(AuthService);
   transform(observatios: observation[], filter: boolean): observation[] {
     if (!filter) return observatios;
-    return observatios.filter((observation) => observation.account === this.authService.account.id_account);
+    return observatios.filter((observation) => observation.account === this.authService.account()?.id_account);
   }
 }

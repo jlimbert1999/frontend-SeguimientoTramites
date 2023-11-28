@@ -1,11 +1,11 @@
-export interface Menu {
+export interface menu {
   text: string;
   icon: string;
-  children?: Child[];
+  children?: child[];
   routerLink: string;
 }
 
-export interface Child {
+export interface child {
   text: string;
   icon: string;
   routerLink: string;

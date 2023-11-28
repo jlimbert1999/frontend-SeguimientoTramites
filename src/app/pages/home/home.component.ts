@@ -16,7 +16,7 @@ import { ToastService } from 'src/app/shared/services/toast.service';
 export class HomeComponent {
   @ViewChild('snav') public sidenav: MatSidenav;
   mobileQuery: MediaQueryList;
-  Menu: any = this.authService.menu;
+  menu = this.authService.menu();
   private mailSubscription: Subscription;
   private userSubscription: Subscription;
   private _mobileQueryListener: () => void;
@@ -53,7 +53,7 @@ export class HomeComponent {
     return this.appearanceService.loading();
   }
   editAccount() {
-    this.router.navigate(['home/perfil', this.authService.account.id_account]);
+    this.router.navigate(['home/perfil', this.authService.account()?.id_account]);
   }
 
   listenMails() {
