@@ -7,7 +7,7 @@ import { MatSelectSearchData } from '../../interfaces';
   selector: 'simple-mat-select-search',
   templateUrl: './simple-mat-select-search.component.html',
   styles: '',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimpleMatSelectSearchComponent<T> {
   @Input() placehorder: string = 'Seleccione una opcion';
@@ -15,13 +15,16 @@ export class SimpleMatSelectSearchComponent<T> {
     this.data = values;
     this.filteredOptions.next(values);
   }
+  @Input() set currentOption(value: T | null) {
+    this.optionCtrl.setValue(value);
+  }
   @Input() isRequired: boolean = false;
   @Output() selectEvent: EventEmitter<T> = new EventEmitter();
 
   public data: MatSelectSearchData<T>[] = [];
   public optionCtrl: FormControl = new FormControl('');
   public optionFilterCtrl: FormControl = new FormControl();
-  public filteredOptions: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+  public filteredOptions: ReplaySubject<MatSelectSearchData<T>[]> = new ReplaySubject(1);
   protected _onDestroy = new Subject<void>();
 
   ngOnInit(): void {

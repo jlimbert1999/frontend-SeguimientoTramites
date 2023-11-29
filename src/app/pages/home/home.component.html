@@ -27,25 +27,25 @@
           </mat-menu>
         </mat-card-header>
       </mat-card> -->
+
       <mat-nav-list>
-        @for (item of menu; track $index) { 
-          @if(item.children){
-          <mat-expansion-panel [expanded]="true" [class.mat-elevation-z0]="true">
-            <mat-expansion-panel-header>
-              <mat-icon matListItemIcon style="margin-right: 30px"> {{ item.icon }}</mat-icon>
-              <span style="font-size: 16px">{{ item.text }}</span>
-            </mat-expansion-panel-header>
-            <mat-nav-list>
-              <mat-list-item
-                *ngFor="let submenu of item.children"
-                [routerLink]="submenu.routerLink"
-                routerLinkActive="active-link"
-              >
-                <mat-icon matListItemIcon>{{ submenu.icon }}</mat-icon>
-                <span matListItemTitle>{{ submenu.text }}</span>
-              </mat-list-item>
-            </mat-nav-list>
-          </mat-expansion-panel>
+        @for (item of menu; track $index) { @if(item.children){
+        <mat-expansion-panel [expanded]="true" [class.mat-elevation-z0]="true">
+          <mat-expansion-panel-header>
+            <mat-icon matListItemIcon style="margin-right: 30px"> {{ item.icon }}</mat-icon>
+            <span style="font-size: 16px">{{ item.text }}</span>
+          </mat-expansion-panel-header>
+          <mat-nav-list>
+            <mat-list-item
+              *ngFor="let submenu of item.children"
+              [routerLink]="submenu.routerLink"
+              routerLinkActive="active-link"
+            >
+              <mat-icon matListItemIcon>{{ submenu.icon }}</mat-icon>
+              <span matListItemTitle>{{ submenu.text }}</span>
+            </mat-list-item>
+          </mat-nav-list>
+        </mat-expansion-panel>
         } @else {
         <mat-list-item [routerLink]="item.routerLink" routerLinkActive="active-link">
           <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
@@ -55,6 +55,8 @@
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
+      <pre>{{ example | json }}</pre>
+      <!-- <pre>{{ example2 | json }}</pre> -->
       @if (isLoaging) {
       <progress-spinner></progress-spinner>
       }

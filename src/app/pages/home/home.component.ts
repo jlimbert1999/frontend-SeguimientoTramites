@@ -3,10 +3,12 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { AppearanceService } from 'src/app/services/appearance.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
 
 @Component({
   selector: 'app-home',
@@ -28,7 +30,8 @@ export class HomeComponent {
     private socketService: SocketService,
     private router: Router,
     private appearanceService: AppearanceService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    public paginat: PaginatorService
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this.appearanceService.startTheme();
@@ -72,5 +75,11 @@ export class HomeComponent {
   logout() {
     this.authService.logout();
     this.socketService.disconnect();
+  }
+  get example() {
+    return Object.fromEntries(this.paginat.searchParams);
+  }
+  get example2() {
+    return this.paginat.storage;
   }
 }

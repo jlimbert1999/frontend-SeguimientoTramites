@@ -1,21 +1,30 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  signal,
+} from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { PaginatorService } from '../../services/paginator.service';
 
 @Component({
   selector: 'app-paginator',
   templateUrl: './paginator.component.html',
-  styleUrls: ['./paginator.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginatorComponent implements OnInit, OnDestroy {
-  public pageOptions: number[] = [];
+  public pageOptions = signal<number[]>([10, 20, 30]);
   @Input({ required: true }) set pageSizeOptions(options: number[]) {
-    this.paginatorService.limit = options[0] ?? 10;
-    this.pageOptions = options;
+    // this.paginatorService.limit = options[0] ?? 10;
+    this.pageOptions.set(options);
   }
-  @Output('page') page: EventEmitter<undefined> = new EventEmitter();
+  @Output() changePage: EventEmitter<void> = new EventEmitter();
 
-  constructor(private paginatorService: PaginatorService) {}
+  constructor(private readonly paginatorService: PaginatorService) {}
 
   ngOnInit(): void {
     this.paginatorService.resetSearchParams();
@@ -24,18 +33,18 @@ export class PaginatorComponent implements OnInit, OnDestroy {
     this.paginatorService.resetPagination();
   }
 
-  setPage({ pageIndex, pageSize }: PageEvent) {
-    this.paginatorService.setPage = { limit: pageSize, offset: pageIndex };
-    this.page.emit();
+  onPageChange({ pageIndex, pageSize }: PageEvent) {
+    this.paginatorService.setPage = { pageSize: pageSize, pageIndex: pageIndex };
+    this.changePage.emit();
   }
 
   get pageIndex() {
-    return this.paginatorService.offset;
+    return this.paginatorService.index;
   }
   get pageSize() {
     return this.paginatorService.limit;
   }
-  get length() {
+  get dataLength() {
     return this.paginatorService.length;
   }
 }

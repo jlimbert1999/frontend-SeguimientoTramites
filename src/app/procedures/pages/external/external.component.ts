@@ -38,6 +38,7 @@ export class ExternalComponent implements OnInit {
   }
 
   getData() {
+    const s = this.paginatorService.searchParams.get('text');
     const subscription: Observable<{ procedures: ExternalProcedure[]; length: number }> = this.paginatorService
       .isSearchMode
       ? this.externalService.search(

@@ -1,12 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, pipe } from 'rxjs';
+import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { typeProcedure } from 'src/app/administration/interfaces';
 import { external } from '../interfaces/external.interface';
 import { ExternalProcedureDto } from '../dtos';
 import { NestedPartial } from 'src/app/shared/interfaces/nested-partial';
-import { searchProcedureParams } from '../interfaces';
 import { ExternalProcedure } from '../models';
 
 const base_url = environment.base_url;
@@ -37,8 +36,9 @@ export class ExternalService {
       .put<external>(`${base_url}/external/${id_procedure}`, procedure)
       .pipe(map((response) => ExternalProcedure.toModel(response)));
   }
+
   findAll(limit: number, offset: number) {
-    const params = new HttpParams().set('limit', limit).set('offset', offset * limit);
+    const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
       .get<{ procedures: external[]; length: number }>(`${base_url}/external`, {
         params,

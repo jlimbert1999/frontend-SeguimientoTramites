@@ -51,7 +51,7 @@ export class MailComponent implements OnInit {
 
   backLocation() {
     this.activateRoute.queryParams.subscribe((data) => {
-      this.paginatorService.limit = data['limit'];
+      // this.paginatorService.limit = data['limit'];
       this.paginatorService.offset = data['offset'];
       const searchMode = String(data['search']).toLowerCase();
       this.paginatorService.searchMode = searchMode === 'true' ? true : false;

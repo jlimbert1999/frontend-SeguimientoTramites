@@ -69,7 +69,7 @@ export class ReportService {
   }
 
   searchProcedureByUnit({ limit, offset }: paginationParams, form: Object) {
-    const params = new HttpParams().set('limit', limit).set('offset', offset * limit);
+    const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
       .post<{ communications: communication[]; length: number }>(`${base_url}/reports/unit`, form, { params })
       .pipe(

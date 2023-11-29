@@ -13,7 +13,7 @@ import { ExternalProcedure, InternalProcedure } from '../../models';
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
   // standalone: true,
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,u
 })
 export class DetailComponent implements OnInit {
   isLoading: boolean = true;
@@ -46,7 +46,7 @@ export class DetailComponent implements OnInit {
   backLocation() {
     this.route.queryParams.subscribe((data) => {
       const searchMode = String(data['search']).toLowerCase();
-      this.paginatorService.limit = data['limit'] ?? 10;
+      // this.paginatorService.limit = data['limit'] ?? 10;
       this.paginatorService.offset = data['offset'] ?? 0;
       this.paginatorService.searchMode = searchMode === 'true' ? true : false;
       this._location.back();

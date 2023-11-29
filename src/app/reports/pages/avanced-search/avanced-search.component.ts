@@ -92,6 +92,7 @@ export class AvancedSearchComponent implements OnInit {
     this.paginatorService.searchParams = new Map(Object.entries(validParams));
     this.paginatorService.cacheStore['matSelectOptions'] = this.types();
   }
+
   loadSearchParams() {
     if (!this.paginatorService.searchMode) return;
     this.formProcedure.patchValue(Object.fromEntries(this.paginatorService.searchParams));

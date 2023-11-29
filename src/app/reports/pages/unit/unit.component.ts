@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, signal, type OnInit, computed } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { statusMail } from 'src/app/communication/interfaces';
@@ -10,6 +10,15 @@ import { account } from 'src/app/administration/interfaces';
 import { ReportService } from '../../services/report.service';
 import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
 
+interface searchParams {
+  matSelectOptions: account[];
+  formData: {
+    status: string;
+    account: string;
+    start: string;
+    end: string;
+  };
+}
 @Component({
   selector: 'app-unit',
   templateUrl: './unit.component.html',
@@ -49,37 +58,36 @@ export class UnitComponent implements OnInit {
     { value: statusMail.Completed, text: 'ENVIADOS' },
     { value: statusMail.Completed, text: 'ARCHIVADOS' },
   ];
-  searchParams = signal<Object>({});
+  currentMatSelectOption: account | null;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private reportService: ReportService,
-    private paginatorService: PaginatorService
+    private paginatorService: PaginatorService<searchParams>
   ) {}
 
   ngOnInit(): void {
-    this.loadSearchParas();
     this.getOfficersInMyDependency();
+    this.loadSearchData();
   }
 
   search() {
-    this.searchParams.set(this.reportService.getValidParamsForm(this.formSearch.value));
+    if (this.formSearch.invalid) return;
     this.reportService
       .searchProcedureByUnit(
-        {
-          limit: this.paginatorService.limit,
-          offset: this.paginatorService.offset,
-        },
-        this.searchParams()
+        { limit: this.paginatorService.limit, offset: this.paginatorService.offset },
+        Object.fromEntries(this.paginatorService.searchParams)
       )
       .subscribe((resp) => {
         this.datasource.set(resp.data);
         this.paginatorService.length = resp.length;
       });
   }
+
   generateReport() {
     this.paginatorService.offset = 0;
+    this.saveSearchParams();
     this.search();
   }
 
@@ -88,7 +96,9 @@ export class UnitComponent implements OnInit {
       this.accounts.set(resp);
     });
   }
-  selectMatSearchOption(account: account) {
+  selectMatSearchOption(account: account | null) {
+    if (!account) return;
+    this.currentMatSelectOption = account;
     this.formSearch.get('account')?.setValue(account._id);
   }
 
@@ -98,17 +108,30 @@ export class UnitComponent implements OnInit {
       offset: this.paginatorService.offset,
       search: true,
     };
-    this.saveSearchParams();
     this.router.navigate(['reportes/unidad', element.group, element.id_procedure], {
       queryParams: params,
     });
   }
-  saveSearchParams() {
-    this.paginatorService.searchParams = new Map(Object.entries(this.searchParams()));
-    this.paginatorService.cacheStore['account'] = this.accounts();
+
+  loadSearchData() {
+    if (!this.paginatorService.searchMode) return;
+    this.formSearch.patchValue(this.paginatorService.storage.formData);
+    this.accounts.set(this.paginatorService.storage.matSelectOptions);
+    this.currentMatSelectOption =
+      this.paginatorService.storage.matSelectOptions.find(
+        (el) => el._id === this.paginatorService.storage.formData.account
+      ) ?? null;
+    this.currentMatSelectOption = { ...this.currentMatSelectOption! };
+    console.log(this.currentMatSelectOption);
+    this.search();
   }
 
-  loadSearchParas() {
-    this.formSearch.patchValue(Object.fromEntries(this.paginatorService.searchParams));
+  saveSearchParams() {
+    this.paginatorService.storage = {
+      matSelectOptions: this.accounts(),
+      formData: this.formSearch.value,
+    };
+    // this.paginatorService.saveSearchParams(this.formSearch.value);
+    // this.paginatorService.cacheStore['accounts'] = this.accounts();
   }
 }

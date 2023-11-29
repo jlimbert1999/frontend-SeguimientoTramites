@@ -13,7 +13,7 @@ export class ServerMatSelectSearchComponent<T> {
   @Input({ required: true }) set options(values: MatSelectSearchData<T>[]) {
     this.filteredServerSideOptions.next(values);
   }
-  @Input() set currentOption(value: T) {
+  @Input() set currentOption(value: T | null) {
     this.optionServerSideCtrl.setValue(value);
   }
   @Output() keyupEvent: EventEmitter<string> = new EventEmitter();

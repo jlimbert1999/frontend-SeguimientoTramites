@@ -20,6 +20,7 @@
             </div>
             <div class="col-sm-7">
               <simple-mat-select-search
+                [currentOption]="currentMatSelectOption"
                 (selectEvent)="selectMatSearchOption($event)"
                 [options]="matSelectOptions()"
               ></simple-mat-select-search>
@@ -56,7 +57,7 @@
           (showDetails)="showDetails($event)"
         ></app-table-procedure>
       </div>
-      <app-paginator [pageSizeOptions]="[5, 10, 30, 50]" (page)="search()"></app-paginator>
+      <app-paginator [pageSizeOptions]="[5, 10, 30, 50]" (changePage)="search()"></app-paginator>
     </div>
   </div>
 </div>
