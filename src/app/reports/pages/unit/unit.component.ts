@@ -11,7 +11,7 @@ import { ReportService } from '../../services/report.service';
 import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
 
 interface searchParams {
-  matSelectOptions: account[];
+  matSelectOptions?: account[];
   formData: {
     status: string;
     account: string;
@@ -33,13 +33,13 @@ export class UnitComponent implements OnInit {
     end: [new Date(), Validators.required],
   });
   accounts = signal<account[]>([]);
-  public matSelectOptions = computed<MatSelectSearchData<account>[]>(() => {
+  public matSelectOptions = computed<MatSelectSearchData<string>[]>(() => {
     return this.accounts().map((account) => {
       const { funcionario } = account;
       const text = funcionario
         ? [funcionario.nombre, funcionario.paterno, funcionario.materno].filter((it) => !!it).join(' ')
         : 'POR DESIGNAR';
-      return { value: account, text };
+      return { value: account._id, text };
     });
   });
   public datasource = signal<ProcedureTableData[]>([]);
@@ -58,7 +58,6 @@ export class UnitComponent implements OnInit {
     { value: statusMail.Completed, text: 'ENVIADOS' },
     { value: statusMail.Completed, text: 'ARCHIVADOS' },
   ];
-  currentMatSelectOption: account | null;
 
   constructor(
     private fb: FormBuilder,
@@ -68,7 +67,6 @@ export class UnitComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getOfficersInMyDependency();
     this.loadSearchData();
   }
 
@@ -96,10 +94,8 @@ export class UnitComponent implements OnInit {
       this.accounts.set(resp);
     });
   }
-  selectMatSearchOption(account: account | null) {
-    if (!account) return;
-    this.currentMatSelectOption = account;
-    this.formSearch.get('account')?.setValue(account._id);
+  selectMatSearchOption(id_account: string) {
+    this.formSearch.get('account')?.setValue(id_account);
   }
 
   showDetails(element: ProcedureTableData) {
@@ -113,25 +109,20 @@ export class UnitComponent implements OnInit {
     });
   }
 
-  loadSearchData() {
-    if (!this.paginatorService.searchMode) return;
-    this.formSearch.patchValue(this.paginatorService.storage.formData);
-    this.accounts.set(this.paginatorService.storage.matSelectOptions);
-    this.currentMatSelectOption =
-      this.paginatorService.storage.matSelectOptions.find(
-        (el) => el._id === this.paginatorService.storage.formData.account
-      ) ?? null;
-    this.currentMatSelectOption = { ...this.currentMatSelectOption! };
-    console.log(this.currentMatSelectOption);
-    this.search();
+  get currentSelectedOption() {
+    return this.formSearch.get('account')?.value;
   }
 
   saveSearchParams() {
-    this.paginatorService.storage = {
-      matSelectOptions: this.accounts(),
-      formData: this.formSearch.value,
-    };
-    // this.paginatorService.saveSearchParams(this.formSearch.value);
-    // this.paginatorService.cacheStore['accounts'] = this.accounts();
+    this.paginatorService.cache['accounts'] = this.accounts();
+    this.paginatorService.cache['form'] = this.formSearch.value;
+  }
+
+  loadSearchData() {
+    this.accounts.set(this.paginatorService.cache['accounts'] ?? []);
+    if (this.accounts().length === 0) this.getOfficersInMyDependency();
+    if (!this.paginatorService.searchMode) return;
+    this.formSearch.patchValue(this.paginatorService.cache['form'] ?? {});
+    this.search();
   }
 }

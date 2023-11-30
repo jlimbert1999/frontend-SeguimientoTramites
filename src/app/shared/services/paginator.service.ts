@@ -6,7 +6,7 @@ interface PaginationParams {
 @Injectable({
   providedIn: 'root',
 })
-export class PaginatorService<T = void> {
+export class PaginatorService<T=void> {
   private pageSize = signal<number>(10);
   private pageIndex = signal<number>(0);
   private dataLength = signal<number>(0);
@@ -15,7 +15,7 @@ export class PaginatorService<T = void> {
   public searchMode: boolean = false;
   public searchParams = new Map<string, string>();
   public cacheStore: Record<string, any[]> = {};
-  storage: T;
+  public cache: Record<string, any> = {};
 
   set setPage({ pageIndex, pageSize }: PaginationParams) {
     this.pageSize.set(pageSize);

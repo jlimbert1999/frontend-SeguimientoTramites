@@ -6,7 +6,6 @@ import { MatSelectSearchData } from '../../interfaces';
 @Component({
   selector: 'simple-mat-select-search',
   templateUrl: './simple-mat-select-search.component.html',
-  styles: '',
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimpleMatSelectSearchComponent<T> {

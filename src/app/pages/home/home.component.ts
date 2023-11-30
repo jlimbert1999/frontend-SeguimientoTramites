@@ -79,7 +79,4 @@ export class HomeComponent {
   get example() {
     return Object.fromEntries(this.paginat.searchParams);
   }
-  get example2() {
-    return this.paginat.storage;
-  }
 }

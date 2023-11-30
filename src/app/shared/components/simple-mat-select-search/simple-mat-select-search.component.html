@@ -13,8 +13,8 @@
         [formControl]="optionFilterCtrl"
       ></ngx-mat-select-search>
     </mat-option>
-    <mat-option *ngFor="let bank of filteredOptions | async" [value]="bank.value">
-      {{ bank.text }}
+    <mat-option *ngFor="let option of filteredOptions | async" [value]="option.value">
+      {{ option.text }}
     </mat-option>
   </mat-select>
   <mat-error *ngIf="optionCtrl.invalid">Seleccione una opcion</mat-error>
