@@ -6,7 +6,7 @@ import { SidenavButtonComponent } from 'src/app/shared/components/buttons/sidena
   selector: 'report-title',
   standalone: true,
   imports: [CommonModule, SidenavButtonComponent],
-  template: `<div class="display-6 p-2"><sidenav-button></sidenav-button> {{ title }}</div>`,
+  template: `<div class="p-2"><sidenav-button></sidenav-button> {{ title }}</div>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TitleComponent {

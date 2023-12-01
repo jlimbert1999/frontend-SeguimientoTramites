@@ -1,19 +1,19 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { procedure, stateProcedure } from 'src/app/procedures/interfaces';
 import { MatSelectSearchData } from 'src/app/shared/interfaces';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { typeProcedure } from 'src/app/administration/interfaces';
-import { EnumToString } from 'src/app/procedures/helpers';
 
 import { ReportService } from '../../services/report.service';
-import { ProcedureTableColumns } from '../../interfaces';
+import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
+
 @Component({
   selector: 'app-avanced-search',
   templateUrl: './avanced-search.component.html',
   styleUrl: './avanced-search.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AvancedSearchComponent implements OnInit {
   public formProcedure: FormGroup = this.fb.group({
@@ -21,22 +21,19 @@ export class AvancedSearchComponent implements OnInit {
     state: [''],
     reference: ['', [Validators.minLength(4)]],
     type: [''],
-    start: ['', Validators.required],
-    end: ['', Validators.required],
+    start: [''],
+    end: [new Date()],
     group: [''],
   });
-  public datasource: procedure[] = [];
+  public datasource: ProcedureTableData[] = [];
   public displaycolums: ProcedureTableColumns[] = [
     { columnDef: 'code', header: 'Alterno' },
     { columnDef: 'reference', header: 'Referencia' },
     { columnDef: 'state', header: 'Estado' },
-    { columnDef: 'startDate', header: 'Fecha' },
+    { columnDef: 'date', header: 'Fecha' },
   ];
-  types = signal<typeProcedure[]>([]);
+  types: MatSelectSearchData<string>[] = [];
   initialMatSelectValue: string | undefined;
-  matSelectOptions = computed<MatSelectSearchData<string>[]>(() => {
-    return this.types().map((type) => ({ text: type.nombre, value: type._id }));
-  });
 
   constructor(
     private fb: FormBuilder,
@@ -50,36 +47,41 @@ export class AvancedSearchComponent implements OnInit {
   }
   searchTypesProcedures(text: string) {
     this.reportService.getProceduresByText(text).subscribe((types) => {
-      this.types.set(types);
+      this.types = types.map((el) => ({ value: el._id, text: el.nombre }));
     });
   }
+
   selectTypeProcedure(id: string = '') {
     this.formProcedure.get('type')?.setValue(id);
   }
 
   search() {
-    const validParams = this.reportService.getValidParamsForm(this.formProcedure.value);
-    if (Object.keys(validParams).length === 0) return;
-    this.reportService.searchProcedureByProperties(this.paginatorService, validParams).subscribe((resp) => {
-      this.paginatorService.length = resp.length;
-      this.datasource = resp.procedures;
-    });
+    if (this.formProcedure.invalid) return;
+    this.reportService
+      .searchProcedureByProperties(this.paginatorService, this.formProcedure.value)
+      .subscribe((resp) => {
+        this.paginatorService.length = resp.length;
+        this.datasource = resp.procedures.map(({ _id, code, reference, startDate, state, group }) => ({
+          id_procedure: _id,
+          date: startDate,
+          reference,
+          group,
+          state,
+          code,
+        }));
+      });
   }
 
-  showDetails(procedure: any) {
-    const params = {
-      limit: this.paginatorService.limit,
-      offset: this.paginatorService.offset,
-      search: true,
-    };
-    this.saveSearchParams();
-    this.router.navigate(['reportes', 'busqueda-avanzada', EnumToString(procedure.group), procedure._id], {
+  showDetails(procedure: ProcedureTableData) {
+    const params = { limit: this.paginatorService.limit, offset: this.paginatorService.offset, search: true };
+    this.router.navigate(['reportes/busqueda-avanzada', procedure.group, procedure.id_procedure], {
       queryParams: params,
     });
   }
 
   generateReport() {
     this.paginatorService.offset = 0;
+    this.saveSearchParams();
     this.search();
   }
 
@@ -88,18 +90,17 @@ export class AvancedSearchComponent implements OnInit {
   }
 
   saveSearchParams() {
-    const validParams = this.reportService.getValidParamsForm(this.formProcedure.value);
-    this.paginatorService.searchParams = new Map(Object.entries(validParams));
-    this.paginatorService.cacheStore['matSelectOptions'] = this.types();
+    this.paginatorService.cache['form'] = this.formProcedure.value;
+    this.paginatorService.cache['types'] = this.types;
   }
 
   loadSearchParams() {
     if (!this.paginatorService.searchMode) return;
-    this.formProcedure.patchValue(Object.fromEntries(this.paginatorService.searchParams));
-    this.types.set(this.paginatorService.cacheStore['matSelectOptions']);
-    this.initialMatSelectValue = this.formProcedure.get('type')?.value;
+    this.formProcedure.patchValue(this.paginatorService.cache['form'] ?? {});
+    this.types = this.paginatorService.cache['types'] ?? [];
     this.search();
   }
+  
   get statesProcedure() {
     return Object.values(stateProcedure);
   }

@@ -10,7 +10,7 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchiveService, ExternalService, ProcedureService } from '../../services';
 
 import { AlertManager } from 'src/app/shared/helpers/alerts';
-import { EnumToString, createRouteMap, createTicket } from '../../helpers';
+import { createRouteMap, createTicket } from '../../helpers';
 
 import { ProcedureTransferDetails } from 'src/app/communication/models/procedure-transfer-datais.mode';
 import { ExternalProcedure } from '../../models';

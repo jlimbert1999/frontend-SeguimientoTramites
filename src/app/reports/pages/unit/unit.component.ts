@@ -1,35 +1,26 @@
 import { ChangeDetectionStrategy, Component, signal, type OnInit, computed } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { statusMail } from 'src/app/communication/interfaces';
-import { MatSelectSearchData } from 'src/app/shared/interfaces';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { account } from 'src/app/administration/interfaces';
+import { statusMail } from 'src/app/communication/interfaces';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
+import { MatSelectSearchData } from 'src/app/shared/interfaces';
 
 import { ReportService } from '../../services/report.service';
 import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
 
-interface searchParams {
-  matSelectOptions?: account[];
-  formData: {
-    status: string;
-    account: string;
-    start: string;
-    end: string;
-  };
-}
 @Component({
   selector: 'app-unit',
   templateUrl: './unit.component.html',
   styleUrl: './unit.component.scss',
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnitComponent implements OnInit {
   formSearch: FormGroup = this.fb.group({
     status: [''],
     account: [''],
-    start: [, Validators.required],
+    start: [null, Validators.required],
     end: [new Date(), Validators.required],
   });
   accounts = signal<account[]>([]);
@@ -52,18 +43,18 @@ export class UnitComponent implements OnInit {
   ];
 
   public validStatus = [
-    { value: statusMail.Received, text: 'RECIBIDOS' },
     { value: statusMail.Pending, text: 'PENDIENTES' },
+    { value: statusMail.Received, text: 'RECIBIDOS' },
     { value: statusMail.Rejected, text: 'RECHAZADOS' },
+    { value: statusMail.Archived, text: 'ARCHIVADOS' },
     { value: statusMail.Completed, text: 'ENVIADOS' },
-    { value: statusMail.Completed, text: 'ARCHIVADOS' },
   ];
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private reportService: ReportService,
-    private paginatorService: PaginatorService<searchParams>
+    private paginatorService: PaginatorService
   ) {}
 
   ngOnInit(): void {
@@ -75,7 +66,7 @@ export class UnitComponent implements OnInit {
     this.reportService
       .searchProcedureByUnit(
         { limit: this.paginatorService.limit, offset: this.paginatorService.offset },
-        Object.fromEntries(this.paginatorService.searchParams)
+        this.formSearch.value
       )
       .subscribe((resp) => {
         this.datasource.set(resp.data);
@@ -101,7 +92,7 @@ export class UnitComponent implements OnInit {
   showDetails(element: ProcedureTableData) {
     const params = {
       limit: this.paginatorService.limit,
-      offset: this.paginatorService.offset,
+      offset: this.paginatorService.index,
       search: true,
     };
     this.router.navigate(['reportes/unidad', element.group, element.id_procedure], {

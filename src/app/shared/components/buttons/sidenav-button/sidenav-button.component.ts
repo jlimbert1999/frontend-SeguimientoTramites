@@ -6,7 +6,7 @@ import { AppearanceService } from 'src/app/services/appearance.service';
   selector: 'sidenav-button',
   standalone: true,
   imports: [MaterialModule],
-  template: ` <button mat-icon-button (click)="toggleSidenav()">
+  template: ` <button style="vertical-align: middle;" mat-icon-button (click)="toggleSidenav()">
     <mat-icon>menu</mat-icon>
   </button>`,
   styles: ``,

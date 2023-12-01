@@ -6,7 +6,7 @@ interface PaginationParams {
 @Injectable({
   providedIn: 'root',
 })
-export class PaginatorService<T=void> {
+export class PaginatorService {
   private pageSize = signal<number>(10);
   private pageIndex = signal<number>(0);
   private dataLength = signal<number>(0);
@@ -41,6 +41,9 @@ export class PaginatorService<T=void> {
   set length(value: number) {
     this.dataLength.set(value);
   }
+  set limit(value: number) {
+    this.pageSize.set(value);
+  }
 
   get limit() {
     return this.pageSize();
@@ -53,14 +56,6 @@ export class PaginatorService<T=void> {
   }
   get length() {
     return this.dataLength();
-  }
-
-  saveSearchParams(data: Object): void {
-    const validParams = Object.entries(data).reduce(
-      (acc, [key, value]) => (value ? { ...acc, [key]: value } : acc),
-      {}
-    );
-    this.searchParams = new Map(Object.entries(validParams));
   }
 
   get isSearchMode(): boolean {

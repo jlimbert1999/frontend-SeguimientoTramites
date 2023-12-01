@@ -3,11 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { typeApplicant } from 'src/app/procedures/interfaces';
-import { EnumToString } from 'src/app/procedures/helpers';
 
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ReportService } from '../../services/report.service';
-import { searchParamsApplicant } from '../../interfaces';
+import { ProcedureTableData, searchParamsApplicant } from '../../interfaces';
 
 type validSearchProperty = 'solicitante' | 'representante';
 @Component({
@@ -49,7 +48,7 @@ export class ApplicantComponent implements OnInit {
           });
   }
 
-  showDetails(procedure: any) {
+  showDetails(procedure: ProcedureTableData) {
     Object.entries(this.getValidParamsForm()).forEach(([key, value]) => {
       this.paginatorService.searchParams.set(key, String(value));
     });
@@ -60,7 +59,7 @@ export class ApplicantComponent implements OnInit {
       offset: this.paginatorService.offset,
       search: true,
     };
-    this.router.navigate(['reportes', 'solicitante', EnumToString(procedure.group), procedure._id], {
+    this.router.navigate(['reportes/solicitante', procedure.group, procedure.id_procedure], {
       queryParams: params,
     });
   }

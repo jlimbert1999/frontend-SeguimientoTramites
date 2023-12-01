@@ -1,86 +1,89 @@
-<div class="container mt-2 animate__animated animate__fadeIn">
-  <mat-accordion>
-    <mat-expansion-panel expanded="true">
-      <mat-expansion-panel-header>
-        <mat-panel-title> PARAMETROS BUSQUEDA </mat-panel-title>
-      </mat-expansion-panel-header>
-      <form [formGroup]="formProcedure">
-        <div class="row">
-          <div class="col-sm-3">
-            <mat-form-field>
-              <mat-label>Alterno</mat-label>
-              <input matInput formControlName="code" />
-            </mat-form-field>
+<div class="animate__animated animate__fadeIn">
+  <report-title title="Reporte: Busqueda avanazada"></report-title>
+  <div class="container">
+    <mat-accordion>
+      <mat-expansion-panel expanded="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title> PARAMETROS BUSQUEDA </mat-panel-title>
+        </mat-expansion-panel-header>
+        <form [formGroup]="formProcedure">
+          <div class="row">
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-label>Alterno</mat-label>
+                <input matInput formControlName="code" />
+              </mat-form-field>
+            </div>
+            <div class="col-sm-2">
+              <mat-form-field>
+                <mat-label>Estado:</mat-label>
+                <mat-select formControlName="state">
+                  @for (state of statesProcedure; track $index) {
+                  <mat-option [value]="state">{{ state }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-4">
+              <mat-form-field>
+                <mat-label>Referencia</mat-label>
+                <textarea matInput placeholder="Descripcion del tramite" formControlName="reference"></textarea>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-label>Rango de registro</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                  <input matStartDate formControlName="start" placeholder="Fecha inicial" />
+                  <input matEndDate formControlName="end" placeholder="Fecha final" />
+                </mat-date-range-input>
+                <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+              </mat-form-field>
+            </div>
           </div>
-          <div class="col-sm-2">
-            <mat-form-field>
-              <mat-label>Estado:</mat-label>
-              <mat-select formControlName="state">
-                @for (state of statesProcedure; track $index) {
-                <mat-option [value]="state">{{ state }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="col-sm-4">
-            <mat-form-field>
-              <mat-label>Referencia</mat-label>
-              <textarea matInput placeholder="Descripcion del tramite" formControlName="reference"></textarea>
-            </mat-form-field>
-          </div>
-          <div class="col-sm-3">
-            <mat-form-field>
-              <mat-label>Rango de registro</mat-label>
-              <mat-date-range-input [rangePicker]="picker">
-                <input matStartDate formControlName="start" placeholder="Fecha inicial" />
-                <input matEndDate formControlName="end" placeholder="Fecha final" />
-              </mat-date-range-input>
-              <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-date-range-picker #picker></mat-date-range-picker>
-            </mat-form-field>
-          </div>
-        </div>
 
-        <div class="row mt-2">
-          <span>Propiedades de grupo</span>
-          <hr />
-          <div class="col-sm-3">
-            <mat-form-field>
-              <mat-label>GRUPO TRAMITE:</mat-label>
-              <mat-select formControlName="group">
-                <mat-option value="ExternalDetail">TRAMITES EXTERNOS</mat-option>
-                <mat-option value="InternalDetail">TRAMITES INTERNOS</mat-option>
-              </mat-select>
-            </mat-form-field>
+          <div class="row mt-2">
+            <span>Propiedades de grupo</span>
+            <hr />
+            <div class="col-sm-3">
+              <mat-form-field>
+                <mat-label>GRUPO TRAMITE:</mat-label>
+                <mat-select formControlName="group">
+                  <mat-option value="ExternalDetail">TRAMITES EXTERNOS</mat-option>
+                  <mat-option value="InternalDetail">TRAMITES INTERNOS</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-sm-6">
+              <app-server-mat-select-search
+                placeholder="Tipo de tramite"
+                [currentOption]="initialMatSelectValue"
+                [options]="types"
+                (keyupEvent)="searchTypesProcedures($event)"
+                (selectEvent)="selectTypeProcedure($event)"
+              ></app-server-mat-select-search>
+            </div>
           </div>
-          <div class="col-sm-6">
-            <app-server-mat-select-search
-              placeholder="Tipo de tramite"
-              [options]="matSelectOptions()"
-              [currentOption]="initialMatSelectValue"
-              (keyupEvent)="searchTypesProcedures($event)"
-              (selectEvent)="selectTypeProcedure($event)"
-            ></app-server-mat-select-search>
-          </div>
-        </div>
-        <mat-action-row>
-          <button mat-button color="warn" (click)="reset()">Restablecer</button>
-          <button mat-button color="primary" [disabled]="this.formProcedure.invalid" (click)="generateReport()">
-            BUSCAR
-          </button>
-        </mat-action-row>
-      </form>
-    </mat-expansion-panel>
-  </mat-accordion>
-  <div class="example-container mat-elevation-z8 mt-2">
-    <div class="table-container">
-      <!-- <app-table-procedure
-        [tableColumns]="displaycolums"
-        [dataSource]="datasource"
-        (showDetails)="showDetails($event)"
-      ></app-table-procedure> -->
+          <mat-action-row>
+            <button mat-button color="warn" (click)="reset()">Restablecer</button>
+            <button mat-button color="primary" [disabled]="this.formProcedure.invalid" (click)="generateReport()">
+              BUSCAR
+            </button>
+          </mat-action-row>
+        </form>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <div class="example-container mat-elevation-z8 mt-2">
+      <div class="table-container">
+        <app-table-procedure
+          [tableColumns]="displaycolums"
+          [dataSource]="datasource"
+          (showDetails)="showDetails($event)"
+        ></app-table-procedure>
+      </div>
+      <app-paginator [pageSizeOptions]="[5, 10, 30, 50]" (page)="search()"></app-paginator>
     </div>
-    <app-paginator [pageSizeOptions]="[5, 10, 30, 50]" (page)="search()"></app-paginator>
   </div>
 </div>
