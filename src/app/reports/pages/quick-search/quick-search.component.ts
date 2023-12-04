@@ -1,25 +1,37 @@
 import { FormControl, Validators } from '@angular/forms';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertManager } from 'src/app/shared/helpers/alerts';
 import { ReportService } from '../../services/report.service';
+import { PaginatorService } from 'src/app/shared/services/paginator.service';
 
 @Component({
   selector: 'app-quick-search',
   templateUrl: './quick-search.component.html',
   styleUrls: ['./quick-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class QuickSearchComponent {
-  router = inject(Router);
-  reportService = inject(ReportService);
-  formSearch = new FormControl('', [Validators.required]);
+export class QuickSearchComponent implements OnInit {
+  public formSearch = new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z0-9-]*$')]);
+
+  constructor(
+    private router: Router,
+    private reportService: ReportService,
+    private paginatorService: PaginatorService
+  ) {}
+
+  ngOnInit(): void {
+    this.formSearch.setValue(this.paginatorService.cache['code'] ?? '');
+  }
 
   searchProcedure() {
     if (this.formSearch.invalid) return;
     AlertManager.showLoadingAlert('Buscando tramite...', 'Preparando vistas');
-    this.reportService.searchProcedureByCode(this.formSearch.value!).subscribe((resp) => {
+    this.reportService.searchProcedureByCode(this.formSearch.value!.toUpperCase()).subscribe((resp) => {
       AlertManager.closeLoadingAlert();
-      this.router.navigate([`reportes`, 'busqueda', 'externos', resp._id]);
+      const params = { search: true };
+      this.paginatorService.cache['code'] = this.formSearch.value;
+      this.router.navigate([`reportes/busqueda`, resp.group, resp._id], { queryParams: params });
     });
   }
 }

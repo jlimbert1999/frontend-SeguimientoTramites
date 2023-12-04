@@ -6,7 +6,7 @@ import { MatSelectSearchData } from '../../interfaces';
 @Component({
   selector: 'simple-mat-select-search',
   templateUrl: './simple-mat-select-search.component.html',
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimpleMatSelectSearchComponent<T> {
   @Input() placehorder: string = 'Seleccione una opcion';

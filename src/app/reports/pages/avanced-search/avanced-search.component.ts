@@ -1,8 +1,8 @@
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ChangeDetectionStrategy, Component, OnInit, computed, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { procedure, stateProcedure } from 'src/app/procedures/interfaces';
+import { stateProcedure } from 'src/app/procedures/interfaces';
 import { MatSelectSearchData } from 'src/app/shared/interfaces';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 
@@ -17,23 +17,22 @@ import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
 })
 export class AvancedSearchComponent implements OnInit {
   public formProcedure: FormGroup = this.fb.group({
-    code: ['', [Validators.minLength(4)]],
+    code: [''],
     state: [''],
-    reference: ['', [Validators.minLength(4)]],
+    reference: [''],
     type: [''],
-    start: [''],
-    end: [new Date()],
+    start: ['', Validators.required],
+    end: [new Date(), Validators.required],
     group: [''],
   });
-  public datasource: ProcedureTableData[] = [];
+  public datasource = signal<ProcedureTableData[]>([]);
   public displaycolums: ProcedureTableColumns[] = [
     { columnDef: 'code', header: 'Alterno' },
     { columnDef: 'reference', header: 'Referencia' },
     { columnDef: 'state', header: 'Estado' },
     { columnDef: 'date', header: 'Fecha' },
   ];
-  types: MatSelectSearchData<string>[] = [];
-  initialMatSelectValue: string | undefined;
+  public types: MatSelectSearchData<string>[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -51,29 +50,25 @@ export class AvancedSearchComponent implements OnInit {
     });
   }
 
-  selectTypeProcedure(id: string = '') {
-    this.formProcedure.get('type')?.setValue(id);
+  selectTypeProcedure(id_type: string) {
+    this.formProcedure.get('type')?.setValue(id_type);
   }
 
   search() {
     if (this.formProcedure.invalid) return;
     this.reportService
-      .searchProcedureByProperties(this.paginatorService, this.formProcedure.value)
+      .searchProcedureByProperties(
+        { limit: this.paginatorService.limit, offset: this.paginatorService.index },
+        this.formProcedure.value
+      )
       .subscribe((resp) => {
         this.paginatorService.length = resp.length;
-        this.datasource = resp.procedures.map(({ _id, code, reference, startDate, state, group }) => ({
-          id_procedure: _id,
-          date: startDate,
-          reference,
-          group,
-          state,
-          code,
-        }));
+        this.datasource.set(resp.procedures);
       });
   }
 
   showDetails(procedure: ProcedureTableData) {
-    const params = { limit: this.paginatorService.limit, offset: this.paginatorService.offset, search: true };
+    const params = { limit: this.paginatorService.limit, offset: this.paginatorService.index, search: true };
     this.router.navigate(['reportes/busqueda-avanzada', procedure.group, procedure.id_procedure], {
       queryParams: params,
     });
@@ -83,10 +78,6 @@ export class AvancedSearchComponent implements OnInit {
     this.paginatorService.offset = 0;
     this.saveSearchParams();
     this.search();
-  }
-
-  reset() {
-    this.formProcedure.reset({});
   }
 
   saveSearchParams() {
@@ -100,8 +91,12 @@ export class AvancedSearchComponent implements OnInit {
     this.types = this.paginatorService.cache['types'] ?? [];
     this.search();
   }
-  
+
   get statesProcedure() {
     return Object.values(stateProcedure);
+  }
+
+  get currentMatSelectOption() {
+    return this.formProcedure.get('type')?.value;
   }
 }

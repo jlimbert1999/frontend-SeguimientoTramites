@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ReplaySubject, Subject, debounceTime, filter, takeUntil, tap } from 'rxjs';
 import { MatSelectSearchData } from '../../interfaces';
@@ -6,7 +6,7 @@ import { MatSelectSearchData } from '../../interfaces';
 @Component({
   selector: 'app-server-mat-select-search',
   templateUrl: './server-mat-select-search.component.html',
-  styles: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ServerMatSelectSearchComponent<T> {
   @Input() placeholder: string = 'Filtrar informacion';

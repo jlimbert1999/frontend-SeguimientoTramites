@@ -1,36 +1,39 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { typeApplicant } from 'src/app/procedures/interfaces';
-
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ReportService } from '../../services/report.service';
-import { ProcedureTableData, searchParamsApplicant } from '../../interfaces';
+import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
 
-type validSearchProperty = 'solicitante' | 'representante';
 @Component({
   selector: 'app-applicant',
   templateUrl: './applicant.component.html',
-  styleUrl: './applicant.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApplicantComponent implements OnInit {
-  private _fb = inject(FormBuilder);
-  private _reportService = inject(ReportService);
-  private paginatorService = inject(PaginatorService);
-  private router = inject(Router);
-
-  public datasource: any[] = [];
-  public typeApplicant: typeApplicant = 'NATURAL';
-  public typeSearch: validSearchProperty = 'solicitante';
   public formApplicant: FormGroup;
+  public datasource = signal<ProcedureTableData[]>([]);
+  public typeApplicant: typeApplicant = 'NATURAL';
+  public typeSearch: 'solicitante' | 'representante' = 'solicitante';
+  public displaycolums: ProcedureTableColumns[] = [
+    { columnDef: 'code', header: 'Alterno' },
+    { columnDef: 'reference', header: 'Referencia' },
+    { columnDef: 'state', header: 'Estado' },
+    { columnDef: 'date', header: 'Fecha' },
+  ];
+
+  constructor(
+    private _fb: FormBuilder,
+    private router: Router,
+    private reportService: ReportService,
+    private paginatorService: PaginatorService
+  ) {}
 
   ngOnInit(): void {
     this.changeFormApplicant();
-    if (this.paginatorService.searchMode) {
-      this.restartSearchParams();
-      this.search();
-    }
+    this.loadSearchParams();
   }
   changeFormApplicant() {
     this.formApplicant =
@@ -41,22 +44,19 @@ export class ApplicantComponent implements OnInit {
             materno: ['', [Validators.minLength(3)]],
             telefono: ['', [Validators.minLength(7)]],
             dni: ['', [Validators.minLength(6)]],
+            tipo: ['NATURAL'],
           })
         : this._fb.group({
             nombre: ['', [Validators.minLength(3)]],
             telefono: ['', [Validators.minLength(6)]],
+            tipo: ['JURIDICO'],
           });
   }
 
   showDetails(procedure: ProcedureTableData) {
-    Object.entries(this.getValidParamsForm()).forEach(([key, value]) => {
-      this.paginatorService.searchParams.set(key, String(value));
-    });
-    this.paginatorService.searchParams.set('typeApplicant', this.typeApplicant);
-    this.paginatorService.searchParams.set('typeSearch', this.typeSearch);
     const params = {
       limit: this.paginatorService.limit,
-      offset: this.paginatorService.offset,
+      offset: this.paginatorService.index,
       search: true,
     };
     this.router.navigate(['reportes/solicitante', procedure.group, procedure.id_procedure], {
@@ -65,41 +65,30 @@ export class ApplicantComponent implements OnInit {
   }
 
   search() {
-    const applicantProps = this.getValidParamsForm();
-    if (Object.keys(applicantProps).length === 0) return;
-    applicantProps.tipo = this.typeApplicant;
-    this._reportService
+    if (this.formApplicant.invalid) return;
+    const applicantParams = this.reportService.getValidFormParameters(this.formApplicant.value);
+    if (Object.keys(applicantParams).length === 0) return;
+    this.reportService
       .searchProcedureByApplicant(
         { limit: this.paginatorService.limit, offset: this.paginatorService.offset },
-        applicantProps,
+        applicantParams,
         this.typeSearch
       )
       .subscribe((resp) => {
-        this.datasource = resp.procedures;
+        this.datasource.set(resp.procedures);
         this.paginatorService.length = resp.length;
       });
   }
+
   generateReport() {
     this.paginatorService.offset = 0;
+    this.paginatorService.cache['form'] = this.formApplicant.value;
     this.search();
   }
-  getValidParamsForm(): searchParamsApplicant {
-    return Object.entries(this.formApplicant.value).reduce(
-      (acc, [key, value]) => (value ? { ...acc, [key]: value } : acc),
-      {}
-    );
-  }
-  restartSearchParams() {
-    this.typeApplicant = (this.paginatorService.searchParams.get('typeApplicant') as typeApplicant) ?? 'NATURAL';
-    this.typeSearch = (this.paginatorService.searchParams.get('typeSearch') as validSearchProperty) ?? 'solicitante';
-    this.changeFormApplicant();
-    this.formApplicant.patchValue(Object.fromEntries(this.paginatorService.searchParams));
-  }
 
-  resetForm() {
-    this.datasource = [];
-    this.formApplicant.reset();
-    this.paginatorService.searchParams.clear();
-    this.paginatorService.resetPagination();
+  loadSearchParams() {
+    this.formApplicant.patchValue(this.paginatorService.cache['form'] ?? {});
+    if (!this.paginatorService.searchMode) return;
+    this.search();
   }
 }

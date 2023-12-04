@@ -1,17 +1,7 @@
 <p>
-    <mat-toolbar color="primary">
-        
-        <span>{{title}}</span>
-        <span class="example-spacer"></span>
-        <button *ngIf="showPDF" matTooltip="Generar PDF" mat-icon-button (click)="call_pdf()"
-            class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-            <mat-icon>picture_as_pdf</mat-icon>
-        </button>
-
-        <button *ngIf="showAdd" matTooltip="Agregar registro" mat-icon-button (click)="call_Add()"
-            class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-            <mat-icon>add</mat-icon>
-        </button>
-
-    </mat-toolbar>
+  <mat-toolbar color="primary">
+    <sidenav-button></sidenav-button>
+    <span>{{ title }}</span>
+    <span class="example-spacer"></span>
+  </mat-toolbar>
 </p>

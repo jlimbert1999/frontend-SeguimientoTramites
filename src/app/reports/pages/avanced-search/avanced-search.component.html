@@ -1,5 +1,5 @@
 <div class="animate__animated animate__fadeIn">
-  <report-title title="Reporte: Busqueda avanazada"></report-title>
+  <toolbar title="Reporte: Unidad" />
   <div class="container">
     <mat-accordion>
       <mat-expansion-panel expanded="true">
@@ -59,7 +59,7 @@
             <div class="col-sm-6">
               <app-server-mat-select-search
                 placeholder="Tipo de tramite"
-                [currentOption]="initialMatSelectValue"
+                [currentOption]="currentMatSelectOption"
                 [options]="types"
                 (keyupEvent)="searchTypesProcedures($event)"
                 (selectEvent)="selectTypeProcedure($event)"
@@ -67,7 +67,6 @@
             </div>
           </div>
           <mat-action-row>
-            <button mat-button color="warn" (click)="reset()">Restablecer</button>
             <button mat-button color="primary" [disabled]="this.formProcedure.invalid" (click)="generateReport()">
               BUSCAR
             </button>
@@ -79,11 +78,11 @@
       <div class="table-container">
         <app-table-procedure
           [tableColumns]="displaycolums"
-          [dataSource]="datasource"
+          [dataSource]="datasource()"
           (showDetails)="showDetails($event)"
         ></app-table-procedure>
       </div>
-      <app-paginator [pageSizeOptions]="[5, 10, 30, 50]" (page)="search()"></app-paginator>
+      <app-paginator [pageSizeOptions]="[5, 10, 30, 50]" (changePage)="search()"></app-paginator>
     </div>
   </div>
 </div>

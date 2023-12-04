@@ -1,5 +1,5 @@
 <div class="animate__animated animate__fadeIn">
-  <report-title title="Reporte: Unidad"></report-title>
+  <toolbar title="Reporte: Unidad"></toolbar>
   <div class="container">
     <mat-accordion>
       <mat-expansion-panel expanded="true">
@@ -18,7 +18,7 @@
                 </mat-select>
               </mat-form-field>
             </div>
-            <div class="col-sm-7">
+            <div class="col-sm-6">
               <simple-mat-select-search
                 placehorder="Seleccione un funcionario"
                 [currentOption]="currentSelectedOption"
@@ -26,7 +26,7 @@
                 [options]="matSelectOptions()"
               ></simple-mat-select-search>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-4">
               <mat-form-field>
                 <mat-label>Rango de ingreso</mat-label>
                 <mat-date-range-input [rangePicker]="picker">

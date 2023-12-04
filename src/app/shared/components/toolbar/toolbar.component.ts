@@ -1,37 +1,17 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { map, Observable, shareReplay } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-toolbar',
+  selector: 'toolbar',
   templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss']
+  styles: `
+      p {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolbarComponent {
-  @Input() title: string
-
-  @Input() showAdd: boolean = false
-  @Output() add = new EventEmitter();
-
-  @Input() showPDF: boolean = false
-  @Output() pdf = new EventEmitter();
-
-
- 
-
-
-  constructor() {
-  }
-
-  call_Add() {
-    this.add.emit()
-  }
-
-  call_pdf() {
-    this.pdf.emit()
-  }
-
-  hideMenu() {
-
-  }
+  @Input() title: string = 'Sin titulo';
 }

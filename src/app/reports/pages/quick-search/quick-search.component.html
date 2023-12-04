@@ -1,18 +1,23 @@
-<div class="container h-100">
-  <div class="row h-100 justify-content-center align-items-center">
-    <div class="col-sm-6">
-      <div class="card bg-transparent text-center animate__animated animate__fadeInDown">
-        <div class="card-header">BUSQUEDA RAPIDA</div>
-        <div class="card-body">
-          <mat-form-field class="example-form-field">
-            <mat-label>Alterno del tramite a buscar</mat-label>
-            <input [formControl]="formSearch" matInput type="text" />
-            <button matSuffix mat-icon-button (click)="searchProcedure()">
-              <mat-icon>search</mat-icon>
-            </button>
-          </mat-form-field>
+<toolbar title="Reporte: Busqueda" />
+  <div class="container h-75" style="height: 75%;">
+    <div class="row h-100 justify-content-center align-items-center">
+      <div class="col-sm-6">
+        <div class="card bg-transparent text-center animate__animated animate__fadeInDown">
+          <div class="card-header">BUSQUEDA RAPIDA</div>
+          <div class="card-body">
+            <mat-form-field class="example-form-field">
+              <mat-label>Alterno del tramite a buscar</mat-label>
+              <input [formControl]="formSearch" matInput type="text" placeholder="Ingrese el alterno completo" />
+              <button matSuffix mat-icon-button (click)="searchProcedure()">
+                <mat-icon>search</mat-icon>
+              </button>
+              @if (formSearch.invalid) {
+              <mat-error>Solo LETRAS / NUMEROS / GUIONES</mat-error>
+              }
+            </mat-form-field>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+
 </div>

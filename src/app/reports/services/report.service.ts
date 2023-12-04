@@ -36,42 +36,46 @@ export class ReportService {
     applicant: searchParamsApplicant,
     typeSearch: 'solicitante' | 'representante'
   ) {
-    const params = new HttpParams().set('limit', limit).set('offset', offset * limit);
+    const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
       .post<{ procedures: external[]; length: number }>(`${base_url}/reports/procedure/${typeSearch}`, applicant, {
         params,
       })
       .pipe(
         map((resp) => {
-          const tableData = resp.procedures.map(({ details: { solicitante }, ...values }) => {
-            const fullname =
-              solicitante.tipo === 'NATURAL'
-                ? [solicitante.nombre, solicitante.paterno, solicitante.materno].filter(Boolean).join(' ')
-                : `${solicitante.nombre}`;
+          const data: ProcedureTableData[] = resp.procedures.map(({ details: { solicitante }, ...values }) => {
             return {
-              _id: values._id,
+              id_procedure: values._id,
               code: values.code,
               reference: values.reference,
               state: values.state,
               startDate: values.startDate,
-              applicant: fullname,
+              applicant: [solicitante.nombre, solicitante.paterno, solicitante.materno].filter(Boolean).join(' '),
               group: values.group,
             };
           });
-          return { procedures: tableData, length: resp.length };
+          return { procedures: data, length: resp.length };
         })
       );
   }
 
   searchProcedureByProperties({ limit, offset }: paginationParams, form: Object) {
-    const params = new HttpParams().set('limit', limit).set('offset', offset * limit);
-    return this.http.post<{ procedures: procedure[]; length: number }>(
-      `${base_url}/reports/procedure`,
-      this.getValidFormParameters(form),
-      {
-        params,
-      }
-    );
+    const params = new HttpParams().set('limit', limit).set('offset', offset);
+    return this.http
+      .post<{ procedures: procedure[]; length: number }>(`${base_url}/reports/procedure`, form, { params })
+      .pipe(
+        map((resp) => {
+          const data = resp.procedures.map(({ _id, code, reference, startDate, state, group }) => ({
+            id_procedure: _id,
+            date: startDate,
+            reference,
+            state,
+            group,
+            code,
+          }));
+          return { procedures: data, length: resp.length };
+        })
+      );
   }
   getDetailsDependentsByUnit() {
     return this.http.get<dependentDetails[]>(`${base_url}/reports/dependents`);
