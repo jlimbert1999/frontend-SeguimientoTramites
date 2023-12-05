@@ -77,6 +77,6 @@ export class HomeComponent {
     this.socketService.disconnect();
   }
   get example() {
-    return Object.fromEntries(this.paginat.searchParams);
+    return this.paginat.cache;
   }
 }

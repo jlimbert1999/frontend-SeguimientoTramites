@@ -46,12 +46,12 @@ export class ReportService {
           const data: ProcedureTableData[] = resp.procedures.map(({ details: { solicitante }, ...values }) => {
             return {
               id_procedure: values._id,
+              group: values.group,
               code: values.code,
               reference: values.reference,
               state: values.state,
-              startDate: values.startDate,
+              date: values.startDate,
               applicant: [solicitante.nombre, solicitante.paterno, solicitante.materno].filter(Boolean).join(' '),
-              group: values.group,
             };
           });
           return { procedures: data, length: resp.length };
