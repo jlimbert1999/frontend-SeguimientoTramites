@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { MaterialModule } from '../angular-material/material.module';
+import { MaterialModule } from '../material/material.module';
 import { SharedModule } from '../shared/shared.module';
 import { DependenciasComponent } from './pages/dependencias/dependencias.component';
 import { InstitucionesComponent } from './pages/instituciones/instituciones.component';

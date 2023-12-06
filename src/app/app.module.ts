@@ -10,7 +10,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AdministrationModule } from './administration/administration.module';
-import { MaterialModule } from './angular-material/material.module';
+import { MaterialModule } from './material/material.module';
 import { InterceptorService } from './services/interceptor.service';
 import { AuthModule } from './auth/auth.module';
 import { ProcedureModule } from './procedures/procedure.module';

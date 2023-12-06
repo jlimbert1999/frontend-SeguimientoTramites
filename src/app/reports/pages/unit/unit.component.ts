@@ -38,7 +38,7 @@ export class UnitComponent implements OnInit {
     { columnDef: 'code', header: 'Alterno' },
     { columnDef: 'reference', header: 'Referencia' },
     { columnDef: 'state', header: 'Estado' },
-    { columnDef: 'manager', header: 'Enviado a' },
+    { columnDef: 'applicant', header: 'Enviado a' },
     { columnDef: 'date', header: 'Ingreso' },
   ];
 

@@ -1,11 +1,15 @@
-import { groupProcedure } from 'src/app/procedures/interfaces';
+import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
 
 export interface ProcedureTableColumns {
-  columnDef: string;
+  columnDef: keyof ProcedureTableData;
   header: string;
 }
 export interface ProcedureTableData {
   id_procedure: string;
   group: groupProcedure;
-  [key: string]: string;
+  state: stateProcedure;
+  reference: string;
+  applicant?: string;
+  date: string;
+  code: string;
 }

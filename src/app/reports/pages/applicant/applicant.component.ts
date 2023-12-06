@@ -2,12 +2,10 @@ import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/cor
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { PaginatorService, PdfGeneratorService } from 'src/app/shared/services';
 import { typeApplicant } from 'src/app/procedures/interfaces';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ReportService } from '../../services/report.service';
 import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
-import { PDFGenerator } from 'src/app/shared/helpers/pdfs/pdf.config';
-
 type applicant = 'solicitante' | 'representante';
 
 @Component({
@@ -16,7 +14,6 @@ type applicant = 'solicitante' | 'representante';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApplicantComponent implements OnInit {
-  pdf = new PDFGenerator();
   public typeSearch: applicant = 'solicitante';
   public typeApplicant: typeApplicant = 'NATURAL';
   public formApplicant: FormGroup = this.buildFormByTypeApplicat();
@@ -33,7 +30,8 @@ export class ApplicantComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private reportService: ReportService,
-    private paginatorService: PaginatorService
+    private paginatorService: PaginatorService,
+    private pdf: PdfGeneratorService
   ) {}
 
   ngOnInit(): void {
@@ -72,7 +70,6 @@ export class ApplicantComponent implements OnInit {
     this.paginatorService.offset = 0;
     this.saveSearchParams();
     this.search();
-    this.create();
   }
   saveSearchParams() {
     this.paginatorService.cache['form'] = this.formApplicant.value;
@@ -108,7 +105,12 @@ export class ApplicantComponent implements OnInit {
       tipo: ['JURIDICO'],
     });
   }
-  create() {
-    this.pdf.createMethod();
+  generatePDF() {
+    this.pdf.generateReportSheet({
+      title: 'REPORTE: SOLICITANTE',
+      fields: this.formApplicant.value,
+      datasource: this.datasource(),
+      displayColumns: this.displaycolums,
+    });
   }
 }

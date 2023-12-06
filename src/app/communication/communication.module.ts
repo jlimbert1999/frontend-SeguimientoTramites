@@ -5,7 +5,7 @@ import { NgModule } from '@angular/core';
 
 import { CommunicationRoutingModule } from './communication-routing.module';
 import { SharedModule } from '../shared/shared.module';
-import { MaterialModule } from '../angular-material/material.module';
+import { MaterialModule } from '../material/material.module';
 import { ProcedureModule } from '../procedures/procedure.module';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 

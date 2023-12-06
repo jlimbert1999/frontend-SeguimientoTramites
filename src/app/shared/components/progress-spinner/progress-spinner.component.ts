@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MaterialModule } from 'src/app/angular-material/material.module';
+import { MaterialModule } from 'src/app/material/material.module';
 
 @Component({
   selector: 'progress-spinner',

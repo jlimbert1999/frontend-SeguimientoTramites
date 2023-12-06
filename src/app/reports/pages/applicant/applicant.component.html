@@ -81,7 +81,12 @@
           </div>
         </div>
         <mat-action-row>
-          <button mat-button color="primary" (click)="generateReport()" [disabled]="formApplicant.invalid">
+          <button mat-raised-button (click)="generatePDF()" [disabled]="datasource().length === 0">
+            <mat-icon>print</mat-icon>
+            IMPRIMIR
+          </button>
+          <button mat-raised-button color="primary" (click)="generateReport()" [disabled]="formApplicant.invalid">
+            <mat-icon>search</mat-icon>
             BUSCAR
           </button>
         </mat-action-row>

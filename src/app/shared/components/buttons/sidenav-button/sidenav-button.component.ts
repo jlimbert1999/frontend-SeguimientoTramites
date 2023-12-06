@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
-import { MaterialModule } from 'src/app/angular-material/material.module';
+import { MaterialModule } from 'src/app/material/material.module';
 import { AppearanceService } from 'src/app/services/appearance.service';
 
 @Component({

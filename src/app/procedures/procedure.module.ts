@@ -13,7 +13,7 @@ import { DetailComponent } from './pages/detail/detail.component';
 import { FilterObservationsPipe } from './pipes/filter-observations.pipe';
 import { InternalDetailComponent } from './components/internal-detail/internal-detail.component';
 import { InternalComponent } from './pages/internal/internal.component';
-import { MaterialModule } from '../angular-material/material.module';
+import { MaterialModule } from '../material/material.module';
 import { ObservationsComponent } from './components/observations/observations.component';
 import { ProcedureRoutingModule } from './procedure-routing.module';
 import { SharedModule } from '../shared/shared.module';
