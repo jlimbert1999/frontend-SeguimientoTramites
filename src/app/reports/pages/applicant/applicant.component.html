@@ -10,8 +10,8 @@
           <div class="col-12 mb-2">
             @if (typeSearch==='solicitante') {
             <section>
-              <label>TIPO DE SOLICITANTE: </label>
-              <mat-radio-group (change)="buildFormByTypeApplicat()" [(ngModel)]="typeApplicant">
+              <label>SOLICITANTE: </label>
+              <mat-radio-group (change)="changeTypeApplicant()" [(ngModel)]="typeApplicant">
                 <mat-radio-button value="NATURAL"> NATURAL </mat-radio-button>
                 <mat-radio-button value="JURIDICO"> JURIDICO </mat-radio-button>
               </mat-radio-group>
@@ -100,7 +100,7 @@
           (showDetails)="showDetails($event)"
         />
       </div>
-      <app-paginator [pageSizeOptions]="[10, 20, 30]" (changePage)="search()"></app-paginator>
+      <app-paginator [pageSizeOptions]="[5, 10, 25, 50]" (changePage)="search()"></app-paginator>
     </div>
   </div>
 </div>

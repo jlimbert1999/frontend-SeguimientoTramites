@@ -62,7 +62,11 @@ export class ReportService {
   searchProcedureByProperties({ limit, offset }: paginationParams, form: Object) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
-      .post<{ procedures: procedure[]; length: number }>(`${base_url}/reports/procedure`, form, { params })
+      .post<{ procedures: procedure[]; length: number }>(
+        `${base_url}/reports/procedure`,
+        this.getValidFormParameters(form),
+        { params }
+      )
       .pipe(
         map((resp) => {
           const data = resp.procedures.map(({ _id, code, reference, startDate, state, group }) => ({

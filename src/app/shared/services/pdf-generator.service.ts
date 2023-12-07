@@ -11,20 +11,7 @@ import { ReportSheet } from '../interfaces';
   providedIn: 'root',
 })
 export class PdfGeneratorService {
-  generateReportSheet({ title, datasource, displayColumns, fields }: ReportSheet) {
-    const tableParams: Table = {
-      widths: [100, '*'],
-      headerRows: 1,
-      body: [
-        [{ text: 'PARAMETROS BUSQUEDA', bold: true, colSpan: 2 }, ''],
-        ...Object.keys(fields).map((key) => {
-          let text = key;
-          if (key === 'code') text = 'ALTERNO';
-          if (key === 'reference') text = 'REFERENCIA';
-          return [{ text: text.toUpperCase(), bold: true }, fields[key]];
-        }),
-      ],
-    };
+  generateReportSheet({ title, datasource, displayColumns }: ReportSheet) {
     const tableResults: Table = {
       headerRows: 1,
       dontBreakRows: true,
@@ -46,11 +33,6 @@ export class PdfGeneratorService {
     };
     const content: Content[] = [
       { text: title, alignment: 'center', bold: true },
-      {
-        table: tableParams,
-        style: 'table',
-        layout: 'lightHorizontalLines',
-      },
       { table: tableResults, style: 'table', layout: 'lightHorizontalLines', fontSize: 8 },
     ];
     const docDefinition: TDocumentDefinitions = {

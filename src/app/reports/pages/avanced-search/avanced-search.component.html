@@ -1,5 +1,5 @@
 <div class="animate__animated animate__fadeIn">
-  <toolbar title="Reporte: Unidad" />
+  <toolbar title="Reporte: Busqueda avanzada" />
   <div class="container">
     <mat-accordion>
       <mat-expansion-panel expanded="true">
@@ -45,8 +45,6 @@
           </div>
 
           <div class="row mt-2">
-            <span>Propiedades de grupo</span>
-            <hr />
             <div class="col-sm-3">
               <mat-form-field>
                 <mat-label>GRUPO TRAMITE:</mat-label>
@@ -60,7 +58,7 @@
               <app-server-mat-select-search
                 placeholder="Tipo de tramite"
                 [currentOption]="currentMatSelectOption"
-                [options]="types"
+                [options]="types()"
                 (keyupEvent)="searchTypesProcedures($event)"
                 (selectEvent)="selectTypeProcedure($event)"
               ></app-server-mat-select-search>

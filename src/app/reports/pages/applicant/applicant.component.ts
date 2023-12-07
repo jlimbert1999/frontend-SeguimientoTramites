@@ -6,7 +6,6 @@ import { PaginatorService, PdfGeneratorService } from 'src/app/shared/services';
 import { typeApplicant } from 'src/app/procedures/interfaces';
 import { ReportService } from '../../services/report.service';
 import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
-type applicant = 'solicitante' | 'representante';
 
 @Component({
   selector: 'app-applicant',
@@ -14,7 +13,7 @@ type applicant = 'solicitante' | 'representante';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApplicantComponent implements OnInit {
-  public typeSearch: applicant = 'solicitante';
+  public typeSearch: 'solicitante' | 'representante' = 'solicitante';
   public typeApplicant: typeApplicant = 'NATURAL';
   public formApplicant: FormGroup = this.buildFormByTypeApplicat();
   public datasource = signal<ProcedureTableData[]>([]);
@@ -77,17 +76,21 @@ export class ApplicantComponent implements OnInit {
     this.paginatorService.cache['typeApplicant'] = this.typeApplicant;
   }
   loadSearchParams() {
+    if (!this.paginatorService.searchMode) return;
     this.typeSearch = this.paginatorService.cache['typeSearch'] ?? 'solicitante';
     this.typeApplicant = this.paginatorService.cache['typeApplicant'] ?? 'NATURAL';
     this.formApplicant = this.buildFormByTypeApplicat();
     this.formApplicant.patchValue(this.paginatorService.cache['form']);
-    if (!this.paginatorService.searchMode) return;
     this.search();
   }
   changeTypeSearch() {
     this.typeApplicant = 'NATURAL';
     this.formApplicant = this.buildFormByTypeApplicat();
   }
+  changeTypeApplicant() {
+    this.formApplicant = this.buildFormByTypeApplicat();
+  }
+
   buildFormByTypeApplicat(): FormGroup {
     if (this.typeApplicant === 'NATURAL') {
       return this.fb.group({
@@ -108,7 +111,6 @@ export class ApplicantComponent implements OnInit {
   generatePDF() {
     this.pdf.generateReportSheet({
       title: 'REPORTE: SOLICITANTE',
-      fields: this.formApplicant.value,
       datasource: this.datasource(),
       displayColumns: this.displaycolums,
     });

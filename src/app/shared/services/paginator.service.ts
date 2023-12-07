@@ -14,7 +14,6 @@ export class PaginatorService {
 
   public searchMode: boolean = false;
   public searchParams = new Map<string, string>();
-  public cacheStore: Record<string, any[]> = {};
   public cache: Record<string, any> = {};
 
   set setPage({ pageIndex, pageSize }: PaginationParams) {
@@ -31,8 +30,7 @@ export class PaginatorService {
 
   resetSearchParams() {
     if (this.searchMode) return;
-    this.searchParams.clear();
-    this.cacheStore = {};
+    this.cache = {};
   }
 
   set offset(value: number) {

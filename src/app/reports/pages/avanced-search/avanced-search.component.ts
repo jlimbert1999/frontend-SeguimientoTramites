@@ -12,17 +12,16 @@ import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
 @Component({
   selector: 'app-avanced-search',
   templateUrl: './avanced-search.component.html',
-  styleUrl: './avanced-search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AvancedSearchComponent implements OnInit {
   public formProcedure: FormGroup = this.fb.group({
-    code: [''],
+    code: ['', Validators.minLength(4)],
     state: [''],
     reference: [''],
     type: [''],
-    start: ['', Validators.required],
-    end: [new Date(), Validators.required],
+    start: [''],
+    end: [new Date()],
     group: [''],
   });
   public datasource = signal<ProcedureTableData[]>([]);
@@ -32,7 +31,7 @@ export class AvancedSearchComponent implements OnInit {
     { columnDef: 'state', header: 'Estado' },
     { columnDef: 'date', header: 'Fecha' },
   ];
-  public types: MatSelectSearchData<string>[] = [];
+  public types = signal<MatSelectSearchData<string>[]>([]);
 
   constructor(
     private fb: FormBuilder,
@@ -46,7 +45,7 @@ export class AvancedSearchComponent implements OnInit {
   }
   searchTypesProcedures(text: string) {
     this.reportService.getProceduresByText(text).subscribe((types) => {
-      this.types = types.map((el) => ({ value: el._id, text: el.nombre }));
+      this.types.set(types.map((el) => ({ value: el._id, text: el.nombre })));
     });
   }
 
@@ -82,13 +81,13 @@ export class AvancedSearchComponent implements OnInit {
 
   saveSearchParams() {
     this.paginatorService.cache['form'] = this.formProcedure.value;
-    this.paginatorService.cache['types'] = this.types;
+    this.paginatorService.cache['types'] = this.types();
   }
 
   loadSearchParams() {
     if (!this.paginatorService.searchMode) return;
     this.formProcedure.patchValue(this.paginatorService.cache['form'] ?? {});
-    this.types = this.paginatorService.cache['types'] ?? [];
+    this.types.set(this.paginatorService.cache['types'] ?? []);
     this.search();
   }
 
