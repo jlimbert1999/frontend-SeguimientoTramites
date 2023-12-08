@@ -54,11 +54,7 @@ export class ApplicantComponent implements OnInit {
     if (Object.keys(applicantParams).length <= 1) return;
     this.datasource.set([]);
     this.reportService
-      .searchProcedureByApplicant(
-        { limit: this.paginatorService.limit, offset: this.paginatorService.offset },
-        applicantParams,
-        this.typeSearch
-      )
+      .searchProcedureByApplicant(this.paginatorService.PaginationParams, applicantParams, this.typeSearch)
       .subscribe((resp) => {
         this.datasource.set(resp.procedures);
         this.paginatorService.length = resp.length;

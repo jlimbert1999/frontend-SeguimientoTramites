@@ -4,10 +4,10 @@ import { map } from 'rxjs';
 
 import { external, groupProcedure, procedure } from 'src/app/procedures/interfaces';
 import { account, typeProcedure } from 'src/app/administration/interfaces';
-import { paginationParams } from 'src/app/shared/interfaces';
+import { PaginationParameters } from 'src/app/shared/interfaces';
 import { communication } from 'src/app/communication/interfaces';
 import { environment } from 'src/environments/environment';
-import { ProcedureTableData, dependentDetails, searchParamsApplicant } from '../interfaces';
+import { ProcedureTableData, dependentDetails } from '../interfaces';
 
 const base_url = environment.base_url;
 @Injectable({
@@ -32,8 +32,8 @@ export class ReportService {
     return this.http.get<{ _id: string; group: groupProcedure }>(`${base_url}/reports/procedure/code`, { params });
   }
   searchProcedureByApplicant(
-    { limit, offset }: paginationParams,
-    applicant: searchParamsApplicant,
+    { limit, offset }: PaginationParameters,
+    applicant: Object,
     typeSearch: 'solicitante' | 'representante'
   ) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
@@ -59,7 +59,7 @@ export class ReportService {
       );
   }
 
-  searchProcedureByProperties({ limit, offset }: paginationParams, form: Object) {
+  searchProcedureByProperties({ limit, offset }: PaginationParameters, form: Object) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
       .post<{ procedures: procedure[]; length: number }>(
@@ -85,7 +85,7 @@ export class ReportService {
     return this.http.get<dependentDetails[]>(`${base_url}/reports/dependents`);
   }
 
-  searchProcedureByUnit({ limit, offset }: paginationParams, form: Object) {
+  searchProcedureByUnit({ limit, offset }: PaginationParameters, form: Object) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
       .post<{ communications: communication[]; length: number }>(

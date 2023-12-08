@@ -1,5 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
-interface PaginationParams {
+import { PaginationParameters } from '../interfaces';
+interface PaginationOptions {
   pageIndex: number;
   pageSize: number;
 }
@@ -16,7 +17,7 @@ export class PaginatorService {
   public searchParams = new Map<string, string>();
   public cache: Record<string, any> = {};
 
-  set setPage({ pageIndex, pageSize }: PaginationParams) {
+  set setPage({ pageIndex, pageSize }: PaginationOptions) {
     this.pageSize.set(pageSize);
     this.pageIndex.set(pageIndex);
   }
@@ -59,5 +60,9 @@ export class PaginatorService {
   get isSearchMode(): boolean {
     if (!this.searchMode || this.searchParams.size === 0) return false;
     return true;
+  }
+
+  get PaginationParams(): PaginationParameters {
+    return { limit: this.pageSize(), offset: this.pageIndex() };
   }
 }

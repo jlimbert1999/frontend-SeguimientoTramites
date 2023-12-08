@@ -1,5 +1,5 @@
-import { paginationParams } from 'src/app/shared/interfaces/pagination_params.interface';
+import { PaginationParameters } from 'src/app/shared/interfaces';
 
-export interface searchProcedureParams extends paginationParams {
+export interface searchProcedureParams extends PaginationParameters {
   text: string;
 }

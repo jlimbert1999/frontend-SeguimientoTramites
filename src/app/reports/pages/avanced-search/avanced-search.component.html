@@ -65,7 +65,13 @@
             </div>
           </div>
           <mat-action-row>
-            <button mat-button color="primary" [disabled]="this.formProcedure.invalid" (click)="generateReport()">
+            <button
+              mat-raised-button
+              color="primary"
+              [disabled]="this.formProcedure.invalid"
+              (click)="generateReport()"
+            >
+              <mat-icon>search</mat-icon>
               BUSCAR
             </button>
           </mat-action-row>

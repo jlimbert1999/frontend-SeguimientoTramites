@@ -20,8 +20,8 @@ export class AvancedSearchComponent implements OnInit {
     state: [''],
     reference: [''],
     type: [''],
-    start: [''],
-    end: [new Date()],
+    start: ['', Validators.required],
+    end: [new Date(), Validators.required],
     group: [''],
   });
   public datasource = signal<ProcedureTableData[]>([]);
@@ -56,10 +56,7 @@ export class AvancedSearchComponent implements OnInit {
   search() {
     if (this.formProcedure.invalid) return;
     this.reportService
-      .searchProcedureByProperties(
-        { limit: this.paginatorService.limit, offset: this.paginatorService.index },
-        this.formProcedure.value
-      )
+      .searchProcedureByProperties(this.paginatorService.PaginationParams, this.formProcedure.value)
       .subscribe((resp) => {
         this.paginatorService.length = resp.length;
         this.datasource.set(resp.procedures);

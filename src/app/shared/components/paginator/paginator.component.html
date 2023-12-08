@@ -1,3 +1,4 @@
+@if(dataLength>0){
 <mat-paginator
   showFirstLastButtons
   [pageIndex]="pageIndex"
@@ -7,3 +8,4 @@
   (page)="onPageChange($event)"
 >
 </mat-paginator>
+}
