@@ -57,7 +57,9 @@
     <mat-sidenav-content>
       <!-- <pre>{{ example | json }}</pre> -->
       @if (isLoaging) {
-      <progress-spinner></progress-spinner>
+      <div class="animate__animated animate__fadeIn">
+        <progress-spinner></progress-spinner>
+      </div>
       }
       <router-outlet></router-outlet>
     </mat-sidenav-content>

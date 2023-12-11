@@ -8,6 +8,7 @@ import { PaginationParameters } from 'src/app/shared/interfaces';
 import { communication } from 'src/app/communication/interfaces';
 import { environment } from 'src/environments/environment';
 import { ProcedureTableData, dependentDetails } from '../interfaces';
+import { ReportTotalIncomingMails } from '../interfaces/report-total-incoming.interface';
 
 const base_url = environment.base_url;
 @Injectable({
@@ -107,5 +108,9 @@ export class ReportService {
           return { data, length: resp.length };
         })
       );
+  }
+
+  getTotalIncomingMailsByInstitution(id_institution: string) {
+    return this.http.get<ReportTotalIncomingMails[]>(`${base_url}/reports/total/incoming/${id_institution}`);
   }
 }

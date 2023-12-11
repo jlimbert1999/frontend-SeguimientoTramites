@@ -12,6 +12,7 @@ import { ReportsRoutingModule } from './reports-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { TableProcedureComponent } from './components/table-procedure/table-procedure.component';
 import { UnitComponent } from './pages/unit/unit.component';
+import { DashboardTotalCommunicationsComponent } from './pages/dashboard-total-communications/dashboard-total-communications.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { UnitComponent } from './pages/unit/unit.component';
     AvancedSearchComponent,
     DependentsComponent,
     UnitComponent,
+    DashboardTotalCommunicationsComponent,
   ],
   imports: [CommonModule, ReportsRoutingModule, MaterialModule, FormsModule, ReactiveFormsModule, SharedModule],
 })
