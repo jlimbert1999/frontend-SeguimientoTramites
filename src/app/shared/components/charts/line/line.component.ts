@@ -35,7 +35,11 @@ export class LineComponent implements OnInit {
     },
     xAxis: {},
     yAxis: { type: 'category' },
-    series: [{ type: 'bar', label: { show: true, position: 'right' } }, { type: 'bar' }, { type: 'bar' }],
+    series: [
+      { type: 'bar', label: { show: true, position: 'right' } },
+      { type: 'bar', label: { show: true, position: 'right' } },
+
+    ],
   };
   @Input() set data(values: ChartLineData[]) {
     this.options = {

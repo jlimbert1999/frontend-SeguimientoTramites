@@ -1,14 +1,15 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
-import { external, groupProcedure, procedure } from 'src/app/procedures/interfaces';
-import { account, typeProcedure } from 'src/app/administration/interfaces';
+import { external, groupProcedure, procedure, stateProcedure } from 'src/app/procedures/interfaces';
+import { account, institution, typeProcedure } from 'src/app/administration/interfaces';
 import { PaginationParameters } from 'src/app/shared/interfaces';
-import { communication } from 'src/app/communication/interfaces';
+import { communication, statusMail } from 'src/app/communication/interfaces';
 import { environment } from 'src/environments/environment';
 import { ProcedureTableData, dependentDetails } from '../interfaces';
 import { ReportTotalIncomingMails } from '../interfaces/report-total-incoming.interface';
+import { GlobalReport } from '../interfaces/global-report.interface';
 
 const base_url = environment.base_url;
 @Injectable({
@@ -26,6 +27,10 @@ export class ReportService {
 
   getOfficersInMyDependency() {
     return this.http.get<account[]>(`${base_url}/reports/dependency/accounts`);
+  }
+
+  getInstitutions() {
+    return this.http.get<institution[]>(`${base_url}/reports/institutions`);
   }
 
   searchProcedureByCode(code: string) {
@@ -111,6 +116,21 @@ export class ReportService {
   }
 
   getTotalIncomingMailsByInstitution(id_institution: string) {
-    return this.http.get<ReportTotalIncomingMails[]>(`${base_url}/reports/total/incoming/${id_institution}`);
+    return this.http.get<ReportTotalIncomingMails[]>(`${base_url}/reports/total/communication/${id_institution}/receiver`).pipe(
+      map((response) => {
+        const data = response.map((element) => {
+          const details = element.details.reduce<{ [key: string]: number }>((acc, { status, count }) => {
+            acc[status] = count;
+            return acc;
+          }, {});
+          return {
+            label: element.name,
+            details,
+          };
+        });
+        console.log(data);
+        return data;
+      })
+    );
   }
 }

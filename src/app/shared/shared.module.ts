@@ -20,6 +20,7 @@ import { TimelineComponent } from './components/timeline/timeline.component';
 import { LineComponent } from './components/charts/line/line.component';
 import { SidenavButtonComponent } from './components/buttons/sidenav-button/sidenav-button.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
+import { TableComponent } from './components/table/table.component';
 @NgModule({
   declarations: [
     SimpleMatSelectSearchComponent,
@@ -30,6 +31,7 @@ import { ProgressSpinnerComponent } from './components/progress-spinner/progress
     PaginatorComponent,
     TimelineComponent,
     ToolbarComponent,
+    // TableComponent,
     LineComponent,
     FullnamePipe,
     StatePipe,
