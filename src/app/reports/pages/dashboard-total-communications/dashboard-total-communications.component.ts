@@ -1,15 +1,10 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { ChartLineData } from '../../interfaces/chart-line.data.interface';
+import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReportService } from '../../services/report.service';
-import { institution } from 'src/app/administration/interfaces';
 import { MatSelectSearchData } from 'src/app/shared/interfaces';
-import { FormControl } from '@angular/forms';
-import { GlobalReport } from '../../interfaces/global-report.interface';
 import { statusMail } from 'src/app/communication/interfaces';
-import { stateProcedure } from 'src/app/procedures/interfaces';
+import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
 
-type reportType = 'records' | 'incoming' | 'outgoing' | null;
 @Component({
   selector: 'app-dashboard-total-communications',
   templateUrl: `./dashboard-total-communications.component.html`,
@@ -17,42 +12,40 @@ type reportType = 'records' | 'incoming' | 'outgoing' | null;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardTotalCommunicationsComponent {
-  reportType = signal<reportType>(null);
-  columns = computed<{ columnDef: string; header: string }[]>(() => {
-    if (!this.reportType()) return [];
-    let colums:{ columnDef: string; header: string }[] = [];
-    // if (this.reportType() === 'incoming' || this.reportType() === 'outgoing') {
-    //   colums = [
-    //     { columnDef: 'dependency', header: 'Unidad' },
-    //     { columnDef: statusMail.Received, header: 'Recibidos' },
-    //     { columnDef: statusMail.Archived, header: 'Archivados' },
-    //     { columnDef: statusMail.Pending, header: 'Pendientes' },
-    //     { columnDef: statusMail.Completed, header: 'Completados' },
-    //     { columnDef: statusMail.Rejected, header: 'Rechazados' },
-    //   ];
-    // }
-    // return colums
+  formSearch: FormGroup = this.fb.group({
+    id_institution: ['', Validators.required],
+    group: ['', Validators.required],
+    participant: ['', Validators.required],
+  });
+  public collection = signal<'communications' | 'procedures' | null>(null);
+  public displayedColumns = computed<{ columnDef: string; header: string }[]>(() => {
+    if (!this.collection()) return [];
+    if (this.collection() === 'communications')
+      return [
+        { columnDef: 'dependency', header: 'Unidad' },
+        { columnDef: statusMail.Archived, header: 'Archivados' },
+        { columnDef: statusMail.Completed, header: 'Despachados' },
+        { columnDef: statusMail.Pending, header: 'Pendientes' },
+        { columnDef: statusMail.Received, header: 'Recibidos' },
+        { columnDef: statusMail.Rejected, header: 'Rechazados' },
+      ];
     return [
       { columnDef: 'dependency', header: 'Unidad' },
-      { columnDef: stateProcedure.ANULADO, header: 'Anulados' },
-      { columnDef: stateProcedure.CONCLUIDO, header: 'Concluidos' },
-      { columnDef: stateProcedure.INSCRITO, header: 'Inscritos' },
-      { columnDef: stateProcedure.OBSERVADO, header: 'Observados' },
+      { columnDef: stateProcedure.INSCRITO, header: 'Inscrito' },
       { columnDef: stateProcedure.REVISION, header: 'En revision' },
+      { columnDef: stateProcedure.OBSERVADO, header: 'Observador' },
+      { columnDef: stateProcedure.CONCLUIDO, header: 'Concluidos' },
       { columnDef: stateProcedure.SUSPENDIDO, header: 'Suspendidos' },
+      { columnDef: stateProcedure.ANULADO, header: 'Anulados' },
     ];
   });
-  displayedColumns = this.columns().map((c) => c.columnDef);
-
-  institutions = signal<MatSelectSearchData<string>[]>([]);
   institution: string = '';
+  institutions = signal<MatSelectSearchData<string>[]>([]);
+  dataSource = signal<{ [key: string]: number | string }[]>([]);
 
-  fontStyleControl = new FormControl('');
-  fontStyle?: string;
-  data = signal<GlobalReport[]>([]);
-
-  constructor(private reportService: ReportService) {
+  constructor(private reportService: ReportService, private fb: FormBuilder) {
     this.getInstitutions();
+    effect(() => {});
   }
   getInstitutions() {
     this.reportService.getInstitutions().subscribe((resp) => {
@@ -60,12 +53,21 @@ export class DashboardTotalCommunicationsComponent {
     });
   }
   selectInstitution(id_institution: string) {
-    this.institution = id_institution;
+    this.formSearch.get('id_institution')?.setValue(id_institution);
   }
+  // selectTypeSearch(participant: fromData) {
+  //   if (participant==='incoming') this.formSearch.get('participant')?.setValue('emitter');
+  // }
 
   generate() {
-    this.reportService.getTotalIncomingMailsByInstitution(this.institution).subscribe((data) => {
-      this.data.set(data);
-    });
+    // this.reportService
+    //   .getTotalProceduresByInstitution()
+    //   .subscribe((resp) => {
+    //     this.dataSource.set(resp);
+    //   });
+  }
+
+  get groupProcedure() {
+    return groupProcedure;
   }
 }

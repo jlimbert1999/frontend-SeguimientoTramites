@@ -37,6 +37,7 @@ import { NgModule } from '@angular/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [],
@@ -79,6 +80,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     OverlayModule,
     PortalModule,
     ScrollingModule,
+    MatSortModule,
   ],
 })
 export class MaterialModule {}

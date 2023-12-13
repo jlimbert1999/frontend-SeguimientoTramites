@@ -1,36 +1,51 @@
 <toolbar title="Reporte: Total" />
-<div class="container">
-  <div class="row">
-    <div class="col-12 p-2">
-      <div class="alert alert-warning p-3" role="alert">
-        <h4 class="alert-heading">AVISO: Generacion de reporte</h4>
-        <p>
-          Los reportes generados en esta sección son extensos y pueden requerir un tiempo considerable para completarse.
-          El tiempo de espera dependerá de la cantidad de datos y usuarios en línea en este momento.
-        </p>
+<div class="container mb-4">
+  <form [formGroup]="formSearch">
+    <div class="row">
+      <div class="col-12 p-2">
+        <div class="alert alert-warning p-3" role="alert">
+          <h4 class="alert-heading">AVISO: Generacion de reporte</h4>
+          <p>
+            Los reportes generados en esta sección son extensos y pueden requerir un tiempo considerable para
+            completarse. El tiempo de espera dependerá de la cantidad de datos y usuarios en línea en este momento.
+          </p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <simple-mat-select-search
+          [options]="institutions()"
+          (selectEvent)="selectInstitution($event)"
+          placehorder="Seleccione una institucion"
+        ></simple-mat-select-search>
+      </div>
+      
+      <div class="col-sm-2">
+        <mat-form-field>
+          <mat-label>Buscar en: </mat-label>
+          <mat-select (selectionChange)="collection.set($event.value)">
+            <mat-option value="procedures">Administracion</mat-option>
+            <mat-option value="communications">Bandejas</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-button (click)="generate()">Generar</button>
+      </div>
+      <!-- @if(collection()==='ds'){
+        
+      } -->
+      <div class="col-sm-4">
+        <mat-form-field>
+          <mat-label>Grupo de tramite</mat-label>
+          <mat-select formControlName="group" matNativeControl required>
+            <mat-option [value]="groupProcedure.EXTERNAL">Tramites externos</mat-option>
+            <mat-option [value]="groupProcedure.INTERNAL">Tramites internos</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
     </div>
-
-    <div class="col-sm-4">
-      <simple-mat-select-search
-        [options]="institutions()"
-        (selectEvent)="selectInstitution($event)"
-      ></simple-mat-select-search>
-    </div>
-    <div class="col-sm-7">
-      <section class="example-section">
-        <mat-radio-group (change)="reportType.set($event.value)" [ngModel]="reportType()">
-          <mat-radio-button value="records">REGISTRADOS</mat-radio-button>
-          <mat-radio-button value="incoming">INGRESADOS</mat-radio-button>
-          <mat-radio-button value="outgoing">DESPACHADOS</mat-radio-button>
-        </mat-radio-group>
-      </section>
-      <button mat-button (click)="generate()">Generar</button>
-    </div>
-  </div>
+  </form>
 
   <div class="col-sm-12">
-   
+    <app-table [data]="dataSource()" [columns]="displayedColumns()" />
   </div>
   <div class="col-sm-8"></div>
 </div>
