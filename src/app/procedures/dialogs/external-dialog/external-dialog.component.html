@@ -1,28 +1,30 @@
 <h2 mat-dialog-title>{{ data ? "EDICION" : "REGISTRO" }} TRAMITE EXTERNO</h2>
 <mat-dialog-content>
+  
   <mat-stepper headerPosition="bottom" #stepper>
     <mat-step [stepControl]="TramiteFormGroup" errorMessage="Campos incorrectos">
       <form [formGroup]="TramiteFormGroup">
         <ng-template matStepLabel>Detalles tramite</ng-template>
-        <div *ngIf="!data" class="row">
-          <div class="col-sm-2">
-            <!-- <app-simple-mat-select-search
-              [data]="segments"
-              [isRequired]="true"
-              (eventSelectedOption)="getTypesProceduresBySegment($event)"
-              [placehorder]="'Segmento'"
-            >
-            </app-simple-mat-select-search> -->
+        @if (!data) {
+        <div class="row">
+          <div class="col-sm-3">
+            <simple-mat-select-search
+              placehorder="Segmento"
+              [required]="true"
+              [options]="segments()"
+              (selectEvent)="getTypesProceduresBySegment($event)"
+            ></simple-mat-select-search>
           </div>
-          <div class="col-sm-10">
-            <!-- <app-simple-mat-select-search
-              [data]="typesProceduresSearchData"
-              [isRequired]="true"
-              (eventSelectedOption)="selectTypeProcedure($event)"
-              [placehorder]="'Seleccione el tipo de tramite'"
-            ></app-simple-mat-select-search> -->
+          <div class="col-sm-9">
+            <simple-mat-select-search
+              placehorder="Tipo de tramite"
+              [required]="true"
+              [options]="typesProcedures()"
+              (selectEvent)="selectTypeProcedure($event)"
+            ></simple-mat-select-search>
           </div>
         </div>
+        }
         <div class="row">
           <div class="col-sm-6">
             <mat-form-field class="example-full-width">
@@ -45,21 +47,22 @@
             </mat-form-field>
           </div>
         </div>
-        <div *ngIf="!data" class="row mt-2">
-          <div *ngIf="TramiteFormGroup.get('type')?.value !== ''">
-            <h4>Requerimientos</h4>
-            <div *ngIf="requeriments.length > 0; else templateRequeriments">
-              <ol class="list-group list-group-numbered bg-transparent">
-                <li class="list-group-item" *ngFor="let requerimiento of requeriments">
-                  {{ requerimiento }}
-                </li>
-              </ol>
-            </div>
-            <ng-template #templateRequeriments>
-              <div class="alert alert-primary" role="alert">El tramite no tiene requerimientos</div>
-            </ng-template>
-          </div>
+        @if(!data){
+        <div class="row mt-2">
+          @if (TramiteFormGroup.get('type')?.value !== '') {
+          <h4>Requerimientos</h4>
+          <ol class="list-group list-group-numbered bg-transparent">
+            @for (requirement of requirements; track $index) {
+            <li class="list-group-item">
+              {{ requirement }}
+            </li>
+            }@empty {
+            <div class="alert alert-primary" role="alert">El tramite no tiene requerimientos</div>
+            }
+          </ol>
+          }
         </div>
+        }
       </form>
     </mat-step>
     <mat-step [stepControl]="SolicitanteFormGroup" errorMessage="Campos incorrectos">

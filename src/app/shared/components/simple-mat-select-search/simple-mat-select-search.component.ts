@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { MatSelectSearchData } from '../../interfaces';
 
@@ -10,6 +10,7 @@ import { MatSelectSearchData } from '../../interfaces';
 })
 export class SimpleMatSelectSearchComponent<T> {
   @Input() placehorder: string = 'Seleccione una opcion';
+  @Input() required: boolean = false;
   @Input({ required: true }) set options(values: MatSelectSearchData<T>[]) {
     this.data = values;
     this.filteredOptions.next(values);
@@ -17,11 +18,10 @@ export class SimpleMatSelectSearchComponent<T> {
   @Input() set currentOption(value: T | null) {
     this.optionCtrl.setValue(value);
   }
-  @Input() isRequired: boolean = false;
   @Output() selectEvent: EventEmitter<T> = new EventEmitter();
 
   public data: MatSelectSearchData<T>[] = [];
-  public optionCtrl: FormControl = new FormControl('');
+  public optionCtrl: FormControl = new FormControl('', [Validators.required]);
   public optionFilterCtrl: FormControl = new FormControl();
   public filteredOptions: ReplaySubject<MatSelectSearchData<T>[]> = new ReplaySubject(1);
   protected _onDestroy = new Subject<void>();

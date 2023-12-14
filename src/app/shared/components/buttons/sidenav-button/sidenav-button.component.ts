@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MaterialModule } from 'src/app/material/material.module';
 import { AppearanceService } from 'src/app/services/appearance.service';
 

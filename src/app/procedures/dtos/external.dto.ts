@@ -1,12 +1,12 @@
 import { applicant, representative } from '../interfaces';
 interface externalProperties {
   formProcedure: any;
-  requeriments: string[];
   formApplicant: any;
   formRepresentative: any;
+  requeriments: string[];
 }
 export class ExternalProcedureDto {
-  static fromForms({ requeriments, formProcedure, formApplicant, formRepresentative }: externalProperties) {
+  static fromForm({ requeriments, formProcedure, formApplicant, formRepresentative }: externalProperties) {
     return new ExternalProcedureDto(
       {
         type: formProcedure['type'],

@@ -1,35 +1,34 @@
 <div class="main-container" [class.is-mobile]="mobileQuery.matches">
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches">
-      <!-- <mat-card class="card-profile footer">
-        <mat-card-header>
-          <div mat-card-avatar class="card-profile-image"></div>
-          <mat-card-title>{{ authService.account.officer.fullname | titlecase | slice : 0 : 25 }} </mat-card-title>
-          <mat-card-subtitle>{{ authService.account.officer.jobtitle | slice : 0 : 25 }}</mat-card-subtitle>
-          <div style="flex-grow: 1"></div>
-          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+      <div class="card-user d-flex align-items-start">
+        <img class="rounded-circle avatar-lg img-thumbnail" src="../../../assets/img/account.png" />
+        <div class="ms-2">
+          <p class="mb-1">{{ currentUser?.officer?.fullname | slice : 0 : 18 | titlecase }}.</p>
+          <span class="c-pill c-pill--success">En linea</span>
+        </div>
+        <div class="ms-auto">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button routerLink="/home/recursos" mat-menu-item>
-              <mat-icon>dataset</mat-icon>
-              <span>Recursos</span>
+            <button mat-menu-item>
+              <mat-icon>dialpad</mat-icon>
+              <span>Redial</span>
             </button>
-
-            <button routerLink="/configuraciones/sistema" mat-menu-item>
-              <mat-icon>manage_accounts</mat-icon>
-              <span>Configuraciones</span>
+            <button mat-menu-item disabled>
+              <mat-icon>voicemail</mat-icon>
+              <span>Check voice mail</span>
             </button>
-            <button (click)="logout()" mat-menu-item>
+            <button mat-menu-item (click)="logout()">
               <mat-icon>logout</mat-icon>
               <span>Cerrar sesion</span>
             </button>
           </mat-menu>
-        </mat-card-header>
-      </mat-card> -->
-
+        </div>
+      </div>
       <mat-nav-list>
-        @for (item of menu; track $index) { @if(item.children){
+        @for (item of navigation; track $index) { @if(item.children){
         <mat-expansion-panel [expanded]="true" [class.mat-elevation-z0]="true">
           <mat-expansion-panel-header>
             <mat-icon matListItemIcon style="margin-right: 30px"> {{ item.icon }}</mat-icon>
@@ -55,7 +54,6 @@
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
-      <!-- <pre>{{ example | json }}</pre> -->
       @if (isLoaging) {
       <progress-spinner></progress-spinner>
       }

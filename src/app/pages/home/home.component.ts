@@ -8,7 +8,6 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { AppearanceService } from 'src/app/services/appearance.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +17,7 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 export class HomeComponent {
   @ViewChild('snav') public sidenav: MatSidenav;
   mobileQuery: MediaQueryList;
-  menu = this.authService.menu();
+  navigation = this.authService.menu();
   private mailSubscription: Subscription;
   private userSubscription: Subscription;
   private _mobileQueryListener: () => void;
@@ -30,8 +29,7 @@ export class HomeComponent {
     private socketService: SocketService,
     private router: Router,
     private appearanceService: AppearanceService,
-    private toastService: ToastService,
-    public paginat: PaginatorService
+    private toastService: ToastService
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this.appearanceService.startTheme();
@@ -76,7 +74,8 @@ export class HomeComponent {
     this.authService.logout();
     this.socketService.disconnect();
   }
-  get example() {
-    return this.paginat.cache;
+
+  get currentUser() {
+    return this.authService.account();
   }
 }
