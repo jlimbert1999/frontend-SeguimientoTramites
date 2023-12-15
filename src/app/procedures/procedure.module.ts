@@ -5,8 +5,8 @@ import { NgModule } from '@angular/core';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
-import { ExternalDialogComponent } from './dialogs/external-dialog/external-dialog.component';
-import { InternalDialogComponent } from './dialogs/internal-dialog/internal-dialog.component';
+import { RegisterExternalComponent } from './pages/register-external/register-external.component';
+import { RegisterInternalComponent } from './pages/register-internal/register-internal.component';
 import { ExternalDetailComponent } from './components/external-detail/external-detail.component';
 import { ExternalComponent } from './pages/external/external.component';
 import { DetailComponent } from './pages/detail/detail.component';
@@ -27,8 +27,8 @@ import { SidenavButtonComponent } from '../shared/components/buttons/sidenav-but
     DetailComponent,
     ExternalComponent,
     InternalComponent,
-    InternalDialogComponent,
-    ExternalDialogComponent,
+    RegisterInternalComponent,
+    RegisterExternalComponent,
     InternalDetailComponent,
     ExternalDetailComponent,
     ObservationsComponent,

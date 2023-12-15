@@ -11,11 +11,11 @@ import { NestedPartial } from 'src/app/shared/interfaces/nested-partial';
 import { internal } from '../../interfaces';
 
 @Component({
-  selector: 'app-internal-dialog',
-  templateUrl: './internal-dialog.component.html',
-  styleUrls: ['./internal-dialog.component.scss'],
+  selector: 'app-register-internal',
+  templateUrl: './register-internal.component.html',
+  styleUrls: ['./register-internal.component.scss'],
 })
-export class InternalDialogComponent implements OnInit {
+export class RegisterInternalComponent implements OnInit {
   typesProcedures: typeProcedure[] = [];
   filteredEmitter: Observable<Officer[]>;
   filteredReceiver: Observable<Officer[]>;
@@ -26,7 +26,7 @@ export class InternalDialogComponent implements OnInit {
     private readonly internoService: InternalService,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: internal,
-    public dialogRef: MatDialogRef<InternalDialogComponent>
+    public dialogRef: MatDialogRef<RegisterInternalComponent>
   ) {}
 
   ngOnInit(): void {

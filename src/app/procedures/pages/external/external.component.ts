@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
-import { ExternalDialogComponent } from '../../dialogs/external-dialog/external-dialog.component';
+import { RegisterExternalComponent } from '../register-external/register-external.component';
 
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchiveService, ExternalService, ProcedureService } from '../../services';
@@ -54,7 +54,7 @@ export class ExternalComponent implements OnInit {
   }
 
   add() {
-    const dialogRef = this.dialog.open<ExternalDialogComponent, undefined, ExternalProcedure>(ExternalDialogComponent, {
+    const dialogRef = this.dialog.open<RegisterExternalComponent, undefined, ExternalProcedure>(RegisterExternalComponent, {
       width: '1000px',
       disableClose: true,
     });
@@ -70,8 +70,8 @@ export class ExternalComponent implements OnInit {
   }
 
   edit(procedure: ExternalProcedure) {
-    const dialogRef = this.dialog.open<ExternalDialogComponent, ExternalProcedure, ExternalProcedure>(
-      ExternalDialogComponent,
+    const dialogRef = this.dialog.open<RegisterExternalComponent, ExternalProcedure, ExternalProcedure>(
+      RegisterExternalComponent,
       {
         width: '1000px',
         data: procedure,

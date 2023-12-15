@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
-import { InternalDialogComponent } from '../../dialogs/internal-dialog/internal-dialog.component';
+import { RegisterInternalComponent } from '../register-internal/register-internal.component';
 
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchiveService, InternalService, ProcedureService } from '../../services';
@@ -54,7 +54,7 @@ export class InternalComponent implements OnInit {
   }
 
   add() {
-    const dialogRef = this.dialog.open<InternalDialogComponent, undefined, InternalProcedure>(InternalDialogComponent, {
+    const dialogRef = this.dialog.open<RegisterInternalComponent, undefined, InternalProcedure>(RegisterInternalComponent, {
       width: '1000px',
       disableClose: true,
     });
@@ -70,8 +70,8 @@ export class InternalComponent implements OnInit {
     });
   }
   edit(tramite: InternalProcedure) {
-    const dialogRef = this.dialog.open<InternalDialogComponent, InternalProcedure, InternalProcedure>(
-      InternalDialogComponent,
+    const dialogRef = this.dialog.open<RegisterInternalComponent, InternalProcedure, InternalProcedure>(
+      RegisterInternalComponent,
       {
         width: '1000px',
         disableClose: true,

@@ -21,10 +21,10 @@ export class ExternalProcedureDto {
     );
   }
   details: {
-    requirements: string[];
     solicitante: applicant;
-    pin: number;
     representante?: representative;
+    requirements: string[];
+    pin: number;
   };
   constructor(
     public procedure: {
