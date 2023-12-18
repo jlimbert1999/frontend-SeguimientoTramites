@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, startWith, switchMap } from 'rxjs';
@@ -9,11 +9,13 @@ import { typeProcedure } from 'src/app/administration/interfaces';
 import { InternalProcedureDto } from '../../dtos';
 import { NestedPartial } from 'src/app/shared/interfaces/nested-partial';
 import { internal } from '../../interfaces';
+import { InternalProcedure } from '../../models';
 
 @Component({
   selector: 'app-register-internal',
   templateUrl: './register-internal.component.html',
   styleUrls: ['./register-internal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterInternalComponent implements OnInit {
   typesProcedures: typeProcedure[] = [];
@@ -25,7 +27,7 @@ export class RegisterInternalComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly internoService: InternalService,
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: internal,
+    @Inject(MAT_DIALOG_DATA) public data: InternalProcedure,
     public dialogRef: MatDialogRef<RegisterInternalComponent>
   ) {}
 

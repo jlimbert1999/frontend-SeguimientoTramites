@@ -54,10 +54,13 @@ export class InternalComponent implements OnInit {
   }
 
   add() {
-    const dialogRef = this.dialog.open<RegisterInternalComponent, undefined, InternalProcedure>(RegisterInternalComponent, {
-      width: '1000px',
-      disableClose: true,
-    });
+    const dialogRef = this.dialog.open<RegisterInternalComponent, undefined, InternalProcedure>(
+      RegisterInternalComponent,
+      {
+        width: '1000px',
+        disableClose: true,
+      }
+    );
     dialogRef.afterClosed().subscribe((createdProcedure) => {
       if (createdProcedure) {
         if (this.dataSource.length === this.paginatorService.limit) {
