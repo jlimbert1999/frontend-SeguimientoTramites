@@ -1,6 +1,6 @@
 import { FormBuilder, FormControl, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ReplaySubject, Subject, map, switchMap, takeUntil } from 'rxjs';
 
 import { InboxService } from '../../services/inbox.service';
@@ -9,6 +9,7 @@ import { receiver } from '../../interfaces';
 import { CreateMailDto } from '../../dto/create-mail.dto';
 import { AlertManager } from 'src/app/shared/helpers/alerts';
 import { ProcedureTransferDetails } from '../../models/procedure-transfer-datais.mode';
+import { MatSelectSearchData } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-send-dialog',
@@ -16,9 +17,10 @@ import { ProcedureTransferDetails } from '../../models/procedure-transfer-datais
   styleUrls: ['./send-dialog.component.scss'],
 })
 export class SendDialogComponent implements OnInit, OnDestroy {
-  institutions: any[] = [];
-  dependencies: any[] = [];
-  receivers: receiver[] = [];
+  institutions = signal<MatSelectSearchData<string>[]>([]);
+  dependencies = signal<MatSelectSearchData<string>[]>([]);
+
+  receivers = signal<receiver[]>([]);
   selectedReceivers: receiver[] = [];
   public userCtrl = new FormControl();
   public userFilterCtrl: UntypedFormControl = new UntypedFormControl();
@@ -45,9 +47,44 @@ export class SendDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.getInstitutions();
+  }
+  getInstitutions() {
     this.inboxService.getInstitucions().subscribe((data) => {
-      this.institutions = data.map((institution) => ({ value: institution._id, text: institution.nombre }));
+      this.institutions.set(data.map((inst) => ({ value: inst._id, text: inst.nombre })));
     });
+  }
+  selectInstitution(id_institution: string) {
+    this.filteredUsers.next([]);
+    this.receivers.set([]);
+    this.inboxService.getDependenciesOfInstitution(id_institution).subscribe((data) => {
+      this.dependencies.set(data.map((dependency) => ({ value: dependency._id, text: dependency.nombre })));
+    });
+  }
+  selectDependency(id_dependency: string) {
+    // this.inboxService
+    //   .getAccountsForSend(id_dependency)
+    //   .pipe(
+    //     switchMap((data) => {
+    //       return this.socketService.onlineUsers$().pipe(
+    //         takeUntil(this._onDestroy),
+    //         map((onlineUsers) => {
+    //           return data.map((account) => {
+    //             account.online = onlineUsers.some((userSocket) => userSocket.id_account === account.id_account);
+    //             return account;
+    //           });
+    //         })
+    //       );
+    //     })
+    //   )
+    //   .subscribe((data) => {
+    //     this.receivers.set(data);
+    //     this.userCtrl.setValue(this.receivers());
+    //     this.filteredUsers.next(this.receivers().slice());
+    //     this.userFilterCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
+    //       this.filterAccounts();
+    //     });
+    //   });
   }
 
   send(): void {
@@ -75,51 +112,19 @@ export class SendDialogComponent implements OnInit, OnDestroy {
     this.selectedReceivers = this.selectedReceivers.filter((receiver) => receiver.id_account !== account.id_account);
   }
 
-  selectInstitution(id_institution: string) {
-    this.filteredUsers.next([]);
-    this.receivers = [];
-    this.inboxService.getDependenciesOfInstitution(id_institution).subscribe((data) => {
-      this.dependencies = data.map((dependency) => ({ value: dependency._id, text: dependency.nombre }));
-    });
-  }
-  selectDependencie(id_dependency: string) {
-    this.inboxService
-      .getAccountsOfDependencie(id_dependency)
-      .pipe(
-        switchMap((data) => {
-          return this.socketService.onlineUsers$.pipe(
-            takeUntil(this._onDestroy),
-            map((onlineUsers) => {
-              return data.map((account) => {
-                account.online = onlineUsers.some((userSocket) => userSocket.id_account === account.id_account);
-                return account;
-              });
-            })
-          );
-        })
-      )
-      .subscribe((data) => {
-        this.receivers = data;
-        this.userCtrl.setValue(this.receivers);
-        this.filteredUsers.next(this.receivers.slice());
-        this.userFilterCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
-          this.filterAccounts();
-        });
-      });
-  }
   protected filterAccounts() {
     if (!this.receivers) {
       return;
     }
     let search = this.userFilterCtrl.value;
     if (!search) {
-      this.filteredUsers.next(this.receivers);
+      this.filteredUsers.next(this.receivers());
       return;
     } else {
       search = search.toLowerCase();
     }
     this.filteredUsers.next(
-      this.receivers.filter(
+      this.receivers().filter(
         (user) =>
           user.officer.fullname.toLowerCase().indexOf(search) > -1 ||
           user.officer.jobtitle.toLowerCase().indexOf(search) > -1

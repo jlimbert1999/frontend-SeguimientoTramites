@@ -4,21 +4,20 @@ import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 import { communication } from '../communication/interfaces/communication';
 import { userSocket } from '../auth/interfaces';
+import { toSignal } from '@angular/core/rxjs-interop';
 @Injectable({
   providedIn: 'root',
 })
 export class SocketService {
   socket: Socket;
   private onlineUsersSubject: BehaviorSubject<userSocket[]> = new BehaviorSubject<userSocket[]>([]);
-  public onlineUsers$: Observable<userSocket[]> = this.onlineUsersSubject.asObservable();
+  public onlineUsers$ = toSignal(this.onlineUsersSubject.asObservable(), { initialValue: [] });
 
   private mailSubscription: Subject<communication> = new Subject();
   public mailSubscription$: Observable<communication> = this.mailSubscription.asObservable();
 
-  constructor() {
-    this.setupSocketConnection(localStorage.getItem('token') ?? '');
-  }
-  setupSocketConnection(token: string) {
+  setupSocketConnection() {
+    const token = localStorage.getItem('token') ?? '';
     this.socket = io(`${environment.base_url}`, { auth: { token } });
   }
   disconnect() {

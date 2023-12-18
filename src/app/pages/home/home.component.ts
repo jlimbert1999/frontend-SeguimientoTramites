@@ -39,6 +39,7 @@ export class HomeComponent {
       if (this.sidenav) this.sidenav.toggle();
       return this.appearanceService.toggleSidenav();
     });
+    this.socketService.setupSocketConnection();
   }
 
   ngOnInit(): void {
@@ -49,6 +50,7 @@ export class HomeComponent {
   ngOnDestroy(): void {
     this.mobileQuery!.removeListener(this._mobileQueryListener);
     if (this.mailSubscription) this.mailSubscription.unsubscribe();
+    
   }
   get isLoaging() {
     return this.appearanceService.loading();
@@ -68,7 +70,7 @@ export class HomeComponent {
     });
   }
   listenUserConnections() {
-    this.userSubscription = this.socketService.onlineUsers$.subscribe();
+    // this.userSubscription = this.socketService.onlineUsers$.subscribe();
   }
   logout() {
     this.authService.logout();

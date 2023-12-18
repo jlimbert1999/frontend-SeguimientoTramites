@@ -86,7 +86,7 @@ export class InboxService {
       })
     );
   }
-  getAccountsOfDependencie(id_dependencie: string) {
+  getAccountsForSend(id_dependencie: string) {
     return this.http.get<account[]>(`${base_url}/communication/accounts/${id_dependencie}`).pipe(
       map((resp) => {
         const receivers: receiver[] = resp.map((account) => {

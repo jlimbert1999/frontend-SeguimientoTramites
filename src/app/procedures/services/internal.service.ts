@@ -3,9 +3,8 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Officer } from 'src/app/administration/models/officer.model';
-import { InternalProcedureDto } from '../dtos';
+import { InternalProcedureDto, UpdateInternalProcedureDto } from '../dtos';
 import { officer, typeProcedure } from 'src/app/administration/interfaces';
-import { NestedPartial } from 'src/app/shared/interfaces/nested-partial';
 import { internal } from '../interfaces';
 import { InternalProcedure } from '../models';
 
@@ -16,14 +15,16 @@ const base_url = environment.base_url;
 export class InternalService {
   constructor(private http: HttpClient) {}
 
-  Add(tramite: InternalProcedureDto) {
+  add(form: Object) {
+    const procedure = InternalProcedureDto.fromForm(form);
     return this.http
-      .post<internal>(`${base_url}/internal`, tramite)
+      .post<internal>(`${base_url}/internal`, procedure)
       .pipe(map((response) => InternalProcedure.toModel(response)));
   }
-  Edit(id_tramite: string, tramite: NestedPartial<InternalProcedureDto>) {
+  edit(id_tramite: string, form: Object) {
+    const procedure = UpdateInternalProcedureDto.fromForm(form);
     return this.http
-      .put<internal>(`${base_url}/internal/${id_tramite}`, tramite)
+      .put<internal>(`${base_url}/internal/${id_tramite}`, procedure)
       .pipe(map((response) => InternalProcedure.toModel(response)));
   }
 

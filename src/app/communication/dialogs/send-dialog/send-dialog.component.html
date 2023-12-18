@@ -3,18 +3,16 @@
   <form [formGroup]="FormEnvio">
     <div class="row">
       <div class="col-sm-4">
-        <!-- <app-simple-mat-select-search
-          [data]="institutions"
-          (eventSelectedOption)="selectInstitution($event)"
-          placehorder="Seleccione la institucion"
-        ></app-simple-mat-select-search> -->
+        <simple-mat-select-search
+          (selectEvent)="selectInstitution($event)"
+          [options]="institutions()"
+        ></simple-mat-select-search>
       </div>
       <div class="col-sm-8">
-        <!-- <app-simple-mat-select-search
-          [data]="dependencies"
-          (eventSelectedOption)="selectDependencie($event)"
-          placehorder="Seleccione la dependencia"
-        ></app-simple-mat-select-search> -->
+        <simple-mat-select-search
+          (selectEvent)="selectDependency($event)"
+          [options]="dependencies()"
+        ></simple-mat-select-search>
       </div>
       <div class="col-sm-12">
         <mat-form-field class="example-full-width">

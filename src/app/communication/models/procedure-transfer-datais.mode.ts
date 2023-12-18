@@ -1,6 +1,16 @@
 import { Procedure } from 'src/app/procedures/models';
 import { communication } from '../interfaces';
 
+interface TransferDetails {
+  id_mail?: string;
+  attachmentQuantity: string;
+  procedure: procedure;
+}
+interface procedure {
+  _id: string;
+  code: string;
+}
+
 export class ProcedureTransferDetails {
   id_mail?: string;
   attachmentQuantity: string;
@@ -25,14 +35,4 @@ export class ProcedureTransferDetails {
     this.attachmentQuantity = attachmentQuantity;
     this.procedure = procedure;
   }
-}
-
-interface TransferDetails {
-  id_mail?: string;
-  attachmentQuantity: string;
-  procedure: procedure;
-}
-interface procedure {
-  _id: string;
-  code: string;
 }
