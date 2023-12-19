@@ -12,7 +12,7 @@ import { communication, statusMail, workflow } from '../../interfaces';
 import { ProcedureService } from 'src/app/procedures/services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from 'src/app/procedures/models';
 import { createRouteMap } from 'src/app/procedures/helpers';
-import { AlertManager } from 'src/app/shared/helpers/alerts';
+import { AlertService } from 'src/app/shared/services';
 @Component({
   selector: 'app-mail',
   templateUrl: './mail.component.html',
@@ -29,10 +29,10 @@ export class MailComponent implements OnInit {
     private inboxService: InboxService,
     private paginatorService: PaginatorService,
     private procedureService: ProcedureService,
-    public dialog: MatDialog,
+    private alertService: AlertService,
+    public dialog: MatDialog
   ) {}
   ngOnInit(): void {
-    
     this.activateRoute.params.subscribe((params) => {
       this.inboxService.getMailDetails(params['id']).subscribe((data) => {
         this.mail = data;
@@ -60,7 +60,7 @@ export class MailComponent implements OnInit {
   }
 
   acceptMail() {
-    AlertManager.showQuestionAlert(
+    this.alertService.showQuestionAlert(
       `¿Aceptar tramite ${this.mail.procedure.code}?`,
       `El tramite sera marcado como aceptado`,
       () => {
@@ -68,7 +68,7 @@ export class MailComponent implements OnInit {
           (resp) => {
             this.mail.procedure.state = resp.state;
             this.mail.status = statusMail.Received;
-            AlertManager.showSuccesToast(3000, resp.message);
+            this.alertService.showSuccesToast(3000, resp.message);
           },
           () => {
             this._location.back();
@@ -78,20 +78,20 @@ export class MailComponent implements OnInit {
     );
   }
   rejectMail() {
-    AlertManager.showConfirmAlert(
+    this.alertService.showConfirmAlert(
       `¿Rechazar tramite ${this.mail.procedure.code}?`,
       `El tramite sera devuelto al funcionario emisor`,
       'Ingrese el motivo del rechazo',
       (description) => {
         this.inboxService.rejectMail(this.mail._id, description).subscribe((message) => {
-          AlertManager.showSuccesToast(3000, message);
+          this.alertService.showSuccesToast(3000, message);
           this.backLocation();
         });
       }
     );
   }
   addObservation() {
-    AlertManager.showConfirmAlert(
+    this.alertService.showConfirmAlert(
       `¿Observar el tramite: ${this.procedure.code}?`,
       `El tramite se mostrara como "OBSERVADO" hasta que usted marque como corregida la observacion`,
       'Ingrese la descripcion de la observacion',
@@ -104,7 +104,7 @@ export class MailComponent implements OnInit {
     );
   }
   solvedObservation(id_observation: string) {
-    AlertManager.showQuestionAlert(
+    this.alertService.showQuestionAlert(
       '¿Marcar la observacion como corregida?',
       'Si todas las observaciones son corregidas el tramite dejara de estar "OBSERVADO"',
       () => {

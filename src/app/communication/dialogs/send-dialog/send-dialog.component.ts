@@ -1,32 +1,31 @@
 import { FormBuilder, FormControl, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Component, Inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ReplaySubject, Subject, map, switchMap, takeUntil } from 'rxjs';
 
 import { InboxService } from '../../services/inbox.service';
 import { SocketService } from 'src/app/services/socket.service';
-import { receiver } from '../../interfaces';
-import { CreateMailDto } from '../../dto/create-mail.dto';
-import { AlertManager } from 'src/app/shared/helpers/alerts';
-import { ProcedureTransferDetails } from '../../models/procedure-transfer-datais.mode';
+import { TransferDetails, receiver } from '../../interfaces';
 import { MatSelectSearchData } from 'src/app/shared/interfaces';
+import { AlertService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-send-dialog',
   templateUrl: './send-dialog.component.html',
   styleUrls: ['./send-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SendDialogComponent implements OnInit, OnDestroy {
   institutions = signal<MatSelectSearchData<string>[]>([]);
   dependencies = signal<MatSelectSearchData<string>[]>([]);
-
   receivers = signal<receiver[]>([]);
-  selectedReceivers: receiver[] = [];
+
   public userCtrl = new FormControl();
   public userFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredUsers: ReplaySubject<receiver[]> = new ReplaySubject<receiver[]>(1);
   protected _onDestroy = new Subject<void>();
 
+  selectedReceivers: receiver[] = [];
   FormEnvio: FormGroup = this.fb.group({
     motivo: ['PARA SU ATENCION', Validators.required],
     cantidad: [this.data.attachmentQuantity, Validators.required],
@@ -34,10 +33,11 @@ export class SendDialogComponent implements OnInit, OnDestroy {
   });
 
   constructor(
-    private inboxService: InboxService,
+    private readonly alertService: AlertService,
+    private readonly inboxService: InboxService,
     private socketService: SocketService,
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: ProcedureTransferDetails,
+    @Inject(MAT_DIALOG_DATA) public data: TransferDetails,
     public dialogRef: MatDialogRef<SendDialogComponent>
   ) {}
 
@@ -62,40 +62,39 @@ export class SendDialogComponent implements OnInit, OnDestroy {
     });
   }
   selectDependency(id_dependency: string) {
-    // this.inboxService
-    //   .getAccountsForSend(id_dependency)
-    //   .pipe(
-    //     switchMap((data) => {
-    //       return this.socketService.onlineUsers$().pipe(
-    //         takeUntil(this._onDestroy),
-    //         map((onlineUsers) => {
-    //           return data.map((account) => {
-    //             account.online = onlineUsers.some((userSocket) => userSocket.id_account === account.id_account);
-    //             return account;
-    //           });
-    //         })
-    //       );
-    //     })
-    //   )
-    //   .subscribe((data) => {
-    //     this.receivers.set(data);
-    //     this.userCtrl.setValue(this.receivers());
-    //     this.filteredUsers.next(this.receivers().slice());
-    //     this.userFilterCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
-    //       this.filterAccounts();
-    //     });
-    //   });
+    this.inboxService
+      .getAccountsForSend(id_dependency)
+      .pipe(
+        switchMap((data) => {
+          return this.socketService.onlineUsers$.pipe(
+            takeUntil(this._onDestroy),
+            map((onlineUsers) => {
+              return data.map((account) => {
+                account.online = onlineUsers.some((userSocket) => userSocket.id_account === account.id_account);
+                return account;
+              });
+            })
+          );
+        })
+      )
+      .subscribe((accounts) => {
+        this.receivers.set(accounts);
+        this.userCtrl.setValue(this.receivers());
+        this.filteredUsers.next(this.receivers().slice());
+        this.userFilterCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
+          this.filterAccounts();
+        });
+      });
   }
 
   send(): void {
-    const mail = CreateMailDto.fromFormData(this.FormEnvio.value, this.data, this.selectedReceivers);
-    AlertManager.showQuestionAlert(
-      `¿Remitir el tramite ${this.data.procedure.code}?`,
-      `Numero de destinatarios: ${mail.receivers.length}`,
+    this.alertService.showQuestionAlert(
+      `¿Remitir el tramite ${this.data.code}?`,
+      `Numero de destinatarios: ${this.selectedReceivers.length}`,
       () => {
-        AlertManager.showLoadingAlert('Enviado el tramite.....', 'Por favor espere');
-        this.inboxService.create(mail).subscribe((data) => {
-          AlertManager.closeLoadingAlert();
+        this.alertService.showLoadingAlert('Enviado el tramite.....', 'Por favor espere');
+        this.inboxService.create(this.data, this.FormEnvio.value, this.selectedReceivers).subscribe((data) => {
+          this.alertService.closeLoadingAlert();
           this.dialogRef.close(true);
         });
       }
@@ -111,7 +110,6 @@ export class SendDialogComponent implements OnInit, OnDestroy {
   removeReceiver(account: receiver) {
     this.selectedReceivers = this.selectedReceivers.filter((receiver) => receiver.id_account !== account.id_account);
   }
-
   protected filterAccounts() {
     if (!this.receivers) {
       return;

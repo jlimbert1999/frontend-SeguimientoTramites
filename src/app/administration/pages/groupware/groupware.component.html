@@ -7,7 +7,8 @@
     </button>
   </mat-form-field>
   <mat-list>
-    <mat-list-item *ngFor="let user of socketService.onlineUsers$() | filterUsersSocket : textSearch">
+    @for (user of socketService.onlineUsers$ | async | filterUsersSocket : textSearch; track $index) {
+    <mat-list-item>
       <img matListItemAvatar src="../../../assets/img/account.png" alt="..." />
       <h3 class="fw-bold" matListItemTitle>
         {{ user.officer.fullname | titlecase }}
@@ -29,5 +30,6 @@
       </mat-menu>
       <mat-divider></mat-divider>
     </mat-list-item>
+    }
   </mat-list>
 </div>

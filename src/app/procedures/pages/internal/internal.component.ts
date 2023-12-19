@@ -10,12 +10,12 @@ import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchiveService, InternalService, ProcedureService } from '../../services';
 
 import { createRouteMap } from '../../helpers';
-import { AlertManager } from 'src/app/shared/helpers/alerts';
 
-import { ProcedureTransferDetails } from 'src/app/communication/models/procedure-transfer-datais.mode';
 import { EventProcedureDto } from '../../dtos';
 import { InternalProcedure } from '../../models';
 import { groupProcedure, internal, stateProcedure } from '../../interfaces';
+import { TransferDetails } from 'src/app/communication/interfaces';
+import { AlertService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-internal',
@@ -32,6 +32,7 @@ export class InternalComponent implements OnInit {
     private internoService: InternalService,
     public procedureService: ProcedureService,
     public paginatorService: PaginatorService,
+    private alertService: AlertService,
     private archiveService: ArchiveService
   ) {}
 
@@ -90,9 +91,13 @@ export class InternalComponent implements OnInit {
     });
   }
   send(procedure: InternalProcedure) {
-    const dialogRef = this.dialog.open<SendDialogComponent, ProcedureTransferDetails, string>(SendDialogComponent, {
+    const dialogRef = this.dialog.open<SendDialogComponent, TransferDetails, string>(SendDialogComponent, {
       width: '1200px',
-      data: ProcedureTransferDetails.fromfirstSend(procedure),
+      data: {
+        id_procedure: procedure._id,
+        code: procedure.code,
+        attachmentQuantity: procedure.amount,
+      },
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe((message) => {
@@ -110,7 +115,7 @@ export class InternalComponent implements OnInit {
   }
 
   conclude(procedure: internal) {
-    AlertManager.showConfirmAlert(
+    this.alertService.showConfirmAlert(
       `¿Concluir el tramite ${procedure.code}?`,
       'Los tramites concluidos desde su administacion no pueden ser desarchivados',
       'Ingrese una referencia para concluir',
@@ -123,7 +128,7 @@ export class InternalComponent implements OnInit {
         this.archiveService.archiveProcedure(archive).subscribe((data) => {
           const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
           this.dataSource[indexFound].state = stateProcedure.CONCLUIDO;
-          AlertManager.showSuccesToast(3000, data.message);
+          this.alertService.showSuccesToast(3000, data.message);
         });
       }
     );

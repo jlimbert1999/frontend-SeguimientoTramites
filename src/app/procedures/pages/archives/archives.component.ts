@@ -9,11 +9,10 @@ import { SocketService } from 'src/app/services/socket.service';
 
 import { EventDialogComponent } from '../../dialogs/event-dialog/event-dialog.component';
 
-import { AlertManager } from 'src/app/shared/helpers/alerts';
-
 import { communication } from 'src/app/communication/interfaces';
 import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
 import { EventProcedureDto } from '../../dtos/event_procedure.dto';
+import { AlertService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-archives',
@@ -28,6 +27,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
     private readonly archiveService: ArchiveService,
     private readonly paginatorService: PaginatorService,
     private readonly socketService: SocketService,
+    private readonly alertService: AlertService,
     private dialog: MatDialog,
     private router: Router
   ) {
@@ -56,7 +56,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
   }
 
   unarchive(mail: communication) {
-    AlertManager.showConfirmAlert(
+    this.alertService.showConfirmAlert(
       `¿Desarchivar el tramite ${mail.procedure.code}?`,
       `El tramite volvera a su bandeja de entrada`,
       'Ingrese una referencia para desarchivar',

@@ -10,12 +10,11 @@ import { ProcedureService, ArchiveService } from 'src/app/procedures/services';
 import { SocketService } from 'src/app/services/socket.service';
 import { InboxService } from '../../services/inbox.service';
 
-import { AlertManager } from 'src/app/shared/helpers/alerts';
 import { stateProcedure } from 'src/app/procedures/interfaces';
 import { createRouteMap } from 'src/app/procedures/helpers';
 import { EventProcedureDto } from 'src/app/procedures/dtos';
-import { communication, statusMail } from '../../interfaces';
-import { ProcedureTransferDetails } from '../../models/procedure-transfer-datais.mode';
+import { TransferDetails, communication, statusMail } from '../../interfaces';
+import { AlertService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-inbox',
@@ -36,7 +35,8 @@ export class InboxComponent implements OnInit, OnDestroy {
     private procedureService: ProcedureService,
     private socketService: SocketService,
     private inboxService: InboxService,
-    private paginatorService: PaginatorService
+    private paginatorService: PaginatorService,
+    private alertService: AlertService
   ) {
     this.listenNewMails();
     this.listenCancelMails();
@@ -74,9 +74,14 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   send(mail: communication) {
-    const dialogRef = this.dialog.open<SendDialogComponent, ProcedureTransferDetails, string>(SendDialogComponent, {
+    const dialogRef = this.dialog.open<SendDialogComponent, TransferDetails, string>(SendDialogComponent, {
       width: '1200px',
-      data: ProcedureTransferDetails.fromSend(mail),
+      data: {
+        id_mail: mail._id,
+        id_procedure: mail.procedure._id,
+        code: mail.procedure.code,
+        attachmentQuantity: mail.attachmentQuantity,
+      },
     });
     dialogRef.afterClosed().subscribe((message) => {
       if (message) {
@@ -86,7 +91,7 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   acceptMail(mail: communication) {
-    AlertManager.showQuestionAlert(
+    this.alertService.showQuestionAlert(
       `¿Aceptar tramite ${mail.procedure.code}?`,
       `El tramite sera marcado como aceptado`,
       () => {
@@ -95,7 +100,7 @@ export class InboxComponent implements OnInit, OnDestroy {
             const indexFound = this.dataSource.findIndex((item) => item._id === mail._id);
             this.dataSource[indexFound].procedure.state = resp.state;
             this.dataSource[indexFound].status = statusMail.Received;
-            AlertManager.showSuccesToast(3000, resp.message);
+            this.alertService.showSuccesToast(3000, resp.message);
           },
           () => {
             this.getData();
@@ -105,20 +110,20 @@ export class InboxComponent implements OnInit, OnDestroy {
     );
   }
   rejectMail(mail: communication) {
-    AlertManager.showConfirmAlert(
+    this.alertService.showConfirmAlert(
       `¿Rechazar tramite ${mail.procedure.code}?`,
       `El tramite sera devuelto al funcionario emisor`,
       'Ingrese el motivo del rechazo',
       (description) => {
         this.inboxService.rejectMail(mail._id, description).subscribe((message) => {
           this.removeMail(mail._id);
-          AlertManager.showSuccesToast(3000, message);
+          this.alertService.showSuccesToast(3000, message);
         });
       }
     );
   }
   conclude(mail: communication, isSuspended: boolean) {
-    AlertManager.showConfirmAlert(
+    this.alertService.showConfirmAlert(
       `¿${isSuspended ? 'Suspender' : 'Concluir'} el tramite ${mail.procedure.code}?`,
       `El tramite pasara a su seccion de archivos`,
       'Ingrese una referencia para concluir',
@@ -129,7 +134,7 @@ export class InboxComponent implements OnInit, OnDestroy {
           stateProcedure: isSuspended ? stateProcedure.SUSPENDIDO : stateProcedure.CONCLUIDO,
         };
         this.archiveService.archiveMail(mail._id, archiveDto).subscribe((data) => {
-          AlertManager.showSuccesToast(3000, data.message);
+          this.alertService.showSuccesToast(3000, data.message);
           this.removeMail(mail._id);
         });
       }
@@ -153,12 +158,12 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   listenNewMails() {
-    this.mailSubscription = this.socketService.mailSubscription$.subscribe((data) => {
-      console.log('envet substripction', data);
-      if (this.paginatorService.limit === this.dataSource.length) this.dataSource.pop();
-      this.paginatorService.length += 1;
-      this.dataSource = [data, ...this.dataSource];
-    });
+    // this.mailSubscription = this.socketService.mailSubscription$.subscribe((data) => {
+    //   console.log('envet substripction', data);
+    //   if (this.paginatorService.limit === this.dataSource.length) this.dataSource.pop();
+    //   this.paginatorService.length += 1;
+    //   this.dataSource = [data, ...this.dataSource];
+    // });
   }
   listenCancelMails() {
     this.mailCancelSubscription = this.socketService.listenCancelMail().subscribe((id_mail) => {

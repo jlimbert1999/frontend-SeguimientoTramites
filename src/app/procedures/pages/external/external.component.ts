@@ -9,13 +9,13 @@ import { RegisterExternalComponent } from '../register-external/register-externa
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchiveService, ExternalService, ProcedureService } from '../../services';
 
-import { AlertManager } from 'src/app/shared/helpers/alerts';
 import { createRouteMap, createTicket } from '../../helpers';
 
-import { ProcedureTransferDetails } from 'src/app/communication/models/procedure-transfer-datais.mode';
 import { ExternalProcedure } from '../../models';
 import { EventProcedureDto } from '../../dtos';
 import { external, groupProcedure, stateProcedure } from '../../interfaces';
+import { TransferDetails } from 'src/app/communication/interfaces';
+import { AlertService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-external',
@@ -31,7 +31,8 @@ export class ExternalComponent implements OnInit {
     private readonly externalService: ExternalService,
     private readonly procedureService: ProcedureService,
     private readonly paginatorService: PaginatorService,
-    private readonly archiveService: ArchiveService
+    private readonly archiveService: ArchiveService,
+    private readonly alertService: AlertService
   ) {}
   ngOnInit(): void {
     this.getData();
@@ -54,10 +55,13 @@ export class ExternalComponent implements OnInit {
   }
 
   add() {
-    const dialogRef = this.dialog.open<RegisterExternalComponent, undefined, ExternalProcedure>(RegisterExternalComponent, {
-      width: '1000px',
-      disableClose: true,
-    });
+    const dialogRef = this.dialog.open<RegisterExternalComponent, undefined, ExternalProcedure>(
+      RegisterExternalComponent,
+      {
+        width: '1000px',
+        disableClose: true,
+      }
+    );
     dialogRef.afterClosed().subscribe((createdProcedure) => {
       if (createdProcedure) {
         if (this.dataSource.length === this.paginatorService.limit) {
@@ -88,9 +92,13 @@ export class ExternalComponent implements OnInit {
   }
 
   send(procedure: ExternalProcedure) {
-    const dialogRef = this.dialog.open<SendDialogComponent, ProcedureTransferDetails, string>(SendDialogComponent, {
+    const dialogRef = this.dialog.open<SendDialogComponent, TransferDetails, string>(SendDialogComponent, {
       width: '1200px',
-      data: ProcedureTransferDetails.fromfirstSend(procedure),
+      data: {
+        id_procedure: procedure._id,
+        attachmentQuantity: procedure.amount,
+        code: procedure.code,
+      },
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe((message) => {
@@ -113,7 +121,7 @@ export class ExternalComponent implements OnInit {
   }
 
   conclude(procedure: external) {
-    AlertManager.showConfirmAlert(
+    this.alertService.showConfirmAlert(
       `¿Concluir el tramite ${procedure.code}?`,
       'Los tramites concluidos desde su administacion no pueden ser desarchivados',
       'Ingrese una referencia para concluir',
@@ -126,7 +134,7 @@ export class ExternalComponent implements OnInit {
         this.archiveService.archiveProcedure(archive).subscribe((data) => {
           const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
           this.dataSource[indexFound].state = stateProcedure.CONCLUIDO;
-          AlertManager.showSuccesToast(3000, data.message);
+          this.alertService.showSuccesToast(3000, data.message);
         });
       }
     );

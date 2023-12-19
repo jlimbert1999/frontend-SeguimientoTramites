@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { userSocket } from 'src/app/auth/interfaces';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { SocketService } from 'src/app/services/socket.service';
@@ -12,6 +11,7 @@ import Swal from 'sweetalert2';
 })
 export class GroupwareComponent implements OnInit {
   textSearch: string = '';
+
   constructor(public socketService: SocketService, private authService: AuthService) {}
 
   ngOnInit(): void {}

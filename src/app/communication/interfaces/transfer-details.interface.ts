@@ -1,8 +1,6 @@
 export interface TransferDetails {
-  id_mail?: string;
   attachmentQuantity: string;
-  procedure: {
-    _id: string;
-    code: string;
-  };
+  id_procedure: string;
+  code: string;
+  id_mail?: string;
 }

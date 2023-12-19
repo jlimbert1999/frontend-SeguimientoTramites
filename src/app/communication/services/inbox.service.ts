@@ -1,12 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { map, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Officer } from 'src/app/administration/models/officer.model';
 import { receiver } from '../interfaces/receiver.interface';
 import { institution, dependency, account } from 'src/app/administration/interfaces';
 import { CreateMailDto } from '../dto/create-mail.dto';
-import { communication, statusMail, workflow } from '../interfaces';
+import { TransferDetails, communication, statusMail, workflow } from '../interfaces';
 import { observation, stateProcedure } from 'src/app/procedures/interfaces';
 
 const base_url = environment.base_url;
@@ -61,11 +61,12 @@ export class InboxService {
       );
   }
 
-  create(data: CreateMailDto) {
+  create(details: TransferDetails, FormSend: Object, receivers: receiver[]) {
+    const mail = CreateMailDto.fromFormData(FormSend, receivers, details);
     return this.http
       .post<{
         message: string;
-      }>(`${base_url}/communication`, data)
+      }>(`${base_url}/communication`, mail)
       .pipe(
         map((resp) => {
           return resp;

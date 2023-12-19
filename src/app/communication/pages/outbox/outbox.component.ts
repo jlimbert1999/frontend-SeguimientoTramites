@@ -7,10 +7,10 @@ import { Router } from '@angular/router';
 import { OutboxService } from '../../services/outbox.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { communication, groupedCommunication } from '../../interfaces';
-import { AlertManager } from 'src/app/shared/helpers/alerts';
 import { ProcedureService } from 'src/app/procedures/services';
 import { createRouteMap } from 'src/app/procedures/helpers';
 import { groupProcedure } from 'src/app/procedures/interfaces';
+import { AlertService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-outbox',
@@ -35,6 +35,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     private outboxService: OutboxService,
     public paginatorService: PaginatorService,
     public procedureService: ProcedureService,
+    public alertService: AlertService,
     private router: Router
   ) {}
   ngAfterViewInit(): void {}
@@ -84,7 +85,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
 
   cancelSend(mail: groupedCommunication, selectedSendIds: string[] | null) {
     if (!selectedSendIds) return;
-    AlertManager.showQuestionAlert(
+    this.alertService.showQuestionAlert(
       `¿Cancelar envios del tramite ${mail._id.procedure.code}?`,
       `Envios a cancelar: ${selectedSendIds.length}`,
       () => {
@@ -95,7 +96,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
             this.dataSource = this.dataSource.filter((item) => item._id !== mail._id);
             this.paginatorService.length -= 1;
           }
-          AlertManager.showSuccesAltert('Envio cancelado correctamente', message);
+          this.alertService.showSuccesAltert('Envio cancelado correctamente', message);
         });
       }
     );

@@ -1,9 +1,9 @@
 import { FormControl, Validators } from '@angular/forms';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertManager } from 'src/app/shared/helpers/alerts';
 import { ReportService } from '../../services/report.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
+import { AlertService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-quick-search',
@@ -17,7 +17,8 @@ export class QuickSearchComponent implements OnInit {
   constructor(
     private router: Router,
     private reportService: ReportService,
-    private paginatorService: PaginatorService
+    private paginatorService: PaginatorService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -26,9 +27,9 @@ export class QuickSearchComponent implements OnInit {
 
   searchProcedure() {
     if (this.formSearch.invalid) return;
-    AlertManager.showLoadingAlert('Buscando tramite...', 'Preparando vistas');
+    this.alertService.showLoadingAlert('Buscando tramite...', 'Preparando vistas');
     this.reportService.searchProcedureByCode(this.formSearch.value!.toUpperCase()).subscribe((resp) => {
-      AlertManager.closeLoadingAlert();
+      this.alertService.closeLoadingAlert();
       const params = { search: true };
       this.paginatorService.cache['code'] = this.formSearch.value;
       this.router.navigate([`reportes/busqueda`, resp.group, resp._id], { queryParams: params });

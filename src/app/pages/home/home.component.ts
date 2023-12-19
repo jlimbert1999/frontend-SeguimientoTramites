@@ -44,7 +44,7 @@ export class HomeComponent {
 
   ngOnInit(): void {
     this.socketService.listenUserConnection();
-    this.listenUserConnections();
+    // this.listenUserConnections();
   }
 
   ngOnDestroy(): void {
@@ -60,14 +60,15 @@ export class HomeComponent {
   }
 
   listenMails() {
-    this.socketService.listenMails();
-    this.mailSubscription = this.socketService.mailSubscription$.subscribe((data) => {
-      this.toastService.showToast({
-        title: 'NUEVO TRAMITE RECIBIDO',
-        message: `${data.emitter.fullname} ha enviado un tramite`,
-        onActionRouteNavigate: '/',
-      });
-    });
+    console.log(this.socketService.mailSubscription$());
+    // this.socketService.listenMails();
+    // this.mailSubscription = this.socketService.mailSubscription$.subscribe((data) => {
+    //   this.toastService.showToast({
+    //     title: 'NUEVO TRAMITE RECIBIDO',
+    //     message: `${data.emitter.fullname} ha enviado un tramite`,
+    //     onActionRouteNavigate: '/',
+    //   });
+    // });
   }
   listenUserConnections() {
     // this.userSubscription = this.socketService.onlineUsers$.subscribe();

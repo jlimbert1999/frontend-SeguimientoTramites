@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 import { communication } from '../communication/interfaces/communication';
 import { userSocket } from '../auth/interfaces';
-import { toSignal } from '@angular/core/rxjs-interop';
 @Injectable({
   providedIn: 'root',
 })
 export class SocketService {
   socket: Socket;
   private onlineUsersSubject: BehaviorSubject<userSocket[]> = new BehaviorSubject<userSocket[]>([]);
-  public onlineUsers$ = toSignal(this.onlineUsersSubject.asObservable(), { initialValue: [] });
+  public onlineUsers$ = this.onlineUsersSubject.asObservable();
 
   private mailSubscription: Subject<communication> = new Subject();
-  public mailSubscription$: Observable<communication> = this.mailSubscription.asObservable();
+  public mailSubscription$ = toSignal(this.mailSubscription);
 
   setupSocketConnection() {
     const token = localStorage.getItem('token') ?? '';
@@ -22,12 +22,12 @@ export class SocketService {
   }
   disconnect() {
     if (this.socket) {
-      this.socket.removeAllListeners();
+      this.socket.removeListener();
       this.socket.disconnect();
     }
   }
   listenUserConnection() {
-    this.socket.on('listar', (data) => {
+    this.socket.on('listar', (data: userSocket[]) => {
       this.onlineUsersSubject.next(data);
     });
   }
