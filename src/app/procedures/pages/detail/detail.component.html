@@ -1,9 +1,10 @@
-<div *ngIf="!isLoading" class="animate__animated animate__fadeInLeft animate__faster">
+@if (procedure()) {
+<div class="animate__animated animate__fadeInLeft animate__faster">
   <mat-toolbar color="primary">
     <button (click)="backLocation()" mat-icon-button matTooltip="Regresar">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <span>{{ procedure.code }}</span>
+    <span>{{ procedure()?.code }}</span>
     <span class="example-spacer"></span>
     <button (click)="generateFicha()" matTooltip="Generar ficha de tramite" mat-icon-button>
       <mat-icon>print</mat-icon>
@@ -13,15 +14,13 @@
     <mat-tab-group mat-align-tabs="center">
       <mat-tab>
         <ng-template mat-tab-label> <mat-icon class="tab-icon">info</mat-icon> Informacion </ng-template>
-        <div [ngSwitch]="procedure.group">
-          <div *ngSwitchCase="group.EXTERNAL">
-            <app-external-detail [procedure]="external"></app-external-detail>
-          </div>
-          <div *ngSwitchCase="group.INTERNAL">
-            <app-internal-detail [procedure]="internal"></app-internal-detail>
-          </div>
-          <div *ngSwitchDefault>Type procedure not define {{ procedure.group }}</div>
-        </div>
+        @switch (procedure()?.group) { @case (group.EXTERNAL) {
+        <app-external-detail [procedure]="external" />
+        } @case (group.INTERNAL) {
+        <app-internal-detail [procedure]="internal" />
+        } @default {
+        <p>Type procedure is not defined {{ procedure()?.group }}</p>
+        } }
       </mat-tab>
       <mat-tab *ngIf="observations.length > 0">
         <ng-template mat-tab-label>
@@ -36,7 +35,7 @@
             <mat-icon class="tab-icon">groups</mat-icon>
             Flujo de trabajo
           </ng-template>
-          <app-list-workflow [workflow]="workflow" [startDate]="procedure.startDate"></app-list-workflow>
+          <app-list-workflow [workflow]="workflow" [startDate]="procedure()!.startDate"></app-list-workflow>
         </mat-tab>
         <mat-tab>
           <ng-template mat-tab-label>
@@ -49,3 +48,4 @@
     </mat-tab-group>
   </div>
 </div>
+}

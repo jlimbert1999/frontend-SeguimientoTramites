@@ -6,11 +6,16 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Column, Content, TDocumentDefinitions, Table, TableCell } from 'pdfmake/interfaces';
 import { FormatDate, convertImagenABase64 } from '../helpers';
 import { ReportSheet } from '../interfaces';
+import { Procedure } from 'src/app/procedures/models';
+import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
+import { AuthService } from 'src/app/auth/services/auth.service';
+import { workflow } from 'src/app/communication/interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PdfGeneratorService {
+  constructor(private readonly authService: AuthService) {}
   generateReportSheet({ title, datasource, displayColumns }: ReportSheet) {
     const tableResults: Table = {
       headerRows: 1,
@@ -56,5 +61,96 @@ export class PdfGeneratorService {
       },
     };
     pdfMake.createPdf(docDefinition).print();
+  }
+
+  async generateFicha(procedure: Procedure, workflow: workflow[]) {
+    const docDefinition: TDocumentDefinitions = {
+      header: {
+        columns: [
+          { width: 90, image: await convertImagenABase64('../../../assets/img/logo_alcaldia.png') },
+          {
+            width: '*',
+            text: [
+              `\nFICHA DE TRAMITE ${procedure.group === groupProcedure.EXTERNAL ? 'EXTERNO' : 'INTERNO'}\n`,
+              { text: `FECHA: ${FormatDate(`${new Date()}`)}`, fontSize: 12 },
+            ],
+            bold: true,
+            fontSize: 16,
+          },
+          {
+            width: 100,
+            text: `Generado por: ${this.authService.account()?.officer.fullname} (${
+              this.authService.account()?.officer.jobtitle
+            })`,
+            fontSize: 8,
+            alignment: 'left',
+          },
+        ],
+        alignment: 'center',
+        margin: [10, 10, 10, 10],
+      },
+      pageSize: 'LETTER',
+      pageMargins: [50, 110, 50, 50],
+      content: [
+        {
+          fontSize: 10,
+          table: {
+            widths: [140, '*'],
+            headerRows: 1,
+            body: [
+              [{ text: 'DETALLES DEL TRAMITE', bold: true, colSpan: 2 }, ''],
+              [{ text: 'ALTERNO:' }, procedure.code],
+              [{ text: 'REFERENCIA:' }, procedure.reference],
+              [{ text: 'CANTIDAD:' }, procedure.amount],
+              [{ text: 'ESTADO:' }, procedure.state],
+              [{ text: 'REGISTRADO POR:' }, procedure.fullNameManager],
+              [{ text: 'FECHA REGISTRO:' }, procedure.startDate.toLocaleString()],
+              ...(procedure.state === stateProcedure.CONCLUIDO
+                ? [
+                    [{ text: 'FECHA FINALIZACION:' }, procedure.endDate ? 'ds' : ''],
+                    [{ text: 'DURACION' }, procedure.getDuration()],
+                  ]
+                : []),
+            ],
+          },
+          layout: 'headerLineOnly',
+        },
+        this.sectionWorkflow(workflow),
+      ],
+      styles: {
+        table: {
+          marginTop: 20,
+        },
+        tableHeader: {
+          fillColor: '#0077B6',
+          color: 'white',
+          fontSize: 9,
+        },
+      },
+    };
+    pdfMake.createPdf(docDefinition).print();
+  }
+
+  private sectionWorkflow(workflow: workflow[]): Content {
+    const body: TableCell[][] = workflow.map((el) => {
+      const subTable: TableCell[][] = el.sendings.map((send) => {
+        return [send.receiver.fullname];
+      });
+      return [
+        { text: el._id.emitterAccount },
+        {
+          table: {
+            body: subTable,
+          },
+        },
+      ];
+    });
+    return {
+      pageBreak: 'before',
+      pageOrientation: 'landscape',
+      table: {
+        body: body,
+      },
+    };
   }
 }

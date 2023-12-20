@@ -65,9 +65,10 @@ export class InboxComponent implements OnInit, OnDestroy {
         });
     } else {
       this.inboxService
-        .getInboxOfAccount(this.paginatorService.limit, this.paginatorService.offset, this.status)
+        .getInboxOfAccount({ limit: this.paginatorService.limit, offset: this.paginatorService.offset }, this.status)
         .subscribe((resp) => {
           this.dataSource = resp.mails;
+          console.log(resp.mails[0]._id);
           this.paginatorService.length = resp.length;
         });
     }

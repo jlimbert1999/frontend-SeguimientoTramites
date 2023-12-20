@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, of } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Officer } from 'src/app/administration/models/officer.model';
 import { receiver } from '../interfaces/receiver.interface';
@@ -8,6 +8,8 @@ import { institution, dependency, account } from 'src/app/administration/interfa
 import { CreateMailDto } from '../dto/create-mail.dto';
 import { TransferDetails, communication, statusMail, workflow } from '../interfaces';
 import { observation, stateProcedure } from 'src/app/procedures/interfaces';
+import { Communication } from '../models';
+import { PaginationParameters } from 'src/app/shared/interfaces';
 
 const base_url = environment.base_url;
 
@@ -22,14 +24,17 @@ interface searchParams {
 export class InboxService {
   constructor(private http: HttpClient) {}
 
-  getInboxOfAccount(limit: number, offset: number, status?: statusMail) {
+  getInboxOfAccount(
+    { limit, offset }: PaginationParameters,
+    status?: statusMail
+  ): Observable<{ mails: Communication[]; length: number }> {
     let params = new HttpParams().set('offset', offset * limit).set('limit', limit);
     if (status) params = params.append('status', status);
     return this.http
       .get<{ mails: communication[]; length: number }>(`${base_url}/communication/inbox`, { params })
       .pipe(
         map((resp) => {
-          return { mails: resp.mails, length: resp.length };
+          return { mails: resp.mails.map((el) => Communication.fromResponse(el)), length: resp.length };
         })
       );
   }

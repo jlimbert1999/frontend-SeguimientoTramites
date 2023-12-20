@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -7,17 +7,17 @@ import { workflow } from 'src/app/communication/interfaces';
 import { groupProcedure, observation } from '../../interfaces';
 import { ProcedureService } from '../../services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from '../../models';
+import { PdfGeneratorService } from 'src/app/shared/services';
+import { Workflow } from 'src/app/communication/models';
 
 @Component({
   selector: 'app-detail',
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
-  // standalone: true,
-  // changeDetection: ChangeDetectionStrategy.OnPush,u
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailComponent implements OnInit {
-  isLoading: boolean = true;
-  procedure: InternalProcedure | ExternalProcedure;
+  procedure = signal<InternalProcedure | ExternalProcedure | null>(null);
   workflow: workflow[] = [];
   observations: observation[] = [];
 
@@ -25,21 +25,27 @@ export class DetailComponent implements OnInit {
     private route: ActivatedRoute,
     private paginatorService: PaginatorService,
     private procedureService: ProcedureService,
+    private pdfService: PdfGeneratorService,
     private _location: Location
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(({ group, id }) => {
-      if (!Object.values(groupProcedure).includes(group)) {
+      if (!Object.values(groupProcedure).includes(group) || !id) {
         this._location.back();
         return;
       }
-      this.procedureService.getFullProcedure(id, group).subscribe((data) => {
-        this.procedure = data.procedure;
-        this.workflow = data.workflow;
-        this.observations = data.observations;
-        this.isLoading = false;
-      });
+      this.getProcedure(id, group);
+    });
+  }
+  getProcedure(id: string, group: groupProcedure) {
+    this.procedureService.getFullProcedure(id, group).subscribe((data) => {
+      this.procedure.set(data.procedure);
+      this.workflow = data.workflow;
+      this.observations = data.observations;
+     console.log(this.workflow);
+
+      // console.log(Object.values(w.getWorkflowProcedure()));
     });
   }
 
@@ -54,21 +60,13 @@ export class DetailComponent implements OnInit {
   }
 
   generateFicha() {
-    // const List = this.Workflow.length > 0
-    //   ? createListWorkflow(this.Workflow, [{ id_root: this.Workflow[0].emisor.cuenta._id, startDate: this.Tramite.fecha_registro }], [])
-    //   : []
-    // if (this.tipo === 'ficha-externa') {
-    //   PDF_FichaExterno(this.Tramite, List, this.Location)
-    // }
-    // else {
-    //   PDF_FichaInterno(this.Tramite, List, this.Location)
-    // }
+    this.pdfService.generateFicha(this.procedure()!, this.workflow);
   }
   get external() {
-    return this.procedure as ExternalProcedure;
+    return this.procedure() as ExternalProcedure;
   }
   get internal() {
-    return this.procedure as InternalProcedure;
+    return this.procedure() as InternalProcedure;
   }
   get group() {
     return groupProcedure;

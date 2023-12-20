@@ -143,7 +143,7 @@ export class ExternalComponent implements OnInit {
   showDetails(procedure: external) {
     const params = {
       limit: this.paginatorService.limit,
-      offset: this.paginatorService.offset,
+      offset: this.paginatorService.index,
       ...(this.paginatorService.searchMode && { search: true }),
     };
     this.router.navigate([`tramites/externos`, procedure.group, procedure._id], {
