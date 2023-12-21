@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 
 import { OutboxService } from '../../services/outbox.service';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { communication, groupedCommunication } from '../../interfaces';
+import { communicationResponse, groupedCommunicationResponse } from '../../interfaces';
 import { ProcedureService } from 'src/app/procedures/services';
 import { createRouteMap } from 'src/app/procedures/helpers';
 import { groupProcedure } from 'src/app/procedures/interfaces';
@@ -26,9 +26,9 @@ import { AlertService } from 'src/app/shared/services';
 })
 export class OutboxComponent implements OnInit, AfterViewInit {
   displayedColumns = ['code', 'reference', 'state', 'startDate', 'expand', 'menu-options'];
-  dataSource: groupedCommunication[] = [];
+  dataSource: groupedCommunicationResponse[] = [];
   isLoadingResults = true;
-  expandedElement: communication | null;
+  expandedElement: communicationResponse | null;
 
   constructor(
     public dialog: MatDialog,
@@ -65,13 +65,13 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     }
   }
 
-  generateRouteMap(mail: communication) {
+  generateRouteMap(mail: communicationResponse) {
     this.procedureService.getFullProcedure(mail.procedure._id, mail.procedure.group).subscribe((data) => {
       createRouteMap(data.procedure, data.workflow);
     });
   }
 
-  showDetail(mail: groupedCommunication) {
+  showDetail(mail: groupedCommunicationResponse) {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
@@ -83,7 +83,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     });
   }
 
-  cancelSend(mail: groupedCommunication, selectedSendIds: string[] | null) {
+  cancelSend(mail: groupedCommunicationResponse, selectedSendIds: string[] | null) {
     if (!selectedSendIds) return;
     this.alertService.showQuestionAlert(
       `¿Cancelar envios del tramite ${mail._id.procedure.code}?`,

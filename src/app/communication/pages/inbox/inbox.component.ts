@@ -13,7 +13,7 @@ import { InboxService } from '../../services/inbox.service';
 import { stateProcedure } from 'src/app/procedures/interfaces';
 import { createRouteMap } from 'src/app/procedures/helpers';
 import { EventProcedureDto } from 'src/app/procedures/dtos';
-import { TransferDetails, communication, statusMail } from '../../interfaces';
+import { TransferDetails, communicationResponse, statusMail } from '../../interfaces';
 import { AlertService } from 'src/app/shared/services';
 
 @Component({
@@ -25,7 +25,7 @@ export class InboxComponent implements OnInit, OnDestroy {
   private mailSubscription: Subscription;
   private mailCancelSubscription: Subscription;
   displayedColumns: string[] = ['code', 'reference', 'state', 'emitter', 'outboundDate', 'options'];
-  dataSource: communication[] = [];
+  dataSource: communicationResponse[] = [];
   status?: statusMail;
 
   constructor(
@@ -74,7 +74,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     }
   }
 
-  send(mail: communication) {
+  send(mail: communicationResponse) {
     const dialogRef = this.dialog.open<SendDialogComponent, TransferDetails, string>(SendDialogComponent, {
       width: '1200px',
       data: {
@@ -91,7 +91,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     });
   }
 
-  acceptMail(mail: communication) {
+  acceptMail(mail: communicationResponse) {
     this.alertService.showQuestionAlert(
       `¿Aceptar tramite ${mail.procedure.code}?`,
       `El tramite sera marcado como aceptado`,
@@ -101,7 +101,7 @@ export class InboxComponent implements OnInit, OnDestroy {
             const indexFound = this.dataSource.findIndex((item) => item._id === mail._id);
             this.dataSource[indexFound].procedure.state = resp.state;
             this.dataSource[indexFound].status = statusMail.Received;
-            this.alertService.showSuccesToast(3000, resp.message);
+            this.alertService.showSuccesToast({ title: resp.message });
           },
           () => {
             this.getData();
@@ -110,7 +110,7 @@ export class InboxComponent implements OnInit, OnDestroy {
       }
     );
   }
-  rejectMail(mail: communication) {
+  rejectMail(mail: communicationResponse) {
     this.alertService.showConfirmAlert(
       `¿Rechazar tramite ${mail.procedure.code}?`,
       `El tramite sera devuelto al funcionario emisor`,
@@ -118,12 +118,12 @@ export class InboxComponent implements OnInit, OnDestroy {
       (description) => {
         this.inboxService.rejectMail(mail._id, description).subscribe((message) => {
           this.removeMail(mail._id);
-          this.alertService.showSuccesToast(3000, message);
+          this.alertService.showSuccesToast({ title: message });
         });
       }
     );
   }
-  conclude(mail: communication, isSuspended: boolean) {
+  conclude(mail: communicationResponse, isSuspended: boolean) {
     this.alertService.showConfirmAlert(
       `¿${isSuspended ? 'Suspender' : 'Concluir'} el tramite ${mail.procedure.code}?`,
       `El tramite pasara a su seccion de archivos`,
@@ -135,18 +135,18 @@ export class InboxComponent implements OnInit, OnDestroy {
           stateProcedure: isSuspended ? stateProcedure.SUSPENDIDO : stateProcedure.CONCLUIDO,
         };
         this.archiveService.archiveMail(mail._id, archiveDto).subscribe((data) => {
-          this.alertService.showSuccesToast(3000, data.message);
+          this.alertService.showSuccesToast({ title: data.message });
           this.removeMail(mail._id);
         });
       }
     );
   }
-  generateRouteMap(mail: communication) {
+  generateRouteMap(mail: communicationResponse) {
     this.procedureService.getFullProcedure(mail.procedure._id, mail.procedure.group).subscribe((data) => {
       createRouteMap(data.procedure, data.workflow);
     });
   }
-  showDetail(mail: communication) {
+  showDetail(mail: communicationResponse) {
     if (this.status) this.paginatorService.searchParams.set('status', this.status);
     const params = {
       limit: this.paginatorService.limit,

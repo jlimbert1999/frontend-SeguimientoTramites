@@ -6,7 +6,7 @@ import { Officer } from 'src/app/administration/models/officer.model';
 import { receiver } from '../interfaces/receiver.interface';
 import { institution, dependency, account } from 'src/app/administration/interfaces';
 import { CreateMailDto } from '../dto/create-mail.dto';
-import { TransferDetails, communication, statusMail, workflow } from '../interfaces';
+import { TransferDetails, communicationResponse, statusMail } from '../interfaces';
 import { observation, stateProcedure } from 'src/app/procedures/interfaces';
 import { Communication } from '../models';
 import { PaginationParameters } from 'src/app/shared/interfaces';
@@ -31,7 +31,7 @@ export class InboxService {
     let params = new HttpParams().set('offset', offset * limit).set('limit', limit);
     if (status) params = params.append('status', status);
     return this.http
-      .get<{ mails: communication[]; length: number }>(`${base_url}/communication/inbox`, { params })
+      .get<{ mails: communicationResponse[]; length: number }>(`${base_url}/communication/inbox`, { params })
       .pipe(
         map((resp) => {
           return { mails: resp.mails.map((el) => Communication.fromResponse(el)), length: resp.length };
@@ -42,7 +42,9 @@ export class InboxService {
     let params = new HttpParams().set('offset', offset * limit).set('limit', limit);
     if (status) params = params.append('status', status);
     return this.http
-      .get<{ mails: communication[]; length: number }>(`${base_url}/communication/inbox/search/${text}`, { params })
+      .get<{ mails: communicationResponse[]; length: number }>(`${base_url}/communication/inbox/search/${text}`, {
+        params,
+      })
       .pipe(
         map((resp) => {
           return { mails: resp.mails, length: resp.length };
@@ -118,6 +120,6 @@ export class InboxService {
   }
 
   getMailDetails(id_mail: string) {
-    return this.http.get<communication>(`${base_url}/communication/${id_mail}`);
+    return this.http.get<communicationResponse>(`${base_url}/communication/${id_mail}`);
   }
 }

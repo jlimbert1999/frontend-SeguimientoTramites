@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
 
 import { groupProcedure, observation, stateProcedure } from 'src/app/procedures/interfaces';
-import { communication, statusMail, workflow } from '../../interfaces';
+import { communicationResponse, statusMail, workflowResponse } from '../../interfaces';
 import { ProcedureService } from 'src/app/procedures/services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from 'src/app/procedures/models';
 import { createRouteMap } from 'src/app/procedures/helpers';
@@ -19,9 +19,9 @@ import { AlertService } from 'src/app/shared/services';
   styleUrls: ['./mail.component.scss'],
 })
 export class MailComponent implements OnInit {
-  mail: communication;
+  mail: communicationResponse;
   procedure: InternalProcedure | ExternalProcedure;
-  workflow: workflow[] = [];
+  workflow: workflowResponse[] = [];
   observations: observation[] = [];
   constructor(
     private _location: Location,
@@ -68,7 +68,7 @@ export class MailComponent implements OnInit {
           (resp) => {
             this.mail.procedure.state = resp.state;
             this.mail.status = statusMail.Received;
-            this.alertService.showSuccesToast(3000, resp.message);
+            this.alertService.showSuccesToast({ title: 'Aceptado' });
           },
           () => {
             this._location.back();
@@ -84,7 +84,8 @@ export class MailComponent implements OnInit {
       'Ingrese el motivo del rechazo',
       (description) => {
         this.inboxService.rejectMail(this.mail._id, description).subscribe((message) => {
-          this.alertService.showSuccesToast(3000, message);
+          this.alertService.showSuccesToast({ title: 'Rechazado' });
+
           this.backLocation();
         });
       }

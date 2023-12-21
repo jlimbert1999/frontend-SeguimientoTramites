@@ -1,7 +1,8 @@
 import { procedure } from 'src/app/procedures/interfaces';
-import { communication, participant, statusMail } from '../interfaces';
+import { communicationResponse, participant, statusMail } from '../interfaces';
+import { TimeControl } from 'src/app/shared/helpers';
 
-export class Communication {
+interface iteration {
   _id: string;
   emitter: participant;
   receiver: participant;
@@ -9,15 +10,41 @@ export class Communication {
   reference: string;
   attachmentQuantity: string;
   internalNumber: string;
-  outboundDate: string;
-  inboundDate?: string;
+  outboundDate: Date;
+  inboundDate?: Date;
   status: statusMail;
   rejectionReason?: string;
-
-  static fromResponse(communication: communication) {
-    return new Communication(communication);
+}
+export class Communication {
+  // static fromResponse(communication: communicationResponse) {
+  //   return new Communication(communication);
+  // }
+  constructor({
+    emitter,
+    receiver,
+    procedure,
+    reference,
+    attachmentQuantity,
+    internalNumber,
+    status,
+    outboundDate,
+    inboundDate,
+    rejectionReason,
+  }: iteration) {
+    this.emitter = emitter;
+    this.receiver = receiver;
+    this.procedure = procedure;
+    this.reference = reference;
+    this.attachmentQuantity = attachmentQuantity;
+    this.internalNumber = internalNumber;
+    this.outboundDate = outboundDate;
+    this.status = status;
+    this.rejectionReason = rejectionReason;
+    this.inboundDate = inboundDate;
   }
-  constructor(data: communication) {
-    Object.assign(this, data);
+
+  get receptionTime(): string {
+    if (!this.inboundDate) return 'Pendiente de aceptacion';
+    return TimeControl.duration(this.outboundDate, this.inboundDate);
   }
 }

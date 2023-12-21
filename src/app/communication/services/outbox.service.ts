@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
+import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { groupedCommunication } from '../interfaces';
+import { groupedCommunicationResponse } from '../interfaces';
 
 const base_url = environment.base_url;
 
@@ -15,7 +15,7 @@ export class OutboxService {
   getOutboxOfAccount(limit: number, offset: number) {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
-      .get<{ mails: groupedCommunication[]; length: number }>(`${base_url}/communication/outbox`, {
+      .get<{ mails: groupedCommunicationResponse[]; length: number }>(`${base_url}/communication/outbox`, {
         params,
       })
       .pipe(
@@ -27,9 +27,12 @@ export class OutboxService {
   search(limit: number, offset: number, text: string) {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
-      .get<{ mails: groupedCommunication[]; length: number }>(`${base_url}/communication/outbox/search/${text}`, {
-        params,
-      })
+      .get<{ mails: groupedCommunicationResponse[]; length: number }>(
+        `${base_url}/communication/outbox/search/${text}`,
+        {
+          params,
+        }
+      )
       .pipe(
         map((resp) => {
           return { mails: resp.mails, length: resp.length };

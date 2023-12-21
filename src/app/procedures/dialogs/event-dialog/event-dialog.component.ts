@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { eventProcedure } from '../../interfaces';
 import { ArchiveService } from '../../services';
-import { communication } from 'src/app/communication/interfaces';
+import { communicationResponse } from 'src/app/communication/interfaces';
 
 @Component({
   selector: 'app-event-dialog',
@@ -11,7 +11,7 @@ import { communication } from 'src/app/communication/interfaces';
 })
 export class EventDialogComponent {
   events: eventProcedure[] = [];
-  constructor(@Inject(MAT_DIALOG_DATA) public data: communication, private archiveService: ArchiveService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: communicationResponse, private archiveService: ArchiveService) {
     this.getProcedureEvents();
   }
   getProcedureEvents() {

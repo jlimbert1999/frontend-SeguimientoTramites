@@ -87,6 +87,8 @@ export class ExternalComponent implements OnInit {
         const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
         this.dataSource[indexFound] = updatedProcedure;
         this.dataSource = [...this.dataSource];
+        this.alertService.showSuccesToast({ title: 'editado' });
+
       }
     });
   }
@@ -134,7 +136,7 @@ export class ExternalComponent implements OnInit {
         this.archiveService.archiveProcedure(archive).subscribe((data) => {
           const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
           this.dataSource[indexFound].state = stateProcedure.CONCLUIDO;
-          this.alertService.showSuccesToast(3000, data.message);
+          this.alertService.showSuccesToast({ title: 'eds' });
         });
       }
     );

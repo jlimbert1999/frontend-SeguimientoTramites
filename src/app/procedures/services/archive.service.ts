@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { EventProcedureDto } from '../dtos/event_procedure.dto';
-import { communication } from 'src/app/communication/interfaces';
 import { eventProcedure } from '../interfaces';
+import { communicationResponse } from 'src/app/communication/interfaces';
 
 const base_url = environment.base_url;
 
@@ -16,14 +16,14 @@ export class ArchiveService {
 
   getAll(limit: number, offset: number) {
     const params = new HttpParams().set('limit', limit).set('offset', offset * limit);
-    return this.http.get<{ archives: communication[]; length: number }>(`${base_url}/archive`, {
+    return this.http.get<{ archives: communicationResponse[]; length: number }>(`${base_url}/archive`, {
       params,
     });
   }
   search(text: string, limit: number, offset: number) {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
-      .get<{ archives: communication[]; length: number }>(`${base_url}/archive/search/${text}`, { params })
+      .get<{ archives: communicationResponse[]; length: number }>(`${base_url}/archive/search/${text}`, { params })
       .pipe(
         map((resp) => {
           return { archives: resp.archives, length: resp.length };

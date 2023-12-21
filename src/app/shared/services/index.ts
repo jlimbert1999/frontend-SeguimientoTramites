@@ -1,4 +1,3 @@
 export * from './paginator.service';
-export * from './pdf-generator.service';
-export * from './toast.service';
 export * from './alert.service';
+export * from './pdf-generator.service';

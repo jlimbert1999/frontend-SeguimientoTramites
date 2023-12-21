@@ -4,7 +4,7 @@ import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { external, groupProcedure, internal, observation, stateProcedure } from '../interfaces';
 import { ExternalProcedure, InternalProcedure } from '../models';
-import { workflow } from 'src/app/communication/interfaces';
+import { workflowResponse } from 'src/app/communication/interfaces';
 @Injectable({
   providedIn: 'root',
 })
@@ -15,7 +15,7 @@ export class ProcedureService {
     return this.http
       .get<{
         procedure: internal | external;
-        workflow: workflow[];
+        workflow: workflowResponse[];
         observations: observation[];
       }>(`${this.base_url}/procedure/${group}/${id_procedure}`)
       .pipe(

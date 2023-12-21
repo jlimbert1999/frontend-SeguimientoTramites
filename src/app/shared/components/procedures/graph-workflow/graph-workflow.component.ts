@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import * as shape from 'd3-shape';
 import { Edge, Node, ClusterNode, MiniMapPosition } from '@swimlane/ngx-graph';
 import {
-  workflow,
+  workflowResponse,
   participant,
   statusMail,
 } from 'src/app/communication/interfaces';
@@ -13,7 +13,7 @@ import {
   styleUrls: ['./graph-workflow.component.scss'],
 })
 export class GraphWorkflowComponent implements OnInit {
-  @Input() workflow: workflow[] = [];
+  @Input() workflow: workflowResponse[] = [];
   nodes: Node[] = [];
   links: Edge[] = [];
   clusters: ClusterNode[] = [];

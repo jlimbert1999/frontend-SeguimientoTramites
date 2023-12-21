@@ -9,10 +9,10 @@ import { SocketService } from 'src/app/services/socket.service';
 
 import { EventDialogComponent } from '../../dialogs/event-dialog/event-dialog.component';
 
-import { communication } from 'src/app/communication/interfaces';
 import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
 import { EventProcedureDto } from '../../dtos/event_procedure.dto';
 import { AlertService } from 'src/app/shared/services';
+import { communicationResponse } from 'src/app/communication/interfaces';
 
 @Component({
   selector: 'app-archives',
@@ -21,7 +21,7 @@ import { AlertService } from 'src/app/shared/services';
 })
 export class ArchivesComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['procedure', 'reference', 'manager', 'show-detail', 'options'];
-  dataSource: communication[] = [];
+  dataSource: communicationResponse[] = [];
   subscription: Subscription;
   constructor(
     private readonly archiveService: ArchiveService,
@@ -42,7 +42,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
   }
 
   getData() {
-    const subscription: Observable<{ archives: communication[]; length: number }> = this.paginatorService.isSearchMode
+    const subscription: Observable<{ archives: communicationResponse[]; length: number }> = this.paginatorService.isSearchMode
       ? this.archiveService.search(
           this.paginatorService.searchParams.get('text')! as string,
           this.paginatorService.limit,
@@ -55,7 +55,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
     });
   }
 
-  unarchive(mail: communication) {
+  unarchive(mail: communicationResponse) {
     this.alertService.showConfirmAlert(
       `¿Desarchivar el tramite ${mail.procedure.code}?`,
       `El tramite volvera a su bandeja de entrada`,
@@ -73,7 +73,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
     );
   }
 
-  showDetails(mail: communication) {
+  showDetails(mail: communicationResponse) {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
@@ -83,7 +83,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
       queryParams: params,
     });
   }
-  showTimeline(mail: communication) {
+  showTimeline(mail: communicationResponse) {
     this.dialog.open(EventDialogComponent, {
       width: '1200px',
       data: mail,

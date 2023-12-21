@@ -1,8 +1,8 @@
 import { createFormattedSheets } from './route-map';
 import { Procedure } from '../models';
-import { statusMail, workflow } from 'src/app/communication/interfaces';
+import { statusMail, workflowResponse } from 'src/app/communication/interfaces';
 
-export async function createRouteMap(procedure: Procedure, workflow: workflow[]) {
+export async function createRouteMap(procedure: Procedure, workflow: workflowResponse[]) {
   workflow = workflow
     .map((communication) => {
       const { sendings, ...values } = communication;

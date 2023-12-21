@@ -1,9 +1,8 @@
-import { Procedure } from 'src/app/procedures/models';
-import { participant } from './participant.interface';
-import { statusMail } from './status-mail';
 import { procedure } from 'src/app/procedures/interfaces';
+import { participant } from '../participant.interface';
+import { statusMail } from '../status-mail';
 
-export interface communication {
+export interface communicationResponse {
   _id: string;
   emitter: participant;
   receiver: participant;

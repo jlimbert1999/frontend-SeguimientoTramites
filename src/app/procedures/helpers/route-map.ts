@@ -1,13 +1,13 @@
 import { Content, ContentTable, TDocumentDefinitions, TableCell } from 'pdfmake/interfaces';
 import * as moment from 'moment';
 import * as pdfMake from 'pdfmake/build/pdfmake';
-import { workflow } from 'src/app/communication/interfaces';
+import { workflowResponse } from 'src/app/communication/interfaces';
 import { Procedure } from '../models';
 import { convertImagenABase64 } from 'src/app/shared/helpers/imageBase64';
 import { groupProcedure } from '../interfaces';
 const ordinales = require('ordinales-js');
 
-export async function createFormattedSheets(procedure: Procedure, workflow: workflow[]) {
+export async function createFormattedSheets(procedure: Procedure, workflow: workflowResponse[]) {
   const content: Content[] = [await createHeader(), createFirstContainer(procedure, workflow[0])];
   const lastNumberPage = getLastPageNumber(workflow.length);
   if (workflow.length > 0) {
@@ -86,7 +86,7 @@ async function createHeader(): Promise<Content> {
     },
   ];
 }
-function createFirstContainer(procedure: Procedure, firstSend?: workflow): ContentTable {
+function createFirstContainer(procedure: Procedure, firstSend?: workflowResponse): ContentTable {
   const { applicantDetails } = procedure;
   const firstSendDetails = firstSend
     ? {
@@ -334,7 +334,7 @@ function createFirstContainer(procedure: Procedure, firstSend?: workflow): Conte
     },
   };
 }
-function createContainers(data: workflow[]) {
+function createContainers(data: workflowResponse[]) {
   const cuadros: ContentTable[] = [];
   for (let index = 0; index < data.length; index++) {
     const receivers: string[] = [];

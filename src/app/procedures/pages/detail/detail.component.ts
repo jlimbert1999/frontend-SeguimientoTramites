@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { workflow } from 'src/app/communication/interfaces';
+import { workflowResponse } from 'src/app/communication/interfaces';
 import { groupProcedure, observation } from '../../interfaces';
 import { ProcedureService } from '../../services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from '../../models';
@@ -18,7 +18,7 @@ import { Workflow } from 'src/app/communication/models';
 })
 export class DetailComponent implements OnInit {
   procedure = signal<InternalProcedure | ExternalProcedure | null>(null);
-  workflow: workflow[] = [];
+  workflow: workflowResponse[] = [];
   observations: observation[] = [];
 
   constructor(
@@ -43,7 +43,7 @@ export class DetailComponent implements OnInit {
       this.procedure.set(data.procedure);
       this.workflow = data.workflow;
       this.observations = data.observations;
-     console.log(this.workflow);
+      console.log(Workflow.fromResponse(data.workflow, data.procedure.startDate).getWorkflowProcedure());
 
       // console.log(Object.values(w.getWorkflowProcedure()));
     });

@@ -5,9 +5,9 @@ import { Observable, map } from 'rxjs';
 import { external, groupProcedure, procedure } from 'src/app/procedures/interfaces';
 import { account, institution, typeProcedure } from 'src/app/administration/interfaces';
 import { PaginationParameters } from 'src/app/shared/interfaces';
-import { communication } from 'src/app/communication/interfaces';
 import { environment } from 'src/environments/environment';
 import { ProcedureTableData, ReportTotalProcedures, dependentDetails, totalReportParams } from '../interfaces';
+import { communicationResponse } from 'src/app/communication/interfaces';
 
 const base_url = environment.base_url;
 @Injectable({
@@ -92,7 +92,7 @@ export class ReportService {
   searchProcedureByUnit({ limit, offset }: PaginationParameters, form: Object) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
-      .post<{ communications: communication[]; length: number }>(
+      .post<{ communications: communicationResponse[]; length: number }>(
         `${base_url}/reports/unit`,
         this.getValidFormParameters(form),
         { params }

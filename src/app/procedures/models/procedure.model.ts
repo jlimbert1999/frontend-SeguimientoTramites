@@ -1,6 +1,7 @@
 import { account, typeProcedure } from 'src/app/administration/interfaces';
 import { procedure, groupProcedure, stateProcedure, worker } from '../interfaces';
-import * as moment from 'moment';
+import { TimeControl } from 'src/app/shared/helpers';
+
 export abstract class Procedure {
   readonly _id: string;
   readonly code: string;
@@ -64,36 +65,8 @@ export abstract class Procedure {
     return true;
   }
   getDuration(): string {
-    const parts: string[] = [];
-    const start = moment(this.startDate);
-    const end = this.endDate ? moment(this.endDate) : moment(new Date());
-    const duration = moment.duration(end.diff(start));
-
-    if (duration.years() >= 1) {
-      const years = Math.floor(duration.years());
-      parts.push(years + ' ' + (years > 1 ? 'años' : 'año'));
-    }
-    if (duration.months() >= 1) {
-      const months = Math.floor(duration.months());
-      parts.push(months + ' ' + (months > 1 ? 'meses' : 'mes'));
-    }
-    if (duration.days() >= 1) {
-      const days = Math.floor(duration.days());
-      parts.push(days + ' ' + (days > 1 ? 'dias' : 'dia'));
-    }
-    if (duration.hours() >= 1) {
-      const hours = Math.floor(duration.hours());
-      parts.push(hours + ' ' + (hours > 1 ? 'horas' : 'hora'));
-    }
-    if (duration.minutes() >= 1) {
-      const minutes = Math.floor(duration.minutes());
-      parts.push(minutes + ' ' + (minutes > 1 ? 'minutos' : 'minuto'));
-    }
-    if (duration.seconds() >= 1) {
-      const seconds = Math.floor(duration.seconds());
-      parts.push(seconds + ' ' + (seconds > 1 ? 'segundos' : 'segundo'));
-    }
-    return parts.join(', ');
+    return TimeControl.duration(this.startDate, this.endDate ?? new Date());
   }
+
   abstract get applicantDetails(): { emiter: worker; receiver?: worker };
 }
