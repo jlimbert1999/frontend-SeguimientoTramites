@@ -29,7 +29,7 @@
         </ng-template>
         <app-observations [observations]="observations"></app-observations>
       </mat-tab>
-      <ng-container *ngIf="workflow.length > 0">
+      <!-- <ng-container *ngIf="workflow.stages.st > 0">
         <mat-tab>
           <ng-template mat-tab-label>
             <mat-icon class="tab-icon">groups</mat-icon>
@@ -44,7 +44,7 @@
           </ng-template>
           <app-graph-workflow [workflow]="workflow"></app-graph-workflow>
         </mat-tab>
-      </ng-container>
+      </ng-container> -->
     </mat-tab-group>
   </div>
 </div>

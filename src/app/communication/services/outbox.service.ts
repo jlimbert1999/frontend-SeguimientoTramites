@@ -24,14 +24,13 @@ export class OutboxService {
         })
       );
   }
+
   search(limit: number, offset: number, text: string) {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
       .get<{ mails: groupedCommunicationResponse[]; length: number }>(
         `${base_url}/communication/outbox/search/${text}`,
-        {
-          params,
-        }
+        { params }
       )
       .pipe(
         map((resp) => {
@@ -55,6 +54,7 @@ export class OutboxService {
       })
     );
   }
+
   cancelAllSend(id_tramite: string, fecha_envio: string) {
     return this.http
       .put<{ ok: boolean; message: string }>(`${base_url}/salidas/all/${id_tramite}`, { fecha_envio })

@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/auth/services/auth.service';
-import { Location } from '@angular/common';
-import { account } from '../../interfaces';
 import { AppearanceService } from 'src/app/services/appearance.service';
+import { AuthService } from 'src/app/auth/services/auth.service';
+import { account } from '../../interfaces';
 
 @Component({
   selector: 'app-settings',
@@ -11,7 +10,7 @@ import { AppearanceService } from 'src/app/services/appearance.service';
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent implements OnInit {
-  myAccount: account;
+  myAccount = signal<account | null>(null);
   @ViewChild(FormGroupDirective) formDirective: FormGroupDirective;
   Form_Cuenta: FormGroup = this.fb.group({
     password: [
@@ -24,25 +23,10 @@ export class SettingsComponent implements OnInit {
     ],
   });
   hide = true;
-  darkTheme = false;
 
-  logoUrl = 'assets/logo.png'; // Ruta de tu logotipo (reemplaza 'assets/logo.png' por la ruta correcta)
-  appName = 'Nombre de la Aplicación'; // Puedes establecer el nombre de la aplicación aquí
-  appVersion = '1.0.0'; // Puedes establecer la versión de la aplicación aquí
-
-  constructor(
-    private authService: AuthService,
-    private _location: Location,
-    private fb: FormBuilder,
-    public themeService: AppearanceService
-  ) {
-    // this.authService.getMyAuthDetalis().subscribe((account) => {
-    //   this.myAccount = account;
-    //   console.log(account);
-    // });
-  }
+  constructor(private authService: AuthService, private fb: FormBuilder, private themeService: AppearanceService) {}
   ngOnInit(): void {
-    if (localStorage.getItem('theme')) this.darkTheme = true;
+    this.getMyAccount();
   }
 
   getErrorMessage() {
@@ -56,13 +40,21 @@ export class SettingsComponent implements OnInit {
     return '';
   }
 
+  private getMyAccount() {
+    this.authService.getMyAccount().subscribe((resp) => this.myAccount.set(resp));
+  }
+
   save() {
     // this.authService.updateMyAccount(this.Form_Cuenta.get('password')?.value).subscribe((newAccount) => {
     //   this.myAccount = newAccount;
     //   this.formDirective.resetForm();
     // });
   }
+
+  get isDarkTheme() {
+    return this.themeService.isDarkTheme();
+  }
   toggleDarkTheme() {
-    this.themeService.isDarkTheme(this.darkTheme);
+    this.themeService.toggleTheme();
   }
 }

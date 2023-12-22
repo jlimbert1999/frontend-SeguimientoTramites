@@ -18,7 +18,7 @@ import { Workflow } from 'src/app/communication/models';
 })
 export class DetailComponent implements OnInit {
   procedure = signal<InternalProcedure | ExternalProcedure | null>(null);
-  workflow: workflowResponse[] = [];
+  workflow: Workflow;
   observations: observation[] = [];
 
   constructor(
@@ -41,10 +41,8 @@ export class DetailComponent implements OnInit {
   getProcedure(id: string, group: groupProcedure) {
     this.procedureService.getFullProcedure(id, group).subscribe((data) => {
       this.procedure.set(data.procedure);
-      this.workflow = data.workflow;
+      // this.workflow = data.workflow;
       this.observations = data.observations;
-      console.log(Workflow.fromResponse(data.workflow, data.procedure.startDate).getWorkflowProcedure());
-
       // console.log(Object.values(w.getWorkflowProcedure()));
     });
   }

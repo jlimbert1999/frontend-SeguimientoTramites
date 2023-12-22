@@ -67,7 +67,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
 
   generateRouteMap(mail: communicationResponse) {
     this.procedureService.getFullProcedure(mail.procedure._id, mail.procedure.group).subscribe((data) => {
-      createRouteMap(data.procedure, data.workflow);
+      // createRouteMap(data.procedure, data.workflow);
     });
   }
 

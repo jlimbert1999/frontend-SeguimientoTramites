@@ -114,7 +114,7 @@ export class ExternalComponent implements OnInit {
 
   generateRouteMap(id_procedure: string, group: groupProcedure) {
     this.procedureService.getFullProcedure(id_procedure, group).subscribe((data) => {
-      createRouteMap(data.procedure, data.workflow);
+      // createRouteMap(data.procedure, data.workflow);
     });
   }
 

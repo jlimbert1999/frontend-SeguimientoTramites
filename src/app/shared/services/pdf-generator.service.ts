@@ -9,7 +9,7 @@ import { ReportSheet } from '../interfaces';
 import { Procedure } from 'src/app/procedures/models';
 import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { workflowResponse } from 'src/app/communication/interfaces';
+import { Workflow } from 'src/app/communication/models';
 
 @Injectable({
   providedIn: 'root',
@@ -63,7 +63,7 @@ export class PdfGeneratorService {
     pdfMake.createPdf(docDefinition).print();
   }
 
-  async generateFicha(procedure: Procedure, workflow: workflowResponse[]) {
+  async generateFicha(procedure: Procedure, workflow: Workflow) {
     const docDefinition: TDocumentDefinitions = {
       header: {
         columns: [
@@ -131,13 +131,13 @@ export class PdfGeneratorService {
     pdfMake.createPdf(docDefinition).print();
   }
 
-  private sectionWorkflow(workflow: workflowResponse[]): Content {
-    const body: TableCell[][] = workflow.map((el) => {
-      const subTable: TableCell[][] = el.sendings.map((send) => {
-        return [send.receiver.fullname];
+  private sectionWorkflow(workflow: Workflow): Content {
+    const body: TableCell[][] = workflow.stages.map((el) => {
+      const subTable: TableCell[][] = el.sends.map((send) => {
+        return [send.emitter.fullname];
       });
       return [
-        { text: el._id.emitterAccount },
+        { text: el.id_emitter },
         {
           table: {
             body: subTable,

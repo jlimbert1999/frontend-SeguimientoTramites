@@ -1,158 +1,172 @@
-<p>
+<div class="animate__animated animate__fadeIn">
+  <p>
     <mat-toolbar color="primary">
-        <span>SISTEMA</span>
+      <sidenav-button />
+      <span>CONFIGURACIONES</span>
     </mat-toolbar>
-</p>
-<div class="container">
+  </p>
+  <div class="container">
     <mat-accordion class="example-headers-align" multi>
-        <ng-container *ngIf="myAccount">
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        INFORMACION FUNCIONARIO
-                    </mat-panel-title>
-                    <mat-panel-description>
-                        Datos personales
-                        <mat-icon>person</mat-icon>
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-                <div class="row mb-5">
-                    <ng-container *ngIf="myAccount.funcionario && myAccount.dependencia; else adminTemplate">
-                        <div class="col-sm-3">
-                            <div class="text-center">
-                                <img src="../../../../assets/img/account.png" class="avatar img-circle img-thumbnail"
-                                    alt="avatar">
-                            </div>
-                        </div>
-                        <div class="col-sm-9 personal-info">
-                            <div>
-                                <form class="row g-3">
-                                    <div class="col-md-2">
-                                        <label for="txtDep" class="form-label">Unidad</label>
-                                        <input type="text" class="form-control" id="txtDep"
-                                            [value]="myAccount.dependencia.institucion.nombre" readonly>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <label for="txtInst" class="form-label">Dependencia</label>
-                                        <input type="text" class="form-control" id="txtInst"
-                                            [value]="myAccount.dependencia.nombre" readonly>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="txtOfficer" class="form-label">Funcionario</label>
-                                        <input type="text" class="form-control" id="txtOfficer"
-                                            [value]="myAccount.funcionario|fullname" readonly>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label for="txtDni" class="form-label">Dni</label>
-                                        <input type="text" class="form-control" id="txtDni"
-                                            [value]="myAccount.funcionario.dni" readonly>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label for="txtTel" class="form-label">Telefono</label>
-                                        <input type="text" class="form-control" id="txtTel"
-                                            [value]="myAccount.funcionario.telefono" readonly>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label for="txtDireccion" class="form-label">Direccion</label>
-                                        <input type="text" class="form-control" id="txtDireccion"
-                                            [value]="myAccount.funcionario.direccion" readonly>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="txtCargo" class="form-label">Cargo</label>
-                                        <input type="text" class="form-control" id="txtCargo"
-                                            [value]="myAccount.funcionario.cargo?.nombre" readonly>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </ng-container>
-                    <ng-template #adminTemplate>
-                        <div class="row">
-                            <div class="col-md-12 p-3">
-                                <div class="alert alert-success" role="alert">
-                                    <h4 class="alert-heading">ADMINISTRADOR</h4>
-                                    <p>Esta cuenta no pertenece a ningun funcionario</p>
-                                    <hr>
-                                    <p class="mb-0">Como administrador/a, usted posee privilegios y acceso especial a
-                                        recursos
-                                        críticos para el funcionamiento del sistema.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </ng-template>
-                </div>
-            </mat-expansion-panel>
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        INFORMACION CUENTA
-                    </mat-panel-title>
-                    <mat-panel-description>
-                        Configuracion de inicio de sesion
-                        <mat-icon>account_circle</mat-icon>
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-                <form [formGroup]="Form_Cuenta" (ngSubmit)="save()" autocomplete="off" action="#">
-                    <div class="row p-3">
-                        <div class="col-md-4">
-                            <mat-form-field class="example-full-width">
-                                <mat-label>Nombre de usuario</mat-label>
-                                <input matInput [value]="myAccount.login" readonly>
-                                <mat-hint>Este campo no se puede editar</mat-hint>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-md-4">
-                            <mat-form-field>
-                                <mat-label>Ingrese su nueva contraseña</mat-label>
-                                <input formControlName="password" matInput [type]="hide ? 'password' : 'text'">
-                                <button mat-icon-button matSuffix (click)="hide = !hide"
-                                    [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                                </button>
-                                <mat-error *ngIf="Form_Cuenta.get('password')?.invalid">{{ getErrorMessage()
-                                    }}</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <mat-divider></mat-divider>
-                        <div class="col-md-12 mt-3">
-                            <button mat-raised-button color="primary" type="submit"
-                                [disabled]="Form_Cuenta.invalid">ACTUALIZAR</button>
-                        </div>
-                    </div>
-                </form>
-            </mat-expansion-panel>
-        </ng-container>
+      <ng-container *ngIf="myAccount">
         <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    PERSONALIZACION
-                </mat-panel-title>
-                <mat-panel-description>
-                    Cambiar tema principal
-                    <mat-icon>format_color_fill</mat-icon>
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-            <div class="d-flex justify-content-center">
-                <input id="switch" type="checkbox" [(ngModel)]="darkTheme" (change)="toggleDarkTheme()">
-                <div class="app">
-                    <div class="body">
-                        <div class="phone">
-                            <div class="content">
-                                <div class="circle">
-                                    <div class="crescent"></div>
-                                </div>
-                                <label class="option-theme" for="switch">
-                                    <div class="toggle"></div>
-                                    <div class="names">
-                                        <p class="light">Claro</p>
-                                        <p class="dark">Oscuro</p>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <mat-expansion-panel-header>
+            <mat-panel-title> INFORMACION FUNCIONARIO </mat-panel-title>
+            <mat-panel-description>
+              Datos personales
+              <mat-icon>person</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          @if(myAccount()){ @if(myAccount()!.dependencia && myAccount()!.funcionario){
+          <form class="row g-3">
+            <div class="col-md-2">
+              <label for="txtDep" class="form-label">Unidad</label>
+              <input
+                type="text"
+                class="form-control"
+                id="txtDep"
+                [value]="myAccount()!.dependencia.institucion.nombre"
+                readonly
+              />
             </div>
+            <div class="col-md-10">
+              <label for="txtInst" class="form-label">Dependencia</label>
+              <input type="text" class="form-control" id="txtInst" [value]="myAccount()!.dependencia.nombre" readonly />
+            </div>
+
+            <div class="col-md-6">
+              <label for="txtOfficer" class="form-label">Nombre completo</label>
+              <input
+                type="text"
+                class="form-control"
+                id="txtOfficer"
+                [value]="myAccount()?.funcionario | fullname"
+                readonly
+              />
+            </div>
+            <div class="col-md-2">
+              <label for="txtDni" class="form-label">Dni</label>
+              <input type="text" class="form-control" id="txtDni" [value]="myAccount()!.funcionario?.dni" readonly />
+            </div>
+            <div class="col-md-2">
+              <label for="txtTel" class="form-label">Telefono</label>
+              <input
+                type="text"
+                class="form-control"
+                id="txtTel"
+                [value]="myAccount()!.funcionario?.telefono"
+                readonly
+              />
+            </div>
+            <div class="col-md-2">
+              <label for="txtDireccion" class="form-label">Direccion</label>
+              <input
+                type="text"
+                class="form-control"
+                id="txtDireccion"
+                [value]="myAccount()!.funcionario?.direccion"
+                readonly
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="txtCargo" class="form-label">Cargo</label>
+              <input
+                type="text"
+                class="form-control"
+                id="txtCargo"
+                [value]="myAccount()!.funcionario?.cargo?.nombre ?? 'Sin cargo'"
+                readonly
+              />
+            </div>
+          </form>
+          } @else {
+          <div class="row">
+            <div class="col-md-12 p-3">
+              <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">ADMINISTRADOR</h4>
+                <p>Esta cuenta no pertenece a ningun funcionario</p>
+                <hr />
+                <p class="mb-0">
+                  Como administrador/a, usted posee privilegios y acceso especial a recursos críticos para el
+                  funcionamiento del sistema.
+                </p>
+              </div>
+            </div>
+          </div>
+          } }
         </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title> CONFIGURACION CUENTA </mat-panel-title>
+            <mat-panel-description>
+              Configuracion de inicio de sesion
+              <mat-icon>account_circle</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <form [formGroup]="Form_Cuenta" (ngSubmit)="save()" autocomplete="off" action="#">
+            <div class="row p-3">
+              <div class="col-md-4">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Nombre de usuario</mat-label>
+                  <input matInput [value]="myAccount()?.login" readonly />
+                  <mat-hint>Este campo no se puede editar</mat-hint>
+                </mat-form-field>
+              </div>
+              <div class="col-md-4">
+                <mat-form-field>
+                  <mat-label>Ingrese su nueva contraseña</mat-label>
+                  <input formControlName="password" matInput [type]="hide ? 'password' : 'text'" />
+                  <button
+                    mat-icon-button
+                    matSuffix
+                    (click)="hide = !hide"
+                    [attr.aria-label]="'Hide password'"
+                    [attr.aria-pressed]="hide"
+                  >
+                    <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+                  </button>
+                  <mat-error *ngIf="Form_Cuenta.get('password')?.invalid">{{ getErrorMessage() }}</mat-error>
+                </mat-form-field>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="col-md-12 mt-3">
+                <button mat-raised-button color="primary" type="submit" [disabled]="Form_Cuenta.invalid">
+                  ACTUALIZAR
+                </button>
+              </div>
+            </div>
+          </form>
+        </mat-expansion-panel>
+      </ng-container>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> PERSONALIZACION </mat-panel-title>
+          <mat-panel-description>
+            Cambiar tema principal
+            <mat-icon>format_color_fill</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="d-flex justify-content-center">
+          <input id="switch" type="checkbox" [ngModel]="isDarkTheme" (change)="toggleDarkTheme()" />
+          <div class="app">
+            <div class="body">
+              <div class="phone">
+                <div class="content">
+                  <div class="circle">
+                    <div class="crescent"></div>
+                  </div>
+                  <label class="option-theme" for="switch">
+                    <div class="toggle"></div>
+                    <div class="names">
+                      <p class="light">Claro</p>
+                      <p class="dark">Oscuro</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
     </mat-accordion>
+  </div>
 </div>

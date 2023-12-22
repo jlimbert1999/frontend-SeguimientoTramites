@@ -2,45 +2,49 @@ import { procedure } from 'src/app/procedures/interfaces';
 import { communicationResponse, participant, statusMail } from '../interfaces';
 import { TimeControl } from 'src/app/shared/helpers';
 
-interface iteration {
-  _id: string;
-  emitter: participant;
-  receiver: participant;
-  procedure: procedure;
-  reference: string;
-  attachmentQuantity: string;
-  internalNumber: string;
-  outboundDate: Date;
-  inboundDate?: Date;
-  status: statusMail;
-  rejectionReason?: string;
-}
 export class Communication {
-  // static fromResponse(communication: communicationResponse) {
-  //   return new Communication(communication);
-  // }
-  constructor({
+  inboundDate?: Date;
+  static fromResponse({
+    _id,
     emitter,
     receiver,
     procedure,
     reference,
     attachmentQuantity,
     internalNumber,
-    status,
     outboundDate,
-    inboundDate,
+    status,
     rejectionReason,
-  }: iteration) {
-    this.emitter = emitter;
-    this.receiver = receiver;
-    this.procedure = procedure;
-    this.reference = reference;
-    this.attachmentQuantity = attachmentQuantity;
-    this.internalNumber = internalNumber;
-    this.outboundDate = outboundDate;
-    this.status = status;
-    this.rejectionReason = rejectionReason;
-    this.inboundDate = inboundDate;
+    inboundDate,
+  }: communicationResponse) {
+    return new Communication(
+      _id,
+      emitter,
+      receiver,
+      procedure,
+      reference,
+      attachmentQuantity,
+      internalNumber,
+      outboundDate,
+      status,
+      rejectionReason,
+      inboundDate
+    );
+  }
+  constructor(
+    public _id: string,
+    public emitter: participant,
+    public receiver: participant,
+    public procedure: procedure,
+    public reference: string,
+    public attachmentQuantity: string,
+    public internalNumber: string,
+    public outboundDate: string,
+    public status: statusMail,
+    public rejectionReason?: string,
+    inboundDate?: string
+  ) {
+    if (inboundDate) this.inboundDate = new Date(inboundDate);
   }
 
   get receptionTime(): string {

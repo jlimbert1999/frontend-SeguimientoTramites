@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Inject, Injectable, signal } from '@angular/core';
+import { Inject, Injectable, effect, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -7,20 +7,22 @@ import { Inject, Injectable, signal } from '@angular/core';
 export class AppearanceService {
   public toggleSidenav = signal<boolean>(true);
   public loading = signal<boolean>(false);
-  
-  constructor(@Inject(DOCUMENT) private document: Document) {}
-  isDarkTheme(active: boolean) {
-    if (active) {
-      localStorage.setItem('theme', 'dark-theme');
-      this.document.body.classList.add('dark-theme');
-    } else {
-      localStorage.removeItem('theme');
-      this.document.body.classList.remove('dark-theme');
-    }
+  public isDarkTheme = signal<boolean>(false);
+
+  constructor(@Inject(DOCUMENT) private document: Document) {
+    effect(() => {
+      if (this.isDarkTheme()) {
+        this.document.body.classList.add('dark-theme');
+        localStorage.setItem('theme', 'dark-theme');
+      } else {
+        this.document.body.classList.remove('dark-theme');
+        localStorage.removeItem('theme');
+      }
+    });
+    if (localStorage.getItem('theme')) this.isDarkTheme.set(true);
   }
- 
-  startTheme() {
-    const theme = localStorage.getItem('theme');
-    theme ? this.document.body.classList.add(theme) : null;
+
+  toggleTheme() {
+    this.isDarkTheme.update((value) => !value);
   }
 }

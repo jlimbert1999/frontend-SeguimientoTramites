@@ -1,6 +1,6 @@
 import { TimeControl } from 'src/app/shared/helpers';
 import { Communication } from './communication.model';
-import { workflowResponse } from '../interfaces';
+import { participant, workflowResponse } from '../interfaces';
 
 interface iteration {
   id_emitter: string;
@@ -35,4 +35,5 @@ export class Workflow {
       return stage;
     });
   }
+
 }

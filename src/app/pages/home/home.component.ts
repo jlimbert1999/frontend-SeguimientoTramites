@@ -27,10 +27,9 @@ export class HomeComponent {
     private authService: AuthService,
     private socketService: SocketService,
     private router: Router,
-    private appearanceService: AppearanceService,
+    private appearanceService: AppearanceService
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    this.appearanceService.startTheme();
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
     effect(() => {
@@ -48,7 +47,6 @@ export class HomeComponent {
   ngOnDestroy(): void {
     this.mobileQuery!.removeListener(this._mobileQueryListener);
     if (this.mailSubscription) this.mailSubscription.unsubscribe();
-    
   }
   get isLoaging() {
     return this.appearanceService.loading();

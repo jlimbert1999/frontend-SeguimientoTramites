@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { external, groupProcedure, internal, observation, stateProcedure } from '../interfaces';
 import { ExternalProcedure, InternalProcedure } from '../models';
 import { workflowResponse } from 'src/app/communication/interfaces';
+import { Workflow } from 'src/app/communication/models';
 @Injectable({
   providedIn: 'root',
 })
@@ -29,9 +30,10 @@ export class ProcedureService {
               Procedure = InternalProcedure.toModel(resp.procedure);
               break;
           }
+
           return {
             procedure: Procedure,
-            workflow: resp.workflow,
+            workflow: Workflow.fromResponse(resp.workflow, new Date(resp.procedure.startDate)),
             observations: resp.observations,
           };
         })

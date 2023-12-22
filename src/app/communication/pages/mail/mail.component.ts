@@ -44,7 +44,7 @@ export class MailComponent implements OnInit {
   getFullDetailsProcedure(id_procedure: string, group: groupProcedure) {
     this.procedureService.getFullProcedure(id_procedure, group).subscribe((data) => {
       this.procedure = data.procedure;
-      this.workflow = data.workflow;
+      // this.workflow = data.workflow;
       this.observations = data.observations;
     });
   }

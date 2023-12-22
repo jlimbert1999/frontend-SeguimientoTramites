@@ -67,8 +67,8 @@ export class InboxComponent implements OnInit, OnDestroy {
       this.inboxService
         .getInboxOfAccount({ limit: this.paginatorService.limit, offset: this.paginatorService.offset }, this.status)
         .subscribe((resp) => {
-          this.dataSource = resp.mails;
-          console.log(resp.mails[0]._id);
+          // this.dataSource = resp.mails;
+          // console.log(resp.mails[0]._id);
           this.paginatorService.length = resp.length;
         });
     }
@@ -102,7 +102,7 @@ export class InboxComponent implements OnInit, OnDestroy {
             this.dataSource[indexFound].procedure.state = resp.state;
             this.dataSource[indexFound].status = statusMail.Received;
             this.alertService.showSuccesToast({ title: resp.message });
-          },
+          }, 
           () => {
             this.getData();
           }
@@ -143,7 +143,7 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
   generateRouteMap(mail: communicationResponse) {
     this.procedureService.getFullProcedure(mail.procedure._id, mail.procedure.group).subscribe((data) => {
-      createRouteMap(data.procedure, data.workflow);
+      // createRouteMap(data.procedure, data.workflow);
     });
   }
   showDetail(mail: communicationResponse) {

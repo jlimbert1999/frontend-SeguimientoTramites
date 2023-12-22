@@ -111,7 +111,7 @@ export class InternalComponent implements OnInit {
   }
   generateRouteMap(id_tramite: string, group: groupProcedure) {
     this.procedureService.getFullProcedure(id_tramite, group).subscribe((data) => {
-      createRouteMap(data.procedure, data.workflow);
+      // createRouteMap(data.procedure, data.workflow);
     });
   }
 

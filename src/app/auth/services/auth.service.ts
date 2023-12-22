@@ -7,6 +7,7 @@ import { catchError, map } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { authStatus, jwtPayload, menu } from '../interfaces';
+import { account } from 'src/app/administration/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -51,6 +52,12 @@ export class AuthService {
           return of(false);
         })
       );
+  }
+  getMyAccount() {
+    return this.http.get<account>(`${this.base_url}/auth/${this.account()?.id_account}`);
+  }
+  updateMyAccount(password: string) {
+    return this.http.put<{ message: string }>(`${this.base_url}/auth`, { password });
   }
 
   private setAuthentication(token: string): boolean {
