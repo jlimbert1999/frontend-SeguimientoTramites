@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { InstitucionesService } from '../../services/instituciones.service';
 import { InstitutionDialogComponent } from '../../dialogs/institution-dialog/institution-dialog.component';
 import { institution } from '../../interfaces/institution.interface';
+import {PaginatorService} from 'src/app/shared/services';
 
 @Component({
   selector: 'app-instituciones',
@@ -18,7 +18,7 @@ export class InstitucionesComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     public institucionesService: InstitucionesService,
-    public paginatorService: PaginatorService
+    public paginatorService:PaginatorService
   ) { }
 
   ngOnInit(): void {

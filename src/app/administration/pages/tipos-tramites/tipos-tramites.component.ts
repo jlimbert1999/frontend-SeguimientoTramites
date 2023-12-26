@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TiposTramitesService } from '../../services/tipos-tramites.service';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
+
 import { typeProcedure } from '../../interfaces/typeProcedure.interface';
 import { TypeProcedureDialogComponent } from '../../dialogs/type-procedure-dialog/type-procedure-dialog.component';
+import {PaginatorService} from 'src/app/shared/services';
 
 @Component({
   selector: 'app-tipos-tramites',
@@ -18,7 +19,7 @@ export class TiposTramitesComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     public tiposTramitesService: TiposTramitesService,
-    private paginatorService: PaginatorService
+    private paginatorService:PaginatorService
   ) {}
 
   ngOnInit(): void {

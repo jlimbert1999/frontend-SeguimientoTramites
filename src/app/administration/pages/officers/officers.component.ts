@@ -3,10 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { read, utils } from 'xlsx';
 import Swal from 'sweetalert2';
 import { UsuariosService } from '../../services/usuarios.service';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { officer } from '../../interfaces/oficer.interface';
 import { WorkHistoryComponent } from '../../dialogs/work-history/work-history.component';
 import { OfficerDialogComponent } from '../../dialogs/officer-dialog/officer-dialog.component';
+import {PaginatorService} from 'src/app/shared/services';
 
 @Component({
   selector: 'app-officers',
@@ -27,7 +27,7 @@ export class OfficersComponent implements OnInit, OnDestroy {
 
   constructor(
     private funcionariosService: UsuariosService,
-    private paginatorService: PaginatorService,
+    private paginatorService:PaginatorService,
     public dialog: MatDialog
   ) {}
   ngOnDestroy(): void {}

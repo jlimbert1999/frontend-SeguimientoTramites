@@ -12,6 +12,7 @@ import { Workflow } from 'src/app/communication/models';
 export class ProcedureService {
   base_url = environment.base_url;
   constructor(private http: HttpClient) {}
+
   getFullProcedure(id_procedure: string, group: groupProcedure) {
     return this.http
       .get<{
@@ -24,16 +25,15 @@ export class ProcedureService {
           let Procedure: ExternalProcedure | InternalProcedure;
           switch (resp.procedure.group) {
             case groupProcedure.EXTERNAL:
-              Procedure = ExternalProcedure.toModel(resp.procedure);
+              Procedure = ExternalProcedure.ResponseToModel(resp.procedure as external);
               break;
             default:
-              Procedure = InternalProcedure.toModel(resp.procedure);
+              Procedure = InternalProcedure.ResponseToModel(resp.procedure as internal);
               break;
           }
-
           return {
             procedure: Procedure,
-            workflow: Workflow.fromResponse(resp.workflow, new Date(resp.procedure.startDate)),
+            workflow: resp.workflow.map((el) => Workflow.fromResponse(el)),
             observations: resp.observations,
           };
         })

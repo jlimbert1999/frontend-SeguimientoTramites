@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { workflowResponse } from 'src/app/communication/interfaces';
+import { Workflow } from 'src/app/communication/models';
 
 @Component({
   selector: 'app-list-workflow',
@@ -7,8 +8,7 @@ import { workflowResponse } from 'src/app/communication/interfaces';
   styleUrls: ['./list-workflow.component.scss'],
 })
 export class ListWorkflowComponent implements OnInit {
-  @Input() workflow: workflowResponse[] = [];
-  @Input() startDate: Date;
+  @Input() workflow: Workflow[] = [];
   constructor() {}
 
   ngOnInit(): void {}

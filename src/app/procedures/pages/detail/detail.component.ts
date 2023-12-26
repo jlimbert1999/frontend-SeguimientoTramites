@@ -1,14 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { workflowResponse } from 'src/app/communication/interfaces';
-import { groupProcedure, observation } from '../../interfaces';
-import { ProcedureService } from '../../services/procedure.service';
-import { ExternalProcedure, InternalProcedure } from '../../models';
-import { PdfGeneratorService } from 'src/app/shared/services';
+import { PdfGeneratorService,PaginatorService} from 'src/app/shared/services';
 import { Workflow } from 'src/app/communication/models';
+import { ExternalProcedure, InternalProcedure } from '../../models';
+import { ProcedureService } from '../../services/procedure.service';
+import { groupProcedure, observation } from '../../interfaces';
 
 @Component({
   selector: 'app-detail',
@@ -18,12 +15,12 @@ import { Workflow } from 'src/app/communication/models';
 })
 export class DetailComponent implements OnInit {
   procedure = signal<InternalProcedure | ExternalProcedure | null>(null);
-  workflow: Workflow;
+  workflow: Workflow[] = [];
   observations: observation[] = [];
 
   constructor(
     private route: ActivatedRoute,
-    private paginatorService: PaginatorService,
+    private paginatorService:PaginatorService,
     private procedureService: ProcedureService,
     private pdfService: PdfGeneratorService,
     private _location: Location
@@ -43,7 +40,6 @@ export class DetailComponent implements OnInit {
       this.procedure.set(data.procedure);
       // this.workflow = data.workflow;
       this.observations = data.observations;
-      // console.log(Object.values(w.getWorkflowProcedure()));
     });
   }
 

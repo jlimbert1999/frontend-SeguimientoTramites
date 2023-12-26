@@ -57,6 +57,9 @@
       @if (isLoaging) {
       <progress-spinner></progress-spinner>
       }
+      <pre>
+        {{ cache | json }}
+      </pre>
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>

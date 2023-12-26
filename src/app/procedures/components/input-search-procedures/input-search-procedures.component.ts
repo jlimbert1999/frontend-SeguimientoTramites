@@ -1,21 +1,24 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { PaginatorService } from '../../../services/paginator.service';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MaterialModule } from 'src/app/material/material.module';
+import { PaginatorService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-input-search-procedures',
   templateUrl: './input-search-procedures.component.html',
   styleUrls: ['./input-search-procedures.component.scss'],
+  standalone: true,
+  imports: [MaterialModule, FormsModule, ReactiveFormsModule],
 })
 export class InputSearchProceduresComponent implements OnInit {
-  @Input() placeholder = 'Buscar....';
-  @Output() searchEvent = new EventEmitter<undefined>();
-  FormSearch = new FormControl('', [
+  @Input({ required: true }) placeholder = 'Buscar tramite';
+  @Output() searchEvent = new EventEmitter<void>();
+  public FormSearch = new FormControl('', [
     Validators.minLength(4),
     Validators.pattern(/^[^/!@#$%^&*()_+{}\[\]:;<>,.?~\\]*$/),
   ]);
   constructor(private paginatorService: PaginatorService) {}
-  ngOnInit(): void {  
+  ngOnInit(): void {
     if (!this.paginatorService.searchMode) return;
     const searchText = this.paginatorService.searchParams.get('text');
     if (!searchText) {
@@ -27,18 +30,24 @@ export class InputSearchProceduresComponent implements OnInit {
   }
 
   search() {
-    if (this.FormSearch.invalid || this.FormSearch.value === '') return;
-    this.paginatorService.searchMode = true;
+    if (this.FormSearch.invalid) return;
     this.paginatorService.offset = 0;
-    this.paginatorService.searchParams.set('text', this.FormSearch.value!);
+    this.paginatorService.cache = { text: this.FormSearch.value };
     this.searchEvent.emit();
   }
   cancel() {
-    this.FormSearch.setValue('');
-    this.FormSearch.setErrors(null);
-    this.paginatorService.resetPagination();
-    this.paginatorService.searchParams.clear();
+    if (this.FormSearch.value === '') {
+      return;
+    }
+    this.paginatorService.searchMode = false;
+    this.paginatorService.offset = 0;
     this.searchEvent.emit();
+
+    // this.FormSearch.setValue('');
+    // this.FormSearch.setErrors(null);
+    // this.paginatorService.resetPagination();
+    // this.paginatorService.searchParams.clear();
+    //
   }
   getErrorMessage() {
     if (this.FormSearch.hasError('minlength')) {

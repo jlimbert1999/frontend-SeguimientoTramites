@@ -19,13 +19,13 @@ export class InternalService {
     const procedure = InternalProcedureDto.fromForm(form);
     return this.http
       .post<internal>(`${base_url}/internal`, procedure)
-      .pipe(map((response) => InternalProcedure.toModel(response)));
+      .pipe(map((response) => InternalProcedure.ResponseToModel(response)));
   }
   edit(id_tramite: string, form: Object) {
     const procedure = UpdateInternalProcedureDto.fromForm(form);
     return this.http
       .put<internal>(`${base_url}/internal/${id_tramite}`, procedure)
-      .pipe(map((response) => InternalProcedure.toModel(response)));
+      .pipe(map((response) => InternalProcedure.ResponseToModel(response)));
   }
 
   findAll(limit: number, offset: number) {
@@ -35,7 +35,7 @@ export class InternalService {
       .get<{ ok: boolean; procedures: internal[]; length: number }>(`${base_url}/internal`, { params })
       .pipe(
         map((response) => {
-          const model = response.procedures.map((procedure) => InternalProcedure.toModel(procedure));
+          const model = response.procedures.map((procedure) => InternalProcedure.ResponseToModel(procedure));
           return { procedures: model, length: response.length };
         })
       );
@@ -46,7 +46,7 @@ export class InternalService {
       .get<{ procedures: internal[]; length: number }>(`${base_url}/internal/search/${text}`, { params })
       .pipe(
         map((response) => {
-          const model = response.procedures.map((procedure) => InternalProcedure.toModel(procedure));
+          const model = response.procedures.map((procedure) => InternalProcedure.ResponseToModel(procedure));
           return { procedures: model, length: response.length };
         })
       );

@@ -1,35 +1,30 @@
 <div class="container-fluid">
   <div class="list-workflow">
-    <div
-      class="row p-3 mb-2 align-items-center"
-      *ngFor="let item of workflow; let i = index"
-    >
+    @for (stage of workflow; track $index) {
+    <div class="row p-3 mb-2 align-items-center">
       <div class="col-sm-6 align-middle">
         <div class="card bg-transparent">
           <div class="card-body">
             <h5 class="card-title">
-              {{ item.sendings[0].emitter.fullname | titlecase }}
+              {{ stage.emitter.fullname | titlecase }}
             </h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">
-              {{ item.sendings[0].emitter.jobtitle | uppercase }}
+              {{ stage.emitter.jobtitle ?? "Sin cargo" | uppercase }}
             </h6>
             <hr />
-            <p class="card-text">{{ item.sendings[0].reference }}</p>
           </div>
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
-              Fecha envio: {{ item._id.outboundDate | date : "short" }}
+              Duracion: <span class="badge text-bg-primary fs-6"> {{ stage.emitter.duration }}</span>
             </li>
-            <li class="list-group-item">
-              Cantidad: {{ item.sendings[0].attachmentQuantity }}
-            </li>
+            <!-- <li class="list-group-item">Fecha envio: {{ stage.outboundDate | date : "short" }}</li> -->
           </ul>
         </div>
       </div>
       <div class="col-sm-6">
+        @for (subitem of stage.detail; track $index) {
         <div
           class="card mb-2 bg-transparent border border-3"
-          *ngFor="let subitem of item.sendings"
           [ngClass]="[
             subitem.status === 'rejected' ? 'border-danger' : '',
             subitem.status === 'pending' ? 'border-warning' : 'border-success'
@@ -44,23 +39,32 @@
             </h6>
           </div>
           <ul class="list-group list-group-flush">
+            @switch (subitem.status) { @case ('pending') {
+            <li class="list-group-item list-group-item-warning">Sin aceptar</li>
+            } @case ('rejected') {
+            <li class="list-group-item list-group-item-danger">
+              Fecha rechazdo: {{ subitem.inboundDate | date : "short" }}
+            </li>
+            <li class="list-group-item list-group-item-danger">Motivo: {{ subitem.rejectionReason }}</li>
+            <li class="list-group-item list-group-item-danger">
+              Duracion: <span class="badge text-bg-danger fs-6">{{ subitem.receiver.duration }}</span>
+            </li>
+            } @default {
+            <li class="list-group-item">Fecha recibido: {{ subitem.inboundDate | date : "short" }}</li>
             <li class="list-group-item">
-              Fecha recibido: {{ subitem.inboundDate | date : "short" }}
+              Duracion: <span class="badge text-bg-primary fs-6">{{ subitem.receiver.duration }}</span>
             </li>
-            <li
-              *ngIf="subitem.rejectionReason"
-              class="list-group-item text-danger"
-            >
-              Motivo rechazo: {{ subitem.rejectionReason }}
-            </li>
+            } }
           </ul>
         </div>
+        }
       </div>
       <div class="d-flex mt-3">
         <hr class="my-auto flex-grow-1" />
-        <div class="px-4">ETAPA "{{ i + 1 }}"</div>
+        <div class="px-4">ETAPA "{{ $index + 1 }}"</div>
         <hr class="my-auto flex-grow-1" />
       </div>
     </div>
+    }
   </div>
 </div>

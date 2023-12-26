@@ -15,7 +15,6 @@ import { StatePipe } from './pipes/state.pipe';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { SimpleMatSelectSearchComponent } from './components/simple-mat-select-search/simple-mat-select-search.component';
 import { ServerMatSelectSearchComponent } from './components/server-mat-select-search/server-mat-select-search.component';
-import { InputSearchProceduresComponent } from './components/procedures/input-search-procedures/input-search-procedures.component';
 import { TimelineComponent } from './components/timeline/timeline.component';
 import { LineComponent } from './components/charts/line/line.component';
 import { SidenavButtonComponent } from './components/buttons/sidenav-button/sidenav-button.component';
@@ -25,7 +24,6 @@ import { TableComponent } from './components/table/table.component';
   declarations: [
     SimpleMatSelectSearchComponent,
     ServerMatSelectSearchComponent,
-    InputSearchProceduresComponent,
     GraphWorkflowComponent,
     ListWorkflowComponent,
     PaginatorComponent,
@@ -53,7 +51,6 @@ import { TableComponent } from './components/table/table.component';
   exports: [
     SimpleMatSelectSearchComponent,
     ServerMatSelectSearchComponent,
-    InputSearchProceduresComponent,
     ProgressSpinnerComponent,
     SidenavButtonComponent,
     GraphWorkflowComponent,

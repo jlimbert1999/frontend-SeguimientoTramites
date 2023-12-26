@@ -1,11 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as shape from 'd3-shape';
 import { Edge, Node, ClusterNode, MiniMapPosition } from '@swimlane/ngx-graph';
-import {
-  workflowResponse,
-  participant,
-  statusMail,
-} from 'src/app/communication/interfaces';
+import { workflowResponse, participant, statusMail } from 'src/app/communication/interfaces';
+// import { Workflow, actor } from 'src/app/communication/models';
 
 @Component({
   selector: 'app-graph-workflow',
@@ -13,7 +10,7 @@ import {
   styleUrls: ['./graph-workflow.component.scss'],
 })
 export class GraphWorkflowComponent implements OnInit {
-  @Input() workflow: workflowResponse[] = [];
+  @Input() workflow: any[] = [];
   nodes: Node[] = [];
   links: Edge[] = [];
   clusters: ClusterNode[] = [];
@@ -23,51 +20,47 @@ export class GraphWorkflowComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.workflow.forEach((element, index) => {
-      element.sendings.forEach((send, subindex) => {
-        const [status, classEdge, classLink] =
-          send.status === statusMail.Rejected
-            ? ['Rechazado', 'circle-reject', 'line-reject']
-            : send.status === statusMail.Pending
-            ? ['Pendiente', 'circle-pending', 'line-pending']
-            : ['Recibido', 'circle-success', 'line-success'];
-
-        this.links.push({
-          id: `a${subindex}-${index}`,
-          source: send.emitter.cuenta._id,
-          target: send.receiver.cuenta._id,
-          label: `${index + 1}`,
-          data: {
-            status,
-            classEdge,
-            classLink,
-          },
-        });
-        this.addNodeIfNotFound(send.emitter);
-        this.addNodeIfNotFound(send.receiver);
-        this.addClusterIfNotFount(send.emitter);
-        this.addClusterIfNotFount(send.receiver);
-      });
-    });
+    // this.workflow.forEach((element, index) => {
+    //   this.addNode(element.emitter);
+    //   element.detail.forEach((send, subindex) => {
+    //     const [status, classEdge, classLink] =
+    //       send.status === statusMail.Rejected
+    //         ? ['Rechazado', 'circle-reject', 'line-reject']
+    //         : send.status === statusMail.Pending
+    //         ? ['Pendiente', 'circle-pending', 'line-pending']
+    //         : ['Recibido', 'circle-success', 'line-success'];
+    //     this.links.push({
+    //       id: `a${subindex}-${index}`,
+    //       source: element.emitter.cuenta,
+    //       target: send.receiver.cuenta,
+    //       label: `${index + 1}`,
+    //       data: {
+    //         status,
+    //         classEdge,
+    //         classLink,
+    //       },
+    //     });
+    //     this.addNode(send.receiver);
+    //     // this.addClusterIfNotFount(send.emitter);
+    //     // this.addClusterIfNotFount(send.receiver);
+    //   });
+    // });
   }
 
-  addNodeIfNotFound(participant: participant): void {
-    const foundUser = this.nodes.find(
-      (node) => node.id === participant.cuenta._id
-    );
-    if (!foundUser) {
-      this.nodes.push({
-        id: participant.cuenta._id.toString(),
-        label: `funcionario-${participant.cuenta._id}`,
-        data: {
-          dependencia: participant.cuenta.dependencia.nombre,
-          institucion: participant.cuenta.dependencia.institucion.nombre,
-          officer: participant.fullname,
-          jobtitle: participant.jobtitle ? participant.jobtitle : 'Sin cargo',
-        },
-      });
-    }
-  }
+  // addNode(actor: actor): void {
+  //   const foundUser = this.nodes.some((node) => node.id === actor.cuenta);
+  //   if (foundUser) return;
+  //   this.nodes.push({
+  //     id: actor.cuenta,
+  //     label: `funcionario-${actor.cuenta}`,
+  //     data: {
+  //       // dependencia: participant.cuenta.dependencia.nombre,
+  //       // institucion: participant.cuenta.dependencia.institucion.nombre,
+  //       officer: actor.fullname,
+  //       jobtitle: actor.jobtitle ?? 'Sin cargo',
+  //     },
+  //   });
+  // }
   addClusterIfNotFount(participant: participant): void {
     const indexFoundInstitution = this.clusters.findIndex(
       (cluster) => cluster.id === participant.cuenta.dependencia.institucion._id
@@ -79,9 +72,7 @@ export class GraphWorkflowComponent implements OnInit {
         childNodeIds: [participant.cuenta._id],
       });
     } else {
-      this.clusters[indexFoundInstitution].childNodeIds?.push(
-        participant.cuenta._id
-      );
+      this.clusters[indexFoundInstitution].childNodeIds?.push(participant.cuenta._id);
     }
   }
 }

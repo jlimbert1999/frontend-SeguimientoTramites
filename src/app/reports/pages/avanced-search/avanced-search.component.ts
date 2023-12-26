@@ -4,10 +4,10 @@ import { Router } from '@angular/router';
 
 import { stateProcedure } from 'src/app/procedures/interfaces';
 import { MatSelectSearchData } from 'src/app/shared/interfaces';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 
 import { ReportService } from '../../services/report.service';
 import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
+import {PaginatorService} from 'src/app/shared/services';
 
 @Component({
   selector: 'app-avanced-search',
@@ -37,7 +37,7 @@ export class AvancedSearchComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private reportService: ReportService,
-    private paginatorService: PaginatorService
+    private paginatorService:PaginatorService
   ) {}
 
   ngOnInit(): void {

@@ -8,6 +8,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { RegisterExternalComponent } from './pages/register-external/register-external.component';
 import { RegisterInternalComponent } from './pages/register-internal/register-internal.component';
 import { ExternalDetailComponent } from './components/external-detail/external-detail.component';
+import { InputSearchProceduresComponent } from './components/input-search-procedures/input-search-procedures.component';
 import { ExternalComponent } from './pages/external/external.component';
 import { DetailComponent } from './pages/detail/detail.component';
 import { FilterObservationsPipe } from './pipes/filter-observations.pipe';
@@ -17,10 +18,8 @@ import { MaterialModule } from '../material/material.module';
 import { ObservationsComponent } from './components/observations/observations.component';
 import { ProcedureRoutingModule } from './procedure-routing.module';
 import { SharedModule } from '../shared/shared.module';
-import { SolicitantePipe } from './pipes/solicitante.pipe';
 import { ArchivesComponent } from './pages/archives/archives.component';
 import { EventDialogComponent } from './dialogs/event-dialog/event-dialog.component';
-import { SidenavButtonComponent } from '../shared/components/buttons/sidenav-button/sidenav-button.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +33,6 @@ import { SidenavButtonComponent } from '../shared/components/buttons/sidenav-but
     ObservationsComponent,
     EventDialogComponent,
     ArchivesComponent,
-    SolicitantePipe,
     FilterObservationsPipe,
   ],
   imports: [
@@ -45,6 +43,7 @@ import { SidenavButtonComponent } from '../shared/components/buttons/sidenav-but
     FormsModule,
     ReactiveFormsModule,
     NgxMatSelectSearchModule,
+    InputSearchProceduresComponent,
     RouterModule,
   ],
   providers: [

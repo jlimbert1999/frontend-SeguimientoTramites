@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
 import { RegisterExternalComponent } from '../register-external/register-external.component';
 
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ArchiveService, ExternalService, ProcedureService } from '../../services';
 
 import { createRouteMap, createTicket } from '../../helpers';
@@ -15,7 +14,7 @@ import { ExternalProcedure } from '../../models';
 import { EventProcedureDto } from '../../dtos';
 import { external, groupProcedure, stateProcedure } from '../../interfaces';
 import { TransferDetails } from 'src/app/communication/interfaces';
-import { AlertService } from 'src/app/shared/services';
+import { AlertService, PaginatorService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-external',
@@ -39,11 +38,11 @@ export class ExternalComponent implements OnInit {
   }
 
   getData() {
-    const s = this.paginatorService.searchParams.get('text');
+    console.log('get data');
     const subscription: Observable<{ procedures: ExternalProcedure[]; length: number }> = this.paginatorService
       .isSearchMode
       ? this.externalService.search(
-          this.paginatorService.searchParams.get('text')!,
+          this.paginatorService.cache['text']!,
           this.paginatorService.limit,
           this.paginatorService.offset
         )
@@ -87,8 +86,6 @@ export class ExternalComponent implements OnInit {
         const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
         this.dataSource[indexFound] = updatedProcedure;
         this.dataSource = [...this.dataSource];
-        this.alertService.showSuccesToast({ title: 'editado' });
-
       }
     });
   }

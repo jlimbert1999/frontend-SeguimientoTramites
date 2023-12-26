@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { CuentaService } from '../../services/cuenta.service';
 import { CreacionAsignacionComponent } from '../../dialogs/creacion-asignacion/creacion-asignacion.component';
 import { OfficerDialogComponent } from '../../dialogs/officer-dialog/officer-dialog.component';
@@ -9,6 +8,7 @@ import { EditAccountDialogComponent } from '../../dialogs/edit-account-dialog/ed
 import { institution } from '../../interfaces/institution.interface';
 import { dependency } from '../../interfaces/dependency.interface';
 import { account } from '../../interfaces/account.interface';
+import {PaginatorService} from 'src/app/shared/services';
 
 @Component({
   selector: 'app-accounts',
@@ -27,7 +27,7 @@ export class AccountsComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     public accountService: CuentaService,
-    public paginatorService: PaginatorService
+    public paginatorService:PaginatorService
   ) {
     this.accountService.getInstitutions().subscribe((data) => {
       this.institutions = data.map((institution) => ({ value: institution._id, text: institution.nombre }));

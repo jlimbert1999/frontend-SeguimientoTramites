@@ -1,4 +1,4 @@
-import { groupProcedure, procedure, worker } from './';
+import { groupProcedure, procedure, worker } from '../';
 
 export interface internal extends procedure {
   group: groupProcedure.INTERNAL;

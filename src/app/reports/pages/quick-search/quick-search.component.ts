@@ -2,8 +2,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReportService } from '../../services/report.service';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
-import { AlertService } from 'src/app/shared/services';
+import { AlertService,PaginatorService} from 'src/app/shared/services';
 
 @Component({
   selector: 'app-quick-search',
@@ -17,7 +16,7 @@ export class QuickSearchComponent implements OnInit {
   constructor(
     private router: Router,
     private reportService: ReportService,
-    private paginatorService: PaginatorService,
+    private paginatorService:PaginatorService,
     private alertService: AlertService
   ) {}
 

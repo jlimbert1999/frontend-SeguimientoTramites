@@ -4,11 +4,11 @@ import { Router } from '@angular/router';
 
 import { account } from 'src/app/administration/interfaces';
 import { statusMail } from 'src/app/communication/interfaces';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { MatSelectSearchData } from 'src/app/shared/interfaces';
 
 import { ReportService } from '../../services/report.service';
 import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
+import {PaginatorService} from 'src/app/shared/services';
 
 @Component({
   selector: 'app-unit',
@@ -54,7 +54,7 @@ export class UnitComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private reportService: ReportService,
-    private paginatorService: PaginatorService
+    private paginatorService:PaginatorService
   ) {}
 
   ngOnInit(): void {

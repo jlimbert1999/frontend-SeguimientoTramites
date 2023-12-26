@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { typeProcedure } from 'src/app/administration/interfaces';
-import { external } from '../interfaces/external.interface';
 import { ExternalProcedureDto } from '../dtos';
 import { ExternalProcedure } from '../models';
+import { external } from '../interfaces';
 
 interface CreateExternalForm {
   FormProcedure: Object;
@@ -47,7 +47,7 @@ export class ExternalService {
     });
     return this.http
       .post<external>(`${this.base_url}/external`, procedure)
-      .pipe(map((response) => ExternalProcedure.toModel(response)));
+      .pipe(map((response) => ExternalProcedure.ResponseToModel(response)));
   }
   edit({ FormProcedure, FormRepresentative, FormApplicant, id_procedure }: UpdateExternalForm) {
     const updateProcedure = {
@@ -60,7 +60,7 @@ export class ExternalService {
     console.log(updateProcedure);
     return this.http
       .put<external>(`${this.base_url}/external/${id_procedure}`, updateProcedure)
-      .pipe(map((response) => ExternalProcedure.toModel(response)));
+      .pipe(map((response) => ExternalProcedure.ResponseToModel(response)));
   }
 
   findAll(limit: number, offset: number) {
@@ -71,7 +71,7 @@ export class ExternalService {
       })
       .pipe(
         map((response) => {
-          const model = response.procedures.map((procedure) => ExternalProcedure.toModel(procedure));
+          const model = response.procedures.map((procedure) => ExternalProcedure.ResponseToModel(procedure));
           return { procedures: model, length: response.length };
         })
       );
@@ -83,7 +83,7 @@ export class ExternalService {
       .get<{ procedures: external[]; length: number }>(`${this.base_url}/external/search/${text}`, { params })
       .pipe(
         map((response) => {
-          const model = response.procedures.map((procedure) => ExternalProcedure.toModel(procedure));
+          const model = response.procedures.map((procedure) => ExternalProcedure.ResponseToModel(procedure));
           return { procedures: model, length: response.length };
         })
       );

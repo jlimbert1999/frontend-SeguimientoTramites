@@ -5,12 +5,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
 import { OutboxService } from '../../services/outbox.service';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { communicationResponse, groupedCommunicationResponse } from '../../interfaces';
 import { ProcedureService } from 'src/app/procedures/services';
 import { createRouteMap } from 'src/app/procedures/helpers';
 import { groupProcedure } from 'src/app/procedures/interfaces';
-import { AlertService } from 'src/app/shared/services';
+import { AlertService,PaginatorService} from 'src/app/shared/services';
 
 @Component({
   selector: 'app-outbox',
@@ -33,7 +32,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     private outboxService: OutboxService,
-    public paginatorService: PaginatorService,
+    public paginatorService:PaginatorService,
     public procedureService: ProcedureService,
     public alertService: AlertService,
     private router: Router

@@ -1,11 +1,15 @@
 <mat-form-field>
   <mat-label>Buscar tramite</mat-label>
   <input matInput [placeholder]="placeholder" [formControl]="FormSearch" />
-  <button matSuffix mat-icon-button *ngIf="FormSearch.value !== ''" (click)="cancel()" aria-label="close button">
+  @if(FormSearch.value !== ''){
+  <button matSuffix mat-icon-button (click)="cancel()" aria-label="close button">
     <mat-icon>close</mat-icon>
   </button>
+  }
   <button matSuffix mat-icon-button [disabled]="FormSearch.invalid" (click)="search()" aria-label="search button">
     <mat-icon>search</mat-icon>
   </button>
-  <mat-error *ngIf="FormSearch.invalid">{{ getErrorMessage() }}</mat-error>
+  @if(FormSearch.invalid){
+  <mat-error>{{ getErrorMessage() }}</mat-error>
+  }
 </mat-form-field>

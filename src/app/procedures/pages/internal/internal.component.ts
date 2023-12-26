@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
 import { RegisterInternalComponent } from '../register-internal/register-internal.component';
 
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
+
 import { ArchiveService, InternalService, ProcedureService } from '../../services';
 
 import { createRouteMap } from '../../helpers';
@@ -15,7 +15,7 @@ import { EventProcedureDto } from '../../dtos';
 import { InternalProcedure } from '../../models';
 import { groupProcedure, internal, stateProcedure } from '../../interfaces';
 import { TransferDetails } from 'src/app/communication/interfaces';
-import { AlertService } from 'src/app/shared/services';
+import { AlertService,PaginatorService} from 'src/app/shared/services';
 
 @Component({
   selector: 'app-internal',
@@ -31,7 +31,7 @@ export class InternalComponent implements OnInit {
     private dialog: MatDialog,
     private internoService: InternalService,
     public procedureService: ProcedureService,
-    public paginatorService: PaginatorService,
+    public paginatorService:PaginatorService,
     private alertService: AlertService,
     private archiveService: ArchiveService
   ) {}

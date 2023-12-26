@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { CargoService } from '../../services/cargo.service';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { MatDialog } from '@angular/material/dialog';
 import { job } from '../../interfaces/job.interface';
 import { JobDialogComponent } from '../../dialogs/job-dialog/job-dialog.component';
+import {PaginatorService} from 'src/app/shared/services';
 
 @Component({
   selector: 'app-jobs',
@@ -16,7 +16,7 @@ export class JobsComponent {
   displayedColumns = ['nombre','options']
   constructor(
     private cargoService: CargoService,
-    private paginatorService: PaginatorService,
+    private paginatorService:PaginatorService,
     public dialog: MatDialog,
   ) {
     this.Get()

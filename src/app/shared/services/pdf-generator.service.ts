@@ -63,7 +63,7 @@ export class PdfGeneratorService {
     pdfMake.createPdf(docDefinition).print();
   }
 
-  async generateFicha(procedure: Procedure, workflow: Workflow) {
+  async generateFicha(procedure: Procedure, workflow: Workflow[]) {
     const docDefinition: TDocumentDefinitions = {
       header: {
         columns: [
@@ -90,7 +90,7 @@ export class PdfGeneratorService {
         margin: [10, 10, 10, 10],
       },
       pageSize: 'LETTER',
-      pageMargins: [50, 110, 50, 50],
+      pageMargins: [30, 110, 40, 30],
       content: [
         {
           fontSize: 10,
@@ -124,32 +124,60 @@ export class PdfGeneratorService {
         tableHeader: {
           fillColor: '#0077B6',
           color: 'white',
+          bold: true,
           fontSize: 9,
+          alignment: 'center',
         },
       },
     };
     pdfMake.createPdf(docDefinition).print();
   }
 
-  private sectionWorkflow(workflow: Workflow): Content {
-    const body: TableCell[][] = workflow.stages.map((el) => {
-      const subTable: TableCell[][] = el.sends.map((send) => {
-        return [send.emitter.fullname];
+  private sectionWorkflow(workflow: Workflow[]): Content {
+    const body: TableCell[][] = workflow.map((el, index) => {
+      const subTable: TableCell[][] = el.detail.map((send) => {
+        return [
+          { text: `${send.receiver.fullname} (${send.receiver.jobtitle})` },
+          { text: `Referencia: ${send.reference}` },
+          [
+            { text: `Fecha: ${send.inboundDate}` ?? 'Sin recibir' },
+            { text: `Cantidad: ${send.attachmentQuantity}` },
+            { text: `Nro. Interno: ${send.internalNumber}` },
+            { text: `i` },
+          ],
+          '',
+        ];
       });
       return [
-        { text: el.id_emitter },
+        { text: `${index + 1}`, alignment: 'center' },
+        { text: `${el.emitter.fullname} (${el.emitter.jobtitle})` },
+        // { text: el.outboundDate },
         {
           table: {
-            body: subTable,
+            headerRows: 1,
+            widths: [140, '*', 70, 70],
+            body: [[{ text: 'Funcionario', style: 'tableHeader' }, 'Referencia', 'Detalle', 'Fecha'], ...subTable],
           },
+          layout: 'lightHorizontalLines',
         },
       ];
     });
     return {
       pageBreak: 'before',
       pageOrientation: 'landscape',
+      fontSize: 8,
       table: {
-        body: body,
+        headerRows: 1,
+        widths: [30, 140, 50, '*'],
+        body: [
+          [
+            { text: 'ETAPA', style: 'tableHeader' },
+            { text: 'REMITENTE', style: 'tableHeader' },
+            { text: 'FECHA', style: 'tableHeader' },
+            { text: 'DESTINATARIOS', style: 'tableHeader' },
+          ],
+          ...body,
+        ],
       },
     };
   }

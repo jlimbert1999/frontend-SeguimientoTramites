@@ -4,7 +4,6 @@ import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { institution } from '../interfaces/institution.interface';
 import { CreateInstitutionDto } from '../dto/institution.dto';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 const base_url = environment.base_url;
 
 @Injectable({
@@ -13,7 +12,7 @@ const base_url = environment.base_url;
 export class InstitucionesService {
   constructor(
     private http: HttpClient,
-    private paginationService: PaginatorService
+    private paginationService: CacheStorage
   ) {}
 
   add(institucion: CreateInstitutionDto) {

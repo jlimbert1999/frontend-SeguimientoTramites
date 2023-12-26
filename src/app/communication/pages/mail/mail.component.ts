@@ -5,14 +5,13 @@ import { ActivatedRoute } from '@angular/router';
 
 import { InboxService } from '../../services/inbox.service';
 import Swal from 'sweetalert2';
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 
 import { groupProcedure, observation, stateProcedure } from 'src/app/procedures/interfaces';
 import { communicationResponse, statusMail, workflowResponse } from '../../interfaces';
 import { ProcedureService } from 'src/app/procedures/services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from 'src/app/procedures/models';
 import { createRouteMap } from 'src/app/procedures/helpers';
-import { AlertService } from 'src/app/shared/services';
+import { AlertService,PaginatorService} from 'src/app/shared/services';
 @Component({
   selector: 'app-mail',
   templateUrl: './mail.component.html',
@@ -27,7 +26,7 @@ export class MailComponent implements OnInit {
     private _location: Location,
     private activateRoute: ActivatedRoute,
     private inboxService: InboxService,
-    private paginatorService: PaginatorService,
+    private paginatorService:PaginatorService,
     private procedureService: ProcedureService,
     private alertService: AlertService,
     public dialog: MatDialog

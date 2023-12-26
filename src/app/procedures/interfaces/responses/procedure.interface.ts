@@ -1,5 +1,5 @@
 import { account, typeProcedure } from 'src/app/administration/interfaces';
-import { stateProcedure, groupProcedure } from './';
+import { groupProcedure, stateProcedure } from '..';
 
 export interface procedure {
   _id: string;

@@ -29,7 +29,7 @@ export class ApplicantComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private reportService: ReportService,
-    private paginatorService: PaginatorService,
+    private paginatorService:PaginatorService,
     private pdf: PdfGeneratorService
   ) {}
 

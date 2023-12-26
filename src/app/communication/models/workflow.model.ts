@@ -1,39 +1,51 @@
 import { TimeControl } from 'src/app/shared/helpers';
-import { Communication } from './communication.model';
-import { participant, workflowResponse } from '../interfaces';
+import { workflowResponse } from '../interfaces';
 
-interface iteration {
-  id_emitter: string;
-  date: Date;
-  duration?: string;
-  sends: Communication[];
+interface actor {
+  cuenta: string;
+  fullname: string;
+  jobtitle?: string;
+  duration: string;
+}
+interface stage {
+  _id: string;
+  receiver: actor;
+  procedure: string;
+  reference: string;
+  attachmentQuantity: string;
+  internalNumber: string;
+  inboundDate?: string;
+  status: string;
+  rejectionReason?: string;
 }
 export class Workflow {
-  static fromResponse(workflow: workflowResponse[], startDate: Date) {
-    const model: iteration[] = workflow.map((el) => {
-      return {
-        id_emitter: el._id.emitterAccount,
-        date: new Date(el._id.outboundDate),
-        sends: el.sendings.map((el) => Communication.fromResponse(el)),
-      };
-    });
-    return new Workflow(model, startDate);
-  }
-  constructor(public stages: iteration[], public startDate: Date) {}
+  static fromResponse(workflow: workflowResponse) {
+    // workflow.outboundDate = TimeControl.format(new Date(workflow.outboundDate));
+    // workflow.detail.map((send) => {
+    //   send.inboundDate = send.inboundDate ? TimeControl.format(new Date(send.inboundDate)) : 'Sin recibir';
+    //   switch (send.status) {
+    //     case 'rejected':
+    //       send.status = 'Rechazado';
+    //       break;
 
-  getWorkflowProcedure() {
-    return this.stages.map((stage, index) => {
-      let start: Date | undefined = index === 0 ? this.startDate : undefined;
-      for (let i = this.stages.length - 1; i >= 0; i--) {
-        const lastStep = this.stages[i].sends.find((send) => send.receiver.cuenta._id === stage.id_emitter);
-        if (lastStep) {
-          start = lastStep.inboundDate;
-          break;
-        }
-      }
-      stage.duration = start ? TimeControl.duration(start, stage.date) : 'sin tiempo';
-      return stage;
-    });
+    //     default:
+    //       break;
+    //   }
+    //   return send;
+    // });
+    // return new Workflow(
+    //   workflow.emitter,
+    //   { fulldate: workflow.outboundDate, date: TimeControl.format(new Date(wo)), hour: '' },
+    //   []
+    // );
   }
-
+  constructor(
+    public emitter: actor,
+    public time: {
+      fulldate: string;
+      date: string;
+      hour: string;
+    },
+    public detail: stage[]
+  ) {}
 }

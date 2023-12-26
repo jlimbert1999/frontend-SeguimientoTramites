@@ -26,6 +26,7 @@ export class PaginatorComponent implements OnInit, OnDestroy {
   constructor(private readonly paginatorService: PaginatorService) {}
 
   ngOnInit(): void {
+    console.log('reset from paginator componet');
     this.paginatorService.resetSearchParams();
   }
   ngOnDestroy(): void {

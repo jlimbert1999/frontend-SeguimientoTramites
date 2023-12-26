@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { AppearanceService } from 'src/app/services/appearance.service';
+import { PaginatorService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-home',
@@ -27,7 +28,8 @@ export class HomeComponent {
     private authService: AuthService,
     private socketService: SocketService,
     private router: Router,
-    private appearanceService: AppearanceService
+    private appearanceService: AppearanceService,
+    private pagina: PaginatorService
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
@@ -76,5 +78,9 @@ export class HomeComponent {
 
   get currentUser() {
     return this.authService.account();
+  }
+
+  get cache() {
+    return this.pagina.cache;
   }
 }

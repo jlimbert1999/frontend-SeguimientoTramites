@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs';
 
 import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.component';
 
-import { PaginatorService } from 'src/app/shared/services/paginator.service';
 import { ProcedureService, ArchiveService } from 'src/app/procedures/services';
 import { SocketService } from 'src/app/services/socket.service';
 import { InboxService } from '../../services/inbox.service';
@@ -14,7 +13,7 @@ import { stateProcedure } from 'src/app/procedures/interfaces';
 import { createRouteMap } from 'src/app/procedures/helpers';
 import { EventProcedureDto } from 'src/app/procedures/dtos';
 import { TransferDetails, communicationResponse, statusMail } from '../../interfaces';
-import { AlertService } from 'src/app/shared/services';
+import { AlertService,PaginatorService} from 'src/app/shared/services';
 
 @Component({
   selector: 'app-inbox',
@@ -35,7 +34,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     private procedureService: ProcedureService,
     private socketService: SocketService,
     private inboxService: InboxService,
-    private paginatorService: PaginatorService,
+    private paginatorService:PaginatorService,
     private alertService: AlertService
   ) {
     this.listenNewMails();

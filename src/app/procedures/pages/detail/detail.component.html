@@ -29,22 +29,22 @@
         </ng-template>
         <app-observations [observations]="observations"></app-observations>
       </mat-tab>
-      <!-- <ng-container *ngIf="workflow.stages.st > 0">
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <mat-icon class="tab-icon">groups</mat-icon>
-            Flujo de trabajo
-          </ng-template>
-          <app-list-workflow [workflow]="workflow" [startDate]="procedure()!.startDate"></app-list-workflow>
-        </mat-tab>
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <mat-icon class="tab-icon">account_tree</mat-icon>
-            Flujo de trabajo grafico
-          </ng-template>
-          <app-graph-workflow [workflow]="workflow"></app-graph-workflow>
-        </mat-tab>
-      </ng-container> -->
+      @if(workflow.length>0){
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">groups</mat-icon>
+          Flujo de trabajo
+        </ng-template>
+        <app-list-workflow [workflow]="workflow"></app-list-workflow>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">account_tree</mat-icon>
+          Flujo de trabajo grafico
+        </ng-template>
+        <app-graph-workflow [workflow]="workflow"></app-graph-workflow>
+      </mat-tab>
+      }
     </mat-tab-group>
   </div>
 </div>

@@ -1,17 +1,58 @@
-import { externalDetails, external, worker } from '../interfaces';
+import { account, typeProcedure } from 'src/app/administration/interfaces';
+import { external, worker, groupProcedure, typeApplicant, stateProcedure } from '../interfaces';
 import { Procedure } from './procedure.model';
 
+interface ExternalProps {
+  _id: string;
+  code: string;
+  cite: string;
+  amount: string;
+  isSend: boolean;
+  reference: string;
+  endDate?: string;
+  startDate: string;
+  account: account;
+  type: typeProcedure;
+  state: stateProcedure;
+  details: details;
+}
+
+interface details {
+  solicitante: applicant;
+  representante?: representative;
+  requirements: string[];
+  pin: number;
+}
+
+interface applicant {
+  nombre: string;
+  telefono: string;
+  tipo: typeApplicant;
+  paterno?: string;
+  materno?: string;
+  documento?: string;
+  dni?: string;
+}
+
+interface representative {
+  nombre: string;
+  telefono: string;
+  paterno: string;
+  materno: string;
+  documento: string;
+  dni: string;
+}
+
 export class ExternalProcedure extends Procedure {
-  details: externalDetails;
-  static toModel(data: external) {
-    return new ExternalProcedure(data);
+  details: details;
+
+  static ResponseToModel({ send, ...values }: external) {
+    return new ExternalProcedure({ ...values, isSend: true });
   }
 
-  constructor({ details, ...procedureProps }: external) {
-    super(procedureProps);
-    const { representante, ...detailsProp } = details;
-    this.details = detailsProp;
-    if (details.representante) this.details.representante = details.representante;
+  constructor({ details, ...procedureProps }: ExternalProps) {
+    super({ ...procedureProps, group: groupProcedure.EXTERNAL });
+    this.details = details;
   }
 
   get fullNameApplicant() {

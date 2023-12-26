@@ -1,10 +1,30 @@
-import { applicant, representative } from '../interfaces';
+import { typeApplicant } from "../interfaces";
+
 interface externalProperties {
   formProcedure: any;
   formApplicant: any;
   formRepresentative: any;
   requeriments: string[];
 }
+interface applicant {
+  nombre: string;
+  telefono: string;
+  tipo: typeApplicant;
+  paterno?: string;
+  materno?: string;
+  documento?: string;
+  dni?: string;
+}
+
+interface representative {
+  nombre: string;
+  telefono: string;
+  paterno: string;
+  materno: string;
+  documento: string;
+  dni: string;
+}
+
 export class ExternalProcedureDto {
   static fromForm({ requeriments, formProcedure, formApplicant, formRepresentative }: externalProperties) {
     return new ExternalProcedureDto(
@@ -21,7 +41,7 @@ export class ExternalProcedureDto {
     );
   }
   details: {
-    solicitante: applicant;
+    solicitante: {};
     representante?: representative;
     requirements: string[];
     pin: number;

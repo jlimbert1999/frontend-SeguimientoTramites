@@ -2,19 +2,34 @@ import { account, typeProcedure } from 'src/app/administration/interfaces';
 import { procedure, groupProcedure, stateProcedure, worker } from '../interfaces';
 import { TimeControl } from 'src/app/shared/helpers';
 
-export abstract class Procedure {
-  readonly _id: string;
-  readonly code: string;
-  readonly type: typeProcedure;
-  readonly account: account;
-  readonly group: groupProcedure;
-  readonly startDate: Date;
-  readonly endDate?: Date;
-  state: stateProcedure;
+interface ProcedureProps {
+  _id: string;
+  code: string;
   cite: string;
-  reference: string;
   amount: string;
   isSend: boolean;
+  reference: string;
+  endDate?: string;
+  startDate: string;
+  account: account;
+  type: typeProcedure;
+  group: groupProcedure;
+  state: stateProcedure;
+}
+
+export abstract class Procedure {
+  public readonly _id: string;
+  public readonly code: string;
+  public readonly type: typeProcedure;
+  public readonly account: account;
+  public readonly group: groupProcedure;
+  public readonly startDate: Date;
+  public readonly endDate?: Date;
+  public state: stateProcedure;
+  public cite: string;
+  public reference: string;
+  public amount: string;
+  public isSend: boolean;
 
   constructor({
     _id,
@@ -25,11 +40,11 @@ export abstract class Procedure {
     state,
     reference,
     amount,
-    send,
+    isSend,
     startDate,
     endDate,
     group,
-  }: procedure) {
+  }: ProcedureProps) {
     this._id = _id;
     this.code = code;
     this.cite = cite;
@@ -38,9 +53,9 @@ export abstract class Procedure {
     this.state = state;
     this.reference = reference;
     this.amount = amount;
-    this.isSend = send;
-    this.startDate = new Date(startDate);
+    this.isSend = isSend;
     this.group = group;
+    this.startDate = new Date(startDate);
     if (endDate) this.endDate = new Date(endDate);
   }
 
@@ -67,6 +82,5 @@ export abstract class Procedure {
   getDuration(): string {
     return TimeControl.duration(this.startDate, this.endDate ?? new Date());
   }
-
   abstract get applicantDetails(): { emiter: worker; receiver?: worker };
 }
