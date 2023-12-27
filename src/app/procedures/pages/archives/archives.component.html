@@ -55,6 +55,6 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
-    <app-paginator (page)="getData()" [pageSizeOptions]="[10, 20, 30, 50]"></app-paginator>
+    <app-paginator (page)="getData()" />
   </div>
 </div>

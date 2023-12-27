@@ -86,7 +86,7 @@
           (showDetails)="showDetails($event)"
         ></app-table-procedure>
       </div>
-      <app-paginator [pageSizeOptions]="[5, 10, 30, 50]" (changePage)="search()"></app-paginator>
+      <app-paginator (changePage)="search()" />
     </div>
   </div>
 </div>

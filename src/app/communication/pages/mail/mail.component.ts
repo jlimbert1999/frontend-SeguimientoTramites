@@ -53,7 +53,7 @@ export class MailComponent implements OnInit {
       // this.paginatorService.limit = data['limit'];
       this.paginatorService.offset = data['offset'];
       const searchMode = String(data['search']).toLowerCase();
-      this.paginatorService.searchMode = searchMode === 'true' ? true : false;
+      // this.paginatorService.searchMode = searchMode === 'true' ? true : false;
       this._location.back();
     });
   }

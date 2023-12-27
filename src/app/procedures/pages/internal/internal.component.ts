@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
 import { RegisterInternalComponent } from '../register-internal/register-internal.component';
 
-
 import { ArchiveService, InternalService, ProcedureService } from '../../services';
 
 import { createRouteMap } from '../../helpers';
@@ -15,7 +14,7 @@ import { EventProcedureDto } from '../../dtos';
 import { InternalProcedure } from '../../models';
 import { groupProcedure, internal, stateProcedure } from '../../interfaces';
 import { TransferDetails } from 'src/app/communication/interfaces';
-import { AlertService,PaginatorService} from 'src/app/shared/services';
+import { AlertService, PaginatorService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-internal',
@@ -31,7 +30,7 @@ export class InternalComponent implements OnInit {
     private dialog: MatDialog,
     private internoService: InternalService,
     public procedureService: ProcedureService,
-    public paginatorService:PaginatorService,
+    public paginatorService: PaginatorService,
     private alertService: AlertService,
     private archiveService: ArchiveService
   ) {}
@@ -43,7 +42,7 @@ export class InternalComponent implements OnInit {
     const subscription: Observable<{ procedures: InternalProcedure[]; length: number }> = this.paginatorService
       .isSearchMode
       ? this.internoService.search(
-          this.paginatorService.searchParams.get('text')!,
+          this.paginatorService.cache['text'],
           this.paginatorService.limit,
           this.paginatorService.offset
         )
@@ -138,7 +137,7 @@ export class InternalComponent implements OnInit {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
-      ...(this.paginatorService.searchMode && { search: true }),
+      // ...(this.paginatorService.searchMode && { search: true }),
     };
     this.router.navigate(['tramites/internos', procedure.group, procedure._id], {
       queryParams: params,

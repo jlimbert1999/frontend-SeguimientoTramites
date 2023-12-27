@@ -41,17 +41,17 @@ export class ArchivesComponent implements OnInit, OnDestroy {
   }
 
   getData() {
-    const subscription: Observable<{ archives: communicationResponse[]; length: number }> = this.paginatorService.isSearchMode
-      ? this.archiveService.search(
-          this.paginatorService.searchParams.get('text')! as string,
-          this.paginatorService.limit,
-          this.paginatorService.offset
-        )
-      : this.archiveService.getAll(this.paginatorService.limit, this.paginatorService.offset);
-    subscription.subscribe((data) => {
-      this.dataSource = data.archives;
-      this.paginatorService.length = data.length;
-    });
+    // const subscription: Observable<{ archives: communicationResponse[]; length: number }> = this.paginatorService.isSearchMode
+    //   ? this.archiveService.search(
+    //       this.paginatorService.searchParams.get('text')! as string,
+    //       this.paginatorService.limit,
+    //       this.paginatorService.offset
+    //     )
+    //   : this.archiveService.getAll(this.paginatorService.limit, this.paginatorService.offset);
+    // subscription.subscribe((data) => {
+    //   this.dataSource = data.archives;
+    //   this.paginatorService.length = data.length;
+    // });
   }
 
   unarchive(mail: communicationResponse) {
@@ -76,7 +76,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
-      ...(this.paginatorService.searchMode && { search: true }),
+      // ...(this.paginatorService.searchMode && { search: true }),
     };
     this.router.navigate(['/tramites/archivados/', this.getUrlToNavigate(mail.procedure.group), mail.procedure._id], {
       queryParams: params,

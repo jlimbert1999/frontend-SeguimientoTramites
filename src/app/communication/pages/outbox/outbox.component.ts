@@ -9,7 +9,7 @@ import { communicationResponse, groupedCommunicationResponse } from '../../inter
 import { ProcedureService } from 'src/app/procedures/services';
 import { createRouteMap } from 'src/app/procedures/helpers';
 import { groupProcedure } from 'src/app/procedures/interfaces';
-import { AlertService,PaginatorService} from 'src/app/shared/services';
+import { AlertService, PaginatorService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-outbox',
@@ -32,7 +32,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     private outboxService: OutboxService,
-    public paginatorService:PaginatorService,
+    public paginatorService: PaginatorService,
     public procedureService: ProcedureService,
     public alertService: AlertService,
     private router: Router
@@ -43,13 +43,9 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     this.getData();
   }
   getData() {
-    if (this.paginatorService.searchMode) {
+    if (this.paginatorService.isSearchMode) {
       this.outboxService
-        .search(
-          this.paginatorService.limit,
-          this.paginatorService.offset,
-          this.paginatorService.searchParams.get('text')! as string
-        )
+        .search(this.paginatorService.limit, this.paginatorService.offset, this.paginatorService.cache['text'])
         .subscribe((data) => {
           this.dataSource = data.mails;
           this.paginatorService.length = data.length;
@@ -74,7 +70,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.offset,
-      ...(this.paginatorService.searchMode && { search: true }),
+      // ...(this.paginatorService.searchMode && { search: true }),
     };
 
     this.router.navigate(['bandejas/salida', this.getUrlToNavigate(mail._id.procedure.group), mail._id.procedure._id], {

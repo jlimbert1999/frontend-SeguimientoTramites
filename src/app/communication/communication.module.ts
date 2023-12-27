@@ -13,6 +13,7 @@ import { SendDialogComponent } from './dialogs/send-dialog/send-dialog.component
 import { MailComponent } from './pages/mail/mail.component';
 import { InboxComponent } from './pages/inbox/inbox.component';
 import { OutboxComponent } from './pages/outbox/outbox.component';
+import { InputSearchProceduresComponent } from '../procedures/components';
 
 @NgModule({
   declarations: [SendDialogComponent, MailComponent, InboxComponent, OutboxComponent],
@@ -26,6 +27,7 @@ import { OutboxComponent } from './pages/outbox/outbox.component';
     MaterialModule,
     NgxMatSelectSearchModule,
     ProcedureModule,
+    InputSearchProceduresComponent,
   ],
 })
 export class CommunicationModule {}

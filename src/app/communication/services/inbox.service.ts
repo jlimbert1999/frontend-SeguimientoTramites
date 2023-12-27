@@ -13,7 +13,7 @@ import { PaginationParameters } from 'src/app/shared/interfaces';
 
 const base_url = environment.base_url;
 
-interface searchParams {
+interface SearchParams extends PaginationParameters {
   text: string;
   status?: statusMail;
 }
@@ -24,7 +24,7 @@ interface searchParams {
 export class InboxService {
   constructor(private http: HttpClient) {}
 
-  getInboxOfAccount(
+  findAll(
     { limit, offset }: PaginationParameters,
     status?: statusMail
   ): Observable<{ mails: Communication[]; length: number }> {
@@ -34,11 +34,11 @@ export class InboxService {
       .get<{ mails: communicationResponse[]; length: number }>(`${base_url}/communication/inbox`, { params })
       .pipe(
         map((resp) => {
-          return { mails: resp.mails.map((el) => Communication.fromResponse(el)), length: resp.length };
+          return { mails: resp.mails.map((el) => Communication.ResponseToModel(el)), length: resp.length };
         })
       );
   }
-  searchInboxOfAccount(limit: number, offset: number, { text, status }: searchParams) {
+  search({ limit, offset, text, status }: SearchParams) {
     let params = new HttpParams().set('offset', offset * limit).set('limit', limit);
     if (status) params = params.append('status', status);
     return this.http
@@ -47,7 +47,7 @@ export class InboxService {
       })
       .pipe(
         map((resp) => {
-          return { mails: resp.mails, length: resp.length };
+          return { mails: resp.mails.map((el) => Communication.ResponseToModel(el)), length: resp.length };
         })
       );
   }

@@ -57,7 +57,6 @@ export class ExternalService {
         ...(Object.keys(FormRepresentative).length > 0 && { representante: FormRepresentative }),
       },
     };
-    console.log(updateProcedure);
     return this.http
       .put<external>(`${this.base_url}/external/${id_procedure}`, updateProcedure)
       .pipe(map((response) => ExternalProcedure.ResponseToModel(response)));

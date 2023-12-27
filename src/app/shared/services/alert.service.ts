@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 
@@ -13,7 +14,7 @@ interface ToastOptions {
   providedIn: 'root',
 })
 export class AlertService {
-  constructor(private toast: ToastrService) {}
+  constructor(private toast: ToastrService, private router: Router) {}
   showConfirmAlert(title: string, text: string, placeholder: string, callback: (result: string) => void) {
     Swal.fire({
       icon: 'question',
@@ -85,15 +86,15 @@ export class AlertService {
       timeOut: seconds,
     });
   }
-
-  // showToast({ seconds = 5000, title, message, onActionRouteNavigate }: ToastOptions) {
-  //   const toast = this.toast.info(message, title, {
-  //     positionClass: 'toast-bottom-right',
-  //     closeButton: true,
-  //     timeOut: seconds,
-  //   });
-  //   toast.onTap.subscribe(() => {
-  //     this.router.navigateByUrl(onActionRouteNavigate);
-  //   });
-  // }
+  showInfoToast({ seconds = 5000, title, message, onActionRouteNavigate }: ToastOptions) {
+    const toast = this.toast.info(message, title, {
+      positionClass: 'toast-bottom-right',
+      closeButton: true,
+      timeOut: seconds,
+    });
+    if (!onActionRouteNavigate) return;
+    toast.onTap.subscribe(() => {
+      this.router.navigateByUrl(onActionRouteNavigate);
+    });
+  }
 }

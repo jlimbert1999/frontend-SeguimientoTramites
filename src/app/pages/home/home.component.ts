@@ -2,12 +2,12 @@ import { ChangeDetectorRef, Component, ViewChild, effect } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { AppearanceService } from 'src/app/services/appearance.service';
-import { PaginatorService } from 'src/app/shared/services';
+import { AlertService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-home',
@@ -18,9 +18,8 @@ export class HomeComponent {
   @ViewChild('snav') public sidenav: MatSidenav;
   mobileQuery: MediaQueryList;
   navigation = this.authService.menu();
-  private mailSubscription: Subscription;
-  private userSubscription: Subscription;
   private _mobileQueryListener: () => void;
+  private destroyed$: Subject<void> = new Subject();
 
   constructor(
     changeDetectorRef: ChangeDetectorRef,
@@ -29,7 +28,7 @@ export class HomeComponent {
     private socketService: SocketService,
     private router: Router,
     private appearanceService: AppearanceService,
-    private pagina: PaginatorService
+    private alertService: AlertService
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
@@ -43,12 +42,13 @@ export class HomeComponent {
 
   ngOnInit(): void {
     this.socketService.listenUserConnection();
-    // this.listenUserConnections();
+    this.listenMails();
   }
 
   ngOnDestroy(): void {
     this.mobileQuery!.removeListener(this._mobileQueryListener);
-    if (this.mailSubscription) this.mailSubscription.unsubscribe();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
   get isLoaging() {
     return this.appearanceService.loading();
@@ -58,15 +58,16 @@ export class HomeComponent {
   }
 
   listenMails() {
-    console.log(this.socketService.mailSubscription$());
-    // this.socketService.listenMails();
-    // this.mailSubscription = this.socketService.mailSubscription$.subscribe((data) => {
-    //   this.toastService.showToast({
-    //     title: 'NUEVO TRAMITE RECIBIDO',
-    //     message: `${data.emitter.fullname} ha enviado un tramite`,
-    //     onActionRouteNavigate: '/',
-    //   });
-    // });
+    this.socketService
+      .listenMails()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(({ emitter }) => {
+        this.alertService.showInfoToast({
+          title: 'NUEVO TRAMITE RECIBIDO',
+          message: `${emitter.fullname} ha enviado un tramite`,
+          onActionRouteNavigate: '/bandejas/entrada',
+        });
+      });
   }
   listenUserConnections() {
     // this.userSubscription = this.socketService.onlineUsers$.subscribe();
@@ -78,9 +79,5 @@ export class HomeComponent {
 
   get currentUser() {
     return this.authService.account();
-  }
-
-  get cache() {
-    return this.pagina.cache;
   }
 }

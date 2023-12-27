@@ -38,11 +38,10 @@ export class ExternalComponent implements OnInit {
   }
 
   getData() {
-    console.log('get data');
     const subscription: Observable<{ procedures: ExternalProcedure[]; length: number }> = this.paginatorService
       .isSearchMode
       ? this.externalService.search(
-          this.paginatorService.cache['text']!,
+          this.paginatorService.cache['text'],
           this.paginatorService.limit,
           this.paginatorService.offset
         )
@@ -143,7 +142,7 @@ export class ExternalComponent implements OnInit {
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.index,
-      ...(this.paginatorService.searchMode && { search: true }),
+      ...(this.paginatorService.searchMode() && { search: true }),
     };
     this.router.navigate([`tramites/externos`, procedure.group, procedure._id], {
       queryParams: params,

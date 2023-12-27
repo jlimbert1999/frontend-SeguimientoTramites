@@ -100,7 +100,7 @@
           (showDetails)="showDetails($event)"
         />
       </div>
-      <app-paginator [pageSizeOptions]="[5, 10, 25, 50]" (changePage)="search()"></app-paginator>
+      <app-paginator (changePage)="search()" />
     </div>
   </div>
 </div>

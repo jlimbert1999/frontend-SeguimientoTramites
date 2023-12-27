@@ -17,17 +17,12 @@ import { PaginatorService } from '../../services/paginator.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginatorComponent implements OnInit, OnDestroy {
-  public pageOptions = signal<number[]>([10, 25, 30, 50]);
-  @Input({ required: true }) set pageSizeOptions(options: number[]) {
-    this.paginatorService.limit = options[0] ?? 10;
-    this.pageOptions.set(options);
-  }
+  public pageOptions = signal<number[]>([10, 20, 30, 50]);
   @Output() changePage: EventEmitter<void> = new EventEmitter();
   constructor(private readonly paginatorService: PaginatorService) {}
 
   ngOnInit(): void {
-    console.log('reset from paginator componet');
-    this.paginatorService.resetSearchParams();
+    this.paginatorService.emptyCache();
   }
   ngOnDestroy(): void {
     this.paginatorService.resetPagination();

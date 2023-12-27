@@ -54,13 +54,12 @@ export class RegisterExternalComponent implements OnInit {
       this.FormProcedure.removeControl('segment');
       this.FormProcedure.patchValue(values);
       this.applicantType.set(details.solicitante.tipo);
-      const s = this.FormProcedure.value;
 
       this.applicantType.set(details.solicitante.tipo);
       this.FormApplicant().patchValue(details.solicitante);
 
       this.hasRepresentative.set(details.representante ? true : false);
-      this.FormApplicant().patchValue(details.representante ?? {});
+      this.FormRepresentative().patchValue(details.representante ?? {});
     } else {
       this.externoService.getSegments().subscribe((data) => {
         this.segments.set(data.map((segment) => ({ text: segment, value: segment })));

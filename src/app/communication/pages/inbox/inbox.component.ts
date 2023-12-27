@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit, effect } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 
 import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.component';
 
@@ -13,7 +13,8 @@ import { stateProcedure } from 'src/app/procedures/interfaces';
 import { createRouteMap } from 'src/app/procedures/helpers';
 import { EventProcedureDto } from 'src/app/procedures/dtos';
 import { TransferDetails, communicationResponse, statusMail } from '../../interfaces';
-import { AlertService,PaginatorService} from 'src/app/shared/services';
+import { AlertService, PaginatorService } from 'src/app/shared/services';
+import { Communication } from '../../models';
 
 @Component({
   selector: 'app-inbox',
@@ -21,10 +22,9 @@ import { AlertService,PaginatorService} from 'src/app/shared/services';
   styleUrls: ['./inbox.component.scss'],
 })
 export class InboxComponent implements OnInit, OnDestroy {
-  private mailSubscription: Subscription;
-  private mailCancelSubscription: Subscription;
+  private destroyed$: Subject<void> = new Subject();
   displayedColumns: string[] = ['code', 'reference', 'state', 'emitter', 'outboundDate', 'options'];
-  dataSource: communicationResponse[] = [];
+  dataSource = signal<Communication[]>([]);
   status?: statusMail;
 
   constructor(
@@ -34,12 +34,10 @@ export class InboxComponent implements OnInit, OnDestroy {
     private procedureService: ProcedureService,
     private socketService: SocketService,
     private inboxService: InboxService,
-    private paginatorService:PaginatorService,
+    private paginatorService: PaginatorService,
     private alertService: AlertService
   ) {
     this.listenNewMails();
-    this.listenCancelMails();
-    this.status = paginatorService.searchParams.get('status') as statusMail;
   }
 
   ngOnInit(): void {
@@ -47,30 +45,22 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.mailSubscription) this.mailSubscription.unsubscribe();
-    if (this.mailCancelSubscription) this.mailCancelSubscription.unsubscribe();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   getData() {
-    if (this.paginatorService.searchMode) {
-      this.inboxService
-        .searchInboxOfAccount(this.paginatorService.limit, this.paginatorService.offset, {
-          text: this.paginatorService.searchParams.get('text')! as string,
-          status: this.status,
+    const observable: Observable<{ mails: Communication[]; length: number }> = this.paginatorService.isSearchMode
+      ? this.inboxService.search({
+          ...this.paginatorService.PaginationParams,
+          text: this.paginatorService.cache['text'],
+          status: this.paginatorService.cache['status'],
         })
-        .subscribe((resp) => {
-          this.dataSource = resp.mails;
-          this.paginatorService.length = resp.length;
-        });
-    } else {
-      this.inboxService
-        .getInboxOfAccount({ limit: this.paginatorService.limit, offset: this.paginatorService.offset }, this.status)
-        .subscribe((resp) => {
-          // this.dataSource = resp.mails;
-          // console.log(resp.mails[0]._id);
-          this.paginatorService.length = resp.length;
-        });
-    }
+      : this.inboxService.findAll(this.paginatorService.PaginationParams, this.paginatorService.cache['status']);
+    observable.subscribe((data) => {
+      this.dataSource.set(data.mails);
+      this.paginatorService.length = data.length;
+    });
   }
 
   send(mail: communicationResponse) {
@@ -91,23 +81,23 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   acceptMail(mail: communicationResponse) {
-    this.alertService.showQuestionAlert(
-      `¿Aceptar tramite ${mail.procedure.code}?`,
-      `El tramite sera marcado como aceptado`,
-      () => {
-        this.inboxService.acceptMail(mail._id).subscribe(
-          (resp) => {
-            const indexFound = this.dataSource.findIndex((item) => item._id === mail._id);
-            this.dataSource[indexFound].procedure.state = resp.state;
-            this.dataSource[indexFound].status = statusMail.Received;
-            this.alertService.showSuccesToast({ title: resp.message });
-          }, 
-          () => {
-            this.getData();
-          }
-        );
-      }
-    );
+    // this.alertService.showQuestionAlert(
+    //   `¿Aceptar tramite ${mail.procedure.code}?`,
+    //   `El tramite sera marcado como aceptado`,
+    //   () => {
+    //     this.inboxService.acceptMail(mail._id).subscribe(
+    //       (resp) => {
+    //         const indexFound = this.dataSource.findIndex((item) => item._id === mail._id);
+    //         this.dataSource[indexFound].procedure.state = resp.state;
+    //         this.dataSource[indexFound].status = statusMail.Received;
+    //         this.alertService.showSuccesToast({ title: resp.message });
+    //       },
+    //       () => {
+    //         this.getData();
+    //       }
+    //     );
+    //   }
+    // );
   }
   rejectMail(mail: communicationResponse) {
     this.alertService.showConfirmAlert(
@@ -146,34 +136,35 @@ export class InboxComponent implements OnInit, OnDestroy {
     });
   }
   showDetail(mail: communicationResponse) {
-    if (this.status) this.paginatorService.searchParams.set('status', this.status);
-    const params = {
-      limit: this.paginatorService.limit,
-      offset: this.paginatorService.offset,
-      ...(this.paginatorService.searchMode && { search: true }),
-    };
-    this.router.navigate(['bandejas/entrada', mail._id], {
-      queryParams: params,
-    });
+    // if (this.status) this.paginatorService.searchParams.set('status', this.status);
+    // const params = {
+    //   limit: this.paginatorService.limit,
+    //   offset: this.paginatorService.offset,
+    //   ...(this.paginatorService.searchMode && { search: true }),
+    // };
+    // this.router.navigate(['bandejas/entrada', mail._id], {
+    //   queryParams: params,
+    // });
   }
 
   listenNewMails() {
-    // this.mailSubscription = this.socketService.mailSubscription$.subscribe((data) => {
-    //   console.log('envet substripction', data);
-    //   if (this.paginatorService.limit === this.dataSource.length) this.dataSource.pop();
-    //   this.paginatorService.length += 1;
-    //   this.dataSource = [data, ...this.dataSource];
-    // });
+    this.socketService
+      .listenMails()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((mail) => {
+        this.dataSource.update((values) => [mail, ...values]);
+        this.paginatorService.length++;
+      });
   }
   listenCancelMails() {
-    this.mailCancelSubscription = this.socketService.listenCancelMail().subscribe((id_mail) => {
-      this.removeMail(id_mail);
-    });
+    // this.mailCancelSubscription = this.socketService.listenCancelMail().subscribe((id_mail) => {
+    //   this.removeMail(id_mail);
+    // });
   }
 
   removeMail(id_mail: string) {
-    this.dataSource = this.dataSource.filter((item) => item._id !== id_mail);
-    this.paginatorService.length -= 1;
+    // this.dataSource = this.dataSource.filter((item) => item._id !== id_mail);
+    // this.paginatorService.length -= 1;
   }
 
   applyExtraFilters() {

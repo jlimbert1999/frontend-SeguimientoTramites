@@ -5,6 +5,8 @@ import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 import { userSocket } from '../auth/interfaces';
 import { communicationResponse } from '../communication/interfaces';
+import { Communication } from '../communication/models';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -12,9 +14,6 @@ export class SocketService {
   socket: Socket;
   private onlineUsersSubject: BehaviorSubject<userSocket[]> = new BehaviorSubject<userSocket[]>([]);
   public onlineUsers$ = this.onlineUsersSubject.asObservable();
-
-  private mailSubscription: Subject<communicationResponse> = new Subject();
-  public mailSubscription$ = toSignal(this.mailSubscription);
 
   setupSocketConnection() {
     const token = localStorage.getItem('token') ?? '';
@@ -31,9 +30,11 @@ export class SocketService {
       this.onlineUsersSubject.next(data);
     });
   }
-  listenMails() {
-    this.socket.on('new-mail', (data: communicationResponse) => {
-      this.mailSubscription.next(data);
+  listenMails(): Observable<Communication> {
+    return new Observable((observable) => {
+      this.socket.on('new-mail', (data: communicationResponse) => {
+        observable.next(Communication.ResponseToModel(data));
+      });
     });
   }
   listenCancelMail(): Observable<string> {
@@ -79,10 +80,6 @@ export class SocketService {
   sendNotificacionToExpelUser(id_accountReceiver: string, message: string) {
     this.socket.emit('expel', { id_cuenta: id_accountReceiver, message });
   }
-
-  // sendMail(mails: inbox[]) {
-  //   this.socket.emit('mail', mails)
-  // }
 
   emitCancelAllMails(ids_receivers: string[]) {
     this.socket.emit('mail-all-cancel', ids_receivers);

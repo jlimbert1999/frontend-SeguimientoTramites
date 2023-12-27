@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MaterialModule } from 'src/app/material/material.module';
 import { PaginatorService } from 'src/app/shared/services';
@@ -6,44 +6,41 @@ import { PaginatorService } from 'src/app/shared/services';
 @Component({
   selector: 'app-input-search-procedures',
   templateUrl: './input-search-procedures.component.html',
-  styleUrls: ['./input-search-procedures.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [MaterialModule, FormsModule, ReactiveFormsModule],
 })
 export class InputSearchProceduresComponent implements OnInit {
   @Input({ required: true }) placeholder = 'Buscar tramite';
   @Output() searchEvent = new EventEmitter<void>();
-  public FormSearch = new FormControl('', [
+  public FormSearch = new FormControl<string>('', [
     Validators.minLength(4),
     Validators.pattern(/^[^/!@#$%^&*()_+{}\[\]:;<>,.?~\\]*$/),
   ]);
   constructor(private paginatorService: PaginatorService) {}
+
   ngOnInit(): void {
-    if (!this.paginatorService.searchMode) return;
-    const searchText = this.paginatorService.searchParams.get('text');
-    if (!searchText) {
-      this.paginatorService.resetPagination();
-      this.paginatorService.searchParams.clear();
-      return;
-    }
-    this.FormSearch.setValue(searchText);
+    if (!this.paginatorService.isSearchMode) return;
+    this.FormSearch.setValue(this.paginatorService.cache['text']);
   }
 
   search() {
-    if (this.FormSearch.invalid) return;
+    if (this.FormSearch.invalid || this.FormSearch.value === '') return;
     this.paginatorService.offset = 0;
     this.paginatorService.cache = { text: this.FormSearch.value };
+    this.paginatorService.searchMode.set(true);
     this.searchEvent.emit();
   }
   cancel() {
     if (this.FormSearch.value === '') {
       return;
     }
-    this.paginatorService.searchMode = false;
+    this.FormSearch.reset('');
+    this.paginatorService.searchMode.set(false);
+    this.paginatorService.emptyCache();
     this.paginatorService.offset = 0;
     this.searchEvent.emit();
 
-    // this.FormSearch.setValue('');
     // this.FormSearch.setErrors(null);
     // this.paginatorService.resetPagination();
     // this.paginatorService.searchParams.clear();

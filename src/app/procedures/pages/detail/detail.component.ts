@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { PdfGeneratorService,PaginatorService} from 'src/app/shared/services';
+import { PdfGeneratorService, PaginatorService } from 'src/app/shared/services';
 import { Workflow } from 'src/app/communication/models';
 import { ExternalProcedure, InternalProcedure } from '../../models';
 import { ProcedureService } from '../../services/procedure.service';
@@ -20,7 +20,7 @@ export class DetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private paginatorService:PaginatorService,
+    private paginatorService: PaginatorService,
     private procedureService: ProcedureService,
     private pdfService: PdfGeneratorService,
     private _location: Location
@@ -45,10 +45,9 @@ export class DetailComponent implements OnInit {
 
   backLocation() {
     this.route.queryParams.subscribe((data) => {
-      const searchMode = String(data['search']).toLowerCase();
       this.paginatorService.limit = data['limit'] ?? 10;
       this.paginatorService.offset = data['offset'] ?? 0;
-      this.paginatorService.searchMode = searchMode === 'true' ? true : false;
+      this.paginatorService.searchMode.set(String(data['search']).toLowerCase() === 'true' ? true : false);
       this._location.back();
     });
   }

@@ -13,8 +13,7 @@ export class PaginatorService {
   private dataLength = signal<number>(0);
   private pageOffset = computed<number>(() => this.pageIndex() * this.pageSize());
 
-  public searchMode: boolean = false;
-  public searchParams = new Map<string, string>();
+  public searchMode = signal<boolean>(false);
   public cache: Record<string, any> = {};
 
   set setPage({ pageIndex, pageSize }: PaginationOptions) {
@@ -23,14 +22,14 @@ export class PaginatorService {
   }
 
   resetPagination() {
-    this.pageIndex.set(0);
     this.pageSize.set(10);
+    this.pageIndex.set(0);
     this.dataLength.set(0);
-    this.searchMode = false;
+    this.searchMode.set(false);
   }
 
-  resetSearchParams() {
-    if (this.searchMode) return;
+  emptyCache() {
+    if (this.searchMode()) return;
     this.cache = {};
   }
 
@@ -58,7 +57,7 @@ export class PaginatorService {
   }
 
   get isSearchMode(): boolean {
-    if (!this.searchMode || this.searchParams.size === 0) return false;
+    if (!this.searchMode() || Object.keys(this.cache).length === 0) return false;
     return true;
   }
 
