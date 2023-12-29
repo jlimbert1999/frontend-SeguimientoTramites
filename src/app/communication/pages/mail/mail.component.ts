@@ -11,7 +11,8 @@ import { communicationResponse, statusMail, workflowResponse } from '../../inter
 import { ProcedureService } from 'src/app/procedures/services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from 'src/app/procedures/models';
 import { createRouteMap } from 'src/app/procedures/helpers';
-import { AlertService,PaginatorService} from 'src/app/shared/services';
+import { AlertService, PaginatorService } from 'src/app/shared/services';
+import { Workflow } from '../../models';
 @Component({
   selector: 'app-mail',
   templateUrl: './mail.component.html',
@@ -20,13 +21,13 @@ import { AlertService,PaginatorService} from 'src/app/shared/services';
 export class MailComponent implements OnInit {
   mail: communicationResponse;
   procedure: InternalProcedure | ExternalProcedure;
-  workflow: workflowResponse[] = [];
+  workflow: Workflow[] = [];
   observations: observation[] = [];
   constructor(
     private _location: Location,
     private activateRoute: ActivatedRoute,
     private inboxService: InboxService,
-    private paginatorService:PaginatorService,
+    private paginatorService: PaginatorService,
     private procedureService: ProcedureService,
     private alertService: AlertService,
     public dialog: MatDialog
@@ -43,17 +44,16 @@ export class MailComponent implements OnInit {
   getFullDetailsProcedure(id_procedure: string, group: groupProcedure) {
     this.procedureService.getFullProcedure(id_procedure, group).subscribe((data) => {
       this.procedure = data.procedure;
-      // this.workflow = data.workflow;
+      this.workflow = data.workflow;
       this.observations = data.observations;
     });
   }
 
   backLocation() {
     this.activateRoute.queryParams.subscribe((data) => {
-      // this.paginatorService.limit = data['limit'];
+      this.paginatorService.limit = data['limit'];
       this.paginatorService.offset = data['offset'];
-      const searchMode = String(data['search']).toLowerCase();
-      // this.paginatorService.searchMode = searchMode === 'true' ? true : false;
+      this.paginatorService.searchMode.set(String(data['search']).toLowerCase() === 'true' ? true : false);
       this._location.back();
     });
   }
@@ -164,7 +164,7 @@ export class MailComponent implements OnInit {
     });
   }
   generateRouteMap() {
-    createRouteMap(this.procedure, this.workflow);
+    // createRouteMap(this.procedure, this.workflow);
   }
 
   get external() {

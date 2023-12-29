@@ -1,51 +1,64 @@
 import { TimeControl } from 'src/app/shared/helpers';
-import { workflowResponse } from '../interfaces';
+import { statusMail, workflowResponse } from '../interfaces';
 
-interface actor {
-  cuenta: string;
-  fullname: string;
-  jobtitle?: string;
-  duration: string;
+export interface WorkflowProps {
+  emitter: Participant;
+  outboundDate: TimeDetail;
+  detail: Detail[];
 }
-interface stage {
+
+interface Detail {
   _id: string;
-  receiver: actor;
+  receiver: Participant;
   procedure: string;
   reference: string;
   attachmentQuantity: string;
   internalNumber: string;
-  inboundDate?: string;
-  status: string;
+  inboundDate?: TimeDetail;
+  status: statusMail;
   rejectionReason?: string;
 }
+interface TimeDetail {
+  date: string;
+  hour: string;
+  fulldate: string;
+}
+export interface Participant {
+  cuenta: string;
+  fullname: string;
+  jobtitle: string;
+  duration: string;
+}
+
 export class Workflow {
   static fromResponse(workflow: workflowResponse) {
-    // workflow.outboundDate = TimeControl.format(new Date(workflow.outboundDate));
-    // workflow.detail.map((send) => {
-    //   send.inboundDate = send.inboundDate ? TimeControl.format(new Date(send.inboundDate)) : 'Sin recibir';
-    //   switch (send.status) {
-    //     case 'rejected':
-    //       send.status = 'Rechazado';
-    //       break;
-
-    //     default:
-    //       break;
-    //   }
-    //   return send;
-    // });
-    // return new Workflow(
-    //   workflow.emitter,
-    //   { fulldate: workflow.outboundDate, date: TimeControl.format(new Date(wo)), hour: '' },
-    //   []
-    // );
+    return new Workflow({
+      emitter: workflow.emitter,
+      outboundDate: {
+        fulldate: TimeControl.formatDate(new Date(workflow.outboundDate)),
+        date: TimeControl.formatDate(new Date(workflow.outboundDate), 'DD/MM/YY'),
+        hour: TimeControl.formatDate(new Date(workflow.outboundDate), 'HH:mm'),
+      },
+      detail: workflow.detail.map(({ inboundDate, ...values }) => {
+        return {
+          ...values,
+          inboundDate: inboundDate
+            ? {
+                fulldate: TimeControl.formatDate(new Date(inboundDate)),
+                date: TimeControl.formatDate(new Date(inboundDate), 'DD/MM/YY'),
+                hour: TimeControl.formatDate(new Date(inboundDate), 'HH:mm'),
+              }
+            : { fulldate: '', date: '', hour: '' },
+        };
+      }),
+    });
   }
-  constructor(
-    public emitter: actor,
-    public time: {
-      fulldate: string;
-      date: string;
-      hour: string;
-    },
-    public detail: stage[]
-  ) {}
+  readonly emitter: Participant;
+  readonly outboundDate: TimeDetail;
+  readonly detail: Detail[];
+  constructor({ emitter, outboundDate, detail }: WorkflowProps) {
+    this.emitter = emitter;
+    this.outboundDate = outboundDate;
+    this.detail = detail;
+  }
 }

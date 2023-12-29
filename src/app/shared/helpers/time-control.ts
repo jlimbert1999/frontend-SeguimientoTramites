@@ -33,7 +33,7 @@ export class TimeControl {
     }
     return parts.join(', ');
   }
-  static format(date: Date, format = 'MM/D/YYYY HH:mm'): string {
+  static formatDate(date: Date, format = 'MM/D/YYYY HH:mm'): string {
     return moment(date).format(format);
   }
 }

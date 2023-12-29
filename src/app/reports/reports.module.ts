@@ -13,6 +13,7 @@ import { SharedModule } from '../shared/shared.module';
 import { TableProcedureComponent } from './components/table-procedure/table-procedure.component';
 import { UnitComponent } from './pages/unit/unit.component';
 import { DashboardTotalCommunicationsComponent } from './pages/dashboard-total-communications/dashboard-total-communications.component';
+import { RankingUsersComponent } from './pages/ranking-users/ranking-users.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { DashboardTotalCommunicationsComponent } from './pages/dashboard-total-c
     DependentsComponent,
     UnitComponent,
     DashboardTotalCommunicationsComponent,
+    RankingUsersComponent,
   ],
   imports: [CommonModule, ReportsRoutingModule, MaterialModule, FormsModule, ReactiveFormsModule, SharedModule],
 })

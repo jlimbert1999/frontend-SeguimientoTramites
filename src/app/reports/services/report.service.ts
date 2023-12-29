@@ -6,7 +6,13 @@ import { external, groupProcedure, procedure } from 'src/app/procedures/interfac
 import { account, institution, typeProcedure } from 'src/app/administration/interfaces';
 import { PaginationParameters } from 'src/app/shared/interfaces';
 import { environment } from 'src/environments/environment';
-import { ProcedureTableData, ReportTotalProcedures, dependentDetails, totalReportParams } from '../interfaces';
+import {
+  ProcedureTableData,
+  ReportTotalProcedures,
+  TotalMailsUser,
+  dependentDetails,
+  totalReportParams,
+} from '../interfaces';
 import { communicationResponse } from 'src/app/communication/interfaces';
 
 const base_url = environment.base_url;
@@ -134,5 +140,23 @@ export class ReportService {
           return data;
         })
       );
+  }
+  getRankingUsers() {
+    return this.http.get<TotalMailsUser[]>(`${base_url}/reports/ranking/accounts`).pipe(
+      map((resp) => {
+        const data = resp.map((element) => {
+          if (Object.keys(element._id.funcionario!).length === 0) {
+            element._id.funcionario = undefined;
+            return element;
+          }
+          if (Object.keys(element._id.funcionario!.cargo!).length === 0) {
+            element._id.funcionario!.cargo = undefined;
+            return element;
+          }
+          return element;
+        });
+        return data;
+      })
+    );
   }
 }

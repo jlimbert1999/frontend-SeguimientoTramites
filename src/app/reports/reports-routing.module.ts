@@ -8,6 +8,7 @@ import { AvancedSearchComponent } from './pages/avanced-search/avanced-search.co
 import { DependentsComponent } from './pages/dependents/dependents.component';
 import { UnitComponent } from './pages/unit/unit.component';
 import { DashboardTotalCommunicationsComponent } from './pages/dashboard-total-communications/dashboard-total-communications.component';
+import { RankingUsersComponent } from './pages/ranking-users/ranking-users.component';
 
 const routes: Routes = [
   { path: 'busqueda', component: QuickSearchComponent },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'unidad', component: UnitComponent },
   { path: ':from/:group/:id', component: DetailComponent },
   { path: 'total', component: DashboardTotalCommunicationsComponent },
+  { path: 'ranking', component: RankingUsersComponent },
 ];
 
 @NgModule({

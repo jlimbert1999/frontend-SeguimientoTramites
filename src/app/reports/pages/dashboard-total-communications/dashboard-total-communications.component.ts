@@ -15,7 +15,7 @@ export class DashboardTotalCommunicationsComponent {
   formSearch: FormGroup = this.fb.group({
     id_institution: ['', Validators.required],
     group: ['', Validators.required],
-    participant: ['', Validators.required],
+    participant: ['receiver', Validators.required],
   });
   public collection = signal<'communications' | 'procedures' | null>(null);
   public displayedColumns = computed<{ columnDef: string; header: string }[]>(() => {
@@ -60,11 +60,9 @@ export class DashboardTotalCommunicationsComponent {
   // }
 
   generate() {
-    // this.reportService
-    //   .getTotalProceduresByInstitution()
-    //   .subscribe((resp) => {
-    //     this.dataSource.set(resp);
-    //   });
+    this.reportService.getTotalProceduresByInstitution({ ...this.formSearch.value, collection:this.collection()}).subscribe((resp) => {
+      this.dataSource.set(resp);
+    });
   }
 
   get groupProcedure() {

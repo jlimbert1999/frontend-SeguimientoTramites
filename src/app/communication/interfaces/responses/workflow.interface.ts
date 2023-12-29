@@ -1,14 +1,14 @@
 import { statusMail } from '../status-mail';
 
 export interface workflowResponse {
-  emitter: Partipant;
+  emitter: Participant;
   outboundDate: string;
   detail: Detail[];
 }
 
-export interface Detail {
+interface Detail {
   _id: string;
-  receiver: Partipant;
+  receiver: Participant;
   procedure: string;
   reference: string;
   attachmentQuantity: string;
@@ -18,7 +18,7 @@ export interface Detail {
   rejectionReason?: string;
 }
 
-interface Partipant {
+interface Participant {
   cuenta: string;
   fullname: string;
   jobtitle: string;

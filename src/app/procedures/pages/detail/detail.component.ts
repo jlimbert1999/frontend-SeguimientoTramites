@@ -38,7 +38,7 @@ export class DetailComponent implements OnInit {
   getProcedure(id: string, group: groupProcedure) {
     this.procedureService.getFullProcedure(id, group).subscribe((data) => {
       this.procedure.set(data.procedure);
-      // this.workflow = data.workflow;
+      this.workflow = data.workflow;
       this.observations = data.observations;
     });
   }

@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
 import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.component';
 
@@ -20,12 +20,13 @@ import { Communication } from '../../models';
   selector: 'app-inbox',
   templateUrl: './inbox.component.html',
   styleUrls: ['./inbox.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InboxComponent implements OnInit, OnDestroy {
   private destroyed$: Subject<void> = new Subject();
-  displayedColumns: string[] = ['code', 'reference', 'state', 'emitter', 'outboundDate', 'options'];
-  dataSource = signal<Communication[]>([]);
-  status?: statusMail;
+  public displayedColumns: string[] = ['code', 'reference', 'state', 'emitter', 'outboundDate', 'options'];
+  public dataSource = signal<Communication[]>([]);
+  public status = signal<statusMail | undefined>(this.paginatorService.cache['status']);
 
   constructor(
     private router: Router,
@@ -49,18 +50,24 @@ export class InboxComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  getData() {
+  getData(): void {
     const observable: Observable<{ mails: Communication[]; length: number }> = this.paginatorService.isSearchMode
       ? this.inboxService.search({
           ...this.paginatorService.PaginationParams,
           text: this.paginatorService.cache['text'],
-          status: this.paginatorService.cache['status'],
+          status: this.status(),
         })
-      : this.inboxService.findAll(this.paginatorService.PaginationParams, this.paginatorService.cache['status']);
+      : this.inboxService.findAll(this.paginatorService.PaginationParams, this.status());
     observable.subscribe((data) => {
       this.dataSource.set(data.mails);
       this.paginatorService.length = data.length;
     });
+  }
+
+  applyStatusFilter(status: statusMail): void {
+    this.paginatorService.offset = 0;
+    this.status.set(status);
+    this.getData();
   }
 
   send(mail: communicationResponse) {
@@ -99,6 +106,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     //   }
     // );
   }
+
   rejectMail(mail: communicationResponse) {
     this.alertService.showConfirmAlert(
       `¿Rechazar tramite ${mail.procedure.code}?`,
@@ -112,6 +120,7 @@ export class InboxComponent implements OnInit, OnDestroy {
       }
     );
   }
+
   conclude(mail: communicationResponse, isSuspended: boolean) {
     this.alertService.showConfirmAlert(
       `¿${isSuspended ? 'Suspender' : 'Concluir'} el tramite ${mail.procedure.code}?`,
@@ -130,21 +139,21 @@ export class InboxComponent implements OnInit, OnDestroy {
       }
     );
   }
-  generateRouteMap(mail: communicationResponse) {
+  generateRouteMap(mail: Communication) {
     this.procedureService.getFullProcedure(mail.procedure._id, mail.procedure.group).subscribe((data) => {
       // createRouteMap(data.procedure, data.workflow);
     });
   }
-  showDetail(mail: communicationResponse) {
-    // if (this.status) this.paginatorService.searchParams.set('status', this.status);
-    // const params = {
-    //   limit: this.paginatorService.limit,
-    //   offset: this.paginatorService.offset,
-    //   ...(this.paginatorService.searchMode && { search: true }),
-    // };
-    // this.router.navigate(['bandejas/entrada', mail._id], {
-    //   queryParams: params,
-    // });
+  showDetail(mail: Communication) {
+    if (this.status()) this.paginatorService.cache['status'] = this.status();
+    const params = {
+      limit: this.paginatorService.limit,
+      offset: this.paginatorService.index,
+      ...(this.paginatorService.searchMode() && { search: true }),
+    };
+    this.router.navigate(['bandejas/entrada', mail._id], {
+      queryParams: params,
+    });
   }
 
   listenNewMails() {
@@ -165,10 +174,5 @@ export class InboxComponent implements OnInit, OnDestroy {
   removeMail(id_mail: string) {
     // this.dataSource = this.dataSource.filter((item) => item._id !== id_mail);
     // this.paginatorService.length -= 1;
-  }
-
-  applyExtraFilters() {
-    this.paginatorService.offset = 0;
-    this.getData();
   }
 }

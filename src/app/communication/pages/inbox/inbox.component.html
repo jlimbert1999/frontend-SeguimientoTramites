@@ -1,22 +1,22 @@
 <p>
   <mat-toolbar color="primary">
-    <sidenav-button></sidenav-button>
+    <sidenav-button />
     <span>BANDEJA DE ENTRADA</span>
   </mat-toolbar>
 </p>
 
 <div class="container-fluid animate__animated animate__fadeIn">
   <div class="row">
-    <div class="col-sm-10">
+    <div class="col-sm-9">
       <app-input-search-procedures
         placeholder="Alterno / Referencia"
         (searchEvent)="getData()"
       ></app-input-search-procedures>
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-3">
       <mat-form-field>
         <mat-label>Estado</mat-label>
-        <mat-select (selectionChange)="applyExtraFilters()" [(ngModel)]="status">
+        <mat-select (selectionChange)="applyStatusFilter($event.value)" [ngModel]="status()">
           <mat-option [value]="undefined"> --- </mat-option>
           <mat-option [value]="'received'">RECIBIDOS </mat-option>
           <mat-option [value]="'pending'"> PENDIENTES </mat-option>
@@ -72,39 +72,38 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <div *ngIf="row.status === 'pending'; else templateOptionsManager">
-                <button (click)="acceptMail(row)" mat-menu-item>
-                  <mat-icon>done</mat-icon>
-                  <span>Aceptar tramite</span>
+              @if(row.status === 'pending'){
+              <button (click)="acceptMail(row)" mat-menu-item>
+                <mat-icon>done</mat-icon>
+                <span>Aceptar tramite</span>
+              </button>
+              <button (click)="rejectMail(row)" mat-menu-item>
+                <mat-icon>block</mat-icon>
+                <span>Rechazar tramite</span>
+              </button>
+              } @else {
+              <button (click)="send(row)" mat-menu-item>
+                <mat-icon>send</mat-icon>
+                <span>Remitir tramite</span>
+              </button>
+              <button (click)="generateRouteMap(row)" mat-menu-item>
+                <mat-icon>description</mat-icon>
+                <span>Hoja de ruta</span>
+              </button>
+              <button mat-menu-item [matMenuTriggerFor]="endingOptions">
+                <span>Concluir tramite</span>
+              </button>
+              <mat-menu #endingOptions="matMenu">
+                <button mat-menu-item (click)="conclude(row, false)">
+                  <mat-icon>domain_verification</mat-icon>
+                  Finalizar proceso
                 </button>
-                <button (click)="rejectMail(row)" mat-menu-item>
-                  <mat-icon>block</mat-icon>
-                  <span>Rechazar tramite</span>
+                <button mat-menu-item (click)="conclude(row, true)">
+                  <mat-icon>snooze</mat-icon>
+                  Suspender proceso
                 </button>
-              </div>
-              <ng-template #templateOptionsManager>
-                <button (click)="send(row)" mat-menu-item>
-                  <mat-icon>send</mat-icon>
-                  <span>Remitir tramite</span>
-                </button>
-                <button (click)="generateRouteMap(row)" mat-menu-item>
-                  <mat-icon>description</mat-icon>
-                  <span>Hoja de ruta</span>
-                </button>
-                <button mat-menu-item [matMenuTriggerFor]="endingOptions">
-                  <span>Concluir tramite</span>
-                </button>
-                <mat-menu #endingOptions="matMenu">
-                  <button mat-menu-item (click)="conclude(row, false)">
-                    <mat-icon>domain_verification</mat-icon>
-                    Finalizar proceso
-                  </button>
-                  <button mat-menu-item (click)="conclude(row, true)">
-                    <mat-icon>snooze</mat-icon>
-                    Suspender proceso
-                  </button>
-                </mat-menu>
-              </ng-template>
+              </mat-menu>
+              }
             </mat-menu>
           </td>
         </ng-container>
@@ -119,6 +118,6 @@
         </tr>
       </table>
     </div>
-    <app-paginator (page)="getData()" />
+    <app-paginator (changePage)="getData()" />
   </div>
 </div>

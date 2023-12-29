@@ -1,0 +1,23 @@
+<p><mat-toolbar>TOTAL</mat-toolbar></p>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nombre</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+    @for (item of datasource(); track $index) {
+    <tr>
+      <th scope="row">1</th>
+      <td>{{ item._id.funcionario?.nombre }}</td>
+      <td>{{ item._id.funcionario?.paterno }}</td>
+      @for (subitem of item.details; track $index) {
+      <td>{{ subitem.count }}</td>
+      }
+    </tr>
+    }
+  </tbody>
+</table>

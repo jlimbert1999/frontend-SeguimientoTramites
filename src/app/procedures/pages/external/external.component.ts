@@ -14,7 +14,7 @@ import { ExternalProcedure } from '../../models';
 import { EventProcedureDto } from '../../dtos';
 import { external, groupProcedure, stateProcedure } from '../../interfaces';
 import { TransferDetails } from 'src/app/communication/interfaces';
-import { AlertService, PaginatorService } from 'src/app/shared/services';
+import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-external',
@@ -31,7 +31,8 @@ export class ExternalComponent implements OnInit {
     private readonly procedureService: ProcedureService,
     private readonly paginatorService: PaginatorService,
     private readonly archiveService: ArchiveService,
-    private readonly alertService: AlertService
+    private readonly alertService: AlertService,
+    private readonly pdf: PdfGeneratorService
   ) {}
   ngOnInit(): void {
     this.getData();
@@ -110,7 +111,7 @@ export class ExternalComponent implements OnInit {
 
   generateRouteMap(id_procedure: string, group: groupProcedure) {
     this.procedureService.getFullProcedure(id_procedure, group).subscribe((data) => {
-      // createRouteMap(data.procedure, data.workflow);
+      this.pdf.generateRouteSheet(data.procedure, data.workflow);
     });
   }
 

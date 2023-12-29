@@ -9,7 +9,7 @@
               {{ stage.emitter.fullname | titlecase }}
             </h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">
-              {{ stage.emitter.jobtitle ?? "Sin cargo" | uppercase }}
+              {{ stage.emitter.jobtitle | uppercase }}
             </h6>
             <hr />
           </div>
@@ -17,7 +17,7 @@
             <li class="list-group-item">
               Duracion: <span class="badge text-bg-primary fs-6"> {{ stage.emitter.duration }}</span>
             </li>
-            <!-- <li class="list-group-item">Fecha envio: {{ stage.outboundDate | date : "short" }}</li> -->
+            <li class="list-group-item">Fecha envio: {{ stage.outboundDate.fulldate }}</li>
           </ul>
         </div>
       </div>
@@ -42,15 +42,13 @@
             @switch (subitem.status) { @case ('pending') {
             <li class="list-group-item list-group-item-warning">Sin aceptar</li>
             } @case ('rejected') {
-            <li class="list-group-item list-group-item-danger">
-              Fecha rechazdo: {{ subitem.inboundDate | date : "short" }}
-            </li>
+            <li class="list-group-item list-group-item-danger">Fecha rechazdo: {{ subitem.inboundDate?.fulldate }}</li>
             <li class="list-group-item list-group-item-danger">Motivo: {{ subitem.rejectionReason }}</li>
             <li class="list-group-item list-group-item-danger">
               Duracion: <span class="badge text-bg-danger fs-6">{{ subitem.receiver.duration }}</span>
             </li>
             } @default {
-            <li class="list-group-item">Fecha recibido: {{ subitem.inboundDate | date : "short" }}</li>
+            <li class="list-group-item">Fecha recibido: {{ subitem.inboundDate?.fulldate }}</li>
             <li class="list-group-item">
               Duracion: <span class="badge text-bg-primary fs-6">{{ subitem.receiver.duration }}</span>
             </li>
