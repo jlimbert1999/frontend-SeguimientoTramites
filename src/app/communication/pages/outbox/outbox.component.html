@@ -1,11 +1,18 @@
+<p>
+  <mat-toolbar color="primary">
+    <sidenav-button />
+    <span>BANDEJA DE SALIDA</span>
+  </mat-toolbar>
+</p>
+
 <div class="container-fluid animate__animated animate__fadeIn">
-  <!-- <app-input-search-procedures
+  <app-input-search-procedures
     placeholder="Alterno / Referencia"
     (searchEvent)="getData()"
-  ></app-input-search-procedures> -->
+  ></app-input-search-procedures>
   <div class="example-container mat-elevation-z8">
     <div class="table-container">
-      <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+      <table mat-table [dataSource]="dataSource()" multiTemplateDataRows>
         <ng-container matColumnDef="code">
           <th mat-header-cell *matHeaderCellDef>Alterno</th>
           <td mat-cell *matCellDef="let row">
@@ -94,11 +101,8 @@
                   </div>
                 </section>
                 <mat-selection-list #shoes>
-                  <mat-list-option
-                    *ngFor="let send of element.sendings"
-                    [value]="send._id"
-                    [disabled]="send.status !== 'pending'"
-                  >
+                  @for (send of element.detail; track $index) {
+                  <mat-list-option [value]="send._id" [disabled]="send.status !== 'pending'">
                     <mat-icon matListItemIcon>
                       {{ send.status === "received" ? "done_all" : send.status === "pending" ? "sync" : "close" }}
                     </mat-icon>
@@ -111,6 +115,7 @@
                       <strong>Referencia:</strong> {{ send.rejectionReason }}
                     </p>
                   </mat-list-option>
+                  }
                 </mat-selection-list>
               </div>
             </div>
@@ -126,6 +131,6 @@
         <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="expanded-row"></tr>
       </table>
     </div>
-    <app-paginator (page)="getData()" />
+    <app-paginator (changePage)="getData()" />
   </div>
 </div>

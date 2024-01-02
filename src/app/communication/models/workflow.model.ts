@@ -14,7 +14,7 @@ interface Detail {
   reference: string;
   attachmentQuantity: string;
   internalNumber: string;
-  inboundDate?: TimeDetail;
+  inboundDate: TimeDetail;
   status: statusMail;
   rejectionReason?: string;
 }
@@ -48,7 +48,7 @@ export class Workflow {
                 date: TimeControl.formatDate(new Date(inboundDate), 'DD/MM/YY'),
                 hour: TimeControl.formatDate(new Date(inboundDate), 'HH:mm'),
               }
-            : { fulldate: '', date: '', hour: '' },
+            : { fulldate: 'Sin recibir', date: '-', hour: '-' },
         };
       }),
     });

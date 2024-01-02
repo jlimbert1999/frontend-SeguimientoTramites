@@ -36,7 +36,7 @@ export class InternalProcedure extends Procedure {
     this.details = details;
   }
 
-  override get applicantDetails(): { emiter: worker; receiver?: worker } {
+  override get applicantDetails() {
     return {
       emiter: { nombre: this.details.remitente.nombre, cargo: this.details.remitente.cargo },
       receiver: { nombre: this.details.destinatario.nombre, cargo: this.details.destinatario.cargo },

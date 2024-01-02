@@ -7,10 +7,9 @@ import { InboxService } from '../../services/inbox.service';
 import Swal from 'sweetalert2';
 
 import { groupProcedure, observation, stateProcedure } from 'src/app/procedures/interfaces';
-import { communicationResponse, statusMail, workflowResponse } from '../../interfaces';
+import { communicationResponse, statusMail } from '../../interfaces';
 import { ProcedureService } from 'src/app/procedures/services/procedure.service';
 import { ExternalProcedure, InternalProcedure } from 'src/app/procedures/models';
-import { createRouteMap } from 'src/app/procedures/helpers';
 import { AlertService, PaginatorService } from 'src/app/shared/services';
 import { Workflow } from '../../models';
 @Component({

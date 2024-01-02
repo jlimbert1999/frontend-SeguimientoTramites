@@ -10,7 +10,6 @@ import { SocketService } from 'src/app/services/socket.service';
 import { InboxService } from '../../services/inbox.service';
 
 import { stateProcedure } from 'src/app/procedures/interfaces';
-import { createRouteMap } from 'src/app/procedures/helpers';
 import { EventProcedureDto } from 'src/app/procedures/dtos';
 import { TransferDetails, communicationResponse, statusMail } from '../../interfaces';
 import { AlertService, PaginatorService } from 'src/app/shared/services';

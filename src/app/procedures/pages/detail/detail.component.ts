@@ -53,7 +53,7 @@ export class DetailComponent implements OnInit {
   }
 
   generateFicha() {
-    this.pdfService.generateFicha(this.procedure()!, this.workflow);
+    this.pdfService.GenerateIndexCard(this.procedure()!, this.workflow);
   }
   get external() {
     return this.procedure() as ExternalProcedure;

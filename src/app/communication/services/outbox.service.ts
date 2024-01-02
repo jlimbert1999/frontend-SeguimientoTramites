@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { groupedCommunicationResponse } from '../interfaces';
+import { PaginationParameters } from 'src/app/shared/interfaces';
+import { GroupedCommunication } from '../models';
 
 const base_url = environment.base_url;
 
@@ -12,7 +14,7 @@ const base_url = environment.base_url;
 export class OutboxService {
   constructor(private http: HttpClient) {}
 
-  getOutboxOfAccount(limit: number, offset: number) {
+  findAll({ limit, offset }: PaginationParameters) {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
       .get<{ mails: groupedCommunicationResponse[]; length: number }>(`${base_url}/communication/outbox`, {
@@ -20,12 +22,12 @@ export class OutboxService {
       })
       .pipe(
         map((resp) => {
-          return { mails: resp.mails, length: resp.length };
+          return { mails: resp.mails.map((el) => GroupedCommunication.responseToModel(el)), length: resp.length };
         })
       );
   }
 
-  search(limit: number, offset: number, text: string) {
+  search({ limit, offset }: PaginationParameters, text: string) {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
       .get<{ mails: groupedCommunicationResponse[]; length: number }>(
@@ -34,7 +36,7 @@ export class OutboxService {
       )
       .pipe(
         map((resp) => {
-          return { mails: resp.mails, length: resp.length };
+          return { mails: resp.mails.map((el) => GroupedCommunication.responseToModel(el)), length: resp.length };
         })
       );
   }

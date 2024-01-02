@@ -8,8 +8,6 @@ import { RegisterExternalComponent } from '../register-external/register-externa
 
 import { ArchiveService, ExternalService, ProcedureService } from '../../services';
 
-import { createRouteMap, createTicket } from '../../helpers';
-
 import { ExternalProcedure } from '../../models';
 import { EventProcedureDto } from '../../dtos';
 import { external, groupProcedure, stateProcedure } from '../../interfaces';
@@ -115,9 +113,7 @@ export class ExternalComponent implements OnInit {
     });
   }
 
-  generateTicket(tramite: external) {
-    createTicket(tramite);
-  }
+  generateTicket(tramite: external) {}
 
   conclude(procedure: external) {
     this.alertService.showConfirmAlert(

@@ -1,5 +1,5 @@
 import { account, typeProcedure } from 'src/app/administration/interfaces';
-import { procedure, groupProcedure, stateProcedure, worker } from '../interfaces';
+import { groupProcedure, stateProcedure, worker } from '../interfaces';
 import { TimeControl } from 'src/app/shared/helpers';
 
 interface ProcedureProps {
@@ -70,7 +70,7 @@ export abstract class Procedure {
     return this.cite;
   }
 
-  get isEditable(): boolean {
+  isEditable(): boolean {
     if (this.state !== stateProcedure.INSCRITO) return false;
     return true;
   }
@@ -79,8 +79,16 @@ export abstract class Procedure {
     if (this.state !== stateProcedure.INSCRITO || this.isSend) return false;
     return true;
   }
+
   getDuration(): string {
     return TimeControl.duration(this.startDate, this.endDate ?? new Date());
   }
-  abstract get applicantDetails(): { emiter: worker; receiver?: worker };
+
+  StartDateDetail(): { date: string; hour: string } {
+    return {
+      date: TimeControl.formatDate(this.startDate, 'DD/MM/YY'),
+      hour: TimeControl.formatDate(this.startDate, 'HH:mm'),
+    };
+  }
+  abstract get applicantDetails(): { emiter: worker; receiver: worker };
 }

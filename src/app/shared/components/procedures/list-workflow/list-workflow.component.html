@@ -42,13 +42,13 @@
             @switch (subitem.status) { @case ('pending') {
             <li class="list-group-item list-group-item-warning">Sin aceptar</li>
             } @case ('rejected') {
-            <li class="list-group-item list-group-item-danger">Fecha rechazdo: {{ subitem.inboundDate?.fulldate }}</li>
+            <li class="list-group-item list-group-item-danger">Fecha rechazdo: {{ subitem.inboundDate.fulldate }}</li>
             <li class="list-group-item list-group-item-danger">Motivo: {{ subitem.rejectionReason }}</li>
             <li class="list-group-item list-group-item-danger">
               Duracion: <span class="badge text-bg-danger fs-6">{{ subitem.receiver.duration }}</span>
             </li>
             } @default {
-            <li class="list-group-item">Fecha recibido: {{ subitem.inboundDate?.fulldate }}</li>
+            <li class="list-group-item">Fecha recibido: {{ subitem.inboundDate.fulldate }}</li>
             <li class="list-group-item">
               Duracion: <span class="badge text-bg-primary fs-6">{{ subitem.receiver.duration }}</span>
             </li>

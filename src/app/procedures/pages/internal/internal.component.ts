@@ -8,13 +8,11 @@ import { RegisterInternalComponent } from '../register-internal/register-interna
 
 import { ArchiveService, InternalService, ProcedureService } from '../../services';
 
-import { createRouteMap } from '../../helpers';
-
 import { EventProcedureDto } from '../../dtos';
 import { InternalProcedure } from '../../models';
 import { groupProcedure, internal, stateProcedure } from '../../interfaces';
 import { TransferDetails } from 'src/app/communication/interfaces';
-import { AlertService, PaginatorService } from 'src/app/shared/services';
+import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-internal',
@@ -32,7 +30,8 @@ export class InternalComponent implements OnInit {
     public procedureService: ProcedureService,
     public paginatorService: PaginatorService,
     private alertService: AlertService,
-    private archiveService: ArchiveService
+    private archiveService: ArchiveService,
+    private readonly pdf: PdfGeneratorService
   ) {}
 
   ngOnInit(): void {
@@ -86,7 +85,6 @@ export class InternalComponent implements OnInit {
         const indexFound = this.dataSource.findIndex((element) => element._id === updatedProcedure._id);
         this.dataSource[indexFound] = updatedProcedure;
         this.dataSource = [...this.dataSource];
-        this.alertService.showSuccesToast({ title: 'Tramite' });
       }
     });
   }
@@ -110,7 +108,7 @@ export class InternalComponent implements OnInit {
   }
   generateRouteMap(id_tramite: string, group: groupProcedure) {
     this.procedureService.getFullProcedure(id_tramite, group).subscribe((data) => {
-      // createRouteMap(data.procedure, data.workflow);
+      this.pdf.generateRouteSheet(data.procedure, data.workflow);
     });
   }
 

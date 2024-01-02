@@ -4,12 +4,13 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 import { Content, TDocumentDefinitions, Table, TableCell } from 'pdfmake/interfaces';
-import { FormatDate, convertImagenABase64 } from '../helpers';
+import { convertImagenABase64, RouteMapPdf, IndexCard } from '../helpers';
 import { ReportSheet } from '../interfaces';
-import { Procedure } from 'src/app/procedures/models';
+import { ExternalProcedure, InternalProcedure, Procedure } from 'src/app/procedures/models';
 import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Workflow } from 'src/app/communication/models';
+import { statusMail } from 'src/app/communication/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -17,11 +18,22 @@ import { Workflow } from 'src/app/communication/models';
 export class PdfGeneratorService {
   constructor(private readonly authService: AuthService) {}
 
-  generateRouteSheet(procedure: Procedure, workflow: Workflow[]) {
+  async generateRouteSheet(procedure: Procedure, workflow: Workflow[]) {
+    workflow = workflow
+      .map((communication) => {
+        const { detail, ...values } = communication;
+        const filteredItems = detail.filter((send) => send.status !== statusMail.Rejected);
+        return { detail: filteredItems, ...values };
+      })
+      .filter((elemet) => elemet.detail.length > 0);
     const docDefinition: TDocumentDefinitions = {
       pageSize: 'LETTER',
       pageMargins: [30, 30, 30, 30],
-      content: [],
+      content: [
+        await RouteMapPdf.CreateHeader(),
+        RouteMapPdf.CreateFirstSection(procedure, workflow[0]),
+        RouteMapPdf.CreateSecodSection(workflow),
+      ],
       footer: {
         margin: [10, 0, 10, 0],
         fontSize: 7,
@@ -63,6 +75,7 @@ export class PdfGeneratorService {
     };
     pdfMake.createPdf(docDefinition).print();
   }
+
   generateReportSheet({ title, datasource, displayColumns }: ReportSheet) {
     const tableResults: Table = {
       headerRows: 1,
@@ -77,7 +90,7 @@ export class PdfGeneratorService {
         displayColumns.map((colum) => ({ text: colum.header.toUpperCase(), bold: true, style: 'tableHeader' })),
         ...datasource.map((procedure) =>
           displayColumns.map(({ columnDef }) => {
-            if (columnDef === 'date') return { text: FormatDate(procedure.date) };
+            if (columnDef === 'date') return { text: new Date(procedure.date).toLocaleString() };
             return { text: procedure[columnDef] };
           })
         ),
@@ -89,7 +102,7 @@ export class PdfGeneratorService {
     ];
     const docDefinition: TDocumentDefinitions = {
       header: {
-        text: `FECHA: ${FormatDate(`${new Date()}`)}`,
+        text: `FECHA: ${`${new Date().toLocaleString()}`}`,
         alignment: 'right',
         margin: [0, 10, 40, 0],
       },
@@ -110,60 +123,53 @@ export class PdfGeneratorService {
     pdfMake.createPdf(docDefinition).print();
   }
 
-  async generateFicha(procedure: Procedure, workflow: Workflow[]) {
+  async GenerateIndexCard(procedure: ExternalProcedure | InternalProcedure, workflow: Workflow[]) {
+    await this.GenerateReportSheet(
+      `FICHA DE TRAMITE ${procedure.group === groupProcedure.EXTERNAL ? 'EXTERNO' : 'INTERNO'}`,
+      procedure.code,
+      [
+        IndexCard.CreateLocationSection(workflow),
+        IndexCard.CreateDetailSection(procedure),
+        ...(procedure.group === groupProcedure.EXTERNAL
+          ? [IndexCard.CreateExternalSection(procedure as ExternalProcedure)]
+          : [IndexCard.CreateInternalSection(procedure as InternalProcedure)]),
+        IndexCard.CreateSectionWorkflow(workflow),
+      ]
+    );
+  }
+
+  private async GenerateReportSheet(title: string, subtitle: string, content: Content[]) {
     const docDefinition: TDocumentDefinitions = {
       header: {
         columns: [
           { width: 90, image: await convertImagenABase64('../../../assets/img/logo_alcaldia.png') },
           {
             width: '*',
-            text: [
-              `\nFICHA DE TRAMITE ${procedure.group === groupProcedure.EXTERNAL ? 'EXTERNO' : 'INTERNO'}\n`,
-              { text: `FECHA: ${FormatDate(`${new Date()}`)}`, fontSize: 12 },
-            ],
+            text: [`\n${title}`, { text: `\n${subtitle}`, fontSize: 12 }],
             bold: true,
             fontSize: 16,
           },
           {
             width: 100,
-            text: `Generado por: ${this.authService.account()?.officer.fullname} (${
-              this.authService.account()?.officer.jobtitle
-            })`,
-            fontSize: 8,
+            text: `${new Date().toLocaleString()}`,
+            fontSize: 10,
+            bold: true,
             alignment: 'left',
           },
         ],
         alignment: 'center',
         margin: [10, 10, 10, 10],
       },
+      footer: {
+        margin: [10, 0, 10, 0],
+        fontSize: 8,
+        text: `Generado por: ${this.authService.account()?.officer.fullname} (${
+          this.authService.account()?.officer.jobtitle
+        })`,
+      },
       pageSize: 'LETTER',
       pageMargins: [30, 110, 40, 30],
-      content: [
-        {
-          fontSize: 10,
-          table: {
-            widths: [140, '*'],
-            headerRows: 1,
-            body: [
-              [{ text: 'DETALLES DEL TRAMITE', bold: true, colSpan: 2 }, ''],
-              [{ text: 'ALTERNO:' }, procedure.code],
-              [{ text: 'REFERENCIA:' }, procedure.reference],
-              [{ text: 'CANTIDAD:' }, procedure.amount],
-              [{ text: 'ESTADO:' }, procedure.state],
-              [{ text: 'REGISTRADO POR:' }, procedure.fullNameManager],
-              [{ text: 'FECHA REGISTRO:' }, procedure.startDate.toLocaleString()],
-              ...(procedure.state === stateProcedure.CONCLUIDO
-                ? [
-                    [{ text: 'FECHA FINALIZACION:' }, procedure.endDate ? 'ds' : ''],
-                    [{ text: 'DURACION' }, procedure.getDuration()],
-                  ]
-                : []),
-            ],
-          },
-          layout: 'headerLineOnly',
-        },
-        this.sectionWorkflow(workflow),
-      ],
+      content: content,
       styles: {
         table: {
           marginTop: 20,
@@ -178,54 +184,5 @@ export class PdfGeneratorService {
       },
     };
     pdfMake.createPdf(docDefinition).print();
-  }
-
-  private sectionWorkflow(workflow: Workflow[]): Content {
-    const body: TableCell[][] = workflow.map((el, index) => {
-      const subTable: TableCell[][] = el.detail.map((send) => {
-        return [
-          { text: `${send.receiver.fullname} (${send.receiver.jobtitle})` },
-          { text: `Referencia: ${send.reference}` },
-          [
-            { text: `Fecha: ${send.inboundDate}` ?? 'Sin recibir' },
-            { text: `Cantidad: ${send.attachmentQuantity}` },
-            { text: `Nro. Interno: ${send.internalNumber}` },
-            { text: `i` },
-          ],
-          '',
-        ];
-      });
-      return [
-        { text: `${index + 1}`, alignment: 'center' },
-        { text: `${el.emitter.fullname} (${el.emitter.jobtitle})` },
-        // { text: el.outboundDate },
-        {
-          table: {
-            headerRows: 1,
-            widths: [140, '*', 70, 70],
-            body: [[{ text: 'Funcionario', style: 'tableHeader' }, 'Referencia', 'Detalle', 'Fecha'], ...subTable],
-          },
-          layout: 'lightHorizontalLines',
-        },
-      ];
-    });
-    return {
-      pageBreak: 'before',
-      pageOrientation: 'landscape',
-      fontSize: 8,
-      table: {
-        headerRows: 1,
-        widths: [30, 140, 50, '*'],
-        body: [
-          [
-            { text: 'ETAPA', style: 'tableHeader' },
-            { text: 'REMITENTE', style: 'tableHeader' },
-            { text: 'FECHA', style: 'tableHeader' },
-            { text: 'DESTINATARIOS', style: 'tableHeader' },
-          ],
-          ...body,
-        ],
-      },
-    };
   }
 }

@@ -47,7 +47,7 @@ export class ExternalProcedure extends Procedure {
   details: details;
 
   static ResponseToModel({ send, ...values }: external) {
-    return new ExternalProcedure({ ...values, isSend: true });
+    return new ExternalProcedure({ ...values, isSend: send });
   }
 
   constructor({ details, ...procedureProps }: ExternalProps) {
@@ -70,9 +70,10 @@ export class ExternalProcedure extends Procedure {
       .join(' ');
   }
 
-  override get applicantDetails(): { emiter: worker; receiver?: worker | undefined } {
+  override get applicantDetails() {
     return {
       emiter: { nombre: this.fullNameApplicant, cargo: `P. ${this.details.solicitante.tipo}` },
+      receiver: { nombre: '', cargo: '' },
     };
   }
 }
