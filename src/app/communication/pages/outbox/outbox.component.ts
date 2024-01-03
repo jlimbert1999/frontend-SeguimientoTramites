@@ -1,6 +1,5 @@
+import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit, AfterViewInit, signal, ChangeDetectionStrategy } from '@angular/core';
-import { MatSelectionList } from '@angular/material/list';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -10,8 +9,6 @@ import { ProcedureService } from 'src/app/procedures/services';
 import { OutboxService } from '../../services/outbox.service';
 
 import { GroupedCommunication } from '../../models';
-
-import { communicationResponse } from '../../interfaces';
 
 @Component({
   selector: 'app-outbox',
@@ -26,10 +23,10 @@ import { communicationResponse } from '../../interfaces';
     ]),
   ],
 })
-export class OutboxComponent implements OnInit, AfterViewInit {
+export class OutboxComponent implements OnInit {
   displayedColumns = ['code', 'reference', 'state', 'startDate', 'expand', 'menu-options'];
   dataSource = signal<GroupedCommunication[]>([]);
-  expandedElement: communicationResponse | null;
+  expandedElement: GroupedCommunication | null;
 
   constructor(
     private router: Router,
@@ -40,7 +37,6 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     private procedureService: ProcedureService,
     private pdf: PdfGeneratorService
   ) {}
-  ngAfterViewInit(): void {}
 
   ngOnInit(): void {
     this.getData();
@@ -55,8 +51,8 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     });
   }
 
-  generateRouteMap(mail: communicationResponse) {
-    this.procedureService.getFullProcedure(mail.procedure._id, mail.procedure.group).subscribe((data) => {
+  generateRouteMap({ _id: { procedure } }: GroupedCommunication) {
+    this.procedureService.getFullProcedure(procedure._id, procedure.group).subscribe((data) => {
       this.pdf.generateRouteSheet(data.procedure, data.workflow);
     });
   }
@@ -72,29 +68,27 @@ export class OutboxComponent implements OnInit, AfterViewInit {
     });
   }
 
-  cancelSend(mail: GroupedCommunication, selectedSendIds: string[] | null) {
-    if (!selectedSendIds) return;
+  cancelMails(mail: GroupedCommunication) {
     this.alertService.showQuestionAlert(
       `¿Cancelar envios del tramite ${mail._id.procedure.code}?`,
-      `Envios a cancelar: ${selectedSendIds.length}`,
+      `NRO. DE ENVIOS: ${mail.detail.length}`,
       () => {
-        this.outboxService.cancelMail(mail._id.procedure._id, selectedSendIds).subscribe((message) => {
-          const index = this.dataSource().findIndex((item) => item._id === mail._id);
-          this.dataSource()[index].detail = mail.detail.filter((send) => !selectedSendIds.includes(send._id));
-          if (this.dataSource()[index].detail.length === 0) {
-            this.dataSource.set(this.dataSource().filter((item) => item._id !== mail._id));
-            this.paginatorService.length -= 1;
-          }
-          this.alertService.showSuccesAltert('Envio cancelado correctamente', message);
+        const ids_mails = mail.detail.map((send) => send._id);
+        this.outboxService.cancelMails(mail._id.procedure._id, ids_mails).subscribe((resp) => {
+          this.removeDatasourceElement(mail);
+          this.alertService.showSuccesAltert('Envio cancelado', resp.message);
         });
       }
     );
   }
-  selectAllItemsList(list: MatSelectionList) {
-    list._items.forEach((item) => {
-      if (!item.disabled) {
-        item.selected = true;
-      }
+  removeDatasourceElement({ _id }: GroupedCommunication) {
+    const id = `${_id.account}-${_id.outboundDate}-${_id.procedure._id}`;
+    this.dataSource.update((values) => {
+      const filteredData = values.filter(
+        (element) => `${element._id.account}-${element._id.outboundDate}-${element._id.procedure._id}` !== id
+      );
+      return [...filteredData];
     });
+    this.paginatorService.length--;
   }
 }

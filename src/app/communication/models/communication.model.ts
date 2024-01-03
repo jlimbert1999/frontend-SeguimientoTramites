@@ -35,8 +35,14 @@ export class Communication {
   readonly rejectionReason?: string;
   status: statusMail;
 
-  static ResponseToModel(communication: communicationResponse) {
-    return new Communication(communication);
+  static ResponseToModel({ emitter, receiver, ...props }: communicationResponse) {
+    emitter.jobtitle = emitter.jobtitle ?? 'SIN CARGO';
+    receiver.jobtitle = receiver.jobtitle ?? 'SIN CARGO';
+    return new Communication({
+      ...props,
+      emitter,
+      receiver,
+    });
   }
 
   constructor({
@@ -63,5 +69,12 @@ export class Communication {
     this.inboundDate = inboundDate;
     this.rejectionReason = rejectionReason;
     this.status = status;
+  }
+
+  get statusIcon(): { text: string; color: string } {
+    if (this.status === statusMail.Archived) return { text: 'check_circle', color: '#118AB2' };
+    if (this.status === statusMail.Pending) return { text: 'PENDIENTE', color: '#FFD166' };
+    if (this.status === statusMail.Rejected) return { text: 'RECHAZADO', color: '#EF476F' };
+    return { text: 'RECIBIDO', color: '#06D6A0' };
   }
 }

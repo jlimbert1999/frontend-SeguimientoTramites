@@ -8,8 +8,11 @@ interface ID {
   outboundDate: string;
 }
 export class GroupedCommunication {
-  static responseToModel(data: groupedCommunicationResponse) {
-    return new GroupedCommunication(data._id, data.sendings);
+  static responseToModel({ _id, sendings }: groupedCommunicationResponse) {
+    return new GroupedCommunication(
+      _id,
+      sendings.map((send) => Communication.ResponseToModel(send))
+    );
   }
   constructor(public _id: ID, public detail: Communication[]) {}
 }

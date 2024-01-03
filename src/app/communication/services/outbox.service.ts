@@ -42,29 +42,9 @@ export class OutboxService {
       );
   }
 
-  cancelMail(id_procedure: string, ids_mails: string[]) {
-    return this.http
-      .delete<{ message: string }>(`${this.base_url}/communication/outbox/${id_procedure}`, {
-        body: { ids_mails },
-      })
-      .pipe(map((resp) => resp.message));
-  }
-
-  cancelOneSend(id_bandeja: string) {
-    return this.http.delete<{ ok: boolean; message: string }>(`${this.base_url}/salidas/${id_bandeja}`).pipe(
-      map((resp) => {
-        return resp.message;
-      })
-    );
-  }
-
-  cancelAllSend(id_tramite: string, fecha_envio: string) {
-    return this.http
-      .put<{ ok: boolean; message: string }>(`${this.base_url}/salidas/all/${id_tramite}`, { fecha_envio })
-      .pipe(
-        map((resp) => {
-          return resp.message;
-        })
-      );
+  cancelMails(id_procedure: string, ids_mails: string[]) {
+    return this.http.delete<{ message: string }>(`${this.base_url}/communication/outbox/${id_procedure}`, {
+      body: { ids_mails },
+    });
   }
 }
