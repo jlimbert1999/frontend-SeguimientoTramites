@@ -91,14 +91,15 @@
                 <span>Hoja de ruta</span>
               </button>
               <button mat-menu-item [matMenuTriggerFor]="endingOptions">
+                <mat-icon>description</mat-icon>
                 <span>Concluir tramite</span>
               </button>
               <mat-menu #endingOptions="matMenu">
-                <button mat-menu-item (click)="conclude(row, false)">
+                <button mat-menu-item (click)="conclude(row, state.CONCLUIDO)">
                   <mat-icon>domain_verification</mat-icon>
                   Finalizar proceso
                 </button>
-                <button mat-menu-item (click)="conclude(row, true)">
+                <button mat-menu-item (click)="conclude(row, state.SUSPENDIDO)">
                   <mat-icon>snooze</mat-icon>
                   Suspender proceso
                 </button>

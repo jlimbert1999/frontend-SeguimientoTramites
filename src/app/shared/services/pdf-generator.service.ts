@@ -3,7 +3,7 @@ import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
-import { Content, TDocumentDefinitions, Table, TableCell } from 'pdfmake/interfaces';
+import { Content, PageOrientation, TDocumentDefinitions, Table, TableCell } from 'pdfmake/interfaces';
 import { convertImagenABase64, RouteMapPdf, IndexCard } from '../helpers';
 import { ReportSheet } from '../interfaces';
 import { ExternalProcedure, InternalProcedure, Procedure } from 'src/app/procedures/models';
@@ -11,6 +11,13 @@ import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Workflow } from 'src/app/communication/models';
 import { statusMail } from 'src/app/communication/interfaces';
+
+interface ReportSheetProps {
+  title: string;
+  subtitle: string;
+  content: Content[];
+  orientation?: PageOrientation;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -76,7 +83,7 @@ export class PdfGeneratorService {
     pdfMake.createPdf(docDefinition).print();
   }
 
-  generateReportSheet({ title, datasource, displayColumns }: ReportSheet) {
+  generateReportSheet({ title, datasource, displayColumns, subtitle }: ReportSheet) {
     const tableResults: Table = {
       headerRows: 1,
       dontBreakRows: true,
@@ -96,49 +103,30 @@ export class PdfGeneratorService {
         ),
       ],
     };
-    const content: Content[] = [
-      { text: title, alignment: 'center', bold: true },
-      { table: tableResults, style: 'table', layout: 'lightHorizontalLines', fontSize: 8 },
-    ];
-    const docDefinition: TDocumentDefinitions = {
-      header: {
-        text: `FECHA: ${`${new Date().toLocaleString()}`}`,
-        alignment: 'right',
-        margin: [0, 10, 40, 0],
-      },
-      pageSize: 'LETTER',
-      pageOrientation: 'landscape',
-      content: content,
-      styles: {
-        table: {
-          marginTop: 20,
-        },
-        tableHeader: {
-          fillColor: '#0077B6',
-          color: 'white',
-          fontSize: 9,
-        },
-      },
-    };
-    pdfMake.createPdf(docDefinition).print();
+    this.GenerateReportSheet({
+      title,
+      subtitle: subtitle ?? '',
+      orientation: 'landscape',
+      content: [{ table: tableResults, style: 'table', layout: 'lightHorizontalLines', fontSize: 8 }],
+    });
   }
 
   async GenerateIndexCard(procedure: ExternalProcedure | InternalProcedure, workflow: Workflow[]) {
-    await this.GenerateReportSheet(
-      `FICHA DE TRAMITE ${procedure.group === groupProcedure.EXTERNAL ? 'EXTERNO' : 'INTERNO'}`,
-      procedure.code,
-      [
+    await this.GenerateReportSheet({
+      title: `FICHA DE TRAMITE ${procedure.group === groupProcedure.EXTERNAL ? 'EXTERNO' : 'INTERNO'}`,
+      subtitle: procedure.code,
+      content: [
         IndexCard.CreateLocationSection(workflow),
         IndexCard.CreateDetailSection(procedure),
         ...(procedure.group === groupProcedure.EXTERNAL
           ? [IndexCard.CreateExternalSection(procedure as ExternalProcedure)]
           : [IndexCard.CreateInternalSection(procedure as InternalProcedure)]),
         IndexCard.CreateSectionWorkflow(workflow),
-      ]
-    );
+      ],
+    });
   }
 
-  private async GenerateReportSheet(title: string, subtitle: string, content: Content[]) {
+  private async GenerateReportSheet({ title, subtitle, content, orientation = 'portrait' }: ReportSheetProps) {
     const docDefinition: TDocumentDefinitions = {
       header: {
         columns: [
@@ -170,6 +158,7 @@ export class PdfGeneratorService {
       pageSize: 'LETTER',
       pageMargins: [30, 110, 40, 30],
       content: content,
+      pageOrientation: orientation,
       styles: {
         table: {
           marginTop: 20,

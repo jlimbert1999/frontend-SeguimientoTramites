@@ -3,15 +3,16 @@
     <span>ARCHIVOS</span>
   </mat-toolbar>
 </p>
+
 <div class="container-fluid animate__animated animate__fadeIn">
   <app-input-search-procedures
     (searchEvent)="getData()"
     placeholder="Alterno / Referencia / Solicitante"
   ></app-input-search-procedures>
-  <div class="mat-elevation-z8">
-    <div class="example-table-container">
-      <table mat-table [dataSource]="dataSource">
-        <ng-container matColumnDef="procedure">
+  <div class="example-container mat-elevation-z8">
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource()">
+        <ng-container matColumnDef="code">
           <th mat-header-cell *matHeaderCellDef>Tramite</th>
           <td mat-cell *matCellDef="let element">
             <a class="link-primary" (click)="showDetails(element)">
@@ -55,6 +56,6 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
-    <app-paginator (page)="getData()" />
+    <app-paginator (changePage)="getData()" />
   </div>
 </div>

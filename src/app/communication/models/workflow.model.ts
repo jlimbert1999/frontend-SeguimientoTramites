@@ -33,14 +33,18 @@ export interface Participant {
 export class Workflow {
   static fromResponse(workflow: workflowResponse) {
     return new Workflow({
-      emitter: workflow.emitter,
+      emitter: { ...workflow.emitter, jobtitle: workflow.emitter.jobtitle ?? 'Sin cargo' },
       outboundDate: {
         fulldate: TimeControl.formatDate(new Date(workflow.outboundDate)),
         date: TimeControl.formatDate(new Date(workflow.outboundDate), 'DD/MM/YY'),
         hour: TimeControl.formatDate(new Date(workflow.outboundDate), 'HH:mm'),
       },
-      detail: workflow.detail.map(({ inboundDate, ...values }) => {
+      detail: workflow.detail.map(({ inboundDate, receiver, ...values }) => {
         return {
+          receiver: {
+            ...receiver,
+            jobtitle: receiver.jobtitle ?? 'Sin cargo',
+          },
           ...values,
           inboundDate: inboundDate
             ? {

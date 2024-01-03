@@ -1,23 +1,24 @@
-import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { groupedCommunicationResponse } from '../interfaces';
-import { PaginationParameters } from 'src/app/shared/interfaces';
+import { Injectable } from '@angular/core';
+import { map } from 'rxjs';
+
 import { GroupedCommunication } from '../models';
 
-const base_url = environment.base_url;
+import { environment } from 'src/environments/environment';
+import { PaginationParameters } from 'src/app/shared/interfaces';
+import { groupedCommunicationResponse } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OutboxService {
+  base_url = environment.base_url;
   constructor(private http: HttpClient) {}
 
   findAll({ limit, offset }: PaginationParameters) {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
-      .get<{ mails: groupedCommunicationResponse[]; length: number }>(`${base_url}/communication/outbox`, {
+      .get<{ mails: groupedCommunicationResponse[]; length: number }>(`${this.base_url}/communication/outbox`, {
         params,
       })
       .pipe(
@@ -31,7 +32,7 @@ export class OutboxService {
     const params = new HttpParams().set('offset', offset).set('limit', limit);
     return this.http
       .get<{ mails: groupedCommunicationResponse[]; length: number }>(
-        `${base_url}/communication/outbox/search/${text}`,
+        `${this.base_url}/communication/outbox/search/${text}`,
         { params }
       )
       .pipe(
@@ -43,14 +44,14 @@ export class OutboxService {
 
   cancelMail(id_procedure: string, ids_mails: string[]) {
     return this.http
-      .delete<{ message: string }>(`${base_url}/communication/outbox/${id_procedure}`, {
+      .delete<{ message: string }>(`${this.base_url}/communication/outbox/${id_procedure}`, {
         body: { ids_mails },
       })
       .pipe(map((resp) => resp.message));
   }
 
   cancelOneSend(id_bandeja: string) {
-    return this.http.delete<{ ok: boolean; message: string }>(`${base_url}/salidas/${id_bandeja}`).pipe(
+    return this.http.delete<{ ok: boolean; message: string }>(`${this.base_url}/salidas/${id_bandeja}`).pipe(
       map((resp) => {
         return resp.message;
       })
@@ -59,7 +60,7 @@ export class OutboxService {
 
   cancelAllSend(id_tramite: string, fecha_envio: string) {
     return this.http
-      .put<{ ok: boolean; message: string }>(`${base_url}/salidas/all/${id_tramite}`, { fecha_envio })
+      .put<{ ok: boolean; message: string }>(`${this.base_url}/salidas/all/${id_tramite}`, { fecha_envio })
       .pipe(
         map((resp) => {
           return resp.message;

@@ -11,8 +11,6 @@ import { observation, stateProcedure } from 'src/app/procedures/interfaces';
 import { Communication } from '../models';
 import { PaginationParameters } from 'src/app/shared/interfaces';
 
-const base_url = environment.base_url;
-
 interface SearchParams extends PaginationParameters {
   text: string;
   status?: statusMail;
@@ -22,27 +20,29 @@ interface SearchParams extends PaginationParameters {
   providedIn: 'root',
 })
 export class InboxService {
+  base_url = environment.base_url;
   constructor(private http: HttpClient) {}
 
   findAll(
     { limit, offset }: PaginationParameters,
     status?: statusMail
   ): Observable<{ mails: Communication[]; length: number }> {
-    let params = new HttpParams().set('offset', offset * limit).set('limit', limit);
+    let params = new HttpParams().set('offset', offset).set('limit', limit);
     if (status) params = params.append('status', status);
     return this.http
-      .get<{ mails: communicationResponse[]; length: number }>(`${base_url}/communication/inbox`, { params })
+      .get<{ mails: communicationResponse[]; length: number }>(`${this.base_url}/communication/inbox`, { params })
       .pipe(
         map((resp) => {
           return { mails: resp.mails.map((el) => Communication.ResponseToModel(el)), length: resp.length };
         })
       );
   }
-  search({ limit, offset, text, status }: SearchParams) {
-    let params = new HttpParams().set('offset', offset * limit).set('limit', limit);
+
+  search({ limit, offset, text, status }: SearchParams): Observable<{ mails: Communication[]; length: number }> {
+    let params = new HttpParams().set('offset', offset).set('limit', limit);
     if (status) params = params.append('status', status);
     return this.http
-      .get<{ mails: communicationResponse[]; length: number }>(`${base_url}/communication/inbox/search/${text}`, {
+      .get<{ mails: communicationResponse[]; length: number }>(`${this.base_url}/communication/inbox/search/${text}`, {
         params,
       })
       .pipe(
@@ -54,18 +54,13 @@ export class InboxService {
 
   acceptMail(id_mail: string) {
     return this.http.put<{ state: stateProcedure; message: string }>(
-      `${base_url}/communication/inbox/accept/${id_mail}`,
+      `${this.base_url}/communication/accept/${id_mail}`,
       {}
     );
   }
+
   rejectMail(id_mail: string, rejectionReason: string) {
-    return this.http
-      .put<{ message: string }>(`${base_url}/communication/inbox/reject/${id_mail}`, { rejectionReason })
-      .pipe(
-        map((resp) => {
-          return resp.message;
-        })
-      );
+    return this.http.put<{ message: string }>(`${this.base_url}/communication/reject/${id_mail}`, { rejectionReason });
   }
 
   create(details: TransferDetails, FormSend: Object, receivers: receiver[]) {
@@ -73,7 +68,7 @@ export class InboxService {
     return this.http
       .post<{
         message: string;
-      }>(`${base_url}/communication`, mail)
+      }>(`${this.base_url}/communication`, mail)
       .pipe(
         map((resp) => {
           return resp;
@@ -81,21 +76,21 @@ export class InboxService {
       );
   }
   getInstitucions() {
-    return this.http.get<institution[]>(`${base_url}/communication/institutions`).pipe(
+    return this.http.get<institution[]>(`${this.base_url}/communication/institutions`).pipe(
       map((resp) => {
         return resp;
       })
     );
   }
   getDependenciesOfInstitution(id_institution: string) {
-    return this.http.get<dependency[]>(`${base_url}/communication/dependencies/${id_institution}`).pipe(
+    return this.http.get<dependency[]>(`${this.base_url}/communication/dependencies/${id_institution}`).pipe(
       map((resp) => {
         return resp;
       })
     );
   }
   getAccountsForSend(id_dependencie: string) {
-    return this.http.get<account[]>(`${base_url}/communication/accounts/${id_dependencie}`).pipe(
+    return this.http.get<account[]>(`${this.base_url}/communication/accounts/${id_dependencie}`).pipe(
       map((resp) => {
         const receivers: receiver[] = resp.map((account) => {
           return {
@@ -111,7 +106,7 @@ export class InboxService {
 
   Conclude(id_bandeja: string, description: string) {
     return this.http
-      .put<{ ok: boolean; message: string }>(`${base_url}/entradas/concluir/${id_bandeja}`, { description })
+      .put<{ ok: boolean; message: string }>(`${this.base_url}/entradas/concluir/${id_bandeja}`, { description })
       .pipe(
         map((resp) => {
           return resp.message;
@@ -120,6 +115,6 @@ export class InboxService {
   }
 
   getMailDetails(id_mail: string) {
-    return this.http.get<communicationResponse>(`${base_url}/communication/${id_mail}`);
+    return this.http.get<communicationResponse>(`${this.base_url}/communication/${id_mail}`);
   }
 }

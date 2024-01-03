@@ -29,23 +29,12 @@ export class ApplicantComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private reportService: ReportService,
-    private paginatorService:PaginatorService,
+    private paginatorService: PaginatorService,
     private pdf: PdfGeneratorService
   ) {}
 
   ngOnInit(): void {
     this.loadSearchParams();
-  }
-
-  showDetails(procedure: ProcedureTableData) {
-    const params = {
-      limit: this.paginatorService.limit,
-      offset: this.paginatorService.index,
-      search: true,
-    };
-    this.router.navigate(['reportes/solicitante', procedure.group, procedure.id_procedure], {
-      queryParams: params,
-    });
   }
 
   search() {
@@ -86,7 +75,16 @@ export class ApplicantComponent implements OnInit {
   changeTypeApplicant() {
     this.formApplicant = this.buildFormByTypeApplicat();
   }
-
+  showDetails(procedure: ProcedureTableData) {
+    const params = {
+      limit: this.paginatorService.limit,
+      offset: this.paginatorService.index,
+      search: true,
+    };
+    this.router.navigate(['reportes/solicitante', procedure.group, procedure.id_procedure], {
+      queryParams: params,
+    });
+  }
   buildFormByTypeApplicat(): FormGroup {
     if (this.typeApplicant === 'NATURAL') {
       return this.fb.group({

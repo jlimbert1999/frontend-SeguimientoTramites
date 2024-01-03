@@ -62,6 +62,6 @@ export class PaginatorService {
   }
 
   get PaginationParams(): PaginationParameters {
-    return { limit: this.pageSize(), offset: this.pageIndex() };
+    return { limit: this.pageSize(), offset: this.pageOffset() };
   }
 }

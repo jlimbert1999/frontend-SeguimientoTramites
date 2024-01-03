@@ -12,7 +12,7 @@ import { InboxService } from '../../services/inbox.service';
 import { stateProcedure } from 'src/app/procedures/interfaces';
 import { EventProcedureDto } from 'src/app/procedures/dtos';
 import { TransferDetails, communicationResponse, statusMail } from '../../interfaces';
-import { AlertService, PaginatorService } from 'src/app/shared/services';
+import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/shared/services';
 import { Communication } from '../../models';
 
 @Component({
@@ -30,14 +30,16 @@ export class InboxComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private dialog: MatDialog,
-    private archiveService: ArchiveService,
+    private paginatorService: PaginatorService,
     private procedureService: ProcedureService,
+    private archiveService: ArchiveService,
     private socketService: SocketService,
     private inboxService: InboxService,
-    private paginatorService: PaginatorService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private pdf: PdfGeneratorService
   ) {
     this.listenNewMails();
+    this.listenCancelMails();
   }
 
   ngOnInit(): void {
@@ -86,63 +88,65 @@ export class InboxComponent implements OnInit, OnDestroy {
     });
   }
 
-  acceptMail(mail: communicationResponse) {
-    // this.alertService.showQuestionAlert(
-    //   `¿Aceptar tramite ${mail.procedure.code}?`,
-    //   `El tramite sera marcado como aceptado`,
-    //   () => {
-    //     this.inboxService.acceptMail(mail._id).subscribe(
-    //       (resp) => {
-    //         const indexFound = this.dataSource.findIndex((item) => item._id === mail._id);
-    //         this.dataSource[indexFound].procedure.state = resp.state;
-    //         this.dataSource[indexFound].status = statusMail.Received;
-    //         this.alertService.showSuccesToast({ title: resp.message });
-    //       },
-    //       () => {
-    //         this.getData();
-    //       }
-    //     );
-    //   }
-    // );
+  acceptMail(mail: Communication) {
+    this.alertService.showQuestionAlert(
+      `¿Aceptar tramite ${mail.procedure.code}?`,
+      `El tramite sera marcado como aceptado`,
+      () => {
+        this.inboxService.acceptMail(mail._id).subscribe(
+          (resp) => {
+            this.dataSource.update((values) => {
+              const index = values.findIndex((value) => value._id === mail._id);
+              values[index].procedure.state = resp.state;
+              values[index].status = statusMail.Received;
+              return [...values];
+            });
+          },
+          () => {
+            this.getData();
+          }
+        );
+      }
+    );
   }
 
-  rejectMail(mail: communicationResponse) {
+  rejectMail(mail: Communication) {
     this.alertService.showConfirmAlert(
       `¿Rechazar tramite ${mail.procedure.code}?`,
       `El tramite sera devuelto al funcionario emisor`,
       'Ingrese el motivo del rechazo',
       (description) => {
-        this.inboxService.rejectMail(mail._id, description).subscribe((message) => {
+        this.inboxService.rejectMail(mail._id, description).subscribe(() => {
           this.removeMail(mail._id);
-          this.alertService.showSuccesToast({ title: message });
         });
       }
     );
   }
 
-  conclude(mail: communicationResponse, isSuspended: boolean) {
+  conclude(mail: Communication, state: stateProcedure.CONCLUIDO | stateProcedure.SUSPENDIDO) {
     this.alertService.showConfirmAlert(
-      `¿${isSuspended ? 'Suspender' : 'Concluir'} el tramite ${mail.procedure.code}?`,
+      `¿${state === stateProcedure.SUSPENDIDO ? 'Suspender' : 'Concluir'} el tramite ${mail.procedure.code}?`,
       `El tramite pasara a su seccion de archivos`,
       'Ingrese una referencia para concluir',
       (description) => {
         const archiveDto: EventProcedureDto = {
           description,
           procedure: mail.procedure._id,
-          stateProcedure: isSuspended ? stateProcedure.SUSPENDIDO : stateProcedure.CONCLUIDO,
+          stateProcedure: state,
         };
-        this.archiveService.archiveMail(mail._id, archiveDto).subscribe((data) => {
-          this.alertService.showSuccesToast({ title: data.message });
+        this.archiveService.archiveMail(mail._id, archiveDto).subscribe(() => {
           this.removeMail(mail._id);
         });
       }
     );
   }
+
   generateRouteMap(mail: Communication) {
     this.procedureService.getFullProcedure(mail.procedure._id, mail.procedure.group).subscribe((data) => {
-      // createRouteMap(data.procedure, data.workflow);
+      this.pdf.generateRouteSheet(data.procedure, data.workflow);
     });
   }
+
   showDetail(mail: Communication) {
     if (this.status()) this.paginatorService.cache['status'] = this.status();
     const params = {
@@ -155,7 +159,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     });
   }
 
-  listenNewMails() {
+  private listenNewMails() {
     this.socketService
       .listenMails()
       .pipe(takeUntil(this.destroyed$))
@@ -164,14 +168,22 @@ export class InboxComponent implements OnInit, OnDestroy {
         this.paginatorService.length++;
       });
   }
-  listenCancelMails() {
-    // this.mailCancelSubscription = this.socketService.listenCancelMail().subscribe((id_mail) => {
-    //   this.removeMail(id_mail);
-    // });
+
+  private listenCancelMails() {
+    this.socketService
+      .listenCancelMail()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((id_mail) => {
+        this.removeMail(id_mail);
+      });
   }
 
-  removeMail(id_mail: string) {
-    // this.dataSource = this.dataSource.filter((item) => item._id !== id_mail);
-    // this.paginatorService.length -= 1;
+  private removeMail(id_mail: string) {
+    this.dataSource.update((values) => values.filter((element) => element._id !== id_mail));
+    this.paginatorService.length--;
+  }
+
+  get state() {
+    return stateProcedure;
   }
 }

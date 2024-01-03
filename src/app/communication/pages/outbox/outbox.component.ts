@@ -3,14 +3,15 @@ import { Component, OnInit, AfterViewInit, signal, ChangeDetectionStrategy } fro
 import { MatSelectionList } from '@angular/material/list';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-
-import { OutboxService } from '../../services/outbox.service';
-import { communicationResponse, groupedCommunicationResponse } from '../../interfaces';
-import { ProcedureService } from 'src/app/procedures/services';
-import { groupProcedure } from 'src/app/procedures/interfaces';
-import { AlertService, PaginatorService } from 'src/app/shared/services';
-import { GroupedCommunication } from '../../models';
 import { Observable } from 'rxjs';
+
+import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/shared/services';
+import { ProcedureService } from 'src/app/procedures/services';
+import { OutboxService } from '../../services/outbox.service';
+
+import { GroupedCommunication } from '../../models';
+
+import { communicationResponse } from '../../interfaces';
 
 @Component({
   selector: 'app-outbox',
@@ -31,12 +32,13 @@ export class OutboxComponent implements OnInit, AfterViewInit {
   expandedElement: communicationResponse | null;
 
   constructor(
+    private router: Router,
     public dialog: MatDialog,
+    private alertService: AlertService,
     private outboxService: OutboxService,
-    public paginatorService: PaginatorService,
-    public procedureService: ProcedureService,
-    public alertService: AlertService,
-    private router: Router
+    private paginatorService: PaginatorService,
+    private procedureService: ProcedureService,
+    private pdf: PdfGeneratorService
   ) {}
   ngAfterViewInit(): void {}
 
@@ -55,7 +57,7 @@ export class OutboxComponent implements OnInit, AfterViewInit {
 
   generateRouteMap(mail: communicationResponse) {
     this.procedureService.getFullProcedure(mail.procedure._id, mail.procedure.group).subscribe((data) => {
-      // createRouteMap(data.procedure, data.workflow);
+      this.pdf.generateRouteSheet(data.procedure, data.workflow);
     });
   }
 
@@ -65,7 +67,6 @@ export class OutboxComponent implements OnInit, AfterViewInit {
       offset: this.paginatorService.index,
       ...(this.paginatorService.searchMode() && { search: true }),
     };
-
     this.router.navigate(['bandejas/salida', procedure.group, procedure._id], {
       queryParams: params,
     });

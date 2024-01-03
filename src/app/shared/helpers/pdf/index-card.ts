@@ -28,7 +28,7 @@ function CreateSectionWorkflow(workflow: Workflow[]): Content {
       {
         table: {
           headerRows: 1,
-          widths: [120, '*', 90, 45],
+          widths: [120, '*', 90, 50],
           body: [
             [
               { text: 'Funcionario', style: 'tableHeader' },

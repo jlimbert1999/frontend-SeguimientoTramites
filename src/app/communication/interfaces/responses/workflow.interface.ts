@@ -21,6 +21,6 @@ interface Detail {
 interface Participant {
   cuenta: string;
   fullname: string;
-  jobtitle: string;
+  jobtitle?: string;
   duration: string;
 }
