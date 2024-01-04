@@ -70,7 +70,7 @@ export abstract class Procedure {
     return this.cite;
   }
 
-  isEditable(): boolean {
+  get isEditable(): boolean {
     if (this.state !== stateProcedure.INSCRITO) return false;
     return true;
   }

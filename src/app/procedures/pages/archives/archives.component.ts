@@ -21,7 +21,7 @@ import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArchivesComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['code', 'reference', 'manager', 'show-detail', 'options'];
+  displayedColumns: string[] = ['code', 'reference', 'state', 'manager', 'show-detail', 'options'];
   dataSource = signal<Communication[]>([]);
   constructor(
     private readonly archiveService: ArchiveService,

@@ -7,6 +7,7 @@ import { LOCALE_ID, NgModule } from '@angular/core';
 import localeEs from '@angular/common/locales/es';
 import { RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AdministrationModule } from './administration/administration.module';

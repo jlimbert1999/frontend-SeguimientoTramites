@@ -49,11 +49,13 @@ export class SendDialogComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getInstitutions();
   }
+
   getInstitutions() {
     this.inboxService.getInstitucions().subscribe((data) => {
       this.institutions.set(data.map((inst) => ({ value: inst._id, text: inst.nombre })));
     });
   }
+
   selectInstitution(id_institution: string) {
     this.filteredUsers.next([]);
     this.receivers.set([]);
@@ -61,6 +63,7 @@ export class SendDialogComponent implements OnInit, OnDestroy {
       this.dependencies.set(data.map((dependency) => ({ value: dependency._id, text: dependency.nombre })));
     });
   }
+
   selectDependency(id_dependency: string) {
     this.inboxService
       .getAccountsForSend(id_dependency)
@@ -107,9 +110,11 @@ export class SendDialogComponent implements OnInit, OnDestroy {
     if (found) return;
     this.selectedReceivers.push(account);
   }
+
   removeReceiver(account: receiver) {
     this.selectedReceivers = this.selectedReceivers.filter((receiver) => receiver.id_account !== account.id_account);
   }
+  
   protected filterAccounts() {
     if (!this.receivers) {
       return;
