@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -10,7 +10,7 @@ import { ArchiveService, InternalService, ProcedureService } from '../../service
 
 import { EventProcedureDto } from '../../dtos';
 import { InternalProcedure } from '../../models';
-import { groupProcedure, internal, stateProcedure } from '../../interfaces';
+import { groupProcedure, stateProcedure } from '../../interfaces';
 import { TransferDetails } from 'src/app/communication/interfaces';
 import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/shared/services';
 
@@ -18,10 +18,11 @@ import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/sha
   selector: 'app-internal',
   templateUrl: './internal.component.html',
   styleUrls: ['./internal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InternalComponent implements OnInit {
   displayedColumns: string[] = ['code', 'reference', 'applicant', 'state', 'startDate', 'send', 'menu-options'];
-  dataSource: InternalProcedure[] = [];
+  dataSource = signal<InternalProcedure[]>([]);
 
   constructor(
     private router: Router,
@@ -47,7 +48,7 @@ export class InternalComponent implements OnInit {
         )
       : this.internoService.findAll(this.paginatorService.limit, this.paginatorService.offset);
     subscription.subscribe((data) => {
-      this.dataSource = data.procedures;
+      this.dataSource.set(data.procedures);
       this.paginatorService.length = data.length;
     });
   }
@@ -62,11 +63,11 @@ export class InternalComponent implements OnInit {
     );
     dialogRef.afterClosed().subscribe((createdProcedure) => {
       if (createdProcedure) {
-        if (this.dataSource.length === this.paginatorService.limit) {
-          this.dataSource.pop();
-        }
-        this.dataSource = [createdProcedure, ...this.dataSource];
         this.paginatorService.length++;
+        this.dataSource.update((values) => {
+          if (this.dataSource.length === this.paginatorService.limit) values.pop();
+          return [createdProcedure, ...values];
+        });
         this.send(createdProcedure);
       }
     });
@@ -82,9 +83,11 @@ export class InternalComponent implements OnInit {
     );
     dialogRef.afterClosed().subscribe((updatedProcedure) => {
       if (updatedProcedure) {
-        const indexFound = this.dataSource.findIndex((element) => element._id === updatedProcedure._id);
-        this.dataSource[indexFound] = updatedProcedure;
-        this.dataSource = [...this.dataSource];
+        this.dataSource.update((values) => {
+          const indexFound = values.findIndex((element) => element._id === updatedProcedure._id);
+          values[indexFound] = updatedProcedure;
+          return [...values];
+        });
       }
     });
   }
@@ -100,19 +103,22 @@ export class InternalComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((message) => {
       if (message) {
-        const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
-        this.dataSource[indexFound].isSend = true;
-        this.dataSource = [...this.dataSource];
+        this.dataSource.update((values) => {
+          const indexFound = values.findIndex((element) => element._id === procedure._id);
+          values[indexFound].isSend = true;
+          return [...values];
+        });
       }
     });
   }
+
   generateRouteMap(id_tramite: string, group: groupProcedure) {
     this.procedureService.getFullProcedure(id_tramite, group).subscribe((data) => {
       this.pdf.generateRouteSheet(data.procedure, data.workflow);
     });
   }
 
-  conclude(procedure: internal) {
+  conclude(procedure: InternalProcedure) {
     this.alertService.showConfirmAlert(
       `¿Concluir el tramite ${procedure.code}?`,
       'Los tramites concluidos desde su administacion no pueden ser desarchivados',
@@ -124,18 +130,22 @@ export class InternalComponent implements OnInit {
           stateProcedure: stateProcedure.CONCLUIDO,
         };
         this.archiveService.archiveProcedure(archive).subscribe((data) => {
-          const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
-          this.dataSource[indexFound].state = stateProcedure.CONCLUIDO;
+          this.dataSource.update((values) => {
+            const indexFound = values.findIndex((element) => element._id === procedure._id);
+            values[indexFound].state = stateProcedure.CONCLUIDO;
+            return [...values];
+          });
           this.alertService.showSuccesToast({ title: 'Tramite' });
         });
       }
     );
   }
-  showDetails(procedure: internal) {
+  
+  showDetails(procedure: InternalProcedure) {
     const params = {
       limit: this.paginatorService.limit,
-      offset: this.paginatorService.offset,
-      // ...(this.paginatorService.searchMode && { search: true }),
+      offset: this.paginatorService.index,
+      ...(this.paginatorService.searchMode() && { search: true }),
     };
     this.router.navigate(['tramites/internos', procedure.group, procedure._id], {
       queryParams: params,

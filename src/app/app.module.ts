@@ -19,10 +19,11 @@ import { SharedModule } from './shared/shared.module';
 import { PresentationComponent } from './pages/presentation/presentation.component';
 import { HomeComponent } from './pages/home/home.component';
 import { CommunicationModule } from './communication/communication.module';
+import { ResourcesComponent } from './pages/resources/resources.component';
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
-  declarations: [AppComponent, PresentationComponent, HomeComponent],
+  declarations: [AppComponent, PresentationComponent, HomeComponent, ResourcesComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

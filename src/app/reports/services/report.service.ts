@@ -15,40 +15,40 @@ import {
 } from '../interfaces';
 import { communicationResponse } from 'src/app/communication/interfaces';
 
-const base_url = environment.base_url;
 @Injectable({
   providedIn: 'root',
 })
 export class ReportService {
+  base_url = environment.base_url;
   constructor(private http: HttpClient) {}
   public getValidFormParameters(form: Object) {
     return Object.entries(form).reduce((acc, [key, value]) => (value ? { ...acc, [key]: value } : acc), {});
   }
 
   getProceduresByText(text: string) {
-    return this.http.get<typeProcedure[]>(`${base_url}/reports/types-procedures/${text}`);
+    return this.http.get<typeProcedure[]>(`${this.base_url}/reports/types-procedures/${text}`);
   }
 
   getOfficersInMyDependency() {
-    return this.http.get<account[]>(`${base_url}/reports/dependency/accounts`);
+    return this.http.get<account[]>(`${this.base_url}/reports/dependency/accounts`);
   }
 
   getInstitutions() {
-    return this.http.get<institution[]>(`${base_url}/reports/institutions`);
+    return this.http.get<institution[]>(`${this.base_url}/reports/institutions`);
   }
 
   searchProcedureByCode(code: string) {
     const params = new HttpParams().set('code', code);
-    return this.http.get<{ _id: string; group: groupProcedure }>(`${base_url}/reports/procedure/code`, { params });
+    return this.http.get<{ _id: string; group: groupProcedure }>(`${this.base_url}/reports/procedure/code`, { params });
   }
   searchProcedureByApplicant(
     { limit, offset }: PaginationParameters,
     applicant: Object,
-    typeSearch: 'solicitante' | 'representante'
+    type: 'solicitante' | 'representante'
   ) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
-      .post<{ procedures: external[]; length: number }>(`${base_url}/reports/procedure/${typeSearch}`, applicant, {
+      .post<{ procedures: external[]; length: number }>(`${this.base_url}/reports/applicant/${type}`, applicant, {
         params,
       })
       .pipe(
@@ -73,7 +73,7 @@ export class ReportService {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
       .post<{ procedures: procedure[]; length: number }>(
-        `${base_url}/reports/procedure`,
+        `${this.base_url}/reports/procedure`,
         this.getValidFormParameters(form),
         { params }
       )
@@ -92,14 +92,14 @@ export class ReportService {
       );
   }
   getDetailsDependentsByUnit() {
-    return this.http.get<dependentDetails[]>(`${base_url}/reports/dependents`);
+    return this.http.get<dependentDetails[]>(`${this.base_url}/reports/dependents`);
   }
 
   searchProcedureByUnit({ limit, offset }: PaginationParameters, form: Object) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
       .post<{ communications: communicationResponse[]; length: number }>(
-        `${base_url}/reports/unit`,
+        `${this.base_url}/reports/unit`,
         this.getValidFormParameters(form),
         { params }
       )
@@ -123,7 +123,7 @@ export class ReportService {
     let params = new HttpParams().set('group', group);
     if (participant) params = params.append('participant', participant);
     return this.http
-      .get<ReportTotalProcedures[]>(`${base_url}/reports/total/${collection}/${id_institution}`, { params })
+      .get<ReportTotalProcedures[]>(`${this.base_url}/reports/total/${collection}/${id_institution}`, { params })
       .pipe(
         map((response) => {
           const data = response.map((element) => {
@@ -142,7 +142,7 @@ export class ReportService {
       );
   }
   getRankingUsers() {
-    return this.http.get<TotalMailsUser[]>(`${base_url}/reports/ranking/accounts`).pipe(
+    return this.http.get<TotalMailsUser[]>(`${this.base_url}/reports/ranking/accounts`).pipe(
       map((resp) => {
         const data = resp.map((element) => {
           if (Object.keys(element._id.funcionario!).length === 0) {
@@ -158,5 +158,14 @@ export class ReportService {
         return data;
       })
     );
+  }
+  getAccountInbox() {
+    return this.http
+      .get<{ account: account; inbox: communicationResponse[] }>(`${this.base_url}/reports/pendings`)
+      .pipe(
+        map((resp) => {
+          return { accont: resp.account, inbox: resp.inbox };
+        })
+      );
   }
 }

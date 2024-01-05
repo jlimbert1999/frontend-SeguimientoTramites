@@ -4,6 +4,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { LoginComponent } from './auth/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
 import { PresentationComponent } from './pages/presentation/presentation.component';
+import { ResourcesComponent } from './pages/resources/resources.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -14,6 +15,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'main', pathMatch: 'full' },
       { path: 'main', component: PresentationComponent },
+      { path: 'recursos', component: ResourcesComponent },
       {
         path: 'configuraciones',
         loadChildren: () => import(`./administration/administration.module`).then((m) => m.AdministrationModule),

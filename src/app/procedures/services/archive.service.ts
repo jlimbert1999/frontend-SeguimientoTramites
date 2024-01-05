@@ -54,6 +54,6 @@ export class ArchiveService {
     return this.http.post<{ message: string }>(`${this.base_url}/archive/mail/${id_mail}`, archive);
   }
   unarchiveMail(id_mail: string, eventDto: EventProcedureDto) {
-    return this.http.post<{ message: string }>(`${this.base_url}/archive/mail/restart/${id_mail}`, eventDto);
+    return this.http.post<{ message: string }>(`${this.base_url}/archive/mail/restore/${id_mail}`, eventDto);
   }
 }

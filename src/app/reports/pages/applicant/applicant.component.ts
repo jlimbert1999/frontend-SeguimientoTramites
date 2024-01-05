@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -13,6 +13,7 @@ import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApplicantComponent implements OnInit {
+  @ViewChild('pdfTable') pdfTable: ElementRef;
   public typeSearch: 'solicitante' | 'representante' = 'solicitante';
   public typeApplicant: typeApplicant = 'NATURAL';
   public formApplicant: FormGroup = this.buildFormByTypeApplicat();
@@ -52,22 +53,9 @@ export class ApplicantComponent implements OnInit {
 
   generateReport() {
     this.paginatorService.offset = 0;
-    this.saveSearchParams();
     this.search();
   }
-  saveSearchParams() {
-    this.paginatorService.cache['form'] = this.formApplicant.value;
-    this.paginatorService.cache['typeSearch'] = this.typeSearch;
-    this.paginatorService.cache['typeApplicant'] = this.typeApplicant;
-  }
-  loadSearchParams() {
-    if (!this.paginatorService.searchMode) return;
-    this.typeSearch = this.paginatorService.cache['typeSearch'] ?? 'solicitante';
-    this.typeApplicant = this.paginatorService.cache['typeApplicant'] ?? 'NATURAL';
-    this.formApplicant = this.buildFormByTypeApplicat();
-    this.formApplicant.patchValue(this.paginatorService.cache['form']);
-    this.search();
-  }
+
   changeTypeSearch() {
     this.typeApplicant = 'NATURAL';
     this.formApplicant = this.buildFormByTypeApplicat();
@@ -81,6 +69,7 @@ export class ApplicantComponent implements OnInit {
       offset: this.paginatorService.index,
       search: true,
     };
+    this.saveData();
     this.router.navigate(['reportes/solicitante', procedure.group, procedure.id_procedure], {
       queryParams: params,
     });
@@ -108,5 +97,21 @@ export class ApplicantComponent implements OnInit {
       datasource: this.datasource(),
       displayColumns: this.displaycolums,
     });
+  }
+  private saveData() {
+    this.paginatorService.cache['form'] = this.formApplicant.value;
+    this.paginatorService.cache['typeSearch'] = this.typeSearch;
+    this.paginatorService.cache['typeApplicant'] = this.typeApplicant;
+    this.paginatorService.cache['data'] = this.datasource();
+    this.paginatorService.cache['length'] = this.paginatorService.length;
+  }
+  private loadSearchParams() {
+    if (!this.paginatorService.searchMode) return;
+    this.typeSearch = this.paginatorService.cache['typeSearch'] ?? 'solicitante';
+    this.typeApplicant = this.paginatorService.cache['typeApplicant'] ?? 'NATURAL';
+    this.formApplicant = this.buildFormByTypeApplicat();
+    this.formApplicant.patchValue(this.paginatorService.cache['form']);
+    this.datasource.set(this.paginatorService.cache['data'] ?? []);
+    this.paginatorService.length = this.paginatorService.cache['length'] ?? 0;
   }
 }

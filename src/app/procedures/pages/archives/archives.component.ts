@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
 import { AlertService, PaginatorService } from 'src/app/shared/services';
 import { SocketService } from 'src/app/services/socket.service';
@@ -12,7 +12,7 @@ import { EventDialogComponent } from '../../dialogs/event-dialog/event-dialog.co
 import { Communication } from 'src/app/communication/models';
 import { EventProcedureDto } from '../../dtos/event_procedure.dto';
 
-import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
+import { stateProcedure } from 'src/app/procedures/interfaces';
 
 @Component({
   selector: 'app-archives',
@@ -21,8 +21,10 @@ import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArchivesComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['code', 'reference', 'state', 'manager', 'show-detail', 'options'];
-  dataSource = signal<Communication[]>([]);
+  public displayedColumns: string[] = ['code', 'reference', 'state', 'manager', 'show-detail', 'options'];
+  public dataSource = signal<Communication[]>([]);
+  private destroyed$: Subject<void> = new Subject();
+
   constructor(
     private readonly archiveService: ArchiveService,
     private readonly paginatorService: PaginatorService,
@@ -31,14 +33,17 @@ export class ArchivesComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private router: Router
   ) {
-    this.getData();
-  }
-
-  ngOnInit(): void {
     this.listenUnarchives();
   }
 
-  ngOnDestroy(): void {}
+  ngOnInit(): void {
+    this.getData();
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
 
   getData() {
     const subscription: Observable<{ mails: Communication[]; length: number }> = this.paginatorService.isSearchMode
@@ -62,7 +67,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
           stateProcedure: stateProcedure.CONCLUIDO,
         };
         this.archiveService.unarchiveMail(mail._id, archiveDto).subscribe(() => {
-          // this.dataSource = this.dataSource.filter((element) => element._id !== mail._id);
+          this.removeDataSourceElement(mail._id);
         });
       }
     );
@@ -87,10 +92,20 @@ export class ArchivesComponent implements OnInit, OnDestroy {
     });
   }
 
-  listenUnarchives() {
-    // this.subscription = this.socketService.listenUnarchives().subscribe((id_mail) => {
-    //   this.dataSource = this.dataSource.filter((element) => element._id !== id_mail);
-    //   this.dialog.closeAll();
-    // });
+  private listenUnarchives() {
+    this.socketService
+      .listenUnarchives()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((id_mail) => {
+        this.removeDataSourceElement(id_mail);
+      });
+  }
+
+  private removeDataSourceElement(id_mail: string): void {
+    this.dataSource.update((values) => {
+      const filteredElement = values.filter((element) => element._id !== id_mail);
+      return filteredElement;
+    });
+    this.paginatorService.length--;
   }
 }

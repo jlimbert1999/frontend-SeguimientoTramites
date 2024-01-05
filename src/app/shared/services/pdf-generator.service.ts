@@ -1,16 +1,17 @@
-import { Injectable } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 import { Content, PageOrientation, TDocumentDefinitions, Table, TableCell } from 'pdfmake/interfaces';
-import { convertImagenABase64, RouteMapPdf, IndexCard } from '../helpers';
+import { convertImagenABase64, RouteMapPdf, IndexCard, UnlinkSheet } from '../helpers';
 import { ReportSheet } from '../interfaces';
 import { ExternalProcedure, InternalProcedure, Procedure } from 'src/app/procedures/models';
 import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Workflow } from 'src/app/communication/models';
-import { statusMail } from 'src/app/communication/interfaces';
+import { communicationResponse, statusMail } from 'src/app/communication/interfaces';
+import { account } from 'src/app/administration/interfaces';
 
 interface ReportSheetProps {
   title: string;
@@ -170,6 +171,40 @@ export class PdfGeneratorService {
           fontSize: 9,
           alignment: 'center',
         },
+      },
+    };
+    pdfMake.createPdf(docDefinition).print();
+  }
+  async GenerateUnlinkSheet(data: communicationResponse[], account: account) {
+    const date = new Date();
+    const docDefinition: TDocumentDefinitions = {
+      pageSize: 'LETTER',
+      content: [
+        await UnlinkSheet.CreateHeader(),
+        UnlinkSheet.CreateSectionDetails(account, date, data),
+        UnlinkSheet.CreateSectionList(data, date),
+      ],
+      footer: function (currentPage, pageCount) {
+        if (currentPage === 1)
+          return [
+            {
+              margin: [10, 0, 10, 0],
+              fontSize: 8,
+              text: 'Este formulario no exime que a futuro se solicite al servidor(a) público información respecto a trámites o procesos que hubieran estado a su cargo hasta el último día laboral en la Entidad, también NO impide ni se constituye en prueba para ninguna Auditoria u otros.',
+            },
+          ];
+        currentPage--;
+        pageCount--;
+        return [
+          {
+            margin: [0, 20, 20, 0],
+            fontSize: 9,
+            text: {
+              text: 'Pagina ' + currentPage.toString() + ' de ' + pageCount,
+              alignment: 'right',
+            },
+          },
+        ];
       },
     };
     pdfMake.createPdf(docDefinition).print();

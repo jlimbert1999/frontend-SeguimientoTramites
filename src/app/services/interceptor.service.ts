@@ -10,6 +10,7 @@ import { AppearanceService } from './appearance.service';
 })
 export class InterceptorService {
   constructor(private router: Router, private appearanceService: AppearanceService) {}
+
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token') || ''}`);
     const reqClone = req.clone({
@@ -18,7 +19,6 @@ export class InterceptorService {
     this.appearanceService.loading.set(true);
     return next.handle(reqClone).pipe(
       catchError((Error: HttpErrorResponse) => {
-        console.log('new Error', Error);
         this.handleErrors(Error);
         return throwError(() => Error);
       }),
