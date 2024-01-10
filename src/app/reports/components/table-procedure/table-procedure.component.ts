@@ -12,6 +12,7 @@ export class TableProcedureComponent {
   public colums: ProcedureTableColumns[] = [];
 
   @Input() dataSource: ProcedureTableData[] = [];
+  @Input() pos: string;
   @Input() set tableColumns(values: ProcedureTableColumns[]) {
     this.colums = values;
     this.displayedColumns = values.map(({ columnDef }) => columnDef);

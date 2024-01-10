@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { SendDialogComponent } from 'src/app/communication/dialogs/send-dialog/send-dialog.component';
@@ -23,30 +22,30 @@ import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/sha
 export class InternalComponent implements OnInit {
   displayedColumns: string[] = ['code', 'reference', 'applicant', 'state', 'startDate', 'send', 'menu-options'];
   dataSource = signal<InternalProcedure[]>([]);
+  searchText: string = '';
 
   constructor(
-    private router: Router,
     private dialog: MatDialog,
     private internoService: InternalService,
-    public procedureService: ProcedureService,
-    public paginatorService: PaginatorService,
+    private procedureService: ProcedureService,
+    private paginatorService: PaginatorService<{ text: string; data: InternalProcedure[] }>,
     private alertService: AlertService,
     private archiveService: ArchiveService,
     private readonly pdf: PdfGeneratorService
-  ) {}
-
-  ngOnInit(): void {
-    this.getData();
+  ) {
+    inject(DestroyRef).onDestroy(() => {
+      this.savePaginationData();
+    });
   }
-  getData() {
-    const subscription: Observable<{ procedures: InternalProcedure[]; length: number }> = this.paginatorService
-      .isSearchMode
-      ? this.internoService.search(
-          this.paginatorService.cache['text'],
-          this.paginatorService.limit,
-          this.paginatorService.offset
-        )
-      : this.internoService.findAll(this.paginatorService.limit, this.paginatorService.offset);
+  ngOnInit(): void {
+    this.loadPaginationData();
+  }
+
+  getData(): void {
+    const subscription: Observable<{ procedures: InternalProcedure[]; length: number }> =
+      this.searchText !== ''
+        ? this.internoService.search(this.searchText, this.paginatorService.limit, this.paginatorService.offset)
+        : this.internoService.findAll(this.paginatorService.limit, this.paginatorService.offset);
     subscription.subscribe((data) => {
       this.dataSource.set(data.procedures);
       this.paginatorService.length = data.length;
@@ -140,15 +139,25 @@ export class InternalComponent implements OnInit {
       }
     );
   }
-  
-  showDetails(procedure: InternalProcedure) {
-    const params = {
-      limit: this.paginatorService.limit,
-      offset: this.paginatorService.index,
-      ...(this.paginatorService.searchMode() && { search: true }),
+
+  private savePaginationData(): void {
+    this.paginatorService.cache[this.constructor.name] = {
+      data: this.dataSource(),
+      text: this.searchText,
     };
-    this.router.navigate(['tramites/internos', procedure.group, procedure._id], {
-      queryParams: params,
-    });
+  }
+
+  private loadPaginationData(): void {
+    const cacheData = this.paginatorService.cache[this.constructor.name];
+    if (!this.paginatorService.keepAliveData || !cacheData) {
+      this.getData();
+      return;
+    }
+    this.dataSource.set(cacheData.data);
+    this.searchText = cacheData.text;
+  }
+
+  get PageParams() {
+    return this.paginatorService.PageParams;
   }
 }

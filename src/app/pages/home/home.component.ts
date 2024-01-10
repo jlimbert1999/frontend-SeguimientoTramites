@@ -7,7 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { AppearanceService } from 'src/app/services/appearance.service';
-import { AlertService } from 'src/app/shared/services';
+import { AlertService, PaginatorService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-home',
@@ -28,7 +28,8 @@ export class HomeComponent {
     private socketService: SocketService,
     private router: Router,
     private appearanceService: AppearanceService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    public pag: PaginatorService
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();

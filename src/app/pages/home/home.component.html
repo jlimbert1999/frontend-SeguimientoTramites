@@ -1,3 +1,4 @@
+
 <div class="main-container" [class.is-mobile]="mobileQuery.matches">
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches">
@@ -57,7 +58,9 @@
       @if (isLoaging) {
       <progress-spinner></progress-spinner>
       }
+
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
+

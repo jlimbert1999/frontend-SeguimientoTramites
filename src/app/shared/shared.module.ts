@@ -60,7 +60,6 @@ import { TableComponent } from './components/table/table.component';
     ToolbarComponent,
     LineComponent,
     TableComponent,
-
     FullnamePipe,
     StatePipe,
   ],

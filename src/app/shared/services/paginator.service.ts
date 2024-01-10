@@ -7,14 +7,17 @@ interface PaginationOptions {
 @Injectable({
   providedIn: 'root',
 })
-export class PaginatorService {
+export class PaginatorService<T = void> {
   private pageSize = signal<number>(10);
   private pageIndex = signal<number>(0);
   private dataLength = signal<number>(0);
   private pageOffset = computed<number>(() => this.pageIndex() * this.pageSize());
 
   public searchMode = signal<boolean>(false);
-  public cache: Record<string, any> = {};
+  public cache: Record<string, T> = {};
+  public keepAliveData: boolean = false;
+
+  constructor() {}
 
   set setPage({ pageIndex, pageSize }: PaginationOptions) {
     this.pageSize.set(pageSize);
@@ -24,12 +27,11 @@ export class PaginatorService {
   resetPagination() {
     this.pageSize.set(10);
     this.pageIndex.set(0);
-    this.dataLength.set(0);
-    this.searchMode.set(false);
+    this.keepAliveData = false;
   }
 
   emptyCache() {
-    if (this.searchMode()) return;
+    if (!this.keepAliveData) return;
     this.cache = {};
   }
 
@@ -63,5 +65,9 @@ export class PaginatorService {
 
   get PaginationParams(): PaginationParameters {
     return { limit: this.pageSize(), offset: this.pageOffset() };
+  }
+
+  get PageParams() {
+    return { limit: this.pageSize(), index: this.pageIndex() };
   }
 }

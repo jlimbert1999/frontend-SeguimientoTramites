@@ -37,11 +37,11 @@ mat-form-field {
 }
 
 .swal2-cancel {
-  background-color: #EF233C !important;
+  background-color: #ef233c !important;
 }
 
 .swal2-confirm {
-  background-color: #1976D2 !important;
+  background-color: #1976d2 !important;
 }
 
 .swal2-title {
@@ -51,3 +51,13 @@ mat-form-field {
 .toolbar-spacer {
   flex: 1 1 auto;
 }
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: silver;
+  border-radius: 10px;
+}
+

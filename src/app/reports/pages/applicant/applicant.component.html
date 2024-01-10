@@ -8,10 +8,10 @@
         </mat-expansion-panel-header>
         <div class="row">
           <div class="col-12 mb-2">
-            @if (typeSearch==='solicitante') {
+            @if (typeSearch()==='solicitante') {
             <section>
               <label>SOLICITANTE: </label>
-              <mat-radio-group (change)="changeTypeApplicant()" [(ngModel)]="typeApplicant">
+              <mat-radio-group (change)="typeApplicant.set($event.value)" [ngModel]="typeApplicant()">
                 <mat-radio-button value="NATURAL"> NATURAL </mat-radio-button>
                 <mat-radio-button value="JURIDICO"> JURIDICO </mat-radio-button>
               </mat-radio-group>
@@ -21,16 +21,16 @@
           <div class="col-sm-3">
             <mat-form-field>
               <mat-label>BUSQUEDA POR:</mat-label>
-              <mat-select (selectionChange)="changeTypeSearch()" [(value)]="typeSearch">
+              <mat-select (selectionChange)="typeApplicant.set($event.value)" [value]="typeSearch">
                 <mat-option value="solicitante">SOLICITANTE</mat-option>
                 <mat-option value="representante">REPRESENTANTE</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
           <div class="col-sm-9">
-            <form [formGroup]="formApplicant">
+            <form [formGroup]="formApplicant()">
               <div class="row">
-                @if (typeApplicant==='NATURAL') {
+                @if (typeApplicant()==='NATURAL') {
                 <div class="col-sm-4">
                   <mat-form-field>
                     <mat-label>Nombre</mat-label>
@@ -85,7 +85,7 @@
             <mat-icon>print</mat-icon>
             IMPRIMIR
           </button>
-          <button mat-raised-button color="primary" (click)="generateReport()" [disabled]="formApplicant.invalid">
+          <button mat-raised-button color="primary" (click)="generateReport()" [disabled]="formApplicant().invalid">
             <mat-icon>search</mat-icon>
             BUSCAR
           </button>

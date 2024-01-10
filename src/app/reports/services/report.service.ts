@@ -15,13 +15,17 @@ import {
 } from '../interfaces';
 import { communicationResponse } from 'src/app/communication/interfaces';
 
+interface SearchProceduresParamsDto extends PaginationParameters {
+  code: string;
+  group?: groupProcedure;
+}
 @Injectable({
   providedIn: 'root',
 })
 export class ReportService {
   base_url = environment.base_url;
   constructor(private http: HttpClient) {}
-  public getValidFormParameters(form: Object) {
+  public removeEmptyValuesFromObject(form: Object) {
     return Object.entries(form).reduce((acc, [key, value]) => (value ? { ...acc, [key]: value } : acc), {});
   }
 
@@ -41,14 +45,34 @@ export class ReportService {
     const params = new HttpParams().set('code', code);
     return this.http.get<{ _id: string; group: groupProcedure }>(`${this.base_url}/reports/procedure/code`, { params });
   }
+  searchProceduresByCode({ group, ...values }: SearchProceduresParamsDto) {
+    const params = new HttpParams({ fromObject: { ...values, ...(group && { group }) } });
+    return this.http
+      .get<{ procedures: procedure[]; length: number }>(`${this.base_url}/reports/procedures`, {
+        params,
+      })
+      .pipe(
+        map((resp) => {
+          const data = resp.procedures.map((procedure) => ({
+            id_procedure: procedure._id,
+            group: procedure.group,
+            code: procedure.code,
+            reference: procedure.reference,
+            state: procedure.state,
+            date: procedure.startDate,
+          }));
+          return { procedure: data, length: resp.length };
+        })
+      );
+  }
   searchProcedureByApplicant(
     { limit, offset }: PaginationParameters,
-    applicant: Object,
+    applicantProps: Object,
     type: 'solicitante' | 'representante'
   ) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http
-      .post<{ procedures: external[]; length: number }>(`${this.base_url}/reports/applicant/${type}`, applicant, {
+      .post<{ procedures: external[]; length: number }>(`${this.base_url}/reports/applicant/${type}`, applicantProps, {
         params,
       })
       .pipe(
@@ -74,7 +98,7 @@ export class ReportService {
     return this.http
       .post<{ procedures: procedure[]; length: number }>(
         `${this.base_url}/reports/procedure`,
-        this.getValidFormParameters(form),
+        this.removeEmptyValuesFromObject(form),
         { params }
       )
       .pipe(
@@ -100,7 +124,7 @@ export class ReportService {
     return this.http
       .post<{ communications: communicationResponse[]; length: number }>(
         `${this.base_url}/reports/unit`,
-        this.getValidFormParameters(form),
+        this.removeEmptyValuesFromObject(form),
         { params }
       )
       .pipe(

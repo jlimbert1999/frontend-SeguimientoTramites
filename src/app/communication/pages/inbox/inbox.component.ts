@@ -15,6 +15,10 @@ import { TransferDetails, communicationResponse, statusMail } from '../../interf
 import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/shared/services';
 import { Communication } from '../../models';
 
+interface Params {
+  status?: statusMail;
+  text?: string;
+}
 @Component({
   selector: 'app-inbox',
   templateUrl: './inbox.component.html',
@@ -25,12 +29,12 @@ export class InboxComponent implements OnInit, OnDestroy {
   private destroyed$: Subject<void> = new Subject();
   public displayedColumns: string[] = ['code', 'reference', 'state', 'emitter', 'outboundDate', 'options'];
   public dataSource = signal<Communication[]>([]);
-  public status = signal<statusMail | undefined>(this.paginatorService.cache['status']);
+  public status = signal<statusMail | undefined>(undefined);
 
   constructor(
     private router: Router,
     private dialog: MatDialog,
-    private paginatorService: PaginatorService,
+    private paginatorService: PaginatorService<Params>,
     private procedureService: ProcedureService,
     private archiveService: ArchiveService,
     private socketService: SocketService,
@@ -55,7 +59,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     const observable: Observable<{ mails: Communication[]; length: number }> = this.paginatorService.isSearchMode
       ? this.inboxService.search({
           ...this.paginatorService.PaginationParams,
-          text: this.paginatorService.cache['text'],
+          text: this.paginatorService.cache['inbox'].text ?? '',
           status: this.status(),
         })
       : this.inboxService.findAll(this.paginatorService.PaginationParams, this.status());
@@ -148,7 +152,7 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   showDetail(mail: Communication) {
-    if (this.status()) this.paginatorService.cache['status'] = this.status();
+    if (this.status()) this.paginatorService.cache['inbox'].status = this.status();
     const params = {
       limit: this.paginatorService.limit,
       offset: this.paginatorService.index,

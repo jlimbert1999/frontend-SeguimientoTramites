@@ -7,8 +7,13 @@ import { MatSelectSearchData } from 'src/app/shared/interfaces';
 
 import { ReportService } from '../../services/report.service';
 import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
-import {PaginatorService} from 'src/app/shared/services';
+import { PaginatorService } from 'src/app/shared/services';
 
+interface SearchParams {
+  form: Object;
+  types: MatSelectSearchData<string>[];
+  data: ProcedureTableData[];
+}
 @Component({
   selector: 'app-avanced-search',
   templateUrl: './avanced-search.component.html',
@@ -37,7 +42,7 @@ export class AvancedSearchComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private reportService: ReportService,
-    private paginatorService:PaginatorService
+    private paginatorService: PaginatorService<SearchParams>
   ) {}
 
   ngOnInit(): void {
@@ -65,6 +70,7 @@ export class AvancedSearchComponent implements OnInit {
 
   showDetails(procedure: ProcedureTableData) {
     const params = { limit: this.paginatorService.limit, offset: this.paginatorService.index, search: true };
+    this.saveSearchParams(procedure.id_procedure);
     this.router.navigate(['reportes/busqueda-avanzada', procedure.group, procedure.id_procedure], {
       queryParams: params,
     });
@@ -76,16 +82,20 @@ export class AvancedSearchComponent implements OnInit {
     this.search();
   }
 
-  saveSearchParams() {
-    this.paginatorService.cache['form'] = this.formProcedure.value;
-    this.paginatorService.cache['types'] = this.types();
+  private saveSearchParams(scrollItemId?: string) {
+    this.paginatorService.cache[this.constructor.name] = {
+      form: this.formProcedure.value,
+      types: this.types(),
+      data: this.datasource(),
+    };
   }
 
-  loadSearchParams() {
-    if (!this.paginatorService.searchMode) return;
-    this.formProcedure.patchValue(this.paginatorService.cache['form'] ?? {});
-    this.types.set(this.paginatorService.cache['types'] ?? []);
-    this.search();
+  private loadSearchParams() {
+    const savedData = this.paginatorService.cache[this.constructor.name];
+    if (!this.paginatorService.searchMode() || !savedData) return;
+    this.formProcedure.patchValue(savedData.form);
+    this.types.set(savedData.types);
+    this.datasource.set(savedData.data);
   }
 
   get statesProcedure() {

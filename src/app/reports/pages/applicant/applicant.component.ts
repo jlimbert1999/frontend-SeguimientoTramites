@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -7,16 +7,27 @@ import { typeApplicant } from 'src/app/procedures/interfaces';
 import { ReportService } from '../../services/report.service';
 import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
 
+type validReportType = 'solicitante' | 'representante';
+interface SearchParams {
+  form: Object;
+  typeSearch: validReportType;
+  typeApplicant: typeApplicant;
+  data: ProcedureTableData[];
+}
 @Component({
   selector: 'app-applicant',
   templateUrl: './applicant.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApplicantComponent implements OnInit {
-  @ViewChild('pdfTable') pdfTable: ElementRef;
-  public typeSearch: 'solicitante' | 'representante' = 'solicitante';
-  public typeApplicant: typeApplicant = 'NATURAL';
-  public formApplicant: FormGroup = this.buildFormByTypeApplicat();
+  public typeSearch = signal<validReportType>('solicitante');
+  public typeApplicant = signal<typeApplicant>('NATURAL');
+  public formApplicant = computed<FormGroup>(() => {
+    if (this.typeSearch() === 'representante') return this.buildFormByTypeRepresentative();
+    return this.typeApplicant() === 'NATURAL'
+      ? this.buildFormByTypeApplicatNatural()
+      : this.buildFormByTypeApplicatJuridico();
+  });
   public datasource = signal<ProcedureTableData[]>([]);
   public displaycolums: ProcedureTableColumns[] = [
     { columnDef: 'code', header: 'Alterno' },
@@ -30,7 +41,7 @@ export class ApplicantComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private reportService: ReportService,
-    private paginatorService: PaginatorService,
+    private paginatorService: PaginatorService<SearchParams>,
     private pdf: PdfGeneratorService
   ) {}
 
@@ -39,16 +50,18 @@ export class ApplicantComponent implements OnInit {
   }
 
   search() {
-    if (this.formApplicant.invalid) return;
-    const applicantParams = this.reportService.getValidFormParameters(this.formApplicant.value);
-    if (Object.keys(applicantParams).length <= 1) return;
-    this.datasource.set([]);
+    const applicantProps = this.reportService.removeEmptyValuesFromObject(this.formApplicant().value);
+    if (Object.keys(applicantProps).length === 0 && this.typeSearch() === 'representante') return;
+    if (Object.keys(applicantProps).length <= 1 && this.typeSearch() === 'solicitante') return;
     this.reportService
-      .searchProcedureByApplicant(this.paginatorService.PaginationParams, applicantParams, this.typeSearch)
-      .subscribe((resp) => {
-        this.datasource.set(resp.procedures);
-        this.paginatorService.length = resp.length;
-      });
+      .searchProcedureByApplicant(this.paginatorService.PaginationParams, applicantProps, this.typeSearch())
+      .subscribe(
+        (resp) => {
+          this.datasource.set(resp.procedures);
+          this.paginatorService.length = resp.length;
+        },
+        () => this.datasource.set([])
+      );
   }
 
   generateReport() {
@@ -56,13 +69,6 @@ export class ApplicantComponent implements OnInit {
     this.search();
   }
 
-  changeTypeSearch() {
-    this.typeApplicant = 'NATURAL';
-    this.formApplicant = this.buildFormByTypeApplicat();
-  }
-  changeTypeApplicant() {
-    this.formApplicant = this.buildFormByTypeApplicat();
-  }
   showDetails(procedure: ProcedureTableData) {
     const params = {
       limit: this.paginatorService.limit,
@@ -74,23 +80,7 @@ export class ApplicantComponent implements OnInit {
       queryParams: params,
     });
   }
-  buildFormByTypeApplicat(): FormGroup {
-    if (this.typeApplicant === 'NATURAL') {
-      return this.fb.group({
-        nombre: ['', [Validators.minLength(3)]],
-        paterno: ['', [Validators.minLength(3)]],
-        materno: ['', [Validators.minLength(3)]],
-        telefono: ['', [Validators.minLength(7)]],
-        dni: ['', [Validators.minLength(6)]],
-        tipo: ['NATURAL'],
-      });
-    }
-    return this.fb.group({
-      nombre: ['', [Validators.minLength(3)]],
-      telefono: ['', [Validators.minLength(6)]],
-      tipo: ['JURIDICO'],
-    });
-  }
+
   generatePDF() {
     this.pdf.generateReportSheet({
       title: 'REPORTE: SOLICITANTE',
@@ -98,20 +88,52 @@ export class ApplicantComponent implements OnInit {
       displayColumns: this.displaycolums,
     });
   }
-  private saveData() {
-    this.paginatorService.cache['form'] = this.formApplicant.value;
-    this.paginatorService.cache['typeSearch'] = this.typeSearch;
-    this.paginatorService.cache['typeApplicant'] = this.typeApplicant;
-    this.paginatorService.cache['data'] = this.datasource();
-    this.paginatorService.cache['length'] = this.paginatorService.length;
+
+  private buildFormByTypeApplicatNatural(): FormGroup {
+    return this.fb.group({
+      nombre: ['', [Validators.minLength(3)]],
+      paterno: ['', [Validators.minLength(3)]],
+      materno: ['', [Validators.minLength(3)]],
+      telefono: ['', [Validators.minLength(7)]],
+      dni: ['', [Validators.minLength(6)]],
+      tipo: ['NATURAL'],
+    });
   }
+  private buildFormByTypeApplicatJuridico(): FormGroup {
+    return this.fb.group({
+      nombre: ['', [Validators.minLength(3)]],
+      telefono: ['', [Validators.minLength(6)]],
+      tipo: ['JURIDICO'],
+    });
+  }
+  private buildFormByTypeRepresentative(): FormGroup {
+    return this.fb.group({
+      nombre: ['', [Validators.minLength(3)]],
+      paterno: ['', [Validators.minLength(3)]],
+      materno: ['', [Validators.minLength(3)]],
+      telefono: ['', [Validators.minLength(7)]],
+      dni: ['', [Validators.minLength(6)]],
+    });
+  }
+
+  private saveData() {
+    this.paginatorService.cache[this.constructor.name] = {
+      form: this.formApplicant().value,
+      typeSearch: this.typeSearch(),
+      typeApplicant: this.typeApplicant(),
+      data: this.datasource(),
+    };
+  }
+
   private loadSearchParams() {
-    if (!this.paginatorService.searchMode) return;
-    this.typeSearch = this.paginatorService.cache['typeSearch'] ?? 'solicitante';
-    this.typeApplicant = this.paginatorService.cache['typeApplicant'] ?? 'NATURAL';
-    this.formApplicant = this.buildFormByTypeApplicat();
-    this.formApplicant.patchValue(this.paginatorService.cache['form']);
-    this.datasource.set(this.paginatorService.cache['data'] ?? []);
-    this.paginatorService.length = this.paginatorService.cache['length'] ?? 0;
+    if (!this.paginatorService.searchMode() || !this.paginatorService.cache[this.constructor.name]) {
+      this.paginatorService.length = 0;
+      return;
+    }
+    const { data, form, typeApplicant, typeSearch } = this.paginatorService.cache[this.constructor.name];
+    this.datasource.set(data);
+    this.typeApplicant.set(typeApplicant);
+    this.typeSearch.set(typeSearch);
+    this.formApplicant().patchValue(form);
   }
 }

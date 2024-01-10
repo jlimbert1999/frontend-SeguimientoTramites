@@ -2,8 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Input,
   OnDestroy,
+  AfterViewInit,
   OnInit,
   Output,
   signal,
@@ -16,7 +16,7 @@ import { PaginatorService } from '../../services/paginator.service';
   templateUrl: './paginator.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaginatorComponent implements OnInit, OnDestroy {
+export class PaginatorComponent implements OnInit, AfterViewInit, OnDestroy {
   public pageOptions = signal<number[]>([10, 20, 30, 50]);
   @Output() changePage: EventEmitter<void> = new EventEmitter();
   constructor(private readonly paginatorService: PaginatorService) {}
@@ -24,6 +24,10 @@ export class PaginatorComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.paginatorService.emptyCache();
   }
+  ngAfterViewInit(): void {
+    this.restoreScrollItem();
+  }
+
   ngOnDestroy(): void {
     this.paginatorService.resetPagination();
   }
@@ -41,5 +45,17 @@ export class PaginatorComponent implements OnInit, OnDestroy {
   }
   get dataLength() {
     return this.paginatorService.length;
+  }
+
+  private restoreScrollItem(): void {
+    const itemId = sessionStorage.getItem('scrollItemId');
+    if (!this.paginatorService.keepAliveData || !itemId) return;
+    const element = document.getElementById(itemId);
+    if (!element) return;
+    element.scrollIntoView({
+      behavior: 'instant',
+      block: 'center',
+      inline: 'nearest',
+    });
   }
 }

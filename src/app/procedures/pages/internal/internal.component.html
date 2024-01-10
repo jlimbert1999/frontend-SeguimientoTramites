@@ -19,8 +19,12 @@
       <table mat-table [dataSource]="dataSource()">
         <ng-container matColumnDef="code">
           <th mat-header-cell *matHeaderCellDef>Alterno</th>
-          <td mat-cell *matCellDef="let element">
-            <a class="link-primary" (click)="showDetails(element)">
+          <td mat-cell *matCellDef="let element" [id]="element._id">
+            <a
+              class="link-primary"
+              [routerLink]="['/tramites/internos', element.group, element._id]"
+              [queryParams]="PageParams"
+            >
               {{ element.code }}
             </a>
           </td>

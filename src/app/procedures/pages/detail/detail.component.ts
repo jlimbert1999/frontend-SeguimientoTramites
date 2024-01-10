@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { PdfGeneratorService, PaginatorService } from 'src/app/shared/services';
@@ -32,6 +32,7 @@ export class DetailComponent implements OnInit {
         this._location.back();
         return;
       }
+      sessionStorage.setItem('scrollItemId', id);
       this.getProcedure(id, group);
     });
   }
@@ -46,8 +47,9 @@ export class DetailComponent implements OnInit {
   backLocation() {
     this.route.queryParams.subscribe((data) => {
       this.paginatorService.limit = data['limit'] ?? 10;
-      this.paginatorService.offset = data['offset'] ?? 0;
+      this.paginatorService.offset = data['index'] ?? 0;
       this.paginatorService.searchMode.set(String(data['search']).toLowerCase() === 'true' ? true : false);
+      this.paginatorService.keepAliveData = true;
       this._location.back();
     });
   }

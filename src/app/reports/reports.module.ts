@@ -28,6 +28,7 @@ import { QuickSearchComponent } from './pages/quick-search/quick-search.componen
     UnitComponent,
     DashboardTotalCommunicationsComponent,
     RankingUsersComponent,
+  
   ],
   imports: [CommonModule, ReportsRoutingModule, MaterialModule, FormsModule, ReactiveFormsModule, SharedModule],
 })

@@ -33,7 +33,7 @@ export class OutboxComponent implements OnInit {
     public dialog: MatDialog,
     private alertService: AlertService,
     private outboxService: OutboxService,
-    private paginatorService: PaginatorService,
+    private paginatorService: PaginatorService<string>,
     private procedureService: ProcedureService,
     private pdf: PdfGeneratorService
   ) {}

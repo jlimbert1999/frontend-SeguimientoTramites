@@ -27,7 +27,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly archiveService: ArchiveService,
-    private readonly paginatorService: PaginatorService,
+    private readonly paginatorService: PaginatorService<string>,
     private readonly socketService: SocketService,
     private readonly alertService: AlertService,
     private dialog: MatDialog,

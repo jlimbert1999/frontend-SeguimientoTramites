@@ -12,12 +12,13 @@ import { PaginatorService } from 'src/app/shared/services';
 })
 export class InputSearchProceduresComponent implements OnInit {
   @Input({ required: true }) placeholder = 'Buscar tramite';
+  @Input() initialValue: string = '';
   @Output() searchEvent = new EventEmitter<void>();
   public FormSearch = new FormControl<string>('', [
     Validators.minLength(4),
     Validators.pattern(/^[^/!@#$%^&*()_+{}\[\]:;<>,.?~\\]*$/),
   ]);
-  constructor(private paginatorService: PaginatorService) {}
+  constructor(private paginatorService: PaginatorService<string>) {}
 
   ngOnInit(): void {
     if (!this.paginatorService.isSearchMode) return;
@@ -27,7 +28,7 @@ export class InputSearchProceduresComponent implements OnInit {
   search() {
     if (this.FormSearch.invalid || this.FormSearch.value === '') return;
     this.paginatorService.offset = 0;
-    this.paginatorService.cache = { text: this.FormSearch.value };
+    this.paginatorService.cache['text'] = this.FormSearch.value ?? '';
     this.paginatorService.searchMode.set(true);
     this.searchEvent.emit();
   }

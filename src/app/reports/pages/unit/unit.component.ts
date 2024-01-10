@@ -8,8 +8,12 @@ import { MatSelectSearchData } from 'src/app/shared/interfaces';
 
 import { ReportService } from '../../services/report.service';
 import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
-import {PaginatorService} from 'src/app/shared/services';
+import { PaginatorService } from 'src/app/shared/services';
 
+interface SearchParams {
+  form: Object;
+  accounts: account[];
+}
 @Component({
   selector: 'app-unit',
   templateUrl: './unit.component.html',
@@ -17,6 +21,7 @@ import {PaginatorService} from 'src/app/shared/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnitComponent implements OnInit {
+  private readonly key = this.constructor.name;
   formSearch: FormGroup = this.fb.group({
     status: [''],
     account: [''],
@@ -54,7 +59,7 @@ export class UnitComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private reportService: ReportService,
-    private paginatorService:PaginatorService
+    private paginatorService: PaginatorService<SearchParams>
   ) {}
 
   ngOnInit(): void {
@@ -105,12 +110,14 @@ export class UnitComponent implements OnInit {
   }
 
   saveSearchParams() {
-    this.paginatorService.cache['accounts'] = this.accounts();
-    this.paginatorService.cache['form'] = this.formSearch.value;
+    this.paginatorService.cache[this.key] = {
+      form: this.formSearch.value,
+      accounts: this.accounts(),
+    };
   }
 
   loadSearchData() {
-    this.accounts.set(this.paginatorService.cache['accounts'] ?? []);
+    this.accounts.set(this.paginatorService.cache[this.key].accounts ?? []);
     if (this.accounts().length === 0) this.getOfficersInMyDependency();
     if (!this.paginatorService.searchMode) return;
     this.formSearch.patchValue(this.paginatorService.cache['form'] ?? {});

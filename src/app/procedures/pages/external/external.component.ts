@@ -27,7 +27,7 @@ export class ExternalComponent implements OnInit {
     private router: Router,
     private readonly externalService: ExternalService,
     private readonly procedureService: ProcedureService,
-    private readonly paginatorService: PaginatorService,
+    private readonly paginatorService: PaginatorService<{ text: string }>,
     private readonly archiveService: ArchiveService,
     private readonly alertService: AlertService,
     private readonly pdf: PdfGeneratorService
@@ -40,7 +40,7 @@ export class ExternalComponent implements OnInit {
     const subscription: Observable<{ procedures: ExternalProcedure[]; length: number }> = this.paginatorService
       .isSearchMode
       ? this.externalService.search(
-          this.paginatorService.cache['text'],
+          this.paginatorService.cache['text'].text,
           this.paginatorService.limit,
           this.paginatorService.offset
         )
