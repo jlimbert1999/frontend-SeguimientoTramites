@@ -1,12 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { Observable, Subject, takeUntil } from 'rxjs';
 
 import { SendDialogComponent } from '../../dialogs/send-dialog/send-dialog.component';
 
-import { ProcedureService, ArchiveService } from 'src/app/procedures/services';
 import { SocketService } from 'src/app/services/socket.service';
+import { ProcedureService, ArchiveService } from 'src/app/procedures/services';
 import { InboxService } from '../../services/inbox.service';
 
 import { stateProcedure } from 'src/app/procedures/interfaces';
@@ -15,26 +14,28 @@ import { TransferDetails, communicationResponse, statusMail } from '../../interf
 import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/shared/services';
 import { Communication } from '../../models';
 
-interface Params {
+interface cacheData {
+  communications: Communication[];
   status?: statusMail;
-  text?: string;
+  text: string;
 }
+
 @Component({
   selector: 'app-inbox',
   templateUrl: './inbox.component.html',
   styleUrls: ['./inbox.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InboxComponent implements OnInit, OnDestroy {
+export class InboxComponent implements OnInit {
   private destroyed$: Subject<void> = new Subject();
   public displayedColumns: string[] = ['code', 'reference', 'state', 'emitter', 'outboundDate', 'options'];
-  public dataSource = signal<Communication[]>([]);
+  public datasource = signal<Communication[]>([]);
   public status = signal<statusMail | undefined>(undefined);
+  public textToSearch: string = '';
 
   constructor(
-    private router: Router,
     private dialog: MatDialog,
-    private paginatorService: PaginatorService<Params>,
+    private paginatorService: PaginatorService<cacheData>,
     private procedureService: ProcedureService,
     private archiveService: ArchiveService,
     private socketService: SocketService,
@@ -42,29 +43,30 @@ export class InboxComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private pdf: PdfGeneratorService
   ) {
+    inject(DestroyRef).onDestroy(() => {
+      this.savePaginationData();
+      this.destroyed$.next();
+      this.destroyed$.complete();
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadPaginationData();
     this.listenNewMails();
     this.listenCancelMails();
   }
 
-  ngOnInit(): void {
-    this.getData();
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
-
   getData(): void {
-    const observable: Observable<{ mails: Communication[]; length: number }> = this.paginatorService.isSearchMode
-      ? this.inboxService.search({
-          ...this.paginatorService.PaginationParams,
-          text: this.paginatorService.cache['inbox'].text ?? '',
-          status: this.status(),
-        })
-      : this.inboxService.findAll(this.paginatorService.PaginationParams, this.status());
+    const observable: Observable<{ mails: Communication[]; length: number }> =
+      this.textToSearch !== ''
+        ? this.inboxService.search({
+            ...this.paginatorService.PaginationParams,
+            text: this.textToSearch,
+            status: this.status(),
+          })
+        : this.inboxService.findAll(this.paginatorService.PaginationParams, this.status());
     observable.subscribe((data) => {
-      this.dataSource.set(data.mails);
+      this.datasource.set(data.mails);
       this.paginatorService.length = data.length;
     });
   }
@@ -99,7 +101,7 @@ export class InboxComponent implements OnInit, OnDestroy {
       () => {
         this.inboxService.acceptMail(mail._id).subscribe(
           (resp) => {
-            this.dataSource.update((values) => {
+            this.datasource.update((values) => {
               const index = values.findIndex((value) => value._id === mail._id);
               values[index].procedure.state = resp.state;
               values[index].status = statusMail.Received;
@@ -151,24 +153,12 @@ export class InboxComponent implements OnInit, OnDestroy {
     });
   }
 
-  showDetail(mail: Communication) {
-    if (this.status()) this.paginatorService.cache['inbox'].status = this.status();
-    const params = {
-      limit: this.paginatorService.limit,
-      offset: this.paginatorService.index,
-      ...(this.paginatorService.searchMode() && { search: true }),
-    };
-    this.router.navigate(['bandejas/entrada', mail._id], {
-      queryParams: params,
-    });
-  }
-
   private listenNewMails() {
     this.socketService
       .listenMails()
       .pipe(takeUntil(this.destroyed$))
       .subscribe((mail) => {
-        this.dataSource.update((values) => [mail, ...values]);
+        this.datasource.update((values) => [mail, ...values]);
         this.paginatorService.length++;
       });
   }
@@ -183,11 +173,34 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   private removeMail(id_mail: string) {
-    this.dataSource.update((values) => values.filter((element) => element._id !== id_mail));
+    this.datasource.update((values) => values.filter((element) => element._id !== id_mail));
     this.paginatorService.length--;
   }
 
   get state() {
     return stateProcedure;
+  }
+
+  get PageParams() {
+    return this.paginatorService.PageParams;
+  }
+
+  private savePaginationData(): void {
+    this.paginatorService.cache[this.constructor.name] = {
+      communications: this.datasource(),
+      status: this.status(),
+      text: this.textToSearch,
+    };
+  }
+
+  private loadPaginationData(): void {
+    const cacheData = this.paginatorService.cache[this.constructor.name];
+    if (!this.paginatorService.keepAliveData || !cacheData) {
+      this.getData();
+      return;
+    }
+    this.datasource.set(cacheData.communications);
+    this.status.set(cacheData.status);
+    this.textToSearch = cacheData.text;
   }
 }

@@ -9,10 +9,11 @@
   </mat-toolbar>
 </p>
 
-<div class="container-fluid animate__animated animate__fadeIn">
+<div class="container-fluid">
   <app-input-search-procedures
-    (searchEvent)="getData()"
     placeholder="Alterno / Referencia / Destinatario"
+    [initialValue]="searchText"
+    (searchEvent)="search($event)"
   ></app-input-search-procedures>
   <div class="example-container mat-elevation-z8">
     <div class="table-container">

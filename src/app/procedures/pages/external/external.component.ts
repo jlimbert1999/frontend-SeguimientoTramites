@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 
@@ -17,38 +16,43 @@ import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/sha
 @Component({
   selector: 'app-external',
   templateUrl: './external.component.html',
-  styleUrls: ['./external.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExternalComponent implements OnInit {
-  dataSource: ExternalProcedure[] = [];
+  dataSource = signal<ExternalProcedure[]>([]);
   displayedColumns: string[] = ['code', 'reference', 'applicant', 'state', 'startDate', 'send', 'menu-options'];
+  textSearch: string = '';
   constructor(
     public dialog: MatDialog,
-    private router: Router,
     private readonly externalService: ExternalService,
     private readonly procedureService: ProcedureService,
-    private readonly paginatorService: PaginatorService<{ text: string }>,
+    private readonly paginatorService: PaginatorService<{ text: string; data: ExternalProcedure[] }>,
     private readonly archiveService: ArchiveService,
     private readonly alertService: AlertService,
     private readonly pdf: PdfGeneratorService
-  ) {}
+  ) {
+    inject(DestroyRef).onDestroy(() => {
+      this.savePaginationData();
+    });
+  }
   ngOnInit(): void {
-    this.getData();
+    this.loadPaginationData();
   }
 
   getData() {
-    const subscription: Observable<{ procedures: ExternalProcedure[]; length: number }> = this.paginatorService
-      .isSearchMode
-      ? this.externalService.search(
-          this.paginatorService.cache['text'].text,
-          this.paginatorService.limit,
-          this.paginatorService.offset
-        )
+    const subscription: Observable<{ procedures: ExternalProcedure[]; length: number }> = this.textSearch
+      ? this.externalService.search(this.textSearch, this.paginatorService.limit, this.paginatorService.offset)
       : this.externalService.findAll(this.paginatorService.limit, this.paginatorService.offset);
     subscription.subscribe((data) => {
-      this.dataSource = data.procedures;
+      this.dataSource.set(data.procedures);
       this.paginatorService.length = data.length;
     });
+  }
+
+  search(term: string) {
+    this.paginatorService.offset = 0;
+    this.textSearch = term;
+    this.getData();
   }
 
   add() {
@@ -60,13 +64,13 @@ export class ExternalComponent implements OnInit {
       }
     );
     dialogRef.afterClosed().subscribe((createdProcedure) => {
-      if (createdProcedure) {
-        if (this.dataSource.length === this.paginatorService.limit) {
-          this.dataSource.pop();
-        }
-        this.dataSource = [createdProcedure, ...this.dataSource];
-        this.send(createdProcedure);
-      }
+      if (!createdProcedure) return;
+      this.paginatorService.length++;
+      this.dataSource.update((values) => {
+        if (this.dataSource.length === this.paginatorService.limit) values.pop();
+        return [createdProcedure, ...values];
+      });
+      this.send(createdProcedure);
     });
   }
 
@@ -80,11 +84,12 @@ export class ExternalComponent implements OnInit {
       }
     );
     dialogRef.afterClosed().subscribe((updatedProcedure) => {
-      if (updatedProcedure) {
-        const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
-        this.dataSource[indexFound] = updatedProcedure;
-        this.dataSource = [...this.dataSource];
-      }
+      if (!updatedProcedure) return;
+      this.dataSource.update((values) => {
+        const indexFound = values.findIndex((element) => element._id === updatedProcedure._id);
+        values[indexFound] = updatedProcedure;
+        return [...values];
+      });
     });
   }
 
@@ -99,11 +104,12 @@ export class ExternalComponent implements OnInit {
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe((message) => {
-      if (message) {
-        const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
-        this.dataSource[indexFound].isSend = true;
-        this.dataSource = [...this.dataSource];
-      }
+      if (!message) return;
+      this.dataSource.update((values) => {
+        const indexFound = values.findIndex((element) => element._id === procedure._id);
+        values[indexFound].isSend = true;
+        return [...values];
+      });
     });
   }
 
@@ -126,23 +132,33 @@ export class ExternalComponent implements OnInit {
           description,
           stateProcedure: stateProcedure.CONCLUIDO,
         };
-        this.archiveService.archiveProcedure(archive).subscribe((data) => {
-          const indexFound = this.dataSource.findIndex((element) => element._id === procedure._id);
-          this.dataSource[indexFound].state = stateProcedure.CONCLUIDO;
-          this.alertService.showSuccesToast({ title: 'eds' });
+        this.dataSource.update((values) => {
+          const indexFound = values.findIndex((element) => element._id === procedure._id);
+          values[indexFound].state = stateProcedure.CONCLUIDO;
+          return [...values];
         });
       }
     );
   }
 
-  showDetails(procedure: external) {
-    const params = {
-      limit: this.paginatorService.limit,
-      offset: this.paginatorService.index,
-      ...(this.paginatorService.searchMode() && { search: true }),
+  private savePaginationData(): void {
+    this.paginatorService.cache[this.constructor.name] = {
+      data: this.dataSource(),
+      text: this.textSearch,
     };
-    this.router.navigate([`tramites/externos`, procedure.group, procedure._id], {
-      queryParams: params,
-    });
+  }
+
+  private loadPaginationData(): void {
+    const cacheData = this.paginatorService.cache[this.constructor.name];
+    if (!this.paginatorService.keepAliveData || !cacheData) {
+      this.getData();
+      return;
+    }
+    this.dataSource.set(cacheData.data);
+    this.textSearch = cacheData.text;
+  }
+
+  get PageParams() {
+    return this.paginatorService.PageParams;
   }
 }

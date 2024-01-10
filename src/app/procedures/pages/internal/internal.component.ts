@@ -16,7 +16,6 @@ import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/sha
 @Component({
   selector: 'app-internal',
   templateUrl: './internal.component.html',
-  styleUrls: ['./internal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InternalComponent implements OnInit {
@@ -50,6 +49,12 @@ export class InternalComponent implements OnInit {
       this.dataSource.set(data.procedures);
       this.paginatorService.length = data.length;
     });
+  }
+
+  search(term: string) {
+    this.paginatorService.offset = 0;
+    this.searchText = term;
+    this.getData();
   }
 
   add() {
@@ -134,7 +139,6 @@ export class InternalComponent implements OnInit {
             values[indexFound].state = stateProcedure.CONCLUIDO;
             return [...values];
           });
-          this.alertService.showSuccesToast({ title: 'Tramite' });
         });
       }
     );
@@ -145,6 +149,7 @@ export class InternalComponent implements OnInit {
       data: this.dataSource(),
       text: this.searchText,
     };
+    this.paginatorService.keepAliveData = false;
   }
 
   private loadPaginationData(): void {

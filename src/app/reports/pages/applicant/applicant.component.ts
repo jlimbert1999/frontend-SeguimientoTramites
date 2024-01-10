@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
 import { PaginatorService, PdfGeneratorService } from 'src/app/shared/services';
 import { typeApplicant } from 'src/app/procedures/interfaces';
@@ -39,14 +38,17 @@ export class ApplicantComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router,
+    private pdf: PdfGeneratorService,
     private reportService: ReportService,
-    private paginatorService: PaginatorService<SearchParams>,
-    private pdf: PdfGeneratorService
-  ) {}
+    private paginatorService: PaginatorService<SearchParams>
+  ) {
+    inject(DestroyRef).onDestroy(() => {
+      this.savePaginationData();
+    });
+  }
 
   ngOnInit(): void {
-    this.loadSearchParams();
+    this.loadPaginationData();
   }
 
   search() {
@@ -69,18 +71,6 @@ export class ApplicantComponent implements OnInit {
     this.search();
   }
 
-  showDetails(procedure: ProcedureTableData) {
-    const params = {
-      limit: this.paginatorService.limit,
-      offset: this.paginatorService.index,
-      search: true,
-    };
-    this.saveData();
-    this.router.navigate(['reportes/solicitante', procedure.group, procedure.id_procedure], {
-      queryParams: params,
-    });
-  }
-
   generatePDF() {
     this.pdf.generateReportSheet({
       title: 'REPORTE: SOLICITANTE',
@@ -99,6 +89,7 @@ export class ApplicantComponent implements OnInit {
       tipo: ['NATURAL'],
     });
   }
+
   private buildFormByTypeApplicatJuridico(): FormGroup {
     return this.fb.group({
       nombre: ['', [Validators.minLength(3)]],
@@ -106,6 +97,7 @@ export class ApplicantComponent implements OnInit {
       tipo: ['JURIDICO'],
     });
   }
+
   private buildFormByTypeRepresentative(): FormGroup {
     return this.fb.group({
       nombre: ['', [Validators.minLength(3)]],
@@ -116,17 +108,18 @@ export class ApplicantComponent implements OnInit {
     });
   }
 
-  private saveData() {
+  private savePaginationData(): void {
     this.paginatorService.cache[this.constructor.name] = {
       form: this.formApplicant().value,
       typeSearch: this.typeSearch(),
       typeApplicant: this.typeApplicant(),
       data: this.datasource(),
     };
+    this.paginatorService.keepAliveData = false;
   }
 
-  private loadSearchParams() {
-    if (!this.paginatorService.searchMode() || !this.paginatorService.cache[this.constructor.name]) {
+  private loadPaginationData(): void {
+    if (!this.paginatorService.keepAliveData || !this.paginatorService.cache[this.constructor.name]) {
       this.paginatorService.length = 0;
       return;
     }
@@ -135,5 +128,9 @@ export class ApplicantComponent implements OnInit {
     this.typeApplicant.set(typeApplicant);
     this.typeSearch.set(typeSearch);
     this.formApplicant().patchValue(form);
+  }
+
+  get PageParams() {
+    return { path: 'solicitante', queryParams: this.paginatorService.PageParams };
   }
 }

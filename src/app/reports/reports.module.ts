@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ApplicantComponent } from './pages/applicant/applicant.component';
 import { AvancedSearchComponent } from './pages/avanced-search/avanced-search.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { DependentsComponent } from './pages/dependents/dependents.component';
 import { MaterialModule } from '../material/material.module';
 import { SimpleSearchComponent } from './pages/simple-search/simple-search.component';
@@ -22,7 +21,6 @@ import { QuickSearchComponent } from './pages/quick-search/quick-search.componen
     QuickSearchComponent,
     ApplicantComponent,
     TableProcedureComponent,
-    DashboardComponent,
     AvancedSearchComponent,
     DependentsComponent,
     UnitComponent,

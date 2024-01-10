@@ -38,9 +38,8 @@ export class InboxService {
       );
   }
 
-  search({ limit, offset, text, status }: SearchParams): Observable<{ mails: Communication[]; length: number }> {
-    let params = new HttpParams().set('offset', offset).set('limit', limit);
-    if (status) params = params.append('status', status);
+  search({ status, text, ...values }: SearchParams): Observable<{ mails: Communication[]; length: number }> {
+    const params = new HttpParams({ fromObject: { ...values, ...(status && { status }) } });
     return this.http
       .get<{ mails: communicationResponse[]; length: number }>(`${this.base_url}/communication/inbox/search/${text}`, {
         params,

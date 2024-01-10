@@ -65,6 +65,7 @@ export class QuickSearchComponent implements OnInit {
       .subscribe((data) => {
         this.paginatorService.length = data.length;
         this.datasource.set(data.procedure);
+        console.log(data.procedure);
       });
   }
 
@@ -87,5 +88,8 @@ export class QuickSearchComponent implements OnInit {
       form: this.FormSearch.value,
       data: this.datasource(),
     };
+  }
+  get PageParams() {
+    return { path: 'busqueda-rapida', queryParams: this.paginatorService.PageParams };
   }
 }

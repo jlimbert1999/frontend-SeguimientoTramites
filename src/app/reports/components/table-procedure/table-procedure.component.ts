@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
-
+interface navigationParams {
+  path: string;
+  queryParams: { limit: number; index: number };
+}
 @Component({
   selector: 'app-table-procedure',
   templateUrl: './table-procedure.component.html',
@@ -9,17 +12,18 @@ import { ProcedureTableColumns, ProcedureTableData } from '../../interfaces';
 })
 export class TableProcedureComponent {
   public displayedColumns: string[] = [];
-  public colums: ProcedureTableColumns[] = [];
+  public pageParams: navigationParams;
+  public columns: ProcedureTableColumns[] = [];
 
   @Input() dataSource: ProcedureTableData[] = [];
-  @Input() pos: string;
+  @Input() set navigationParams(values: navigationParams) {
+    this.pageParams = values;
+  }
   @Input() set tableColumns(values: ProcedureTableColumns[]) {
-    this.colums = values;
+    this.columns = values;
     this.displayedColumns = values.map(({ columnDef }) => columnDef);
   }
   @Output() showDetails = new EventEmitter<ProcedureTableData>();
 
-  viewDetails(element: ProcedureTableData) {
-    this.showDetails.emit(element);
-  }
+  constructor() {}
 }
