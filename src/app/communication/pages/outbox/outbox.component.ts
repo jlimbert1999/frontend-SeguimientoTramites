@@ -1,7 +1,6 @@
-import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/shared/services';
@@ -9,6 +8,11 @@ import { ProcedureService } from 'src/app/procedures/services';
 import { OutboxService } from '../../services/outbox.service';
 
 import { GroupedCommunication } from '../../models';
+
+interface cacheData {
+  communications: GroupedCommunication[];
+  text: string;
+}
 
 @Component({
   selector: 'app-outbox',
@@ -24,47 +28,48 @@ import { GroupedCommunication } from '../../models';
   ],
 })
 export class OutboxComponent implements OnInit {
-  displayedColumns = ['code', 'reference', 'state', 'startDate', 'expand', 'menu-options'];
-  dataSource = signal<GroupedCommunication[]>([]);
-  expandedElement: GroupedCommunication | null;
+  public displayedColumns = ['code', 'reference', 'state', 'startDate', 'expand', 'menu-options'];
+  public datasource = signal<GroupedCommunication[]>([]);
+  public expandedElement: GroupedCommunication | null;
+  public textToSearch: string = '';
 
   constructor(
-    private router: Router,
     public dialog: MatDialog,
     private alertService: AlertService,
     private outboxService: OutboxService,
-    private paginatorService: PaginatorService<string>,
+    private paginatorService: PaginatorService<cacheData>,
     private procedureService: ProcedureService,
     private pdf: PdfGeneratorService
-  ) {}
+  ) {
+    inject(DestroyRef).onDestroy(() => {
+      this.savePaginationData();
+      this.paginatorService.keepAliveData = false;
+    });
+  }
 
   ngOnInit(): void {
-    this.getData();
+    this.loadPaginationData();
   }
+
   getData() {
-    const observable: Observable<{ mails: GroupedCommunication[]; length: number }> = this.paginatorService.isSearchMode
-      ? this.outboxService.search(this.paginatorService.PaginationParams, this.paginatorService.cache['text'])
+    const observable: Observable<{ mails: GroupedCommunication[]; length: number }> = this.textToSearch
+      ? this.outboxService.search(this.paginatorService.PaginationParams, this.textToSearch)
       : this.outboxService.findAll(this.paginatorService.PaginationParams);
     observable.subscribe((data) => {
-      this.dataSource.set(data.mails);
+      this.datasource.set(data.mails);
       this.paginatorService.length = data.length;
     });
+  }
+
+  applyFilter(term: string) {
+    this.textToSearch = term;
+    this.paginatorService.offset = 0;
+    this.getData();
   }
 
   generateRouteMap({ _id: { procedure } }: GroupedCommunication) {
     this.procedureService.getFullProcedure(procedure._id, procedure.group).subscribe((data) => {
       this.pdf.generateRouteSheet(data.procedure, data.workflow);
-    });
-  }
-
-  showDetail({ _id: { procedure } }: GroupedCommunication) {
-    const params = {
-      limit: this.paginatorService.limit,
-      offset: this.paginatorService.index,
-      ...(this.paginatorService.searchMode() && { search: true }),
-    };
-    this.router.navigate(['bandejas/salida', procedure.group, procedure._id], {
-      queryParams: params,
     });
   }
 
@@ -83,12 +88,33 @@ export class OutboxComponent implements OnInit {
   }
   removeDatasourceElement({ _id }: GroupedCommunication) {
     const id = `${_id.account}-${_id.outboundDate}-${_id.procedure._id}`;
-    this.dataSource.update((values) => {
+    this.datasource.update((values) => {
       const filteredData = values.filter(
         (element) => `${element._id.account}-${element._id.outboundDate}-${element._id.procedure._id}` !== id
       );
       return [...filteredData];
     });
     this.paginatorService.length--;
+  }
+
+  get PageParams() {
+    return this.paginatorService.PageParams;
+  }
+
+  private savePaginationData(): void {
+    this.paginatorService.cache[this.constructor.name] = {
+      communications: this.datasource(),
+      text: this.textToSearch,
+    };
+  }
+
+  private loadPaginationData(): void {
+    const cacheData = this.paginatorService.cache[this.constructor.name];
+    if (!this.paginatorService.keepAliveData || !cacheData) {
+      this.getData();
+      return;
+    }
+    this.datasource.set(cacheData.communications);
+    this.textToSearch = cacheData.text;
   }
 }

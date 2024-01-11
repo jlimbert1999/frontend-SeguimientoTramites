@@ -5,18 +5,23 @@
   </mat-toolbar>
 </p>
 
-<div class="container-fluid animate__animated animate__fadeIn">
+<div class="container-fluid">
   <app-input-search-procedures
     placeholder="Alterno / Referencia"
-    (searchEvent)="getData()"
+    [initialValue]="textToSearch"
+    (searchEvent)="applyFilter($event)"
   ></app-input-search-procedures>
   <div class="example-container mat-elevation-z8">
     <div class="table-container">
-      <table mat-table [dataSource]="dataSource()" multiTemplateDataRows>
+      <table mat-table [dataSource]="datasource()" multiTemplateDataRows>
         <ng-container matColumnDef="code">
           <th mat-header-cell *matHeaderCellDef>Alterno</th>
-          <td mat-cell *matCellDef="let row">
-            <a class="link-primary" (click)="showDetail(row)">
+          <td mat-cell *matCellDef="let row" [id]="row._id.procedure._id">
+            <a
+              class="link-primary"
+              [routerLink]="['/bandejas/salida', row._id.procedure.group, row._id.procedure._id]"
+              [queryParams]="PageParams"
+            >
               {{ row._id.procedure.code }}
             </a>
           </td>

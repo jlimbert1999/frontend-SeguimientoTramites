@@ -1,15 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { RolService } from '../../services/rol.service';
 import { systemModule, resource, role } from '../../interfaces/role.interface';
+
 
 @Component({
   selector: 'app-rol-dialog',
@@ -23,6 +17,7 @@ export class RolDialogComponent implements OnInit {
     name: ['', Validators.required],
     permissions: this.fb.array([], this.minLengthFormGroupArray(1)),
   });
+  
 
   constructor(
     public dialogRef: MatDialogRef<RolDialogComponent>,
@@ -33,19 +28,18 @@ export class RolDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.rolService.getResources().subscribe((resp) => {
-      this.modules = resp;
-      console.log(this.modules);
-      if (this.data) {
-        this.roleForm.patchValue(this.data);
-        this.data.permissions.forEach((element) => {
-          const permissionForm = this.fb.group({
-            resource: [element.resource, Validators.required],
-            actions: [element.actions, Validators.required],
-          });
-          this.permissions.push(permissionForm);
-          this.disableSelectedModule(element.resource, true);
-        });
-      }
+      // this.modules = resp;
+      // if (this.data) {
+      //   this.roleForm.patchValue(this.data);
+      //   this.data.permissions.forEach((element) => {
+      //     const permissionForm = this.fb.group({
+      //       resource: [element.resource, Validators.required],
+      //       actions: [element.actions, Validators.required],
+      //     });
+      //     this.permissions.push(permissionForm);
+      //     this.disableSelectedModule(element.resource, true);
+      //   });
+      // }
     });
   }
 
@@ -69,17 +63,13 @@ export class RolDialogComponent implements OnInit {
 
   disableSelectedModule(resourceValue: string, isDisabled: boolean) {
     this.modules.forEach((module, index) => {
-      const positionResource = module.resources.findIndex(
-        (resource) => resource.value === resourceValue
-      );
+      const positionResource = module.resources.findIndex((resource) => resource.value === resourceValue);
       if (positionResource > -1) {
         this.modules[index].resources[positionResource].disabled = isDisabled;
         if (isDisabled) {
           this.selectedModules.push(module.resources[positionResource]);
         } else {
-          this.selectedModules = this.selectedModules.filter(
-            (item) => item.value !== resourceValue
-          );
+          this.selectedModules = this.selectedModules.filter((item) => item.value !== resourceValue);
         }
         return;
       }
@@ -88,11 +78,9 @@ export class RolDialogComponent implements OnInit {
 
   save() {
     if (this.data) {
-      this.rolService
-        .edit(this.data._id, this.roleForm.value)
-        .subscribe((role) => {
-          this.dialogRef.close(role);
-        });
+      this.rolService.edit(this.data._id, this.roleForm.value).subscribe((role) => {
+        this.dialogRef.close(role);
+      });
     } else {
       this.rolService.add(this.roleForm.value).subscribe((role) => {
         this.dialogRef.close(role);

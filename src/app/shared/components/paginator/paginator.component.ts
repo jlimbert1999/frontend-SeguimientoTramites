@@ -25,7 +25,15 @@ export class PaginatorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.paginatorService.emptyCache();
   }
   ngAfterViewInit(): void {
-    this.restoreScrollItem();
+    // if (!this.paginatorService.keepAliveData || this.paginatorService.limit <= 10) return;
+    // const itemId = sessionStorage.getItem('scrollItemId') ?? '';
+    // const elementRef = document.getElementById(itemId);
+    // if (!elementRef) return;
+    // elementRef.scrollIntoView({
+    //   behavior: 'instant',
+    //   block: 'center',
+    //   inline: 'nearest',
+    // });
   }
 
   ngOnDestroy(): void {
@@ -45,17 +53,5 @@ export class PaginatorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   get dataLength() {
     return this.paginatorService.length;
-  }
-
-  private restoreScrollItem(): void {
-    const itemId = sessionStorage.getItem('scrollItemId');
-    if (!this.paginatorService.keepAliveData || !itemId) return;
-    const element = document.getElementById(itemId);
-    if (!element) return;
-    element.scrollIntoView({
-      behavior: 'instant',
-      block: 'center',
-      inline: 'nearest',
-    });
   }
 }

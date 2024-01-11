@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+
 import { MaterialModule } from '../material/material.module';
 import { SharedModule } from '../shared/shared.module';
 import { DependenciasComponent } from './pages/dependencias/dependencias.component';
@@ -21,7 +22,7 @@ import { RolesComponent } from './pages/roles/roles.component';
 import { RolDialogComponent } from './dialogs/rol-dialog/rol-dialog.component';
 import { JobsComponent } from './pages/jobs/jobs.component';
 import { OrganizationComponent } from './pages/organization/organization.component';
-import { JobDialogComponent } from './dialogs/job-dialog/job-dialog.component';
+import { JobDialogComponent } from './pages/job-dialog/job-dialog.component';
 import { WorkHistoryComponent } from './dialogs/work-history/work-history.component';
 import { TypeProcedureDialogComponent } from './dialogs/type-procedure-dialog/type-procedure-dialog.component';
 import { SettingsComponent } from './pages/settings/settings.component';
@@ -30,27 +31,27 @@ import { FilterUsersSocketPipe } from './pipes/filter-users-socket.pipe';
 
 @NgModule({
   declarations: [
+    AccountsComponent,
+    CreacionAsignacionComponent,
+    CuentaDialogComponent,
+    DependenciaDialogComponent,
     DependenciasComponent,
+    EditAccountDialogComponent,
+    FilterUsersSocketPipe,
+    GroupwareComponent,
     InstitucionesComponent,
     InstitutionDialogComponent,
-    DependenciaDialogComponent,
-    OfficerDialogComponent,
-    AccountsComponent,
-    CuentaDialogComponent,
-    TiposTramitesComponent,
-    OfficersComponent,
-    GroupwareComponent,
-    CreacionAsignacionComponent,
-    EditAccountDialogComponent,
-    RolesComponent,
-    RolDialogComponent,
-    JobsComponent,
-    OrganizationComponent,
     JobDialogComponent,
-    WorkHistoryComponent,
-    TypeProcedureDialogComponent,
+    JobsComponent,
+    OfficerDialogComponent,
+    OfficersComponent,
+    OrganizationComponent,
+    RolDialogComponent,
+    RolesComponent,
     SettingsComponent,
-    FilterUsersSocketPipe
+    TiposTramitesComponent,
+    TypeProcedureDialogComponent,
+    WorkHistoryComponent,
   ],
   imports: [
     CommonModule,
@@ -61,6 +62,6 @@ import { FilterUsersSocketPipe } from './pipes/filter-users-socket.pipe';
     HttpClientModule,
     SharedModule,
     NgxMatSelectSearchModule,
-  ]
+  ],
 })
-export class AdministrationModule { }
+export class AdministrationModule {}

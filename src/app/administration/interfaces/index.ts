@@ -6,3 +6,4 @@ export * from './job.interface';
 export * from './typeProcedure.interface';
 export * from './role.interface';
 export * from './workHistory.interface';
+export * from './responses/system-resources.interface';

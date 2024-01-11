@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>{{ data ? "EDICION" : "REGISTRO" }} DE ROL</h1>
 <div mat-dialog-content>
-  <form [formGroup]="roleForm">
+  <!-- <form [formGroup]="roleForm">
     <div class="row">
       <div class="col-sm-5">
         <mat-form-field>
@@ -75,16 +75,9 @@
         </div>
       </div>
     </div>
-  </form>
+  </form> -->
 </div>
 <div mat-dialog-actions align="end">
   <button mat-raised-button color="warn" [mat-dialog-close]="">CANCELAR</button>
-  <button
-    mat-raised-button
-    color="primary"
-    [disabled]="roleForm.invalid"
-    (click)="save()"
-  >
-    ACEPTAR
-  </button>
+  <button mat-raised-button color="primary" [disabled]="roleForm.invalid" (click)="save()">ACEPTAR</button>
 </div>

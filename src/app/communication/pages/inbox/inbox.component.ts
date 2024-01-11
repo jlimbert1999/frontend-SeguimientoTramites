@@ -51,9 +51,9 @@ export class InboxComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadPaginationData();
     this.listenNewMails();
     this.listenCancelMails();
+    this.loadPaginationData();
   }
 
   getData(): void {
@@ -74,6 +74,12 @@ export class InboxComponent implements OnInit {
   applyStatusFilter(status: statusMail): void {
     this.paginatorService.offset = 0;
     this.status.set(status);
+    this.getData();
+  }
+
+  applyTextFilter(term: string): void {
+    this.paginatorService.offset = 0;
+    this.textToSearch = term;
     this.getData();
   }
 

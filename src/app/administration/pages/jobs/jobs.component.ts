@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CargoService } from '../../services/cargo.service';
 import { MatDialog } from '@angular/material/dialog';
 import { job } from '../../interfaces/job.interface';
-import { JobDialogComponent } from '../../dialogs/job-dialog/job-dialog.component';
+import { JobDialogComponent } from '../job-dialog/job-dialog.component';
 import {PaginatorService} from 'src/app/shared/services';
 
 @Component({

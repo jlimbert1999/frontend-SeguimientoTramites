@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, signal, type OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, type OnInit, inject, DestroyRef } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
 import { PaginatorService } from 'src/app/shared/services';
 import { ReportService } from '../../services/report.service';
@@ -15,7 +14,6 @@ interface SearchData {
 @Component({
   selector: 'app-quick-search',
   templateUrl: './quick-search.component.html',
-  styleUrl: './quick-search.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuickSearchComponent implements OnInit {
@@ -46,13 +44,17 @@ export class QuickSearchComponent implements OnInit {
   });
   constructor(
     private fb: FormBuilder,
-    private router: Router,
     private reportService: ReportService,
     private paginatorService: PaginatorService<SearchData>
-  ) {}
+  ) {
+    inject(DestroyRef).onDestroy(() => {
+      this.savePaginationData();
+      this.paginatorService.keepAliveData = false;
+    });
+  }
 
   ngOnInit(): void {
-    this.loadSearchData();
+    this.loadPaginationData();
   }
 
   search() {
@@ -65,30 +67,23 @@ export class QuickSearchComponent implements OnInit {
       .subscribe((data) => {
         this.paginatorService.length = data.length;
         this.datasource.set(data.procedure);
-        console.log(data.procedure);
       });
   }
 
-  showDetail(procedure: ProcedureTableData) {
-    this.saveSearchData(procedure.id_procedure);
-    this.router.navigate(['reportes/busqueda-rapida', procedure.group, procedure.id_procedure], {
-      queryParams: { limit: this.paginatorService.limit, offset: this.paginatorService.index, search: true },
-    });
-  }
-
-  private loadSearchData() {
+  private loadPaginationData() {
     const savedData = this.paginatorService.cache[this.constructor.name];
-    if (!this.paginatorService || !savedData) return;
+    if (!this.paginatorService.keepAliveData || !savedData) return;
     this.FormSearch.patchValue(savedData.form);
     this.datasource.set(savedData.data);
   }
 
-  private saveSearchData(scrollItemId?: string) {
+  private savePaginationData() {
     this.paginatorService.cache[this.constructor.name] = {
       form: this.FormSearch.value,
       data: this.datasource(),
     };
   }
+
   get PageParams() {
     return { path: 'busqueda-rapida', queryParams: this.paginatorService.PageParams };
   }

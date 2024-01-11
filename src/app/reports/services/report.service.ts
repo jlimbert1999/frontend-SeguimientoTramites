@@ -103,14 +103,16 @@ export class ReportService {
       )
       .pipe(
         map((resp) => {
-          const data = resp.procedures.map(({ _id, code, reference, startDate, state, group }) => ({
-            id_procedure: _id,
-            date: startDate,
-            reference,
-            state,
-            group,
-            code,
-          }));
+          const data: ProcedureTableData[] = resp.procedures.map(
+            ({ _id, code, reference, startDate, state, group }) => ({
+              id_procedure: _id,
+              date: startDate,
+              reference,
+              state,
+              group,
+              code,
+            })
+          );
           return { procedures: data, length: resp.length };
         })
       );

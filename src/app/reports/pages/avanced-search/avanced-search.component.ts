@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
 import { stateProcedure } from 'src/app/procedures/interfaces';
 import { MatSelectSearchData } from 'src/app/shared/interfaces';
@@ -40,14 +39,19 @@ export class AvancedSearchComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router,
     private reportService: ReportService,
     private paginatorService: PaginatorService<SearchParams>
-  ) {}
+  ) {
+    inject(DestroyRef).onDestroy(() => {
+      this.savePaginationData();
+      this.paginatorService.keepAliveData = true;
+    });
+  }
 
   ngOnInit(): void {
-    this.loadSearchParams();
+    this.loadPaginationData();
   }
+
   searchTypesProcedures(text: string) {
     this.reportService.getProceduresByText(text).subscribe((types) => {
       this.types.set(types.map((el) => ({ value: el._id, text: el.nombre })));
@@ -68,21 +72,12 @@ export class AvancedSearchComponent implements OnInit {
       });
   }
 
-  showDetails(procedure: ProcedureTableData) {
-    const params = { limit: this.paginatorService.limit, offset: this.paginatorService.index, search: true };
-    this.saveSearchParams(procedure.id_procedure);
-    this.router.navigate(['reportes/busqueda-avanzada', procedure.group, procedure.id_procedure], {
-      queryParams: params,
-    });
-  }
-
   generateReport() {
     this.paginatorService.offset = 0;
-    this.saveSearchParams();
     this.search();
   }
 
-  private saveSearchParams(scrollItemId?: string) {
+  private savePaginationData() {
     this.paginatorService.cache[this.constructor.name] = {
       form: this.formProcedure.value,
       types: this.types(),
@@ -90,12 +85,12 @@ export class AvancedSearchComponent implements OnInit {
     };
   }
 
-  private loadSearchParams() {
-    const savedData = this.paginatorService.cache[this.constructor.name];
-    if (!this.paginatorService.searchMode() || !savedData) return;
-    this.formProcedure.patchValue(savedData.form);
-    this.types.set(savedData.types);
-    this.datasource.set(savedData.data);
+  private loadPaginationData() {
+    const cacheData = this.paginatorService.cache[this.constructor.name];
+    if (!this.paginatorService.keepAliveData || !cacheData) return;
+    this.formProcedure.patchValue(cacheData.form);
+    this.types.set(cacheData.types);
+    this.datasource.set(cacheData.data);
   }
 
   get statesProcedure() {
@@ -104,5 +99,9 @@ export class AvancedSearchComponent implements OnInit {
 
   get currentMatSelectOption() {
     return this.formProcedure.get('type')?.value;
+  }
+
+  get PageParams() {
+    return { path: 'busqueda-avanzada', queryParams: this.paginatorService.PageParams };
   }
 }

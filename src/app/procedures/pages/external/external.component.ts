@@ -33,6 +33,7 @@ export class ExternalComponent implements OnInit {
   ) {
     inject(DestroyRef).onDestroy(() => {
       this.savePaginationData();
+      this.paginatorService.keepAliveData = false;
     });
   }
   ngOnInit(): void {
@@ -49,7 +50,7 @@ export class ExternalComponent implements OnInit {
     });
   }
 
-  search(term: string) {
+  applyFilter(term: string) {
     this.paginatorService.offset = 0;
     this.textSearch = term;
     this.getData();

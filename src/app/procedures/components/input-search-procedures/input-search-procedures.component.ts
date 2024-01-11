@@ -10,7 +10,7 @@ import { MaterialModule } from 'src/app/material/material.module';
   imports: [MaterialModule, FormsModule, ReactiveFormsModule],
 })
 export class InputSearchProceduresComponent {
-  @Input({ required: true }) placeholder = 'Buscar tramite';
+  @Input() placeholder = 'Buscar tramite';
   @Input() set initialValue(value: string) {
     this.FormSearch.setValue(value);
   }
@@ -29,10 +29,8 @@ export class InputSearchProceduresComponent {
     this.searchEvent.emit('');
   }
 
-  getErrorMessage() {
-    if (this.FormSearch.hasError('minlength')) {
-      return 'Ingrese al menos 4 caracteres';
-    }
+  get errorMessage(): string {
+    if (this.FormSearch.hasError('minlength')) return 'Ingrese al menos 4 caracteres';
     return this.FormSearch.hasError('pattern') ? 'No se permiten caracteres especiales' : '';
   }
 }

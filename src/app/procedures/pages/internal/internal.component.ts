@@ -13,6 +13,10 @@ import { groupProcedure, stateProcedure } from '../../interfaces';
 import { TransferDetails } from 'src/app/communication/interfaces';
 import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/shared/services';
 
+interface CacheStorage {
+  text: string;
+  data: InternalProcedure[];
+}
 @Component({
   selector: 'app-internal',
   templateUrl: './internal.component.html',
@@ -20,20 +24,21 @@ import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/sha
 })
 export class InternalComponent implements OnInit {
   displayedColumns: string[] = ['code', 'reference', 'applicant', 'state', 'startDate', 'send', 'menu-options'];
-  dataSource = signal<InternalProcedure[]>([]);
-  searchText: string = '';
+  datasource = signal<InternalProcedure[]>([]);
+  textForSearch: string = '';
 
   constructor(
     private dialog: MatDialog,
     private internoService: InternalService,
     private procedureService: ProcedureService,
-    private paginatorService: PaginatorService<{ text: string; data: InternalProcedure[] }>,
+    private paginatorService: PaginatorService<CacheStorage>,
     private alertService: AlertService,
     private archiveService: ArchiveService,
     private readonly pdf: PdfGeneratorService
   ) {
     inject(DestroyRef).onDestroy(() => {
       this.savePaginationData();
+      this.paginatorService.keepAliveData = false;
     });
   }
   ngOnInit(): void {
@@ -42,18 +47,18 @@ export class InternalComponent implements OnInit {
 
   getData(): void {
     const subscription: Observable<{ procedures: InternalProcedure[]; length: number }> =
-      this.searchText !== ''
-        ? this.internoService.search(this.searchText, this.paginatorService.limit, this.paginatorService.offset)
+      this.textForSearch !== ''
+        ? this.internoService.search(this.textForSearch, this.paginatorService.limit, this.paginatorService.offset)
         : this.internoService.findAll(this.paginatorService.limit, this.paginatorService.offset);
     subscription.subscribe((data) => {
-      this.dataSource.set(data.procedures);
+      this.datasource.set(data.procedures);
       this.paginatorService.length = data.length;
     });
   }
 
-  search(term: string) {
+  applyFilter(term: string) {
     this.paginatorService.offset = 0;
-    this.searchText = term;
+    this.textForSearch = term;
     this.getData();
   }
 
@@ -68,14 +73,15 @@ export class InternalComponent implements OnInit {
     dialogRef.afterClosed().subscribe((createdProcedure) => {
       if (createdProcedure) {
         this.paginatorService.length++;
-        this.dataSource.update((values) => {
-          if (this.dataSource.length === this.paginatorService.limit) values.pop();
+        this.datasource.update((values) => {
+          if (this.datasource.length === this.paginatorService.limit) values.pop();
           return [createdProcedure, ...values];
         });
         this.send(createdProcedure);
       }
     });
   }
+
   edit(tramite: InternalProcedure) {
     const dialogRef = this.dialog.open<RegisterInternalComponent, InternalProcedure, InternalProcedure>(
       RegisterInternalComponent,
@@ -87,7 +93,7 @@ export class InternalComponent implements OnInit {
     );
     dialogRef.afterClosed().subscribe((updatedProcedure) => {
       if (updatedProcedure) {
-        this.dataSource.update((values) => {
+        this.datasource.update((values) => {
           const indexFound = values.findIndex((element) => element._id === updatedProcedure._id);
           values[indexFound] = updatedProcedure;
           return [...values];
@@ -107,7 +113,7 @@ export class InternalComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((message) => {
       if (message) {
-        this.dataSource.update((values) => {
+        this.datasource.update((values) => {
           const indexFound = values.findIndex((element) => element._id === procedure._id);
           values[indexFound].isSend = true;
           return [...values];
@@ -134,7 +140,7 @@ export class InternalComponent implements OnInit {
           stateProcedure: stateProcedure.CONCLUIDO,
         };
         this.archiveService.archiveProcedure(archive).subscribe((data) => {
-          this.dataSource.update((values) => {
+          this.datasource.update((values) => {
             const indexFound = values.findIndex((element) => element._id === procedure._id);
             values[indexFound].state = stateProcedure.CONCLUIDO;
             return [...values];
@@ -146,10 +152,9 @@ export class InternalComponent implements OnInit {
 
   private savePaginationData(): void {
     this.paginatorService.cache[this.constructor.name] = {
-      data: this.dataSource(),
-      text: this.searchText,
+      data: this.datasource(),
+      text: this.textForSearch,
     };
-    this.paginatorService.keepAliveData = false;
   }
 
   private loadPaginationData(): void {
@@ -158,8 +163,8 @@ export class InternalComponent implements OnInit {
       this.getData();
       return;
     }
-    this.dataSource.set(cacheData.data);
-    this.searchText = cacheData.text;
+    this.datasource.set(cacheData.data);
+    this.textForSearch = cacheData.text;
   }
 
   get PageParams() {

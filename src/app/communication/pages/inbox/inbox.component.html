@@ -5,12 +5,13 @@
   </mat-toolbar>
 </p>
 
-<div class="container-fluid animate__animated animate__fadeIn">
+<div class="container-fluid">
   <div class="row">
     <div class="col-sm-9">
       <app-input-search-procedures
         placeholder="Alterno / Referencia"
-        (searchEvent)="getData()"
+        [initialValue]="textToSearch"
+        (searchEvent)="applyTextFilter($event)"
       ></app-input-search-procedures>
     </div>
     <div class="col-sm-3">
