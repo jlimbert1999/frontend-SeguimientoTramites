@@ -76,8 +76,48 @@
       </div>
     </div>
   </form> -->
+  <div class="row">
+    <div class="col-12">
+      <div class="example-container">
+        <mat-form-field>
+          <mat-label>Enter your email</mat-label>
+          <input matInput placeholder="pat@example.com" [formControl]="name" required />
+          <!-- @if (email.invalid) {
+          <mat-error>{{ getErrorMessage() }}</mat-error>
+          } -->
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="row g-2">
+    @for (resource of systemResources; track $index) {
+    <div class="col-sm-4">
+      <section class="example-section">
+        <span class="example-list-section">
+          <mat-checkbox
+            class="example-margin"
+            [checked]="resource.isSelected"
+            [indeterminate]="someComplete($index)"
+            (change)="setAllPermissions($index, $event.checked)"
+          >
+            {{ resource.label }}
+          </mat-checkbox>
+        </span>
+        <span class="example-list-section">
+          <ul>
+            <li *ngFor="let action of resource.actions">
+              <mat-checkbox [(ngModel)]="action.isSelected" (ngModelChange)="updateAllComplete($index)">
+                {{ action.label }}
+              </mat-checkbox>
+            </li>
+          </ul>
+        </span>
+      </section>
+    </div>
+    }
+  </div>
 </div>
 <div mat-dialog-actions align="end">
   <button mat-raised-button color="warn" [mat-dialog-close]="">CANCELAR</button>
-  <button mat-raised-button color="primary" [disabled]="roleForm.invalid" (click)="save()">ACEPTAR</button>
+  <button mat-raised-button color="primary" (click)="save()">ACEPTAR</button>
 </div>

@@ -1,97 +1,111 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { RolService } from '../../services/rol.service';
 import { systemModule, resource, role } from '../../interfaces/role.interface';
+import { systemResource } from '../../interfaces';
+import { RoleDto } from '../../dto';
 
+enum validResources {
+  external = 'external',
+  internal = 'internal',
+  archived = 'archived',
+  communication = 'communication',
+  typeProcedures = 'types-procedures',
+  officers = 'officers',
+  accounts = 'accounts',
+  dependencies = 'dependencies',
+  institutions = 'institutions',
+  jobs = 'jobs',
+  roles = 'roles',
+  reports = 'roles',
+}
 
 @Component({
   selector: 'app-rol-dialog',
   templateUrl: './rol-dialog.component.html',
   styleUrls: ['./rol-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RolDialogComponent implements OnInit {
-  modules: systemModule[] = [];
-  selectedModules: resource[] = [];
-  roleForm: FormGroup = this.fb.group({
-    name: ['', Validators.required],
-    permissions: this.fb.array([], this.minLengthFormGroupArray(1)),
-  });
-  
+  name = new FormControl('', { nonNullable: true });
+  systemResources = [
+    {
+      value: validResources.external,
+      isSelected: false,
+      label: 'Externos',
+      actions: [
+        { value: 'create', label: 'Crear', isSelected: false },
+        { value: 'read', label: 'Ver', isSelected: false },
+        { value: 'update', label: 'Editar', isSelected: false },
+        { value: 'delete', label: 'Eliminar', isSelected: false },
+      ],
+    },
+    {
+      value: validResources.internal,
+      isSelected: false,
+      label: 'Internos',
+      actions: [
+        { value: 'create', label: 'Crear', isSelected: false },
+        { value: 'read', label: 'Ver', isSelected: false },
+        { value: 'update', label: 'Editar', isSelected: false },
+        { value: 'delete', label: 'Eliminar', isSelected: false },
+      ],
+    },
+    {
+      value: validResources.reports,
+      label: 'Reportes',
+      isSelected: false,
+      actions: [
+        { value: 'advanced-search', label: 'Busqueda avanzada', isSelected: false },
+        { value: 'quick-search', label: 'Busqueda rapida', isSelected: false },
+        { value: 'simple-search', label: 'Busqueda simple', isSelected: false },
+        { value: 'applicant', label: 'Solicitante', isSelected: false },
+      ],
+    },
+  ];
 
   constructor(
-    public dialogRef: MatDialogRef<RolDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: role,
-    private fb: FormBuilder,
+    public dialogRef: MatDialogRef<RolDialogComponent>,
     private rolService: RolService
   ) {}
 
-  ngOnInit(): void {
-    this.rolService.getResources().subscribe((resp) => {
-      // this.modules = resp;
-      // if (this.data) {
-      //   this.roleForm.patchValue(this.data);
-      //   this.data.permissions.forEach((element) => {
-      //     const permissionForm = this.fb.group({
-      //       resource: [element.resource, Validators.required],
-      //       actions: [element.actions, Validators.required],
-      //     });
-      //     this.permissions.push(permissionForm);
-      //     this.disableSelectedModule(element.resource, true);
-      //   });
-      // }
-    });
-  }
-
-  get permissions() {
-    return this.roleForm.controls['permissions'] as FormArray;
-  }
-
-  addPermission(resource: resource) {
-    const permissionForm = this.fb.group({
-      resource: [resource.value, Validators.required],
-      actions: [[], Validators.required],
-    });
-    this.permissions.push(permissionForm);
-    this.disableSelectedModule(resource.value, true);
-  }
-
-  removePrivilege(position: number) {
-    this.permissions.removeAt(position);
-    this.disableSelectedModule(this.selectedModules[position].value, false);
-  }
-
-  disableSelectedModule(resourceValue: string, isDisabled: boolean) {
-    this.modules.forEach((module, index) => {
-      const positionResource = module.resources.findIndex((resource) => resource.value === resourceValue);
-      if (positionResource > -1) {
-        this.modules[index].resources[positionResource].disabled = isDisabled;
-        if (isDisabled) {
-          this.selectedModules.push(module.resources[positionResource]);
-        } else {
-          this.selectedModules = this.selectedModules.filter((item) => item.value !== resourceValue);
-        }
-        return;
-      }
-    });
-  }
+  ngOnInit(): void {}
 
   save() {
-    if (this.data) {
-      this.rolService.edit(this.data._id, this.roleForm.value).subscribe((role) => {
-        this.dialogRef.close(role);
-      });
-    } else {
-      this.rolService.add(this.roleForm.value).subscribe((role) => {
-        this.dialogRef.close(role);
-      });
-    }
+    const hasPermissions = this.systemResources.some((resource) =>
+      resource.actions.some((action) => action.isSelected)
+    );
+    // if (this.name.invalid || !hasPermissions) {
+    //   return;
+    // }
+    // this.rolService.add(this.name.value, this.systemResources).subscribe((resp) => {
+    //   console.log(resp);
+    // });
   }
 
-  minLengthFormGroupArray(min: number): ValidatorFn | any {
-    return (control: AbstractControl[]) => {
-      if (!(control instanceof FormArray)) return;
-      return control.length < min ? { minLength: true } : null;
-    };
+  setAllPermissions(index: number, isSelected: boolean) {
+    this.systemResources[index].isSelected = isSelected;
+    this.systemResources[index].actions.forEach((t) => (t.isSelected = isSelected));
+  }
+
+  updateAllComplete(index: number) {
+    this.systemResources[index].isSelected = this.systemResources[index].actions.every((action) => action.isSelected);
+  }
+
+  someComplete(index: number): boolean {
+    return (
+      this.systemResources[index].actions.filter((action) => action.isSelected).length > 0 &&
+      !this.systemResources[index].isSelected
+    );
   }
 }

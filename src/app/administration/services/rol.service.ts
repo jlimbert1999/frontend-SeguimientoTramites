@@ -30,8 +30,9 @@ export class RolService {
     );
   }
 
-  add(role: RoleDto) {
-    return this.http.post<role>(`${base_url}/roles`, role).pipe(map((resp) => resp));
+  add(name: string, systemResources: systemResource[]) {
+    const Role = RoleDto.toModel(name, systemResources);
+    return this.http.post<role>(`${base_url}/roles`, Role).pipe(map((resp) => resp));
   }
 
   edit(id: string, role: RoleDto) {

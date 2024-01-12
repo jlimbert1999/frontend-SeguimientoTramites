@@ -1,3 +1,13 @@
+<p>
+  <mat-toolbar color="primary">
+    <span>Roles </span>
+    <span class="example-spacer"></span>
+    <button (click)="Add()" mat-icon-button matTooltip="Crear cuenta">
+      <mat-icon>add</mat-icon>
+    </button>
+  </mat-toolbar>
+</p>
+
 <div class="container-fluid">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container matColumnDef="rol">
