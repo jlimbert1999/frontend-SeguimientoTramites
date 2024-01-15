@@ -12,6 +12,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { Workflow } from 'src/app/communication/models';
 import { communicationResponse, statusMail } from 'src/app/communication/interfaces';
 import { account } from 'src/app/administration/interfaces';
+import { AccountSheet, ApprovedSheet } from '../helpers/pdf';
 
 interface ReportSheetProps {
   title: string;
@@ -206,6 +207,20 @@ export class PdfGeneratorService {
           },
         ];
       },
+    };
+    pdfMake.createPdf(docDefinition).print();
+  }
+
+  async createAccountSheet(account: account, password: string) {
+    const docDefinition: TDocumentDefinitions = {
+      pageSize: 'LETTER',
+      pageMargins: [30, 110, 40, 30],
+      content: [
+        await ApprovedSheet.createHeader(
+          'ASIGNACION DE USUARIO DE SISTEMA DE SEGUIMIENTO DE TRAMITES INTERNOS Y EXTERNOS'
+        ),
+        AccountSheet.createContent(account, password),
+      ],
     };
     pdfMake.createPdf(docDefinition).print();
   }

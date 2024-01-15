@@ -9,17 +9,17 @@ import { MatSelectSearchData } from '../../interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ServerMatSelectSearchComponent<T> {
-  @Input() placeholder: string = 'Filtrar informacion';
+  @Input() placeholder: string = 'Buscar informacion';
   @Input({ required: true }) set options(values: MatSelectSearchData<T>[]) {
     this.filteredServerSideOptions.next(values);
   }
-  @Input() set currentOption(value: T | null) {
+  @Input() set currentOption(value: T | undefined) {
     this.optionServerSideCtrl.setValue(value);
   }
   @Output() keyupEvent: EventEmitter<string> = new EventEmitter();
   @Output() selectEvent: EventEmitter<T> = new EventEmitter();
 
-  public optionServerSideCtrl: FormControl = new FormControl();
+  public optionServerSideCtrl = new FormControl<T | undefined>(undefined);
   public optionServerSideFilteringCtrl = new FormControl<string>('', Validators.pattern(/^[a-zA-Z0-9\s.]+$/));
   public searching: boolean = false;
   public filteredServerSideOptions: ReplaySubject<MatSelectSearchData<T>[]> = new ReplaySubject(1);
@@ -36,15 +36,14 @@ export class ServerMatSelectSearchComponent<T> {
       .subscribe(
         (value) => {
           this.searching = false;
-          if (!value || this.optionServerSideFilteringCtrl.invalid) return;
-          this.keyupEvent.emit(value);
+          if (this.optionServerSideFilteringCtrl.invalid) return;
+          this.keyupEvent.emit(value!);
         },
         () => {
           this.searching = false;
         }
       );
   }
-
   ngOnDestroy() {
     this._onDestroy.next();
     this._onDestroy.complete();

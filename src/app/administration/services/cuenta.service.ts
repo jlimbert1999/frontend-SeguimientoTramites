@@ -90,7 +90,6 @@ export class CuentaService {
 
   add(account: Object, officer: Object) {
     const acc = AccountDto.FormtoModel(account, officer);
-    console.log(acc);
     return this.http.post<account>(`${base_url}/accounts`, { officer, account });
   }
 

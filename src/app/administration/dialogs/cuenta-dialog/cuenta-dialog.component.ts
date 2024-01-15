@@ -1,19 +1,18 @@
-import { Component, Inject, OnInit, signal } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { forkJoin } from 'rxjs';
-import { CuentaService } from 'src/app/administration/services/cuenta.service';
 
-import { account } from '../../interfaces/account.interface';
-import { role } from '../../interfaces/role.interface';
-import { job } from '../../interfaces/job.interface';
-import { createAccountPDF } from '../../helpers/pdfs/pdf-account';
+import { CuentaService } from 'src/app/administration/services/cuenta.service';
+import { PdfGeneratorService } from 'src/app/shared/services';
+
 import { MatSelectSearchData } from 'src/app/shared/interfaces';
+import { account, role } from '../../interfaces';
 
 @Component({
   selector: 'app-cuenta-dialog',
   templateUrl: './cuenta-dialog.component.html',
   styleUrls: ['./cuenta-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CuentaDialogComponent implements OnInit {
   institutions = signal<MatSelectSearchData<string>[]>([]);
@@ -25,8 +24,11 @@ export class CuentaDialogComponent implements OnInit {
     nombre: ['', Validators.required],
     paterno: ['', Validators.required],
     materno: [''],
-    dni: ['', Validators.required],
-    telefono: ['', [Validators.required, Validators.maxLength(8)]],
+    dni: ['', [Validators.required, Validators.pattern(/^\d+$/), Validators.minLength(6), Validators.maxLength(8)]],
+    telefono: [
+      '',
+      [Validators.required, Validators.pattern(/^\d+$/), Validators.minLength(6), Validators.maxLength(8)],
+    ],
     cargo: ['', Validators.required],
     direccion: ['SACABA', Validators.required],
   });
@@ -41,7 +43,8 @@ export class CuentaDialogComponent implements OnInit {
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: account,
     public dialogRef: MatDialogRef<CuentaDialogComponent>,
-    private cuentasService: CuentaService
+    private cuentasService: CuentaService,
+    private pdfService: PdfGeneratorService
   ) {}
 
   ngOnInit(): void {
@@ -49,9 +52,9 @@ export class CuentaDialogComponent implements OnInit {
   }
 
   save() {
-    this.cuentasService.add(this.FormAccount.value, this.FormOfficer.value).subscribe((result) => {
-      // createAccountPDF(result, this.Form_Cuenta.get('password')?.value);
-      // this.dialogRef.close(result);
+    this.cuentasService.add(this.FormAccount.value, this.FormOfficer.value).subscribe((account) => {
+      this.pdfService.createAccountSheet(account, this.FormAccount.get('password')?.value);
+      this.dialogRef.close(account);
     });
   }
   getRoles() {
@@ -84,6 +87,10 @@ export class CuentaDialogComponent implements OnInit {
     const login = nombre.charAt(0) + paterno + materno.charAt(0);
     this.FormAccount.get('login')?.setValue(login.trim().toUpperCase());
     this.FormAccount.get('password')?.setValue(dni.trim());
+  }
+
+  get validForms() {
+    return this.FormAccount.valid && this.FormOfficer.valid;
   }
 
   getErrorMessagesForm(control: AbstractControl) {

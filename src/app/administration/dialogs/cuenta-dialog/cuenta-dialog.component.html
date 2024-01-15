@@ -44,13 +44,16 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-12">
+            <div class="col-sm-8">
               <app-server-mat-select-search
                 placeholder="Buscar cargo"
                 [options]="jobs()"
                 (keyupEvent)="searchJob($event)"
                 (selectEvent)="selectJob($event)"
               />
+            </div>
+            <div class="col-sm-4">
+              <mat-checkbox>SIN CARGO</mat-checkbox>
             </div>
           </div>
         </form>
@@ -88,7 +91,12 @@
             <div class="col-4">
               <mat-form-field>
                 <mat-label>Contraseña</mat-label>
-                <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" />
+                <input
+                  matInput
+                  [autocomplete]="false"
+                  formControlName="password"
+                  [type]="hidePassword ? 'password' : 'text'"
+                />
                 <button
                   mat-icon-button
                   matSuffix
@@ -120,13 +128,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-raised-button color="warn" mat-button mat-dialog-close>Cancelar</button>
-  <button
-    mat-raised-button
-    color="primary"
-    mat-button
-    (click)="save()"
-    [disabled]="FormAccount.invalid || FormAccount.invalid"
-  >
-    Guardar
-  </button>
+  <button mat-raised-button color="primary" mat-button (click)="save()" [disabled]="!validForms">Guardar</button>
 </mat-dialog-actions>

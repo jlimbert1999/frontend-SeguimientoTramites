@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { read, utils } from 'xlsx';
 import Swal from 'sweetalert2';
@@ -6,7 +6,7 @@ import { UsuariosService } from '../../services/usuarios.service';
 import { officer } from '../../interfaces/oficer.interface';
 import { WorkHistoryComponent } from '../../dialogs/work-history/work-history.component';
 import { OfficerDialogComponent } from '../../dialogs/officer-dialog/officer-dialog.component';
-import {PaginatorService} from 'src/app/shared/services';
+import { PaginatorService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-officers',
@@ -14,61 +14,40 @@ import {PaginatorService} from 'src/app/shared/services';
   styleUrls: ['./officers.component.scss'],
 })
 export class OfficersComponent implements OnInit, OnDestroy {
-  dataSource: officer[] = [];
-  displayedColumns = [
-    'nombre',
-    'dni',
-    'cargo',
-    'telefono',
-    'activo',
-    'opciones',
-  ];
+  dataSource = signal<officer[]>([]);
+  displayedColumns = ['nombre', 'dni', 'cargo', 'telefono', 'activo', 'opciones'];
   text: string = '';
 
   constructor(
     private funcionariosService: UsuariosService,
-    private paginatorService:PaginatorService,
+    private paginatorService: PaginatorService,
     public dialog: MatDialog
   ) {}
   ngOnDestroy(): void {}
 
   ngOnInit(): void {
-    this.Get();
+    this.getData();
   }
-  Get() {
-    if (this.text !== '') {
-      this.funcionariosService
-        .search(
-          this.paginatorService.limit,
-          this.paginatorService.offset,
-          this.text
-        )
-        .subscribe((data) => {
-          this.dataSource = data.officers;
-          this.paginatorService.length = data.length;
-        });
-    } else {
-      this.funcionariosService
-        .get(this.paginatorService.limit, this.paginatorService.offset)
-        .subscribe((data) => {
-          this.dataSource = data.officers;
-          this.paginatorService.length = data.length;
-        });
-    }
+  getData() {
+    const subscription =
+      this.text !== ''
+        ? this.funcionariosService.search({ ...this.paginatorService.PaginationParams, text: this.text })
+        : this.funcionariosService.findAll(this.paginatorService.PaginationParams);
+    subscription.subscribe((data) => {
+      this.dataSource.set(data.officers);
+      this.paginatorService.length = data.length;
+    });
   }
 
-  Add() {
+  add() {
     const dialogRef = this.dialog.open(OfficerDialogComponent, {
-      width: '1200px',
+      width: '800px',
+      disableClose: true,
     });
     dialogRef.afterClosed().subscribe((result: officer) => {
-      if (result) {
-        if (this.dataSource.length === this.paginatorService.limit) {
-          this.dataSource.pop();
-        }
-        this.paginatorService.length++;
-        this.dataSource = [result, ...this.dataSource];
-      }
+      if (!result) return;
+      this.dataSource.update((values) => [result, ...values]);
+      this.paginatorService.length++;
     });
   }
 
@@ -79,23 +58,19 @@ export class OfficersComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((result: officer) => {
       if (result) {
-        const indexFound = this.dataSource.findIndex(
-          (officer) => officer._id === result._id
-        );
-        this.dataSource[indexFound] = result;
-        this.dataSource = [...this.dataSource];
+        // const indexFound = this.dataSource.findIndex((officer) => officer._id === result._id);
+        // this.dataSource[indexFound] = result;
+        // this.dataSource = [...this.dataSource];
       }
     });
   }
 
   delete(officer: officer) {
-    this.funcionariosService.delete(officer._id).subscribe((newOfficer) => {
-      const indexFound = this.dataSource.findIndex(
-        (element) => element._id === officer._id
-      );
-      this.dataSource[indexFound].activo = newOfficer.activo;
-      this.dataSource = [...this.dataSource];
-    });
+    // this.funcionariosService.delete(officer._id).subscribe((newOfficer) => {
+    //   const indexFound = this.dataSource.findIndex((element) => element._id === officer._id);
+    //   this.dataSource[indexFound].activo = newOfficer.activo;
+    //   this.dataSource = [...this.dataSource];
+    // });
   }
 
   viewWorkHistory(officer: officer) {
@@ -142,8 +117,7 @@ export class OfficersComponent implements OnInit, OnDestroy {
         });
       } catch (error) {
         Swal.fire({
-          title:
-            'Error al cargar el archivo, verifique el formato para la carga',
+          title: 'Error al cargar el archivo, verifique el formato para la carga',
           icon: 'error',
         });
       }
@@ -152,14 +126,14 @@ export class OfficersComponent implements OnInit, OnDestroy {
       // })
     };
   }
-  applyFilter(event: Event) {
+  applyFilter() {
+    if (this.text === '') return;
     this.paginatorService.offset = 0;
-    this.text = (event.target as HTMLInputElement).value;
-    this.Get();
+    this.getData();
   }
   cancelSearch() {
     this.paginatorService.offset = 0;
     this.text = '';
-    this.Get();
+    this.getData();
   }
 }

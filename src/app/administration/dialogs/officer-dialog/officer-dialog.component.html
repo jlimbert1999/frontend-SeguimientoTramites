@@ -1,97 +1,60 @@
-<h2 mat-dialog-title>{{data?'EDICION':'CREACION'}} FUNCIONARIO</h2>
+<h2 mat-dialog-title>{{ data ? "EDICION" : "CREACION" }} FUNCIONARIO</h2>
 <mat-dialog-content>
-    <div class="container-sm">
-        <div class="row">
-            <div class="col-xl-4">
-                <div class="card bg-transparent mb-4 mb-xl-0">
-                    <div class="card-header">Imagen usuario</div>
-                    <div class="card-body text-center">
-                        <div class="imagePreview">
-                            <img class="img-account-profile rounded-circle mb-2" [src]="imageURL" alt="">
-                        </div>
-                        <div class="small font-italic text-muted mb-4">La imagen debe ser cuadrada</div>
-                        <input type="file" accept="image/*" (change)="changeImage($event)" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-8">
-                <div class="row">
-                    <div class="card bg-transparent mb-2">
-                        <div class="card-header">Detalles funcionario</div>
-                        <div class="card-body">
-                            <form [formGroup]="Form_Funcionario">
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <mat-form-field appearance="fill">
-                                            <mat-label>Nombre</mat-label>
-                                            <input class="uppercase" formControlName="nombre" matInput>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <mat-form-field appearance="fill">
-                                            <mat-label>Apellido paterno</mat-label>
-                                            <input class="uppercase" formControlName="paterno" matInput>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <mat-form-field appearance="fill">
-                                            <mat-label>Apellido materno</mat-label>
-                                            <input class="uppercase" formControlName="materno" matInput>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <mat-form-field appearance="fill">
-                                            <mat-label>Dni</mat-label>
-                                            <input formControlName="dni" matInput>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <mat-form-field appearance="fill">
-                                            <mat-label>Telefono</mat-label>
-                                            <input formControlName="telefono" matInput>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-8">
-                                        <mat-form-field appearance="fill">
-                                            <mat-label>Direccion</mat-label>
-                                            <input formControlName="direccion" matInput>
-                                        </mat-form-field>
-                                    </div>
-
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="card bg-transparent">
-                        <div class="card-header">Cargo laboral</div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div *ngIf="!noJob" class="col-sm-8">
-                                    <!-- <app-server-mat-select-search [initialValue]="data?data.cargo:null"
-                                        [placeholder]="'Buscar cargo'" [pathPropertyOfObjectDisplay]="'nombre'"
-                                        [data]="availableJobs" (eventSelectedOption)="selectJob($event)"
-                                        (eventSearch)="searchJob($event)"></app-server-mat-select-search> -->
-                                </div>
-                                <div class="col-sm-3">
-                                    <mat-checkbox (change)="removeJob()" [(ngModel)]="noJob" class="example-margin">Sin
-                                        cargo</mat-checkbox>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <form [formGroup]="FormOfficer">
+    <div class="row">
+      <div class="col-sm-4">
+        <mat-form-field appearance="fill">
+          <mat-label>Nombre</mat-label>
+          <input class="uppercase" formControlName="nombre" matInput />
+        </mat-form-field>
+      </div>
+      <div class="col-sm-4">
+        <mat-form-field appearance="fill">
+          <mat-label>Apellido paterno</mat-label>
+          <input class="uppercase" formControlName="paterno" matInput />
+        </mat-form-field>
+      </div>
+      <div class="col-sm-4">
+        <mat-form-field appearance="fill">
+          <mat-label>Apellido materno</mat-label>
+          <input class="uppercase" formControlName="materno" matInput />
+        </mat-form-field>
+      </div>
+      <div class="col-sm-4">
+        <mat-form-field appearance="fill">
+          <mat-label>Dni</mat-label>
+          <input formControlName="dni" matInput />
+        </mat-form-field>
+      </div>
+      <div class="col-sm-4">
+        <mat-form-field appearance="fill">
+          <mat-label>Telefono</mat-label>
+          <input formControlName="telefono" matInput />
+        </mat-form-field>
+      </div>
+      <div class="col-sm-4">
+        <mat-form-field appearance="fill">
+          <mat-label>Direccion</mat-label>
+          <input formControlName="direccion" matInput />
+        </mat-form-field>
+      </div>
     </div>
+  </form>
+  <div class="row">
+    @if(hasJob){
+    <div class="col-8">
+      <app-server-mat-select-search [options]="jobs()" (keyupEvent)="searchJob($event)" />
+    </div>
+    }
+    <div class="col-4">
+      <mat-checkbox class="example-margin" [(ngModel)]="hasJob" (change)="toggleJob()">HABILITAR CARGO</mat-checkbox>
+    </div>
+  </div>
+  <pre>{{ FormOfficer.value | json }}</pre>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-raised-button color="warn" mat-button mat-dialog-close>Cancelar</button>
-    <button mat-raised-button color="primary" mat-button [disabled]="Form_Funcionario.invalid"
-        (click)="guardar()">Guardar</button>
+  <button mat-raised-button color="warn" mat-button mat-dialog-close>Cancelar</button>
+  <button mat-raised-button color="primary" mat-button [disabled]="FormOfficer.invalid" (click)="guardar()">
+    Guardar
+  </button>
 </mat-dialog-actions>

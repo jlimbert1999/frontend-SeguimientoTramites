@@ -78,15 +78,11 @@ export class AccountsComponent implements OnInit {
     const dialogRef = this.dialog.open(CuentaDialogComponent, {
       width: '1000px',
       disableClose: true,
-
     });
     dialogRef.afterClosed().subscribe((result: account) => {
-      if (result) {
-        // if (this.paginatorService.limit === this.accounts.length) {
-        //   this.accounts.pop();
-        // }
-        // this.accounts = [result, ...this.accounts];
-      }
+      if (!result) return;
+      this.accounts.update((values) => [result, ...values]);
+      this.paginatorService.length++;
     });
   }
   addAccountWithAssign() {

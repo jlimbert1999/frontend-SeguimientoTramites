@@ -6,7 +6,6 @@ interface officer {
   telefono: string;
   direccion: string;
   cargo?: string;
-  cuenta: boolean;
 }
 export class OfficerDto {
   static FormtoModel(form: any) {
@@ -18,7 +17,6 @@ export class OfficerDto {
       telefono: form['telefono'],
       direccion: form['direccion'],
       cargo: form['cargo'],
-      cuenta: form['cuenta'],
     });
   }
   nombre: string;
@@ -29,7 +27,7 @@ export class OfficerDto {
   direccion: string;
   cargo?: string;
   cuenta: boolean;
-  constructor({ nombre, materno, paterno, dni, telefono, direccion, cargo, cuenta }: officer) {
+  constructor({ nombre, materno, paterno, dni, telefono, direccion, cargo }: officer) {
     this.nombre = nombre;
     this.materno = materno;
     this.paterno = paterno;
@@ -37,6 +35,5 @@ export class OfficerDto {
     this.telefono = telefono;
     this.direccion = direccion;
     this.cargo = cargo;
-    this.cuenta = cuenta;
   }
 }

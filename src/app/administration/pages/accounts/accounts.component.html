@@ -56,7 +56,7 @@
               <div *ngSwitchDefault>
                 <div class="d-flex flex-column">
                   <span class="fw-bold">{{ element.funcionario | fullname | titlecase }}</span>
-                  <span>{{ element.funcionario.cargo ?? "Sin cargo" }}</span>
+                  <span>{{ element.funcionario.cargo?.nombre ?? "Sin cargo" }}</span>
                 </div>
               </div>
             </div>
