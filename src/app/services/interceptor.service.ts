@@ -4,12 +4,13 @@ import { Router } from '@angular/router';
 import { catchError, finalize, Observable, throwError } from 'rxjs';
 import Swal from 'sweetalert2';
 import { AppearanceService } from './appearance.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InterceptorService {
-  constructor(private router: Router, private appearanceService: AppearanceService) {}
+  constructor(private router: Router, private appearanceService: AppearanceService, private dialogRef: MatDialog) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token') || ''}`);
@@ -31,6 +32,7 @@ export class InterceptorService {
   handleErrors(error: HttpErrorResponse) {
     if (error.status === 401) {
       this.router.navigate(['/login']);
+      this.dialogRef.closeAll();
     } else if (error.status === 403) {
       Swal.fire(
         'Sin autorizacion',

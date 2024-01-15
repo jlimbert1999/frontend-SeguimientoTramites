@@ -1,33 +1,13 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, computed, signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { RolService } from '../../services/rol.service';
-import { systemModule, resource, role } from '../../interfaces/role.interface';
-import { systemResource } from '../../interfaces';
-import { RoleDto } from '../../dto';
+import { FormControl, Validators } from '@angular/forms';
 
-enum validResources {
-  external = 'external',
-  internal = 'internal',
-  archived = 'archived',
-  communication = 'communication',
-  typeProcedures = 'types-procedures',
-  officers = 'officers',
-  accounts = 'accounts',
-  dependencies = 'dependencies',
-  institutions = 'institutions',
-  jobs = 'jobs',
-  roles = 'roles',
-  reports = 'roles',
-}
+import { RolService } from '../../services/rol.service';
+import { role } from '../../interfaces/role.interface';
+
+import { systemResource, validResources } from '../../interfaces';
+import { tree } from 'd3';
+// const SystemResources =
 
 @Component({
   selector: 'app-rol-dialog',
@@ -36,42 +16,10 @@ enum validResources {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RolDialogComponent implements OnInit {
-  name = new FormControl('', { nonNullable: true });
-  systemResources = [
-    {
-      value: validResources.external,
-      isSelected: false,
-      label: 'Externos',
-      actions: [
-        { value: 'create', label: 'Crear', isSelected: false },
-        { value: 'read', label: 'Ver', isSelected: false },
-        { value: 'update', label: 'Editar', isSelected: false },
-        { value: 'delete', label: 'Eliminar', isSelected: false },
-      ],
-    },
-    {
-      value: validResources.internal,
-      isSelected: false,
-      label: 'Internos',
-      actions: [
-        { value: 'create', label: 'Crear', isSelected: false },
-        { value: 'read', label: 'Ver', isSelected: false },
-        { value: 'update', label: 'Editar', isSelected: false },
-        { value: 'delete', label: 'Eliminar', isSelected: false },
-      ],
-    },
-    {
-      value: validResources.reports,
-      label: 'Reportes',
-      isSelected: false,
-      actions: [
-        { value: 'advanced-search', label: 'Busqueda avanzada', isSelected: false },
-        { value: 'quick-search', label: 'Busqueda rapida', isSelected: false },
-        { value: 'simple-search', label: 'Busqueda simple', isSelected: false },
-        { value: 'applicant', label: 'Solicitante', isSelected: false },
-      ],
-    },
-  ];
+  name = new FormControl('', { nonNullable: true } && Validators.required);
+  filterValue: string = '';
+  systemResources = signal<systemResource[]>([]);
+  isLoading = signal<boolean>(true);
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: role,
@@ -79,33 +27,65 @@ export class RolDialogComponent implements OnInit {
     private rolService: RolService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.rolService.getResources().subscribe((resources) => {
+      this.systemResources.set(resources);
+      this.loadPermissions();
+      this.isLoading.set(false);
+    });
+  }
 
-  save() {
-    const hasPermissions = this.systemResources.some((resource) =>
+  save(): void {
+    const hasPermissions = this.systemResources().some((resource) =>
       resource.actions.some((action) => action.isSelected)
     );
-    // if (this.name.invalid || !hasPermissions) {
-    //   return;
-    // }
-    // this.rolService.add(this.name.value, this.systemResources).subscribe((resp) => {
-    //   console.log(resp);
-    // });
+    if (this.name.invalid || !hasPermissions) {
+      return;
+    }
+    const subscription = this.data
+      ? this.rolService.edit(this.data._id, this.name.value!, this.systemResources())
+      : this.rolService.add(this.name.value!, this.systemResources());
+    subscription.subscribe((resp) => {
+      this.dialogRef.close(resp);
+    });
   }
 
-  setAllPermissions(index: number, isSelected: boolean) {
-    this.systemResources[index].isSelected = isSelected;
-    this.systemResources[index].actions.forEach((t) => (t.isSelected = isSelected));
+  setAllPermissions(validResource: validResources, isSelected: boolean) {
+    this.systemResources.update((values) => {
+      const index = values.findIndex((resource) => resource.value === validResource);
+      values[index].isSelected = isSelected;
+      values[index].actions.forEach((action) => (action.isSelected = isSelected));
+      return values;
+    });
   }
 
-  updateAllComplete(index: number) {
-    this.systemResources[index].isSelected = this.systemResources[index].actions.every((action) => action.isSelected);
+  updateAllComplete(validResource: validResources) {
+    this.systemResources.update((values) => {
+      const index = values.findIndex((resource) => resource.value === validResource);
+      values[index].isSelected = values[index].actions.every((action) => action.isSelected);
+      return values;
+    });
   }
 
-  someComplete(index: number): boolean {
-    return (
-      this.systemResources[index].actions.filter((action) => action.isSelected).length > 0 &&
-      !this.systemResources[index].isSelected
-    );
+  someComplete(validResource: validResources): boolean {
+    const index = this.systemResources().findIndex((resource) => resource.value === validResource);
+    const resorce = this.systemResources()[index];
+    return resorce.actions.filter((action) => action.isSelected).length > 0 && !resorce.isSelected;
+  }
+
+  loadPermissions() {
+    if (!this.data) return;
+    const { name, permissions } = this.data;
+    this.name.setValue(name);
+    this.systemResources.update((values) => {
+      permissions.forEach((permission) => {
+        const index = values.findIndex((resource) => resource.value === permission.resource);
+        if (index >= 0) {
+          values[index].actions.forEach((action) => (action.isSelected = permission.actions.includes(action.value)));
+          values[index].isSelected = values[index].actions.every((action) => action.isSelected);
+        }
+      });
+      return values;
+    });
   }
 }

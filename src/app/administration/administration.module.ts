@@ -28,6 +28,7 @@ import { TypeProcedureDialogComponent } from './dialogs/type-procedure-dialog/ty
 import { SettingsComponent } from './pages/settings/settings.component';
 import { AdministrationRoutingModule } from './administration-routing.module';
 import { FilterUsersSocketPipe } from './pipes/filter-users-socket.pipe';
+import { FilterSystemRolesPipe } from './pipes/filter-system-resources.pipe';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,6 @@ import { FilterUsersSocketPipe } from './pipes/filter-users-socket.pipe';
     DependenciaDialogComponent,
     DependenciasComponent,
     EditAccountDialogComponent,
-    FilterUsersSocketPipe,
     GroupwareComponent,
     InstitucionesComponent,
     InstitutionDialogComponent,
@@ -52,6 +52,8 @@ import { FilterUsersSocketPipe } from './pipes/filter-users-socket.pipe';
     TiposTramitesComponent,
     TypeProcedureDialogComponent,
     WorkHistoryComponent,
+    FilterUsersSocketPipe,
+    FilterSystemRolesPipe,
   ],
   imports: [
     CommonModule,

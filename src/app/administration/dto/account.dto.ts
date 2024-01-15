@@ -1,7 +1,20 @@
-export class CreateAccountDto {
-    funcionario?: string
-    login: string
-    password: string
-    dependencia: string
-    rol: string
+import { OfficerDto } from './officer.dto';
+
+interface AccountProps {
+  login: string;
+  password: string;
+  dependencia: string;
+  rol: string;
+}
+export class AccountDto {
+  static FormtoModel(fomAccount: any, formOfficer: any) {
+    const accountDto = {
+      login: fomAccount['login'],
+      dependencia: fomAccount['dependencia'],
+      rol: fomAccount['rol'],
+      password: fomAccount['password'],
+    };
+    return new AccountDto(accountDto, OfficerDto.FormtoModel(formOfficer));
+  }
+  constructor(public account: AccountProps, public officer: OfficerDto) {}
 }

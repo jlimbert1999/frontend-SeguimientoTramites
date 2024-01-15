@@ -1,5 +1,7 @@
+import { validResources } from './vadid-resources.enum';
+
 export interface systemResource {
-  value: string;
+  value: validResources;
   label: string;
   actions: action[];
   isSelected: boolean;

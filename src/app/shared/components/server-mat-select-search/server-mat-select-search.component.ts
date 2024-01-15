@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { ReplaySubject, Subject, debounceTime, filter, takeUntil, tap } from 'rxjs';
 import { MatSelectSearchData } from '../../interfaces';
 
@@ -20,7 +20,7 @@ export class ServerMatSelectSearchComponent<T> {
   @Output() selectEvent: EventEmitter<T> = new EventEmitter();
 
   public optionServerSideCtrl: FormControl = new FormControl();
-  public optionServerSideFilteringCtrl = new FormControl();
+  public optionServerSideFilteringCtrl = new FormControl<string>('', Validators.pattern(/^[a-zA-Z0-9\s.]+$/));
   public searching: boolean = false;
   public filteredServerSideOptions: ReplaySubject<MatSelectSearchData<T>[]> = new ReplaySubject(1);
   protected _onDestroy = new Subject<void>();
@@ -34,8 +34,9 @@ export class ServerMatSelectSearchComponent<T> {
         debounceTime(300)
       )
       .subscribe(
-        (value: string) => {
+        (value) => {
           this.searching = false;
+          if (!value || this.optionServerSideFilteringCtrl.invalid) return;
           this.keyupEvent.emit(value);
         },
         () => {

@@ -4,7 +4,6 @@
     (selectionChange)="selectOption($event.value)"
     [placeholder]="placehorder"
     [required]="required"
-    #singleSelect
   >
     <mat-option>
       <ngx-mat-select-search
@@ -13,11 +12,14 @@
         [formControl]="optionFilterCtrl"
       ></ngx-mat-select-search>
     </mat-option>
+    @if (!required) {
+    <mat-option>--</mat-option>
+    }
     <mat-option *ngFor="let option of filteredOptions | async" [value]="option.value">
       {{ option.text }}
     </mat-option>
   </mat-select>
-  @if (required) {
+  <!-- @if (required) {
   <mat-error>Este campo es obligatorio</mat-error>
-  }
+  } -->
 </mat-form-field>

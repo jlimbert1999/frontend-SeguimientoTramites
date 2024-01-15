@@ -1,0 +1,126 @@
+<toolbar title="Reporte: Busqueda" />
+<div class="container-fluid">
+  <div class="card bg-transparent">
+    <div class="card-header d-flex">
+      <div class="me-auto p-2">
+        <h5 class="card-title">Parametros tramite</h5>
+      </div>
+      <mat-button-toggle-group (change)="selectSearchMode($event.value)" value="simple">
+        <mat-button-toggle value="simple">Simple</mat-button-toggle>
+        <mat-button-toggle value="advanced">Avanzada</mat-button-toggle>
+      </mat-button-toggle-group>
+      <button mat-icon-button (click)="togglePanel()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+    @if(panelIsOpened()){
+    <div class="card-body">
+      <form [formGroup]="formProcedure()">
+        @switch (searchMode()) { @case ('simple') {
+        <div class="row">
+          <div class="col-sm-8">
+            <mat-form-field>
+              <mat-label>Alterno</mat-label>
+              <input matInput formControlName="code" />
+            </mat-form-field>
+          </div>
+          <div class="col-sm-4">
+            <mat-form-field>
+              <mat-label>GRUPO TRAMITE:</mat-label>
+              <mat-select formControlName="group">
+                <mat-option value="ExternalDetail">TRAMITES EXTERNOS</mat-option>
+                <mat-option value="InternalDetail">TRAMITES INTERNOS</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        } @case ('advanced') {
+
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-label>Alterno</mat-label>
+              <input matInput formControlName="code" />
+            </mat-form-field>
+          </div>
+          <div class="col-sm-2">
+            <mat-form-field>
+              <mat-label>Cite</mat-label>
+              <input matInput formControlName="cite" />
+            </mat-form-field>
+          </div>
+          <div class="col-sm-4">
+            <mat-form-field>
+              <mat-label>Referencia</mat-label>
+              <textarea matInput placeholder="Descripcion del tramite" formControlName="reference"></textarea>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-label>Rango de registro</mat-label>
+              <mat-date-range-input [rangePicker]="picker">
+                <input matStartDate formControlName="start" placeholder="Fecha inicial" />
+                <input matEndDate formControlName="end" placeholder="Fecha final" />
+              </mat-date-range-input>
+              <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-sm-3">
+            <mat-form-field>
+              <mat-label>GRUPO TRAMITE:</mat-label>
+              <mat-select formControlName="group">
+                <mat-option value="ExternalDetail">TRAMITES EXTERNOS</mat-option>
+                <mat-option value="InternalDetail">TRAMITES INTERNOS</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-2">
+            <mat-form-field>
+              <mat-label>Estado:</mat-label>
+              <mat-select formControlName="state">
+                @for (state of statesProcedure; track $index) {
+                <mat-option [value]="state">{{ state }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-7">
+            <app-server-mat-select-search
+              placeholder="Tipo de tramite"
+              [currentOption]="currentMatSelectOption"
+              [options]="types()"
+              (keyupEvent)="searchTypesProcedures($event)"
+              (selectEvent)="selectTypeProcedure($event)"
+            ></app-server-mat-select-search>
+          </div>
+        </div>
+        } @default { unknown search type } }
+      </form>
+      <hr />
+      <div class="d-flex justify-content-end button-row">
+        <div class="flex-grow-1">
+          <button mat-stroked-button color="accent">Imprimir</button>
+        </div>
+        <button mat-button color="warn" (click)="resetForm()">Limpiar</button>
+        <button mat-raised-button color="primary" [disabled]="formProcedure().invalid" (click)="generateReport()">
+          BUSCAR
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+  <div class="example-container mat-elevation-z8 mt-2">
+    <div class="table-container">
+      <app-table-procedure
+        [tableColumns]="displaycolums"
+        [dataSource]="datasource()"
+        [navigationParams]="PageParams"
+      ></app-table-procedure>
+    </div>
+    <app-paginator (changePage)="search()" />
+  </div>
+</div>

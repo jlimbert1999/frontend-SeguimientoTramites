@@ -1,14 +1,14 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { forkJoin } from 'rxjs';
 import { CuentaService } from 'src/app/administration/services/cuenta.service';
-import { institution } from '../../interfaces/institution.interface';
-import { dependency } from '../../interfaces/dependency.interface';
+
 import { account } from '../../interfaces/account.interface';
 import { role } from '../../interfaces/role.interface';
 import { job } from '../../interfaces/job.interface';
 import { createAccountPDF } from '../../helpers/pdfs/pdf-account';
+import { MatSelectSearchData } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-cuenta-dialog',
@@ -16,23 +16,21 @@ import { createAccountPDF } from '../../helpers/pdfs/pdf-account';
   styleUrls: ['./cuenta-dialog.component.scss'],
 })
 export class CuentaDialogComponent implements OnInit {
-  dependencias: any[] = [];
-  instituciones: any[] = [];
-  roles: role[] = [];
-  jobs: job[] = [];
+  institutions = signal<MatSelectSearchData<string>[]>([]);
+  dependencies = signal<MatSelectSearchData<string>[]>([]);
+  jobs = signal<MatSelectSearchData<string>[]>([]);
+  roles = signal<role[]>([]);
   hidePassword = true;
-
-  Form_Funcionario: FormGroup = this.fb.group({
+  FormOfficer: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
     paterno: ['', Validators.required],
     materno: [''],
     dni: ['', Validators.required],
     telefono: ['', [Validators.required, Validators.maxLength(8)]],
-    cargo: [null],
+    cargo: ['', Validators.required],
     direccion: ['SACABA', Validators.required],
   });
-
-  Form_Cuenta: FormGroup = this.fb.group({
+  FormAccount: FormGroup = this.fb.group({
     login: ['', [Validators.required, Validators.pattern(/^\S+$/), Validators.minLength(4), Validators.maxLength(10)]],
     password: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
     rol: ['', Validators.required],
@@ -47,46 +45,45 @@ export class CuentaDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    forkJoin([this.cuentasService.getInstitutions(), this.cuentasService.getRoles()]).subscribe((data) => {
-      this.instituciones = data[0].map((institution) => ({ value: institution._id, text: institution.nombre }));
-      this.roles = data[1];
-    });
+    this.getRoles();
   }
 
   save() {
-    this.cuentasService.add(this.Form_Funcionario.value, this.Form_Cuenta.value).subscribe((result) => {
-      createAccountPDF(result, this.Form_Cuenta.get('password')?.value);
-      this.dialogRef.close(result);
+    this.cuentasService.add(this.FormAccount.value, this.FormOfficer.value).subscribe((result) => {
+      // createAccountPDF(result, this.Form_Cuenta.get('password')?.value);
+      // this.dialogRef.close(result);
     });
   }
-
-  eventChangeTab() {
-    const nombre: string = this.Form_Funcionario.get('nombre')?.value;
-    const materno: string = this.Form_Funcionario.get('materno')?.value;
-    const paterno: string = this.Form_Funcionario.get('paterno')?.value;
-    const dni: string = this.Form_Funcionario.get('dni')?.value;
-    const login = nombre.charAt(0) + paterno + materno.charAt(0);
-    this.Form_Cuenta.get('login')?.setValue(login.trim().toUpperCase());
-    this.Form_Cuenta.get('password')?.setValue(dni.trim());
+  getRoles() {
+    this.cuentasService.getRoles().subscribe((roles) => this.roles.set(roles));
   }
-  getDependencies(id_institution: string | null) {
-    this.Form_Cuenta.get('institucion')?.setValue(id_institution || '');
-    if (id_institution) {
-      this.cuentasService.getDependencies(id_institution).subscribe((data) => {
-        this.dependencias = data.map((dependency) => ({ value: dependency._id, text: dependency.nombre }));
-      });
-    }
+  searchInstitutions(term: string) {
+    this.cuentasService.getInstitutions(term).subscribe((data) => {
+      this.institutions.set(data.map((inst) => ({ text: inst.nombre, value: inst._id })));
+    });
+  }
+  searchDependencies(id_institucion: string) {
+    this.cuentasService.getDependenciesOfInstitution(id_institucion).subscribe((data) => {
+      this.dependencies.set(data.map((dependency) => ({ value: dependency._id, text: dependency.nombre })));
+    });
   }
   selectDependency(id_dependency: string) {
-    this.Form_Cuenta.get('dependencia')?.setValue(id_dependency || '');
+    this.FormAccount.get('dependencia')?.setValue(id_dependency);
   }
-  searchJob(value: string) {
-    this.cuentasService.getJobForOfficer(value).subscribe((data) => {
-      this.jobs = data;
+
+  searchJob(term: string) {
+    this.cuentasService.searchJobsForOfficer(term).subscribe((data) => {
+      this.jobs.set(data.map((job) => ({ value: job._id, text: job.nombre })));
     });
   }
-  selectJob(job: job | null) {
-    this.Form_Funcionario.get('cargo')?.setValue(job ? job._id : null);
+  selectJob(id_job: string) {
+    this.FormOfficer.get('cargo')?.setValue(id_job);
+  }
+  generateCrendentials() {
+    const { nombre = '', paterno = '', dni = '', materno = '' } = this.FormOfficer.value;
+    const login = nombre.charAt(0) + paterno + materno.charAt(0);
+    this.FormAccount.get('login')?.setValue(login.trim().toUpperCase());
+    this.FormAccount.get('password')?.setValue(dni.trim());
   }
 
   getErrorMessagesForm(control: AbstractControl) {

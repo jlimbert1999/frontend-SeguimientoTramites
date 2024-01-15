@@ -1,19 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DetailComponent } from '../procedures/pages/detail/detail.component';
-import { SimpleSearchComponent } from './pages/simple-search/simple-search.component';
 import { ApplicantComponent } from './pages/applicant/applicant.component';
 import { AvancedSearchComponent } from './pages/avanced-search/avanced-search.component';
 import { DependentsComponent } from './pages/dependents/dependents.component';
 import { UnitComponent } from './pages/unit/unit.component';
 import { DashboardTotalCommunicationsComponent } from './pages/dashboard-total-communications/dashboard-total-communications.component';
 import { RankingUsersComponent } from './pages/ranking-users/ranking-users.component';
-import { QuickSearchComponent } from './pages/quick-search/quick-search.component';
+import { SearchProcedureComponent } from './pages/search-procedure/search-procedure.component';
 
 const routes: Routes = [
-  { path: 'busqueda-simple', component: SimpleSearchComponent },
   { path: 'busqueda-avanzada', component: AvancedSearchComponent },
-  { path: 'busqueda-rapida', component: QuickSearchComponent },
+  { path: 'busqueda-tramite', component: SearchProcedureComponent },
   { path: 'solicitante', component: ApplicantComponent },
   { path: 'dependientes', component: DependentsComponent },
   { path: 'unidad', component: UnitComponent },

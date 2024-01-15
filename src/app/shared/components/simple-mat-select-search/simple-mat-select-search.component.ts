@@ -21,7 +21,7 @@ export class SimpleMatSelectSearchComponent<T> {
   @Output() selectEvent: EventEmitter<T> = new EventEmitter();
 
   public data: MatSelectSearchData<T>[] = [];
-  public optionCtrl: FormControl = new FormControl('', [Validators.required]);
+  public optionCtrl: FormControl = new FormControl('');
   public optionFilterCtrl: FormControl = new FormControl();
   public filteredOptions: ReplaySubject<MatSelectSearchData<T>[]> = new ReplaySubject(1);
   protected _onDestroy = new Subject<void>();

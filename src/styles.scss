@@ -4,11 +4,13 @@
 @import "ngx-toastr/toastr";
 @import "./assets/scss/theme.scss";
 @import "./assets/scss/toastr.scss";
-@import "./assets/scss/tables.config.scss";
+
 @import "./assets/scss/admin-tables.config.scss";
 @import "./assets/scss/orgChart.scss";
 @import "./assets/scss/procedure-tables.scss";
 @import "./assets/scss/status-badges.scss";
+
+@import "./assets/scss/tables-config.scss";
 
 html,
 body {

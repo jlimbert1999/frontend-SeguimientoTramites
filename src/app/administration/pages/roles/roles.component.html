@@ -2,14 +2,14 @@
   <mat-toolbar color="primary">
     <span>Roles </span>
     <span class="example-spacer"></span>
-    <button (click)="Add()" mat-icon-button matTooltip="Crear cuenta">
+    <button (click)="add()" mat-icon-button matTooltip="Crear cuenta">
       <mat-icon>add</mat-icon>
     </button>
   </mat-toolbar>
 </p>
 
 <div class="container-fluid">
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8">
     <ng-container matColumnDef="rol">
       <th mat-header-cell *matHeaderCellDef>Rol</th>
       <td mat-cell *matCellDef="let element">
@@ -27,7 +27,7 @@
     <ng-container matColumnDef="opciones">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-        <button mat-icon-button (click)="Edit(element)">
+        <button mat-icon-button (click)="edit(element)">
           <mat-icon>edit</mat-icon>
         </button>
       </td>

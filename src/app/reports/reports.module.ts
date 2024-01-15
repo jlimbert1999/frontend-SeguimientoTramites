@@ -6,19 +6,17 @@ import { ApplicantComponent } from './pages/applicant/applicant.component';
 import { AvancedSearchComponent } from './pages/avanced-search/avanced-search.component';
 import { DependentsComponent } from './pages/dependents/dependents.component';
 import { MaterialModule } from '../material/material.module';
-import { SimpleSearchComponent } from './pages/simple-search/simple-search.component';
 import { ReportsRoutingModule } from './reports-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { TableProcedureComponent } from './components/table-procedure/table-procedure.component';
 import { UnitComponent } from './pages/unit/unit.component';
 import { DashboardTotalCommunicationsComponent } from './pages/dashboard-total-communications/dashboard-total-communications.component';
 import { RankingUsersComponent } from './pages/ranking-users/ranking-users.component';
-import { QuickSearchComponent } from './pages/quick-search/quick-search.component';
+import { SearchProcedureComponent } from './pages/search-procedure/search-procedure.component';
 
 @NgModule({
   declarations: [
-    SimpleSearchComponent,
-    QuickSearchComponent,
+    SearchProcedureComponent,
     ApplicantComponent,
     TableProcedureComponent,
     AvancedSearchComponent,

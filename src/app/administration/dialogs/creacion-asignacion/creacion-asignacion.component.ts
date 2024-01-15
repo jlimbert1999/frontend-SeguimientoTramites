@@ -60,7 +60,7 @@ export class CreacionAsignacionComponent implements OnInit {
   }
   getDependencies(id_institution: string) {
     this.Form_Cuenta.get('institucion')?.setValue(id_institution || '');
-    this.cuentaService.getDependencies(id_institution).subscribe((data) => {
+    this.cuentaService.getDependenciesOfInstitution(id_institution).subscribe((data) => {
       this.dependencias = data.map((dependency) => ({ value: dependency._id, text: dependency.nombre }));
     });
   }

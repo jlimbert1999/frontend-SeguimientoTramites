@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { CreateOfficerDto } from '../dto/officer.dto';
+// import { CreateOfficerDto } from '../dto/officer.dto';
 import { officer } from '../interfaces/oficer.interface';
 import { workHistory } from '../interfaces/workHistory.interface';
 
@@ -13,11 +13,11 @@ const base_url = environment.base_url
 })
 export class UsuariosService {
   constructor(private http: HttpClient) { }
-  add(officer: CreateOfficerDto, image: File | undefined) {
+  add(officer: any, image: File | undefined) {
     let formData = new FormData();
-    for (const [key, value] of Object.entries(officer)) {
-      formData.append(key, value);
-    }
+    // for (const [key, value] of Object.entries(officer)) {
+    //   formData.append(key, any);
+    // }
     if (image) formData.append("image", image);
     return this.http.post<officer>(`${base_url}/officer`, formData).pipe(
       map(resp => resp)
