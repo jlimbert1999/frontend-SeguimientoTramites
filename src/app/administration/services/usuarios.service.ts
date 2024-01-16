@@ -20,16 +20,9 @@ const base_url = environment.base_url;
 })
 export class UsuariosService {
   constructor(private http: HttpClient) {}
-  add(officer: Object): Observable<Officer> {
-    const officerDto = OfficerDto.FormtoModel(officer);
-    return this.http
-      .post<officer>(`${base_url}/officer`, officerDto)
-      .pipe(map((resp) => Officer.officerFromJson(resp)));
-  }
   searchJobs(term: string) {
     return this.http.get<job[]>(`${base_url}/officer/jobs/${term}`);
   }
-
   agregar_multiples_funcionarios(funcionarios: any[]) {
     return this.http.post<{ ok: boolean; funcionarios: any }>(`${base_url}/usuarios/cargar`, { funcionarios }).pipe(
       map((resp) => {
@@ -57,6 +50,12 @@ export class UsuariosService {
       })
     );
   }
+  add(officer: Object): Observable<Officer> {
+    const officerDto = OfficerDto.FormtoModel(officer);
+    return this.http
+      .post<officer>(`${base_url}/officer`, officerDto)
+      .pipe(map((resp) => Officer.officerFromJson(resp)));
+  }
 
   edit(id_officer: string, officer: officer) {
     return this.http.put<officer>(`${base_url}/officer/${id_officer}`, officer).pipe(map((resp) => resp));
@@ -66,6 +65,9 @@ export class UsuariosService {
     return this.http.delete<officer>(`${base_url}/officer/${id_officer}`).pipe(map((resp) => resp));
   }
 
+  removeJob(id_officer: string) {
+    return this.http.put<{ message: string }>(`${base_url}/officer/unlink/${id_officer}`, undefined);
+  }
   getWorkHistory(id_officer: string, limit: number, offset: number) {
     const params = new HttpParams().set('limit', limit).set('offset', offset);
     return this.http

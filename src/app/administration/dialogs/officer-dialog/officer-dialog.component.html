@@ -41,15 +41,27 @@
     </div>
   </form>
   <div class="row">
-    @if(hasJob){
-    <div class="col-8">
-      <app-server-mat-select-search [options]="jobs()" (keyupEvent)="searchJob($event)" />
+    @if(!FormOfficer.get('cargo')?.value){
+    <div class="col-sm-12">
+      <app-server-mat-select-search
+        placeholder="Buscar cargo"
+        [options]="jobs()"
+        (keyupEvent)="searchJob($event)"
+        (selectEvent)="setJob($event)"
+      />
     </div>
+    } @else {
+    <mat-form-field class="example-full-width">
+      <mat-label>MI CARGO</mat-label>
+      <input matInput readonly [value]="currentJobName()" />
+      <button matSuffix mat-icon-button aria-label="Clear" (click)="removeJob()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
     }
-    <div class="col-4">
-      <mat-checkbox class="example-margin" [(ngModel)]="hasJob" (change)="toggleJob()">HABILITAR CARGO</mat-checkbox>
-    </div>
   </div>
+
+  @if(data?.cargo){ }
   <pre>{{ FormOfficer.value | json }}</pre>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

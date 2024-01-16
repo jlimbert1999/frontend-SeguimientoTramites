@@ -2,28 +2,29 @@ interface officer {
   nombre: string;
   paterno: string;
   materno: string;
-  dni: string;
-  telefono: string;
+  dni: number;
+  telefono: number;
   direccion: string;
   cargo?: string;
 }
 export class OfficerDto {
   static FormtoModel(form: any) {
+    if (form['cargo'] === '') delete form['cargo'];
     return new OfficerDto({
       nombre: form['nombre'],
       materno: form['materno'],
       paterno: form['paterno'],
-      dni: form['dni'],
-      telefono: form['telefono'],
       direccion: form['direccion'],
       cargo: form['cargo'],
+      telefono: form['telefono'],
+      dni: form['dni'],
     });
   }
   nombre: string;
   materno: string;
   paterno: string;
-  dni: string;
-  telefono: string;
+  dni: number;
+  telefono: number;
   direccion: string;
   cargo?: string;
   cuenta: boolean;

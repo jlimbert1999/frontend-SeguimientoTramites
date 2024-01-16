@@ -5,16 +5,18 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { officer } from 'src/app/administration/interfaces/oficer.interface';
 import { UsuariosService } from 'src/app/administration/services/usuarios.service';
 import { MatSelectSearchData } from 'src/app/shared/interfaces';
+import { AlertService } from 'src/app/shared/services';
+import { job } from '../../interfaces';
 
 @Component({
   selector: 'app-usuario-dialog',
   templateUrl: './officer-dialog.component.html',
-  styleUrls: ['./officer-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OfficerDialogComponent implements OnInit {
   hasJob: boolean = true;
-  jobs = signal<MatSelectSearchData<string>[]>([]);
+  currentJobName = signal<string | undefined>(undefined);
+  jobs = signal<MatSelectSearchData<job>[]>([]);
   FormOfficer: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
     paterno: ['', Validators.required],
@@ -22,21 +24,24 @@ export class OfficerDialogComponent implements OnInit {
     dni: ['', Validators.required],
     telefono: ['', [Validators.required, Validators.maxLength(8)]],
     direccion: ['', Validators.required],
-    cargo: ['', Validators.required],
   });
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: officer,
+    @Inject(MAT_DIALOG_DATA) public data: officer | undefined,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<OfficerDialogComponent>,
-    private officerService: UsuariosService
+    private officerService: UsuariosService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
-    // if (!this.data) return;
-    // const { cargo, ...values } = this.data;
-    // if (!cargo) this.hasJob.set(false);
-    // this.FormOfficer.patchValue({ ...values, cargo: cargo?._id });
+    if (this.data) {
+      const { cargo, ...values } = this.data;
+      this.FormOfficer.patchValue(values);
+      if (cargo) {
+        this.setJob(cargo);
+      }
+    }
   }
 
   guardar() {
@@ -49,13 +54,32 @@ export class OfficerDialogComponent implements OnInit {
   }
   searchJob(value: string) {
     this.officerService.searchJobs(value).subscribe((data) => {
-      this.jobs.set(data.map((job) => ({ value: job._id, text: job.nombre })));
+      this.jobs.set(data.map((job) => ({ value: job, text: job.nombre })));
     });
   }
 
-  toggleJob() {
-    this.hasJob
-      ? this.FormOfficer.addControl('cargo', new FormControl('', Validators.required))
-      : this.FormOfficer.removeControl('cargo');
+  setJob(job: job) {
+    this.FormOfficer.setControl('cargo', new FormControl(job._id));
+    this.currentJobName.set(job.nombre);
+  }
+
+  removeJob() {
+    if (this.data?.cargo) {
+      this.alertService.showQuestionAlert(
+        `¿Quitar asignacion del cargo ${this.data.cargo?.nombre}?`,
+        `El funcionario ${this.data.nombre} ${this.data.paterno} ${this.data.materno} se mostrara como (Sin cargo)`,
+        () => this.removeAssignedJob()
+      );
+    } else {
+      this.FormOfficer.removeControl('cargo');
+      this.currentJobName.set(undefined);
+    }
+  }
+
+  private removeAssignedJob() {
+    this.officerService.removeJob(this.data?._id!).subscribe(() => {
+      this.FormOfficer.removeControl('cargo');
+      this.currentJobName.set(undefined);
+    });
   }
 }

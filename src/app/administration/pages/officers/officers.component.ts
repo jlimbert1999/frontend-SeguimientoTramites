@@ -51,9 +51,9 @@ export class OfficersComponent implements OnInit, OnDestroy {
     });
   }
 
-  Edit(officer: officer) {
+  edit(officer: officer) {
     const dialogRef = this.dialog.open(OfficerDialogComponent, {
-      width: '1200px',
+      width: '800px',
       data: officer,
     });
     dialogRef.afterClosed().subscribe((result: officer) => {
