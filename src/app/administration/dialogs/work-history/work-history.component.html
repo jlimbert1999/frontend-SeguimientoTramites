@@ -1,17 +1,32 @@
 <h2 mat-dialog-title>HISTORIAL DE TRABAJO</h2>
-<mat-dialog-content class="mat-typography">
-    <div *ngIf="history.length===0" class="alert alert-primary" role="alert">
-       El funcionario aun no ha sido asignado a un cargo
-    </div>
-    <mat-list *ngIf="history.length>0">
-        <mat-list-item *ngFor="let log of history">
-            <mat-icon matListItemIcon>manage_accounts</mat-icon>
-            <div matListItemTitle>{{log.officer|fullname|titlecase}}</div>
-            <div matListItemLine>Ha ingresado con el cargo {{log.job.nombre}}</div>
-            Fecha: {{log.date|date:'short'}}
-        </mat-list-item>
-    </mat-list>
+<mat-dialog-content>
+  @if (isLoading()) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  } @else {
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Fecha</th>
+        <th scope="col">Funcionario</th>
+        <th scope="col">Detalle</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (log of history(); track $index) {
+      <tr>
+        <th scope="row">{{ log.date | date : "short" }}</th>
+        <td>{{ log.officer | fullname | titlecase }}</td>
+        <td>cargo adquirido: {{ log.job.nombre }}</td>
+      </tr>
+      } @empty {
+      <tr>
+        <td colspan="3">SIN EVENTOS</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  }
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>CERRAR</button>
+  <button mat-button mat-dialog-close>CERRAR</button>
 </mat-dialog-actions>

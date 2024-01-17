@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@ang
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { officer } from 'src/app/administration/interfaces/oficer.interface';
 import { UsuariosService } from 'src/app/administration/services/usuarios.service';
 import { MatSelectSearchData } from 'src/app/shared/interfaces';
 import { AlertService } from 'src/app/shared/services';
 import { job } from '../../interfaces';
+import { Officer } from '../../models/officer.model';
 
 @Component({
   selector: 'app-usuario-dialog',
@@ -14,20 +14,22 @@ import { job } from '../../interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OfficerDialogComponent implements OnInit {
-  hasJob: boolean = true;
   currentJobName = signal<string | undefined>(undefined);
   jobs = signal<MatSelectSearchData<job>[]>([]);
   FormOfficer: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
     paterno: ['', Validators.required],
     materno: [''],
-    dni: ['', Validators.required],
-    telefono: ['', [Validators.required, Validators.maxLength(8)]],
-    direccion: ['', Validators.required],
+    dni: ['', [Validators.required, Validators.pattern(/^\d+$/), Validators.minLength(6), Validators.maxLength(8)]],
+    telefono: [
+      '',
+      [Validators.required, Validators.pattern(/^\d+$/), Validators.minLength(6), Validators.maxLength(8)],
+    ],
+    direccion: ['Sacaba', Validators.required],
   });
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: officer | undefined,
+    @Inject(MAT_DIALOG_DATA) public officer: Officer | undefined,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<OfficerDialogComponent>,
     private officerService: UsuariosService,
@@ -35,8 +37,8 @@ export class OfficerDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (this.data) {
-      const { cargo, ...values } = this.data;
+    if (this.officer) {
+      const { cargo, ...values } = this.officer;
       this.FormOfficer.patchValue(values);
       if (cargo) {
         this.setJob(cargo);
@@ -44,17 +46,17 @@ export class OfficerDialogComponent implements OnInit {
     }
   }
 
-  guardar() {
-    const subscription = this.data
-      ? this.officerService.edit(this.data._id, this.FormOfficer.value)
+  save() {
+    const subscription = this.officer
+      ? this.officerService.edit(this.officer._id, this.FormOfficer.value)
       : this.officerService.add(this.FormOfficer.value);
     subscription.subscribe((officer) => {
-      // this.dialogRef.close(officer);
+      this.dialogRef.close(officer);
     });
   }
   searchJob(value: string) {
-    this.officerService.searchJobs(value).subscribe((data) => {
-      this.jobs.set(data.map((job) => ({ value: job, text: job.nombre })));
+    this.officerService.searchJobs(value).subscribe((officer) => {
+      this.jobs.set(officer.map((job) => ({ value: job, text: job.nombre })));
     });
   }
 
@@ -64,10 +66,10 @@ export class OfficerDialogComponent implements OnInit {
   }
 
   removeJob() {
-    if (this.data?.cargo) {
+    if (this.officer?.cargo) {
       this.alertService.showQuestionAlert(
-        `¿Quitar asignacion del cargo ${this.data.cargo?.nombre}?`,
-        `El funcionario ${this.data.nombre} ${this.data.paterno} ${this.data.materno} se mostrara como (Sin cargo)`,
+        `¿Quitar asignacion del cargo ${this.officer.cargo?.nombre}?`,
+        `El funcionario ${this.officer.fullname} se mostrara como (Sin cargo)`,
         () => this.removeAssignedJob()
       );
     } else {
@@ -77,9 +79,10 @@ export class OfficerDialogComponent implements OnInit {
   }
 
   private removeAssignedJob() {
-    this.officerService.removeJob(this.data?._id!).subscribe(() => {
+    this.officerService.removeJob(this.officer?._id!).subscribe(() => {
       this.FormOfficer.removeControl('cargo');
       this.currentJobName.set(undefined);
+      delete this.officer?.cargo;
     });
   }
 }

@@ -1,93 +1,73 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { InstitucionesService } from '../../services/instituciones.service';
 import { InstitutionDialogComponent } from '../../dialogs/institution-dialog/institution-dialog.component';
 import { institution } from '../../interfaces/institution.interface';
-import {PaginatorService} from 'src/app/shared/services';
+import { PaginatorService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-instituciones',
   templateUrl: './instituciones.component.html',
-  styleUrls: ['./instituciones.component.scss']
+  styleUrls: ['./instituciones.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstitucionesComponent implements OnInit {
-  displayedColumns: string[] = ['sigla', 'nombre', 'situacion', 'options'];
-  dataSource: institution[] = []
-  text: string = ''
+  displayedColumns: string[] = ['sigla', 'nombre', 'situacion', 'simple'];
+  dataSource = signal<institution[]>([]);
+  text: string = '';
 
   constructor(
     public dialog: MatDialog,
     public institucionesService: InstitucionesService,
-    public paginatorService:PaginatorService
-  ) { }
+    public paginatorService: PaginatorService
+  ) {}
 
   ngOnInit(): void {
-    this.Get()
+    this.getData();
   }
 
-  Add() {
+  add() {
     const dialogRef = this.dialog.open(InstitutionDialogComponent, {
-      width: '700px'
+      width: '700px',
     });
     dialogRef.afterClosed().subscribe((result: institution) => {
       if (result) {
-        if (this.dataSource.length === this.paginatorService.limit) {
-          this.dataSource.pop()
-        }
-        this.paginatorService.length++
-        this.dataSource = [result, ...this.dataSource]
       }
     });
   }
   Edit(data: institution) {
     const dialogRef = this.dialog.open(InstitutionDialogComponent, {
       width: '700px',
-      data
+      data,
     });
     dialogRef.afterClosed().subscribe((result: institution) => {
       if (result) {
-        const foundIndex = this.dataSource.findIndex(inst => inst._id === result._id);
-        if (foundIndex >= 0) {
-          this.dataSource[foundIndex] = result
-          this.dataSource = [...this.dataSource]
-        }
       }
     });
   }
   Delete(data: institution) {
-    this.institucionesService.delete(data._id).subscribe(newState => {
-      const foundIndex = this.dataSource.findIndex(inst => inst._id === data._id);
-      if (foundIndex >= 0) {
-        this.dataSource[foundIndex].activo = newState
-        this.dataSource = [...this.dataSource]
-      }
-    })
+    this.institucionesService.delete(data._id).subscribe((newState) => {});
   }
 
-  Get() {
-    if (this.text !== '') {
-      this.institucionesService.search(this.paginatorService.limit, this.paginatorService.offset, this.text).subscribe(data => {
-        this.dataSource = data.institutions
-        this.paginatorService.length = data.length
-      })
-    }
-    else {
-      this.institucionesService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-        this.dataSource = data.institutions
-        this.paginatorService.length = data.length
-      })
-    }
+  getData() {
+    const subscription =
+      this.text !== ''
+        ? this.institucionesService.search({ term: this.text, ...this.paginatorService.PaginationParams })
+        : this.institucionesService.get(this.paginatorService.PaginationParams);
+    subscription.subscribe((data) => {
+      this.dataSource.set(data.institutions);
+      this.paginatorService.length = data.length;
+    });
   }
 
   applyFilter(event: Event) {
-    this.paginatorService.offset = 0
+    this.paginatorService.offset = 0;
     this.text = (event.target as HTMLInputElement).value;
-    this.Get()
+    this.getData();
   }
   cancelSearch() {
-    this.paginatorService.offset = 0
-    this.text = ''
-    this.Get()
+    this.paginatorService.offset = 0;
+    this.text = '';
+    this.getData();
   }
-
 }

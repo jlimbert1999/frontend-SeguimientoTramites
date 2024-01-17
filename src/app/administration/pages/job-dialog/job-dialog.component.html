@@ -1,42 +1,35 @@
-<h2 mat-dialog-title>{{data?'EDICION':'CREACION'}} CARGO</h2>
-<mat-dialog-content class="mat-typography">
-    <form [formGroup]="FormJob">
-        <div class="row">
-            <div class="col-sm-8">
-                <mat-form-field class="example-full-width">
-                    <mat-label>Nombre del cargo</mat-label>
-                    <input formControlName="nombre" matInput>
-                </mat-form-field>
-            </div>
-            <div class="col-sm-4">
-                <mat-checkbox formControlName="isRoot" matTooltip="Crear un nuevo organigrama">Superior</mat-checkbox>
-            </div>
-        </div>
-        <div class="row">
-            <!-- <app-server-mat-select-search [placeholder]="'Buscar cargos dependientes'" [data]="jobs"
-                (eventSelectedOption)="selectDependents($event)" [pathPropertyOfObjectDisplay]="'nombre'"
-                (eventSearch)="searchDependents($event)"></app-server-mat-select-search> -->
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <mat-list>
-                    <mat-list-item *ngIf="dependentJobs.length===0">
-                        Sin dependientes
-                    </mat-list-item>
-                    <mat-list-item *ngFor="let folder of dependentJobs; let i=index">
-                        <div mat-subheader>Cargos</div>
-                        <div matListItemTitle>{{folder.nombre}}</div>
-                        <button (click)="removeDependentJob(i)" mat-icon-button matListItemMeta>
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                        <mat-divider></mat-divider>
-                    </mat-list-item>
-                </mat-list>
-            </div>
-        </div>
-    </form>
+<h2 mat-dialog-title>{{ job ? "EDICION" : "CREACION" }} CARGO</h2>
+<mat-dialog-content>
+  <form>
+    <div class="row">
+      <div class="col-12">
+        <mat-form-field class="example-full-width">
+          <mat-label>Nombre del cargo</mat-label>
+          <input [formControl]="name" matInput />
+        </mat-form-field>
+      </div>
+    </div>
+    <!-- <div class="col-sm-2"> -->
+    <!-- <mat-checkbox formControlName="isRoot" matTooltip="Crear un nuevo organigrama">Superior</mat-checkbox> -->
+    <!-- </div> -->
+    <!-- <div class="row"> -->
+    <!-- <div class="col-sm-12"> -->
+    <!-- <mat-list> -->
+    <!-- <mat-list-item *ngIf="dependentJobs.length === 0"> Sin dependientes </mat-list-item> -->
+    <!-- <mat-list-item *ngFor="let folder of dependentJobs; let i = index"> -->
+    <!-- <div mat-subheader>Cargos</div> -->
+    <!-- <div matListItemTitle>{{ folder.nombre }}</div> -->
+    <!-- <button (click)="removeDependentJob(i)" mat-icon-button matListItemMeta> -->
+    <!-- <mat-icon>delete</mat-icon> -->
+    <!-- </button> -->
+    <!-- <mat-divider></mat-divider> -->
+    <!-- </mat-list-item> -->
+    <!-- </mat-list> -->
+    <!-- </div> -->
+    <!-- </div> -->
+  </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-flat-button color="warn" mat-dialog-close>Cancelar</button>
-    <button mat-flat-button color="primary" (click)="save()">Aceptar</button>
+  <button mat-flat-button color="warn" mat-dialog-close>Cancelar</button>
+  <button mat-flat-button color="primary" [disabled]="name.invalid" (click)="save()">Aceptar</button>
 </mat-dialog-actions>

@@ -1,28 +1,21 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { UsuariosService } from '../../services/usuarios.service';
-import { officer } from '../../interfaces/oficer.interface';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { workHistory } from '../../interfaces/workHistory.interface';
+import { UsuariosService } from '../../services/usuarios.service';
+import { workHistoryResponse, officer } from '../../interfaces';
 
 @Component({
   selector: 'app-work-history',
   templateUrl: './work-history.component.html',
-  styleUrls: ['./work-history.component.scss']
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkHistoryComponent implements OnInit {
-  history: workHistory[] = []
-  constructor(
-    private officerService: UsuariosService,
-    @Inject(MAT_DIALOG_DATA) public officer: officer
-  ) {
-
-  }
+  isLoading = signal<boolean>(true);
+  history = signal<workHistoryResponse[]>([]);
+  constructor(private officerService: UsuariosService, @Inject(MAT_DIALOG_DATA) public officer: officer) {}
   ngOnInit(): void {
-    this.officerService.getWorkHistory(this.officer._id, 100, 0).subscribe(data => {
-      this.history = data
-    })
-   
+    this.officerService.getWorkHistory(this.officer._id, 0).subscribe((data) => {
+      this.history.set(data);
+      this.isLoading.set(false);
+    });
   }
-
-
 }

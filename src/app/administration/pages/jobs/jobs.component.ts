@@ -1,81 +1,71 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { CargoService } from '../../services/cargo.service';
 import { MatDialog } from '@angular/material/dialog';
 import { job } from '../../interfaces/job.interface';
 import { JobDialogComponent } from '../job-dialog/job-dialog.component';
-import {PaginatorService} from 'src/app/shared/services';
+import { PaginatorService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-jobs',
   templateUrl: './jobs.component.html',
-  styleUrls: ['./jobs.component.scss']
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobsComponent {
-  text: string = ''
-  dataSource: job[] = []
-  displayedColumns = ['nombre','options']
+  text: string = '';
+  dataSource = signal<job[]>([]);
+  displayedColumns = ['name', 'options'];
   constructor(
     private cargoService: CargoService,
-    private paginatorService:PaginatorService,
-    public dialog: MatDialog,
+    private paginatorService: PaginatorService,
+    public dialog: MatDialog
   ) {
-    this.Get()
+    this.getData();
   }
 
-  Get() {
-    if (this.text !== '') {
-      this.cargoService.search(this.paginatorService.limit, this.paginatorService.offset, this.text).subscribe(data => {
-        this.dataSource = data.jobs
-        this.paginatorService.length = data.length
-      })
-    }
-    else {
-      this.cargoService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe(data => {
-        this.dataSource = data.jobs
-        this.paginatorService.length = data.length
-      })
-    }
+  getData() {
+    const supscription =
+      this.text !== ''
+        ? this.cargoService.search({ text: this.text, ...this.paginatorService.PaginationParams })
+        : this.cargoService.findAll(this.paginatorService.PaginationParams);
+    supscription.subscribe((data) => {
+      this.dataSource.set(data.jobs);
+      this.paginatorService.length = data.length;
+    });
   }
 
-  Edit(item: job) {
+  edit(item: job) {
     const dialogRef = this.dialog.open(JobDialogComponent, {
       width: '800px',
-      data: item
+      data: item,
     });
-    dialogRef.afterClosed().subscribe((result: job) => {
-      if (result) {
-        console.log(result);
-        const index = this.dataSource.findIndex(element => element._id === result._id);
-        this.dataSource[index] = result
-        this.dataSource = [...this.dataSource]
-      }
+    dialogRef.afterClosed().subscribe((result?: job) => {
+      if (!result) return;
+      this.dataSource.update((values) => {
+        const index = values.findIndex((element) => element._id === result._id);
+        values[index] = result;
+        return [...values];
+      });
     });
   }
   add() {
     const dialogRef = this.dialog.open(JobDialogComponent, {
-      width: '800px'
+      width: '800px',
     });
-    dialogRef.afterClosed().subscribe((result: job) => {
-      if (result) {
-        console.log(result);
-        if (this.dataSource.length === this.paginatorService.limit) {
-          this.dataSource.pop()
-        }
-        this.dataSource = [result, ...this.dataSource]
-      }
-    })
+    dialogRef.afterClosed().subscribe((result?: job) => {
+      if (!result) return;
+      this.dataSource.update((values) => [result, ...values]);
+      this.paginatorService.length++;
+    });
   }
 
   applyFilter(event: Event) {
-    this.paginatorService.offset = 0
+    this.paginatorService.offset = 0;
     this.text = (event.target as HTMLInputElement).value;
-    this.Get()
+    this.getData();
   }
   cancelSearch() {
-    this.paginatorService.offset = 0
-    this.text = ''
-    this.Get()
+    this.paginatorService.offset = 0;
+    this.text = '';
+    this.getData();
   }
-
-
 }

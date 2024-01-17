@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ data ? "EDICION" : "CREACION" }} FUNCIONARIO</h2>
+<h2 mat-dialog-title>{{ officer ? "EDICION" : "CREACION" }} FUNCIONARIO</h2>
 <mat-dialog-content>
   <form [formGroup]="FormOfficer">
     <div class="row">
@@ -52,7 +52,7 @@
     </div>
     } @else {
     <mat-form-field class="example-full-width">
-      <mat-label>MI CARGO</mat-label>
+      <mat-label>Cargo asignado</mat-label>
       <input matInput readonly [value]="currentJobName()" />
       <button matSuffix mat-icon-button aria-label="Clear" (click)="removeJob()">
         <mat-icon>close</mat-icon>
@@ -60,13 +60,8 @@
     </mat-form-field>
     }
   </div>
-
-  @if(data?.cargo){ }
-  <pre>{{ FormOfficer.value | json }}</pre>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-raised-button color="warn" mat-button mat-dialog-close>Cancelar</button>
-  <button mat-raised-button color="primary" mat-button [disabled]="FormOfficer.invalid" (click)="guardar()">
-    Guardar
-  </button>
+  <button mat-raised-button color="warn" mat-dialog-close>Cancelar</button>
+  <button mat-raised-button color="primary" [disabled]="FormOfficer.invalid" (click)="save()">Guardar</button>
 </mat-dialog-actions>

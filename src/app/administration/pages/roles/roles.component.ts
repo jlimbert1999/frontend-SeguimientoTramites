@@ -30,10 +30,10 @@ export class RolesComponent implements OnInit {
     const dialogRef = this.dialog.open(RolDialogComponent, {
       width: '1200px',
     });
-    dialogRef.afterClosed().subscribe((result: role) => {
-      if (result) {
-        this.dataSource.update((values) => [result, ...values]);
-      }
+    dialogRef.afterClosed().subscribe((result?: role) => {
+      if (!result) return;
+      this.dataSource.update((values) => [result, ...values]);
+      this.paginatorService.length++;
     });
   }
   edit(role: role) {

@@ -4,59 +4,37 @@ import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { institution } from '../interfaces/institution.interface';
 import { CreateInstitutionDto } from '../dto/institution.dto';
+import { PaginationParameters } from 'src/app/shared/interfaces';
 const base_url = environment.base_url;
 
+interface SearchParams extends PaginationParameters {
+  term: string;
+}
 @Injectable({
   providedIn: 'root',
 })
 export class InstitucionesService {
-  constructor(
-    private http: HttpClient,
-    private paginationService: CacheStorage
-  ) {}
+  constructor(private http: HttpClient) {}
 
   add(institucion: CreateInstitutionDto) {
-    return this.http
-      .post<institution>(`${base_url}/institutions`, institucion)
-      .pipe(map((resp) => resp));
+    return this.http.post<institution>(`${base_url}/institutions`, institucion).pipe(map((resp) => resp));
   }
-  search(limit: number, offset: number, termino: string) {
-    const params = new HttpParams().set('limit', limit).set('offset', offset);
-    return this.http
-      .get<{ institutions: institution[]; length: number }>(
-        `${base_url}/institutions/search/${termino}`,
-        { params }
-      )
-      .pipe(
-        map((resp) => {
-          return { institutions: resp.institutions, length: resp.length };
-        })
-      );
+  search({ term, ...paginationParams }: SearchParams) {
+    const params = new HttpParams({ fromObject: { ...paginationParams } });
+    return this.http.get<{ institutions: institution[]; length: number }>(`${base_url}/institutions/search/${term}`, {
+      params,
+    });
   }
-  get(limit: number, offset: number) {
-    const params = new HttpParams().set('limit', limit).set('offset', offset);
-    return this.http
-      .get<{ ok: boolean; institutions: institution[]; length: number }>(
-        `${base_url}/institutions`,
-        { params }
-      )
-      .pipe(
-        map((resp) => {
-          return { institutions: resp.institutions, length: resp.length };
-        })
-      );
+  get(paginationParams: PaginationParameters) {
+    const params = new HttpParams({ fromObject: { ...paginationParams } });
+    return this.http.get<{ institutions: institution[]; length: number }>(`${base_url}/institutions`, { params });
   }
   edit(id_institution: string, institucion: institution) {
     return this.http
-      .put<institution>(
-        `${base_url}/institutions/${id_institution}`,
-        institucion
-      )
+      .put<institution>(`${base_url}/institutions/${id_institution}`, institucion)
       .pipe(map((resp) => resp));
   }
   delete(id_institucion: string) {
-    return this.http
-      .delete<boolean>(`${base_url}/institutions/${id_institucion}`)
-      .pipe(map((resp) => resp));
+    return this.http.delete<boolean>(`${base_url}/institutions/${id_institucion}`).pipe(map((resp) => resp));
   }
 }
