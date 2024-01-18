@@ -1,27 +1,23 @@
-<h2 mat-dialog-title>Registro de institucion</h2>
-<mat-dialog-content class="mat-typography">
-    <form [formGroup]="Form_Institucion">
-
-        <div class="row">
-            <div class="col-8">
-                <mat-form-field appearance="fill">
-                    <mat-label>Nombre de la institucion</mat-label>
-                    <input formControlName="nombre" matInput>
-                </mat-form-field>
-            </div>
-            <div class="col-4">
-                <mat-form-field appearance="fill">
-                    <mat-label>Sigla</mat-label>
-                    <input formControlName="sigla" matInput>
-                </mat-form-field>
-            </div>
-        </div>
-
-
-    </form>
-
+<h1 mat-dialog-title>{{ data ? "EDICION" : "REGISTRO" }} INSTITUCION</h1>
+<mat-dialog-content>
+  <form [formGroup]="FormInstitution">
+    <div class="row">
+      <div class="col-8">
+        <mat-form-field appearance="fill">
+          <mat-label>Nombre de la institucion</mat-label>
+          <input formControlName="nombre" matInput />
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field appearance="fill">
+          <mat-label>Sigla</mat-label>
+          <input formControlName="sigla" matInput />
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-flat-button color="warn" mat-dialog-close>Cancelar</button>
-    <button mat-flat-button color="primary" [disabled]="Form_Institucion.invalid" (click)="guardar()">Guardar</button>
+  <button mat-flat-button color="warn" mat-dialog-close>Cancelar</button>
+  <button mat-flat-button color="primary" [disabled]="FormInstitution.invalid" (click)="save()">Guardar</button>
 </mat-dialog-actions>

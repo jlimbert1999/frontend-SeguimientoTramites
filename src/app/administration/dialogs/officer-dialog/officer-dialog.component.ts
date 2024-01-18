@@ -54,13 +54,14 @@ export class OfficerDialogComponent implements OnInit {
       this.dialogRef.close(officer);
     });
   }
+
   searchJob(value: string) {
     this.officerService.searchJobs(value).subscribe((officer) => {
       this.jobs.set(officer.map((job) => ({ value: job, text: job.nombre })));
     });
   }
 
-  setJob(job: job) {
+  setJob(job: { nombre: string; _id: string }) {
     this.FormOfficer.setControl('cargo', new FormControl(job._id));
     this.currentJobName.set(job.nombre);
   }

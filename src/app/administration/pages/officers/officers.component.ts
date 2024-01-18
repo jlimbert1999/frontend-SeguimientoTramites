@@ -14,7 +14,7 @@ import { Officer } from '../../models/officer.model';
 })
 export class OfficersComponent implements OnInit {
   dataSource = signal<Officer[]>([]);
-  displayedColumns = ['nombre', 'dni', 'cargo', 'telefono', 'activo', 'opciones'];
+  displayedColumns = ['nombre', 'dni', 'cargo', 'telefono', 'activo', 'options'];
   text: string = '';
   constructor(
     private funcionariosService: UsuariosService,
@@ -72,14 +72,17 @@ export class OfficersComponent implements OnInit {
       });
     });
   }
+
   viewWorkHistory(officer: officer) {
     this.dialog.open(WorkHistoryComponent, { width: '1000px', data: officer });
   }
+
   applyFilter() {
     if (this.text === '') return;
     this.paginatorService.offset = 0;
     this.getData();
   }
+  
   cancelSearch() {
     this.paginatorService.offset = 0;
     this.text = '';

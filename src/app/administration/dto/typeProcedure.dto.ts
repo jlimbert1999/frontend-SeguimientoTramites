@@ -1,39 +1,30 @@
-
-
-export class CreateTypeProcedureDto {
-    static typeProdecureFromJson(obj: any, requeriments: { nombre: string, activo: boolean }[]) {
-        return new CreateTypeProcedureDto(
-            obj['nombre'],
-            obj['segmento'],
-            obj['tipo'],
-            requeriments
-        )
-    }
-    constructor(
-        public nombre: string,
-        public segmento: string,
-        public tipo: string,
-        public requerimientos: { nombre: string, activo: boolean }[]
-    ) {
-
-    }
+interface TypeProcedureProps {
+  nombre: string;
+  segmento: string;
+  tipo: string;
+  requerimientos: requirement[];
 }
-
-export class UpdateTypeProcedureDto {
-    static typeProdecureFromJson(obj: any, requeriments: { nombre: string, activo: boolean }[]) {
-        requeriments = requeriments.map(el => ({ nombre: el.nombre, activo: el.activo }))
-        return new UpdateTypeProcedureDto(
-            obj['nombre'],
-            obj['segmento'],
-            requeriments
-        )
-    }
-    constructor(
-        public nombre: string,
-        public segmento: string,
-        public requerimientos: { nombre: string, activo: boolean }[]
-    ) {
-    }
+interface requirement {
+  nombre: string;
+  activo: boolean;
 }
-
-
+export class TypeProcedureDto {
+  nombre: string;
+  segmento: string;
+  tipo: string;
+  requerimientos: requirement[];
+  static FormToModel(form: any) {
+    return new TypeProcedureDto({
+      nombre: form['nombre'],
+      segmento: form['segmento'],
+      tipo: form['tipo'],
+      requerimientos: form['requerimientos'],
+    });
+  }
+  constructor({ nombre, segmento, tipo, requerimientos }: TypeProcedureProps) {
+    this.nombre = nombre;
+    this.segmento = segmento;
+    this.tipo = tipo;
+    this.requerimientos = requerimientos;
+  }
+}

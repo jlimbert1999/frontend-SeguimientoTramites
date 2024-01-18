@@ -7,14 +7,14 @@ interface AccountProps {
   rol: string;
 }
 export class AccountDto {
-  static FormtoModel(fomAccount: any, formOfficer: any) {
+  static FormtoModel(fomAccount: any) {
     const accountDto = {
       login: fomAccount['login'],
       dependencia: fomAccount['dependencia'],
       rol: fomAccount['rol'],
       password: fomAccount['password'],
     };
-    return new AccountDto(accountDto, OfficerDto.FormtoModel(formOfficer));
+    return new AccountDto(accountDto);
   }
-  constructor(public account: AccountProps, public officer: OfficerDto) {}
+  constructor(public account: AccountProps) {}
 }

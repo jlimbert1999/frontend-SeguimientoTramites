@@ -10,7 +10,7 @@ import { MatSelectSearchData } from '../../interfaces';
 })
 export class SimpleMatSelectSearchComponent<T> {
   @Input() placehorder: string = 'Seleccione una opcion';
-  @Input() required: boolean = false;
+  @Input() required: boolean = true;
   @Input({ required: true }) set options(values: MatSelectSearchData<T>[]) {
     this.data = values;
     this.filteredOptions.next(values);

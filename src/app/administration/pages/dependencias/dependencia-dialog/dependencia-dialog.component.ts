@@ -1,56 +1,53 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { dependency } from 'src/app/administration/interfaces/dependency.interface';
-import { institution } from 'src/app/administration/interfaces/institution.interface';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { dependency } from 'src/app/administration/interfaces';
 import { DependenciasService } from 'src/app/administration/services/dependencias.service';
+import { MatSelectSearchData } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-dependencia-dialog',
   templateUrl: './dependencia-dialog.component.html',
-  styleUrls: ['./dependencia-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DependenciaDialogComponent implements OnInit {
-  institutions: institution[] = []
-  Form_Dependencia: FormGroup = this.fb.group({
+  institutions = signal<MatSelectSearchData<string>[]>([]);
+  FormDependency: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
+    codigo: ['', Validators.required],
     sigla: ['', [Validators.required, Validators.maxLength(10)]],
     institucion: ['', Validators.required],
-    codigo: ['', Validators.required]
   });
 
   constructor(
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: dependency,
-    public dialogRef: MatDialogRef<DependenciaDialogComponent>,
-    private dependenciasService: DependenciasService
-  ) { }
+    private dialogRef: MatDialogRef<DependenciaDialogComponent>,
+    private dependenciasService: DependenciasService,
+    @Inject(MAT_DIALOG_DATA) public dependency?: dependency
+  ) {}
 
   ngOnInit(): void {
-    if (this.data) {
-      this.Form_Dependencia = this.fb.group({
-        nombre: ['', Validators.required],
-        sigla: ['', [Validators.required, Validators.maxLength(10)]],
-        codigo: ['', Validators.required],
-      });
-      this.Form_Dependencia.patchValue(this.data);
+    if (this.dependency) {
+      this.FormDependency.removeControl('institucion');
+      this.FormDependency.patchValue(this.dependency);
     } else {
       this.dependenciasService
         .getInstitutions()
-        .subscribe((inst) => (this.institutions = inst));
+        .subscribe((data) => this.institutions.set(data.map((inst) => ({ value: inst._id, text: inst.nombre }))));
     }
   }
 
-  guardar() {
-    if (this.data) {
-      this.dependenciasService.edit(
-        this.data._id, this.Form_Dependencia.value
-      ).subscribe(dep => this.dialogRef.close(dep));
-    } else {
-      this.dependenciasService.add(this.Form_Dependencia.value)
-        .subscribe(dep => {
-          this.dialogRef.close(dep);
-        });
-    }
+  save() {
+    const subscription = this.dependency
+      ? this.dependenciasService.edit(this.dependency._id, this.FormDependency.value)
+      : this.dependenciasService.add(this.FormDependency.value);
+    subscription.subscribe((resp) => {
+      this.dialogRef.close(resp);
+    });
+  }
+
+  selectInstitution(id_institution: string) {
+    this.FormDependency.get('institucion')?.setValue(id_institution);
   }
 }

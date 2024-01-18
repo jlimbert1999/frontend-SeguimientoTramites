@@ -1,102 +1,85 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { TiposTramitesService } from '../../services/tipos-tramites.service';
+import { TypeProcedureService } from '../../services/type-procedure.service';
 
-import { typeProcedure } from '../../interfaces/typeProcedure.interface';
+import { typeProcedure } from '../../interfaces';
 import { TypeProcedureDialogComponent } from '../../dialogs/type-procedure-dialog/type-procedure-dialog.component';
-import {PaginatorService} from 'src/app/shared/services';
+import { PaginatorService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-tipos-tramites',
   templateUrl: './tipos-tramites.component.html',
-  styleUrls: ['./tipos-tramites.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TiposTramitesComponent implements OnInit {
-  dataSource: typeProcedure[] = [];
-  displayedColumns = ['nombre', 'segmento', 'activo', 'options'];
-  text: string = '';
+  dataSource = signal<typeProcedure[]>([]);
+  displayedColumns = ['nombre', 'segmento', 'activo', 'menu'];
+  term: string = '';
 
   constructor(
-    public dialog: MatDialog,
-    public tiposTramitesService: TiposTramitesService,
-    private paginatorService:PaginatorService
+    private dialog: MatDialog,
+    private typeService: TypeProcedureService,
+    private paginatorService: PaginatorService
   ) {}
 
   ngOnInit(): void {
-    this.Get();
+    this.getData();
   }
 
-  Add() {
+  getData() {
+    const subscription =
+      this.term !== ''
+        ? this.typeService.search({ ...this.paginatorService.PaginationParams, term: this.term })
+        : this.typeService.findAll(this.paginatorService.PaginationParams);
+    subscription.subscribe((data) => {
+      this.dataSource.set(data.types);
+      this.paginatorService.length = data.length;
+    });
+  }
+
+  add() {
     const dialogRef = this.dialog.open(TypeProcedureDialogComponent, {
       width: '1200px',
     });
     dialogRef.afterClosed().subscribe((result: typeProcedure) => {
-      if (result) {
-        if (this.dataSource.length === this.paginatorService.limit) {
-          this.dataSource.pop();
-        }
-        this.paginatorService.length++;
-        this.dataSource = [result, ...this.dataSource];
-      }
+      if (!result) return;
+      this.dataSource.update((values) => [result, ...values]);
+      this.paginatorService.length++;
     });
   }
-  Edit(tipoTramite: typeProcedure) {
+  edit(tipoTramite: typeProcedure) {
     const dialogRef = this.dialog.open(TypeProcedureDialogComponent, {
       width: '1200px',
       data: tipoTramite,
     });
     dialogRef.afterClosed().subscribe((result: typeProcedure) => {
-      if (result) {
-        const indexFound = this.dataSource.findIndex(
-          (officer) => officer._id === result._id
-        );
-        this.dataSource[indexFound] = result;
-        this.dataSource = [...this.dataSource];
-      }
+      if (!result) return;
+      this.dataSource.update((values) => {
+        const index = values.findIndex((value) => value._id === result._id);
+        values[index] = result;
+        return [...values];
+      });
     });
   }
-  Get() {
-    if (this.text !== '') {
-      this.tiposTramitesService
-        .search(
-          this.paginatorService.limit,
-          this.paginatorService.offset,
-          this.text
-        )
-        .subscribe((data) => {
-          this.dataSource = data.typesProcedures;
-          this.paginatorService.length = data.length;
-        });
-    } else {
-      this.tiposTramitesService
-        .get(this.paginatorService.limit, this.paginatorService.offset)
-        .subscribe((data) => {
-          this.dataSource = data.tipos;
-          this.paginatorService.length = data.length;
-        });
-    }
-  }
 
-  delete(typeProcedure: typeProcedure) {
-    this.tiposTramitesService
-      .delete(typeProcedure._id)
-      .subscribe((newTypeProcedure) => {
-        const indexFound = this.dataSource.findIndex(
-          (element) => element._id === typeProcedure._id
-        );
-        this.dataSource[indexFound] = newTypeProcedure;
-        this.dataSource = [...this.dataSource];
+  toggleStatus(typeProcedure: typeProcedure) {
+    this.typeService.delete(typeProcedure._id).subscribe(({ activo }) => {
+      this.dataSource.update((values) => {
+        const index = values.findIndex((value) => value._id === typeProcedure._id);
+        values[index].activo = activo;
+        return [...values];
       });
+    });
   }
 
   applyFilter(event: Event) {
     this.paginatorService.offset = 0;
-    this.text = (event.target as HTMLInputElement).value;
-    this.Get();
+    this.term = (event.target as HTMLInputElement).value;
+    this.getData();
   }
   cancelSearch() {
     this.paginatorService.offset = 0;
-    this.text = '';
-    this.Get();
+    this.term = '';
+    this.getData();
   }
 }

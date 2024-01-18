@@ -12,7 +12,7 @@ import { PaginatorService } from 'src/app/shared/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RolesComponent implements OnInit {
-  displayedColumns: string[] = ['rol', 'privilegios', 'opciones'];
+  displayedColumns: string[] = ['rol', 'privilegios', 'options'];
   dataSource = signal<role[]>([]);
 
   constructor(public dialog: MatDialog, private rolService: RolService, private paginatorService: PaginatorService) {}

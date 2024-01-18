@@ -8,6 +8,7 @@ import { EditAccountDialogComponent } from '../../dialogs/edit-account-dialog/ed
 import { account } from '../../interfaces/account.interface';
 import { PaginatorService } from 'src/app/shared/services';
 import { MatSelectSearchData } from 'src/app/shared/interfaces';
+import { Account } from '../../models/account.model';
 
 @Component({
   selector: 'app-accounts',
@@ -16,8 +17,8 @@ import { MatSelectSearchData } from 'src/app/shared/interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountsComponent implements OnInit {
-  accounts = signal<account[]>([]);
-  displayedColumns = ['login', 'nombre', 'dependencia', 'activo', 'opciones'];
+  accounts = signal<Account[]>([]);
+  displayedColumns = ['login', 'nombre', 'dependencia', 'activo', 'options'];
   institutions = signal<MatSelectSearchData<string>[]>([]);
   dependencies = signal<MatSelectSearchData<string>[]>([]);
   text: string = '';
@@ -46,21 +47,21 @@ export class AccountsComponent implements OnInit {
   }
 
   getData() {
-    if (this.text !== '') {
-      this.accountService
-        .search({ id_dependency: this.id_dependencia, text: this.text, ...this.paginatorService.PaginationParams })
-        .subscribe((data) => {
-          this.paginatorService.length = data.length;
-          this.accounts.set(data.accounts);
-        });
-    } else {
-      this.accountService
-        .get(this.paginatorService.limit, this.paginatorService.offset, this.id_dependencia)
-        .subscribe((data) => {
-          this.paginatorService.length = data.length;
-          this.accounts.set(data.accounts);
-        });
-    }
+    const subscription =
+      this.text !== ''
+        ? this.accountService.search({
+            id_dependency: this.id_dependencia,
+            text: this.text,
+            ...this.paginatorService.PaginationParams,
+          })
+        : this.accountService.findAll({
+            id_dependency: this.id_dependencia,
+            ...this.paginatorService.PaginationParams,
+          });
+    subscription.subscribe((data) => {
+      this.accounts.set(data.accounts);
+      this.paginatorService.length = data.length;
+    });
   }
 
   appliFilterByText() {
@@ -79,7 +80,7 @@ export class AccountsComponent implements OnInit {
       width: '1000px',
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((result: account) => {
+    dialogRef.afterClosed().subscribe((result: Account) => {
       if (!result) return;
       this.accounts.update((values) => [result, ...values]);
       this.paginatorService.length++;

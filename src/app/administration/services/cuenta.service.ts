@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { AccountDto } from '../dto/account.dto';
 import { Officer } from '../models/officer.model';
 import { environment } from 'src/environments/environment';
@@ -10,11 +10,15 @@ import { account } from '../interfaces/account.interface';
 import { officer } from '../interfaces/oficer.interface';
 import { role } from '../interfaces/role.interface';
 import { job } from '../interfaces/job.interface';
+import { Account } from '../models';
+import { PaginationParameters } from 'src/app/shared/interfaces';
+import { OfficerDto } from '../dto/officer.dto';
 
-interface SearchAccountsParams {
-  limit: number;
-  offset: number;
+interface SearchAccountsParams extends PaginationParameters {
   text: string;
+  id_dependency?: string;
+}
+interface GetAccountsParams extends PaginationParameters {
   id_dependency?: string;
 }
 const base_url = environment.base_url;
@@ -48,22 +52,6 @@ export class CuentaService {
     );
   }
 
-  search({ id_dependency, text, ...values }: SearchAccountsParams) {
-    const params = new HttpParams({
-      fromObject: { ...values, ...(id_dependency && { id_dependency }), ...(text && { text }) },
-    });
-    return this.http.get<{ accounts: account[]; length: number }>(`${base_url}/accounts/search`, { params }).pipe(
-      map((resp) => {
-        resp.accounts.map((account) => {
-          if (account.funcionario) {
-            Object.keys(account.funcionario).length === 0 ? delete account.funcionario : null;
-          }
-          return account;
-        });
-        return { accounts: resp.accounts, length: resp.length };
-      })
-    );
-  }
   addAccountWithAssign(account: any) {
     return this.http.post<account>(`${base_url}/accounts/assign`, account).pipe(map((resp) => resp));
   }
@@ -76,20 +64,32 @@ export class CuentaService {
       .pipe(map((resp) => resp));
   }
 
-  get(limit: number, offset: number, id_dependency: string | undefined) {
+  findAll({ id_dependency, limit, offset }: GetAccountsParams) {
     return this.http
       .get<{ accounts: account[]; length: number }>(`${base_url}/accounts`, {
         params: { limit, offset, ...(id_dependency && { id_dependency }) },
       })
       .pipe(
         map((resp) => {
-          return { accounts: resp.accounts, length: resp.length };
+          return { accounts: resp.accounts.map((account) => Account.fromJson(account)), length: resp.length };
         })
       );
   }
 
-  add(account: Object, officer: Object) {
-    const acc = AccountDto.FormtoModel(account, officer);
+  search({ id_dependency, text, ...values }: SearchAccountsParams) {
+    const params = new HttpParams({
+      fromObject: { ...values, ...(id_dependency && { id_dependency }), ...(text && { text }) },
+    });
+    return this.http.get<{ accounts: account[]; length: number }>(`${base_url}/accounts/search`, { params }).pipe(
+      map((resp) => {
+        return { accounts: resp.accounts.map((account) => Account.fromJson(account)), length: resp.length };
+      })
+    );
+  }
+
+  add(formAccount: Object, formOfficer: Object) {
+    const account = AccountDto.FormtoModel(formAccount);
+    const officer = OfficerDto.FormtoModel(formOfficer);
     return this.http.post<account>(`${base_url}/accounts`, { officer, account });
   }
 

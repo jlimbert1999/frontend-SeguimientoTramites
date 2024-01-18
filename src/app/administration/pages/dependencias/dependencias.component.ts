@@ -1,88 +1,84 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DependenciasService } from '../../services/dependencias.service';
 import { DependenciaDialogComponent } from './dependencia-dialog/dependencia-dialog.component';
 import { dependency } from '../../interfaces/dependency.interface';
-import {PaginatorService} from 'src/app/shared/services';
+import { PaginatorService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-dependencias',
   templateUrl: './dependencias.component.html',
-  styleUrls: ['./dependencias.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DependenciasComponent implements OnInit {
   text: string = '';
-  dataSource: dependency[] = [];
-  displayedColumns = ['sigla', 'nombre', 'codigo', 'institucion', 'activo', 'options'];
+  dataSource = signal<dependency[]>([]);
+  displayedColumns = ['sigla', 'nombre', 'codigo', 'institucion', 'activo', 'menu'];
+
   constructor(
     public dialog: MatDialog,
-    public dependenciasService: DependenciasService,
-    public paginatorService:PaginatorService
+    public paginatorService: PaginatorService,
+    public dependenciasService: DependenciasService
   ) {}
 
   ngOnInit(): void {
-    this.Get();
+    this.getData();
   }
-  Get() {
-    if (this.text !== '') {
-      this.dependenciasService
-        .search(this.paginatorService.limit, this.paginatorService.offset, this.text)
-        .subscribe((data) => {
-          this.dataSource = data.dependencies;
-          this.paginatorService.length = data.length;
-        });
-    } else {
-      this.dependenciasService.get(this.paginatorService.limit, this.paginatorService.offset).subscribe((data) => {
-        this.dataSource = data.dependencies;
-        this.paginatorService.length = data.length;
-      });
-    }
+  getData() {
+    const subscription =
+      this.text !== ''
+        ? this.dependenciasService.search({ term: this.text, ...this.paginatorService.PaginationParams })
+        : this.dependenciasService.findAll(this.paginatorService.PaginationParams);
+    subscription.subscribe((data) => {
+      this.dataSource.set(data.dependencies);
+      this.paginatorService.length = data.length;
+    });
   }
 
-  Add() {
+  add() {
     const dialogRef = this.dialog.open(DependenciaDialogComponent, {
       width: '900px',
     });
     dialogRef.afterClosed().subscribe((result: dependency) => {
-      if (result) {
-        if (this.dataSource.length === this.paginatorService.limit) {
-          this.dataSource.pop();
-        }
-        this.paginatorService.length++;
-        this.dataSource = [result, ...this.dataSource];
-      }
+      if (!result) return;
+      this.dataSource.update((values) => [result, ...values]);
+      this.paginatorService.length++;
     });
   }
-  Edit(data: dependency) {
+
+  edit(data: dependency) {
     const dialogRef = this.dialog.open(DependenciaDialogComponent, {
       width: '900px',
       data,
     });
     dialogRef.afterClosed().subscribe((result: dependency) => {
-      if (result) {
-        console.log(result);
-        const indexFound = this.dataSource.findIndex((element) => element._id === result._id);
-        this.dataSource[indexFound] = result;
-        this.dataSource = [...this.dataSource];
-      }
+      if (!result) return;
+      this.dataSource.update((values) => {
+        const index = values.findIndex((inst) => inst._id === result._id);
+        values[index] = result;
+        return [...values];
+      });
     });
   }
 
-  Delete(data: dependency) {
-    this.dependenciasService.delete(data._id).subscribe((isActive) => {
-      const indexFound = this.dataSource.findIndex((element) => element._id === data._id);
-      this.dataSource[indexFound].activo = isActive;
-      this.dataSource = [...this.dataSource];
+  changeStatus(data: dependency) {
+    this.dependenciasService.delete(data._id).subscribe((newState) => {
+      this.dataSource.update((values) => {
+        const index = values.findIndex((inst) => inst._id === data._id);
+        values[index].activo = newState.activo;
+        return [...values];
+      });
     });
   }
+
   applyFilter(event: Event) {
     this.paginatorService.offset = 0;
     this.text = (event.target as HTMLInputElement).value;
-    this.Get();
+    this.getData();
   }
   cancelSearch() {
     this.paginatorService.offset = 0;
     this.text = '';
-    this.Get();
+    this.getData();
   }
 }

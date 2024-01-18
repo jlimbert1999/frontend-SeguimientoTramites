@@ -1,41 +1,34 @@
-<h2 mat-dialog-title>{{data?'Edicion':'Registro'}} de dependencia</h2>
-<mat-dialog-content class="mat-typography">
-    <form [formGroup]="Form_Dependencia">
-        <div *ngIf="!data" class="row">
-            <mat-form-field appearance="fill">
-                <mat-label>Seleccione la institucion</mat-label>
-                <mat-select formControlName="institucion">
-                    <mat-option *ngFor="let inst of institutions" [value]="inst._id">
-                        {{inst.nombre}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div class="row">
-            <div class="col-8">
-                <mat-form-field appearance="fill">
-                    <mat-label>Nombre de la dependencia</mat-label>
-                    <input formControlName="nombre" matInput>
-                </mat-form-field>
-            </div>
-            <div class="col-4">
-                <mat-form-field appearance="fill">
-                    <mat-label>Sigla</mat-label>
-                    <input formControlName="sigla" matInput>
-                </mat-form-field>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <mat-form-field appearance="fill">
-                    <mat-label>Codigo</mat-label>
-                    <input formControlName="codigo" matInput>
-                </mat-form-field>
-            </div>
-        </div>
-    </form>
+<h1 mat-dialog-title>{{ dependency ? "EDICION" : "REGISTRO" }} DEPENDENCIA</h1>
+<mat-dialog-content>
+  <form [formGroup]="FormDependency">
+    <div class="row">
+      @if(!dependency){
+      <div class="col-12">
+        <simple-mat-select-search [options]="institutions()" (selectEvent)="selectInstitution($event)" />
+      </div>
+      }
+      <div class="col-12">
+        <mat-form-field>
+          <mat-label>Nombre de la dependencia</mat-label>
+          <input formControlName="nombre" matInput />
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field>
+          <mat-label>Sigla</mat-label>
+          <input formControlName="sigla" matInput />
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field>
+          <mat-label>Codigo</mat-label>
+          <input formControlName="codigo" matInput />
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-flat-button color="warn" mat-dialog-close>Cancelar</button>
-    <button mat-flat-button color="primary" [disabled]="Form_Dependencia.invalid" (click)="guardar()">Guardar</button>
+  <button mat-flat-button color="warn" mat-dialog-close>Cancelar</button>
+  <button mat-flat-button color="primary" [disabled]="FormDependency.invalid" (click)="save()">Guardar</button>
 </mat-dialog-actions>

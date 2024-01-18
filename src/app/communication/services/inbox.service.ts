@@ -94,7 +94,7 @@ export class InboxService {
         const receivers: receiver[] = resp.map((account) => {
           return {
             id_account: account._id,
-            officer: Officer.officerFromJson(account.funcionario),
+            officer: Officer.officerFromJson(account.funcionario!),
             online: false,
           };
         });
