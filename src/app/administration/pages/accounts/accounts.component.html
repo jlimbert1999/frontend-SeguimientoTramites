@@ -1,8 +1,9 @@
 <p>
   <mat-toolbar color="primary">
-    <span>CUENTAS </span>
+    <sidenav-button></sidenav-button>
+    <span>CUENTAS</span>
     <span class="example-spacer"></span>
-    <button (click)="Add()" mat-icon-button matTooltip="Crear cuenta">
+    <button (click)="add()" mat-icon-button matTooltip="Crear cuenta">
       <mat-icon>add</mat-icon>
     </button>
     <button (click)="addAccountWithAssign()" mat-icon-button matTooltip="Asignar cuenta">
@@ -62,12 +63,22 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="dependencia">
-          <th mat-header-cell *matHeaderCellDef>Dependencia</th>
+        <ng-container matColumnDef="visibility">
+          <th mat-header-cell *matHeaderCellDef>Visibilidad</th>
           <td mat-cell *matCellDef="let element">
-            <!-- {{ element.dependencia.nombre }} -->
+            <mat-slide-toggle (toggleChange)="toggleVisibility(element)" [checked]="element.isVisible">
+              {{ element.isVisible ? "Visible" : "Oculto" }}
+            </mat-slide-toggle>
           </td>
         </ng-container>
+
+        <ng-container matColumnDef="dependency">
+          <th mat-header-cell *matHeaderCellDef>Dependencia</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.dependencia.nombre }}
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="activo">
           <th mat-header-cell *matHeaderCellDef>Situacion</th>
           <td mat-cell *matCellDef="let element">
@@ -77,6 +88,7 @@
             </ng-container>
           </td>
         </ng-container>
+
         <ng-container matColumnDef="options">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element">
@@ -95,10 +107,11 @@
             </mat-menu>
           </td>
         </ng-container>
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell p-3" colspan="4">No se encontraron resultados</td>
+          <td class="mat-cell p-3" colspan="5">No se encontraron resultados</td>
         </tr>
       </table>
     </div>

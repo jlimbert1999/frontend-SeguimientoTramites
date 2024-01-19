@@ -1,18 +1,19 @@
-import { ElementRef, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
-import { Content, PageOrientation, TDocumentDefinitions, Table, TableCell } from 'pdfmake/interfaces';
+import { Content, PageOrientation, TDocumentDefinitions, Table } from 'pdfmake/interfaces';
 import { convertImagenABase64, RouteMapPdf, IndexCard, UnlinkSheet } from '../helpers';
 import { ReportSheet } from '../interfaces';
 import { ExternalProcedure, InternalProcedure, Procedure } from 'src/app/procedures/models';
-import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
+import { groupProcedure } from 'src/app/procedures/interfaces';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Workflow } from 'src/app/communication/models';
 import { communicationResponse, statusMail } from 'src/app/communication/interfaces';
 import { account } from 'src/app/administration/interfaces';
 import { AccountSheet, ApprovedSheet } from '../helpers/pdf';
+import { Account } from 'src/app/administration/models';
 
 interface ReportSheetProps {
   title: string;
@@ -211,7 +212,7 @@ export class PdfGeneratorService {
     pdfMake.createPdf(docDefinition).print();
   }
 
-  async createAccountSheet(account: account, password: string) {
+  async createAccountSheet(account: Account, password: string) {
     const docDefinition: TDocumentDefinitions = {
       pageSize: 'LETTER',
       pageMargins: [30, 110, 40, 30],

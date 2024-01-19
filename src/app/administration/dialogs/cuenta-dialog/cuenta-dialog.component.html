@@ -1,42 +1,42 @@
 <h2 mat-dialog-title>REGISTRO CUENTA</h2>
 <mat-dialog-content>
   <ng-container>
-    <mat-stepper headerPosition="bottom" (selectionChange)="generateCrendentials()" [linear]="false" #stepper>
+    <mat-stepper headerPosition="bottom" (selectionChange)="generateCrendentials()" [linear]="false">
       <mat-step [stepControl]="FormOfficer">
         <form [formGroup]="FormOfficer">
           <ng-template matStepLabel>Datos funcionario</ng-template>
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-sm-4">
               <mat-form-field appearance="fill">
                 <mat-label>Nombre</mat-label>
                 <input class="uppercase" formControlName="nombre" matInput />
               </mat-form-field>
             </div>
-            <div class="col-md-4">
+            <div class="col-sm-4">
               <mat-form-field appearance="fill">
                 <mat-label>Apellido paterno</mat-label>
                 <input class="uppercase" formControlName="paterno" matInput />
               </mat-form-field>
             </div>
-            <div class="col-md-4">
+            <div class="col-sm-4">
               <mat-form-field appearance="fill">
                 <mat-label>Apellido materno</mat-label>
                 <input class="uppercase" formControlName="materno" matInput />
               </mat-form-field>
             </div>
-            <div class="col-md-4">
+            <div class="col-sm-4">
               <mat-form-field appearance="fill">
                 <mat-label>Dni</mat-label>
                 <input formControlName="dni" matInput />
               </mat-form-field>
             </div>
-            <div class="col-md-4">
+            <div class="col-sm-4">
               <mat-form-field appearance="fill">
                 <mat-label>Telefono</mat-label>
                 <input formControlName="telefono" matInput />
               </mat-form-field>
             </div>
-            <div class="col-md-4">
+            <div class="col-sm-4">
               <mat-form-field appearance="fill">
                 <mat-label>Direccion</mat-label>
                 <input formControlName="direccion" matInput />
@@ -44,16 +44,23 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-sm-8">
+            <div class="col-sm-12">
+              @if(!FormOfficer.get('cargo')?.value){
               <app-server-mat-select-search
                 placeholder="Buscar cargo"
                 [options]="jobs()"
                 (keyupEvent)="searchJob($event)"
-                (selectEvent)="selectJob($event)"
+                (selectEvent)="setJob($event)"
               />
-            </div>
-            <div class="col-sm-4">
-              <mat-checkbox>SIN CARGO</mat-checkbox>
+              } @else {
+              <mat-form-field>
+                <mat-label>Cargo asignado</mat-label>
+                <input matInput readonly [value]="currentJobName()" />
+                <button matSuffix mat-icon-button aria-label="Clear" (click)="removeJob()">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+              }
             </div>
           </div>
         </form>
@@ -73,10 +80,8 @@
             <div class="col-12">
               <simple-mat-select-search
                 placehorder="Buscar dependencia"
-                [required]="false"
                 [options]="dependencies()"
                 (selectEvent)="selectDependency($event)"
-                [required]="true"
               ></simple-mat-select-search>
             </div>
           </div>

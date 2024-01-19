@@ -13,12 +13,11 @@ import { Account } from '../../models/account.model';
 @Component({
   selector: 'app-accounts',
   templateUrl: './accounts.component.html',
-  styleUrls: ['./accounts.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountsComponent implements OnInit {
+  displayedColumns = ['visibility', 'login', 'nombre', 'dependency', 'activo', 'options'];
   accounts = signal<Account[]>([]);
-  displayedColumns = ['login', 'nombre', 'dependencia', 'activo', 'options'];
   institutions = signal<MatSelectSearchData<string>[]>([]);
   dependencies = signal<MatSelectSearchData<string>[]>([]);
   text: string = '';
@@ -75,7 +74,7 @@ export class AccountsComponent implements OnInit {
     this.getData();
   }
 
-  Add() {
+  add() {
     const dialogRef = this.dialog.open(CuentaDialogComponent, {
       width: '1000px',
       disableClose: true,
@@ -144,5 +143,15 @@ export class AccountsComponent implements OnInit {
     this.paginatorService.offset = 0;
     this.text = '';
     this.getData();
+  }
+
+  toggleVisibility(account: Account) {
+    this.accountService.toggleVisibility(account._id).subscribe((state) => {
+      this.accounts.update((values) => {
+        const index = values.findIndex((item) => item._id === account._id);
+        values[index].isVisible = state;
+        return [...values];
+      });
+    });
   }
 }

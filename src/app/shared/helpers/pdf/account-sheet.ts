@@ -1,22 +1,22 @@
 import { Content } from 'pdfmake/interfaces';
-import { account } from 'src/app/administration/interfaces';
-function createContent(account: account, password: string): Content {
+import { Account } from 'src/app/administration/models';
+function createContent(account: Account, password: string): Content {
   return [
     {
       text: [
         'NOMBRE: ',
         {
-          text: `${account.funcionario?.nombre} ${account.funcionario?.paterno} ${account.funcionario?.materno}\n\n`.toUpperCase(),
+          text: `${account.fullnameManager}\n\n`.toUpperCase(),
           bold: false,
         },
         'CARGO: ',
         {
-          text: `${account.funcionario?.cargo ? account.funcionario.cargo.nombre : 'SIN CARGO'}\n\n`,
+          text: `${account.jobtitleManager}\n\n`,
           bold: false,
         },
         'UNIDAD: ',
         {
-          text: `${account.dependencia.nombre} - ${account.dependencia.institucion.sigla}`.toUpperCase(),
+          text: `${account.dependencia.nombre}`.toUpperCase(),
           bold: false,
         },
       ],

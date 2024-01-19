@@ -1,13 +1,12 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import Swal from 'sweetalert2';
 import { CuentaService } from 'src/app/administration/services/cuenta.service';
-import { account } from '../../interfaces/account.interface';
 import { role } from '../../interfaces/role.interface';
 import { createAccountPDF } from '../../helpers/pdfs/pdf-account';
-import { Officer } from '../../models/officer.model';
+import { Account, Officer } from '../../models';
+import { AlertService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-edit-account-dialog',
@@ -15,68 +14,34 @@ import { Officer } from '../../models/officer.model';
   styleUrls: ['./edit-account-dialog.component.scss'],
 })
 export class EditAccountDialogComponent implements OnInit {
-  Form_Cuenta: FormGroup = this.fb.group({
+  FormAccount: FormGroup = this.fb.group({
     login: ['', Validators.required],
     rol: ['', Validators.required],
   });
-  updatePassword: boolean = false;
   roles: role[] = [];
   officers: Officer[] = [];
-  disableCloseButton: boolean = false;
+  updatePassword: boolean = false;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: account,
+    @Inject(MAT_DIALOG_DATA) public data: Account,
     private fb: FormBuilder,
     private cuentaService: CuentaService,
-    public dialogRef: MatDialogRef<EditAccountDialogComponent>
+    private dialogRef: MatDialogRef<EditAccountDialogComponent>,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
-    this.Form_Cuenta.patchValue(this.data);
+    this.FormAccount.patchValue(this.data);
     forkJoin([this.cuentaService.getRoles()]).subscribe((data) => {
       this.roles = data[0];
     });
   }
 
-  changeForm(value: boolean) {
-    this.updatePassword = value;
-    if (value) {
-      const password = this.data.funcionario
-        ? this.data.funcionario.dni
-        : '000000';
-      this.Form_Cuenta = this.fb.group({
-        login: [this.data.login, Validators.required],
-        rol: [this.data.rol, Validators.required],
-        password: [password, Validators.required],
+  unlinkAccount() {
+    this.alertService.showQuestionAlert('Desvincular cuenta', 'Perdear acceso', () => {
+      this.cuentaService.unlinkAccount(this.data._id).subscribe(() => {
+        delete this.data.funcionario;
       });
-    } else {
-      this.Form_Cuenta = this.fb.group({
-        login: [this.data.login, Validators.required],
-        rol: [this.data.rol, Validators.required],
-      });
-    }
-  }
-
-  unlinkUser() {
-    if (!this.data.funcionario) return;
-    Swal.fire({
-      title: `Desvincular la cuenta?`,
-      text: `${this.data.funcionario.nombre} ${this.data.funcionario.paterno} ${this.data.funcionario.materno} perdera el acceso y la cuenta estara deshabilitada hasta una nueva asignacion`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.cuentaService
-          .unlinkAccountOfficer(this.data._id)
-          .subscribe((account) => {
-            this.data = account;
-            this.disableCloseButton = true;
-          });
-      }
     });
   }
 
@@ -86,49 +51,46 @@ export class EditAccountDialogComponent implements OnInit {
     });
   }
   selectOfficer(officer: Officer) {
-    Swal.fire({
-      title: `Asignar la cuenta a ${officer.fullWorkTitle}`,
-      text: `El funcionario obtendra todos los registros realizados con esta cuenta`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.cuentaService
-          .assignAccountOfficer(this.data._id, officer._id)
-          .subscribe((account) => {
-            this.data = account;
-            this.changeForm(true);
-            const login =
-              officer.nombre.charAt(0) +
-              officer.paterno +
-              officer.materno.charAt(0);
-            this.Form_Cuenta.get('login')?.setValue(
-              login.replace(/\s/g, '').toUpperCase()
-            );
-            this.Form_Cuenta.get('password')?.setValue(
-              officer.dni.toString().replace(/\s/g, '')
-            );
-            this.disableCloseButton = true;
-          });
-      } else {
-        this.officers = [];
-      }
-    });
+    // Swal.fire({
+    //   title: `Asignar la cuenta a ${officer.fullWorkTitle}`,
+    //   text: `El funcionario obtendra todos los registros realizados con esta cuenta`,
+    //   icon: 'question',
+    //   showCancelButton: true,
+    //   confirmButtonColor: '#3085d6',
+    //   cancelButtonColor: '#d33',
+    //   confirmButtonText: 'Aceptar',
+    //   cancelButtonText: 'Cancelar',
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     // this.cuentaService.assignAccountOfficer(this.data._id, officer._id).subscribe((account) => {
+    //     //   this.data = account;
+    //     //   this.changeForm(true);
+    //     //   const login = officer.nombre.charAt(0) + officer.paterno + officer.materno.charAt(0);
+    //     //   this.FormAccount.get('login')?.setValue(login.replace(/\s/g, '').toUpperCase());
+    //     //   this.FormAccount.get('password')?.setValue(officer.dni.toString().replace(/\s/g, ''));
+    //     //   this.disableCloseButton = true;
+    //     // });
+    //   } else {
+    //     this.officers = [];
+    //   }
+    // });
   }
 
   save() {
-    this.cuentaService
-      .edit(this.data._id, this.Form_Cuenta.value)
-      .subscribe((account) => {
-        const updatePassword = this.Form_Cuenta.get('password')?.value;
-        if (updatePassword && this.data.funcionario) {
-          createAccountPDF(account, updatePassword);
-        }
-        this.dialogRef.close(account);
-      });
+    this.cuentaService.edit(this.data._id, this.FormAccount.value).subscribe((account) => {
+      const updatePassword = this.FormAccount.get('password')?.value;
+      if (updatePassword && this.data.funcionario) {
+        createAccountPDF(account, updatePassword);
+      }
+      this.dialogRef.close(account);
+    });
+  }
+
+  togglePassword(value: boolean) {
+    if (value) {
+      this.FormAccount.setControl('password', new FormControl(this.data.funcionario?.dni ?? ''));
+    } else {
+      this.FormAccount.removeControl('password');
+    }
   }
 }

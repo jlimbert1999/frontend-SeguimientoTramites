@@ -1,5 +1,3 @@
-import { OfficerDto } from './officer.dto';
-
 interface AccountProps {
   login: string;
   password: string;
@@ -7,6 +5,10 @@ interface AccountProps {
   rol: string;
 }
 export class AccountDto {
+  login: string;
+  password: string;
+  dependencia: string;
+  rol: string;
   static FormtoModel(fomAccount: any) {
     const accountDto = {
       login: fomAccount['login'],
@@ -16,5 +18,10 @@ export class AccountDto {
     };
     return new AccountDto(accountDto);
   }
-  constructor(public account: AccountProps) {}
+  constructor({ login, password, dependencia, rol }: AccountProps) {
+    this.login = login;
+    this.password = password;
+    this.dependencia = dependencia;
+    this.rol = rol;
+  }
 }
