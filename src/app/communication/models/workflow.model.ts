@@ -52,7 +52,7 @@ export class Workflow {
                 date: TimeControl.formatDate(new Date(inboundDate), 'DD/MM/YY'),
                 hour: TimeControl.formatDate(new Date(inboundDate), 'HH:mm'),
               }
-            : { fulldate: 'Sin recibir', date: '-', hour: '-' },
+            : { fulldate: '', date: '', hour: '' },
         };
       }),
     });

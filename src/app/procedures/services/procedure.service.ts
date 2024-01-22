@@ -13,13 +13,13 @@ export class ProcedureService {
   base_url = environment.base_url;
   constructor(private http: HttpClient) {}
 
-  getFullProcedure(id_procedure: string, group: groupProcedure) {
+  getFullProcedure(id: string, group: groupProcedure) {
     return this.http
       .get<{
         procedure: internal | external;
         workflow: workflowResponse[];
         observations: observation[];
-      }>(`${this.base_url}/procedure/${group}/${id_procedure}`)
+      }>(`${this.base_url}/procedure/${group}/${id}`)
       .pipe(
         map((resp) => {
           let Procedure: ExternalProcedure | InternalProcedure;

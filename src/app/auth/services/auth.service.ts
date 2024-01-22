@@ -54,7 +54,7 @@ export class AuthService {
       );
   }
   getMyAccount() {
-    return this.http.get<account>(`${this.base_url}/auth/${this.account()?.id_account}`);
+    return this.http.get<account>(`${this.base_url}/auth/detail`);
   }
   updateMyAccount(password: string) {
     return this.http.put<{ message: string }>(`${this.base_url}/auth`, { password });

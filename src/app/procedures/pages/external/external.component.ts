@@ -26,7 +26,7 @@ export class ExternalComponent implements OnInit {
     public dialog: MatDialog,
     private readonly externalService: ExternalService,
     private readonly procedureService: ProcedureService,
-    private readonly paginatorService: PaginatorService<{ text: string; data: ExternalProcedure[] }>,
+    private readonly paginatorService: PaginatorService<{ text: string; data: ExternalProcedure[]; length: number }>,
     private readonly archiveService: ArchiveService,
     private readonly alertService: AlertService,
     private readonly pdf: PdfGeneratorService
@@ -34,6 +34,7 @@ export class ExternalComponent implements OnInit {
     inject(DestroyRef).onDestroy(() => {
       this.savePaginationData();
       this.paginatorService.keepAliveData = false;
+      this.paginatorService.length = 0;
     });
   }
   ngOnInit(): void {
@@ -146,6 +147,7 @@ export class ExternalComponent implements OnInit {
     this.paginatorService.cache[this.constructor.name] = {
       data: this.dataSource(),
       text: this.textSearch,
+      length: this.paginatorService.length,
     };
   }
 
@@ -157,6 +159,7 @@ export class ExternalComponent implements OnInit {
     }
     this.dataSource.set(cacheData.data);
     this.textSearch = cacheData.text;
+    this.paginatorService.length = cacheData.length;
   }
 
   get PageParams() {

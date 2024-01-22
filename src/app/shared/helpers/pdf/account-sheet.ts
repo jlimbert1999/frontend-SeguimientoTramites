@@ -6,12 +6,12 @@ function createContent(account: Account, password: string): Content {
       text: [
         'NOMBRE: ',
         {
-          text: `${account.fullnameManager}\n\n`.toUpperCase(),
+          text: `${account.fullnameManager()}\n\n`.toUpperCase(),
           bold: false,
         },
         'CARGO: ',
         {
-          text: `${account.jobtitleManager}\n\n`,
+          text: `${account.jobtitleManager()}\n\n`,
           bold: false,
         },
         'UNIDAD: ',
@@ -20,13 +20,13 @@ function createContent(account: Account, password: string): Content {
           bold: false,
         },
       ],
-
       style: 'header',
       alignment: 'center',
       fontSize: 12,
     },
     {
-      text: '\n\nCUENTA',
+      marginTop: 20,
+      text: '\n\nCUENTA\n\n',
       style: 'header',
       alignment: 'center',
     },
@@ -54,11 +54,12 @@ function createContent(account: Account, password: string): Content {
       fontSize: 10,
     },
     {
-      qr: `${account.funcionario?.nombre} ${account.funcionario?.paterno} ${account.funcionario?.materno} Dni: ${account.funcionario?.dni}`,
+      qr: `${account.fullnameManager()} Dni: ${account.funcionario?.dni}`,
       alignment: 'right',
       fit: 100,
     },
     {
+      marginTop: 20,
       columns: [
         {
           width: 90,

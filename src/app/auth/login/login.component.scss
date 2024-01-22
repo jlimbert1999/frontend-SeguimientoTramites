@@ -48,19 +48,17 @@ label {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: 350px 250px;
-  background-image: url(../../../assets/img/logoo.png);
-
+  background-size: 350px 350px;
+  background-image: url(../../../assets/img/logo_alcaldia.png);
 }
 
 .wrap {
   width: 100%;
   overflow: hidden;
-  background: transparent;
+  background: #fff;
   border-radius: 5px;
-  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px,
-    rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px,
-    rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px,
+    rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
 }
 
 .img,
@@ -69,7 +67,6 @@ label {
 }
 
 @media (max-width: 991.98px) {
-
   .img,
   .login-wrap {
     width: 100%;
@@ -96,12 +93,4 @@ label {
 
 mat-form-field {
   width: 100%;
-}
-
-.golden-btn+.golden-btn {
-  margin-top: 1em;
-}
-
-.golden-btn {
-  background-color: #efb73d;
 }

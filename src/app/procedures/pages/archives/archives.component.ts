@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, Subject, takeUntil } from 'rxjs';
@@ -14,45 +14,61 @@ import { EventProcedureDto } from '../../dtos/event_procedure.dto';
 
 import { stateProcedure } from 'src/app/procedures/interfaces';
 
+interface CacheStorage {
+  text: string;
+  data: Communication[];
+  length: number;
+}
 @Component({
   selector: 'app-archives',
   templateUrl: './archives.component.html',
   styleUrls: ['./archives.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ArchivesComponent implements OnInit, OnDestroy {
+export class ArchivesComponent implements OnInit {
   public displayedColumns: string[] = ['code', 'reference', 'state', 'manager', 'show-detail', 'options'];
   public dataSource = signal<Communication[]>([]);
   private destroyed$: Subject<void> = new Subject();
+  public textToSearch: string = '';
 
   constructor(
     private readonly archiveService: ArchiveService,
-    private readonly paginatorService: PaginatorService<string>,
+    private readonly paginatorService: PaginatorService<CacheStorage>,
     private readonly socketService: SocketService,
     private readonly alertService: AlertService,
     private dialog: MatDialog,
     private router: Router
   ) {
     this.listenUnarchives();
+    inject(DestroyRef).onDestroy(() => {
+      this.savePaginationData();
+      this.paginatorService.keepAliveData = false;
+      this.paginatorService.length = 0;
+
+      this.destroyed$.next();
+      this.destroyed$.complete();
+    });
   }
 
   ngOnInit(): void {
-    this.getData();
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
+    this.loadPaginationData();
   }
 
   getData() {
-    const subscription: Observable<{ mails: Communication[]; length: number }> = this.paginatorService.isSearchMode
-      ? this.archiveService.search(this.paginatorService.cache['text'], this.paginatorService.PaginationParams)
-      : this.archiveService.findAll(this.paginatorService.PaginationParams);
+    const subscription: Observable<{ mails: Communication[]; length: number }> =
+      this.textToSearch !== ''
+        ? this.archiveService.search(this.textToSearch, this.paginatorService.PaginationParams)
+        : this.archiveService.findAll(this.paginatorService.PaginationParams);
     subscription.subscribe((data) => {
       this.dataSource.set(data.mails);
       this.paginatorService.length = data.length;
     });
+  }
+
+  applyFilter(term: string) {
+    this.paginatorService.offset = 0;
+    this.textToSearch = term;
+    this.getData();
   }
 
   unarchive(mail: Communication) {
@@ -68,6 +84,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
         };
         this.archiveService.unarchiveMail(mail._id, archiveDto).subscribe(() => {
           this.removeDataSourceElement(mail._id);
+          this.paginatorService.length--;
         });
       }
     );
@@ -106,6 +123,28 @@ export class ArchivesComponent implements OnInit, OnDestroy {
       const filteredElement = values.filter((element) => element._id !== id_mail);
       return filteredElement;
     });
-    this.paginatorService.length--;
+  }
+
+  private savePaginationData(): void {
+    this.paginatorService.cache[this.constructor.name] = {
+      data: this.dataSource(),
+      text: this.textToSearch,
+      length: this.paginatorService.length,
+    };
+  }
+
+  private loadPaginationData(): void {
+    const cacheData = this.paginatorService.cache[this.constructor.name];
+    if (!this.paginatorService.keepAliveData || !cacheData) {
+      this.getData();
+      return;
+    }
+    this.dataSource.set(cacheData.data);
+    this.textToSearch = cacheData.text;
+    this.paginatorService.length = cacheData.length;
+  }
+
+  get PageParams() {
+    return this.paginatorService.PageParams;
   }
 }

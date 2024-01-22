@@ -23,6 +23,7 @@
           color="primary"
           matTooltip="Corregir"
           *ngIf="id_account === observation.account && enableOptions"
+          [disabled]="observation.isSolved"
           (click)="markAsSolved(observation)"
         >
           <mat-icon>build</mat-icon>

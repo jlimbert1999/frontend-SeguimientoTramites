@@ -5,9 +5,11 @@ import { LoginComponent } from './auth/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
 import { PresentationComponent } from './pages/presentation/presentation.component';
 import { ResourcesComponent } from './pages/resources/resources.component';
+import { SettingsComponent } from './pages/settings/settings.component';
+import { IsNotAuthenticatedGuard } from './auth/guard/is-not-authenticated.guard';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginComponent, canActivate:[IsNotAuthenticatedGuard] },
   {
     path: '',
     component: HomeComponent,
@@ -16,6 +18,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'main', pathMatch: 'full' },
       { path: 'main', component: PresentationComponent },
       { path: 'recursos', component: ResourcesComponent },
+      { path: 'ajustes', component: SettingsComponent },
       {
         path: 'configuraciones',
         loadChildren: () => import(`./administration/administration.module`).then((m) => m.AdministrationModule),

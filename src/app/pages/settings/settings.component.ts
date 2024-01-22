@@ -2,7 +2,8 @@ import { Component, OnInit, ViewChild, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { AppearanceService } from 'src/app/services/appearance.service';
 import { AuthService } from 'src/app/auth/services/auth.service';
-import { account } from '../../interfaces';
+import { account } from '../../administration/interfaces';
+import { AlertService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-settings',
@@ -24,7 +25,12 @@ export class SettingsComponent implements OnInit {
   });
   hide = true;
 
-  constructor(private authService: AuthService, private fb: FormBuilder, private themeService: AppearanceService) {}
+  constructor(
+    private authService: AuthService,
+    private fb: FormBuilder,
+    private themeService: AppearanceService,
+    private alertService: AlertService
+  ) {}
   ngOnInit(): void {
     this.getMyAccount();
   }
@@ -41,19 +47,23 @@ export class SettingsComponent implements OnInit {
   }
 
   private getMyAccount() {
-    this.authService.getMyAccount().subscribe((resp) => this.myAccount.set(resp));
+    this.authService.getMyAccount().subscribe((resp) => {
+      console.log(resp);
+      this.myAccount.set(resp);
+    });
   }
 
   save() {
-    // this.authService.updateMyAccount(this.Form_Cuenta.get('password')?.value).subscribe((newAccount) => {
-    //   this.myAccount = newAccount;
-    //   this.formDirective.resetForm();
-    // });
+    this.authService.updateMyAccount(this.Form_Cuenta.get('password')?.value).subscribe((newAccount) => {
+      this.formDirective.resetForm();
+      this.alertService.showSuccesToast({ title: 'Cuenta actualizada' });
+    });
   }
 
   get isDarkTheme() {
     return this.themeService.isDarkTheme();
   }
+
   toggleDarkTheme() {
     this.themeService.toggleTheme();
   }

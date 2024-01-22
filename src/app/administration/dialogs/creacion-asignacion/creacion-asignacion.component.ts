@@ -1,86 +1,74 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { forkJoin } from 'rxjs';
 import { CuentaService } from 'src/app/administration/services/cuenta.service';
-import { Officer } from '../../models/officer.model';
-import { institution } from '../../interfaces/institution.interface';
-import { dependency } from '../../interfaces/dependency.interface';
 import { role } from '../../interfaces/role.interface';
+import { MatSelectSearchData } from 'src/app/shared/interfaces';
+import { Officer } from '../../models';
 
 @Component({
   selector: 'app-creacion-asignacion',
   templateUrl: './creacion-asignacion.component.html',
-  styleUrls: ['./creacion-asignacion.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreacionAsignacionComponent implements OnInit {
-  dependencias: any[] = [];
-  institutions: any[] = [];
-  roles: role[] = [];
-  officers: Officer[] = [];
+  institutions = signal<MatSelectSearchData<string>[]>([]);
+  dependencies = signal<MatSelectSearchData<string>[]>([]);
+  officers = signal<MatSelectSearchData<Officer>[]>([]);
+  roles = signal<role[]>([]);
   hidePassword = true;
 
-  Form_Cuenta: FormGroup = this.fb.group({
-    funcionario: [null, Validators.required],
-    login: ['', [Validators.required, Validators.pattern(/^\S+$/), Validators.minLength(4), Validators.maxLength(10)]],
+  FormAccount: FormGroup = this.fb.group({
+    login: ['', [Validators.required, Validators.pattern(/^\S+$/), Validators.minLength(4)]],
     password: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
     rol: ['', Validators.required],
     dependencia: ['', Validators.required],
+    funcionario: ['', Validators.required],
   });
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<CreacionAsignacionComponent>,
-    private cuentaService: CuentaService
+    private accountService: CuentaService
   ) {}
 
   ngOnInit(): void {
-    forkJoin([this.cuentaService.getInstitutions(), this.cuentaService.getRoles()]).subscribe((data) => {
-      this.institutions = data[0].map((institution) => ({ value: institution._id, text: institution.nombre }));
-      this.roles = data[1];
-    });
+    this.accountService.getRoles().subscribe((roles) => this.roles.set(roles));
   }
+
   save() {
-    this.Form_Cuenta;
-    this.cuentaService.addAccountWithAssign(this.Form_Cuenta.value).subscribe((account) => {
+    this.accountService.assign(this.FormAccount.value).subscribe((account) => {
       this.dialogRef.close(account);
     });
   }
 
-  searchOfficer(text: string) {
-    this.cuentaService.getOfficersForAssign(text).subscribe((data) => {
-      this.officers = data;
+  searchInstitutions(term: string) {
+    this.accountService.getInstitutions(term).subscribe((data) => {
+      this.institutions.set(data.map((inst) => ({ text: inst.nombre, value: inst._id })));
     });
-  }
-  selectOfficer(officer: Officer) {
-    this.Form_Cuenta.get('funcionario')?.setValue(officer._id);
-    const login = officer.nombre.charAt(0) + officer.paterno + officer.materno.charAt(0);
-    this.Form_Cuenta.get('login')?.setValue(login.replace(/\s/g, '').toUpperCase());
-    this.Form_Cuenta.get('password')?.setValue(officer.dni.toString().replace(/\s/g, ''));
-  }
-  getDependencies(id_institution: string) {
-    this.Form_Cuenta.get('institucion')?.setValue(id_institution || '');
-    this.cuentaService.getDependenciesOfInstitution(id_institution).subscribe((data) => {
-      this.dependencias = data.map((dependency) => ({ value: dependency._id, text: dependency.nombre }));
-    });
-  }
-  selectDependency(id_dependency: string) {
-    this.Form_Cuenta.get('dependencia')?.setValue(id_dependency || '');
   }
 
-  getErrorMessagesForm(control: AbstractControl) {
-    if (control.hasError('required')) {
-      return 'Este campo es requerido';
-    }
-    if (control.hasError('pattern')) {
-      return 'El campo no puede contener espacios en blanco';
-    }
-    if (control.hasError('minlength')) {
-      return 'El campo debe tener al menos 4 caracteres';
-    }
-    if (control.hasError('maxlength')) {
-      return 'El campo no puede tener más de 10 caracteres';
-    }
-    return '';
+  searchDependencies(id_institucion: string) {
+    this.accountService.getDependenciesOfInstitution(id_institucion).subscribe((data) => {
+      this.dependencies.set(data.map((dependency) => ({ value: dependency._id, text: dependency.nombre })));
+    });
+  }
+  searchOfficers(term: string) {
+    this.accountService
+      .searchOfficersWithoutAccount(term)
+      .subscribe((resp) => this.officers.set(resp.map((officer) => ({ value: officer, text: officer.fullWorkTitle }))));
+  }
+
+  selectDependency(id_dependency: string): void {
+    this.FormAccount.get('dependencia')?.setValue(id_dependency);
+  }
+
+  selectOfficer(officer: Officer) {
+    const formData = {
+      login: officer.nombre.charAt(0) + officer.paterno + officer.nombre.charAt(0),
+      password: officer.dni,
+      funcionario: officer._id,
+    };
+    this.FormAccount.patchValue(formData);
   }
 }

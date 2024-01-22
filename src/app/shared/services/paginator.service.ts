@@ -27,7 +27,6 @@ export class PaginatorService<T = void> {
   resetPagination() {
     this.pageSize.set(10);
     this.pageIndex.set(0);
-    this.length = 0;
     this.keepAliveData = false;
   }
 

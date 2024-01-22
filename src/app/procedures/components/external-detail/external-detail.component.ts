@@ -12,12 +12,5 @@ import { ExternalProcedure } from '../../models';
 export class ExternalDetailComponent {
   @Input({ required: true }) procedure: ExternalProcedure;
   $timer = interval(1000);
-  duration = toSignal(
-    this.$timer.pipe(
-      map(() => {
-        return this.procedure.getDuration();
-      })
-    ),
-    { initialValue: 'Calculando.....' }
-  );
+  duration = toSignal(this.$timer.pipe(map(() => this.procedure.getDuration())), { initialValue: 'Calculando.....' });
 }

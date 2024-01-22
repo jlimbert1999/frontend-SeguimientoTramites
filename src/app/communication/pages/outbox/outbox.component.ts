@@ -7,11 +7,13 @@ import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/sha
 import { ProcedureService } from 'src/app/procedures/services';
 import { OutboxService } from '../../services/outbox.service';
 
-import { GroupedCommunication } from '../../models';
+import { Communication, GroupedCommunication } from '../../models';
+import { MatSelectionList } from '@angular/material/list';
 
 interface cacheData {
   communications: GroupedCommunication[];
   text: string;
+  length: number;
 }
 
 @Component({
@@ -44,6 +46,7 @@ export class OutboxComponent implements OnInit {
     inject(DestroyRef).onDestroy(() => {
       this.savePaginationData();
       this.paginatorService.keepAliveData = false;
+      this.paginatorService.length = 0;
     });
   }
 
@@ -73,28 +76,42 @@ export class OutboxComponent implements OnInit {
     });
   }
 
-  cancelMails(mail: GroupedCommunication) {
+  cancelAll(groupedCommunication: GroupedCommunication) {
+    const ids = groupedCommunication.detail.map((item) => item._id);
+    this.delete(ids, groupedCommunication);
+  }
+
+  cancelSelected(ids: string[] | null, groupedCommunication: GroupedCommunication) {
+    if (!ids) return;
+    if (ids.length === 0) return;
+    this.delete(ids, groupedCommunication);
+  }
+
+  private delete(ids: string[], { _id: { account, outboundDate, procedure } }: GroupedCommunication) {
     this.alertService.showQuestionAlert(
-      `¿Cancelar envios del tramite ${mail._id.procedure.code}?`,
-      `NRO. DE ENVIOS: ${mail.detail.length}`,
+      `¿Cancelar envio del tramite ${procedure.code}?`,
+      `Se cancelaran ${ids.length} envios.`,
       () => {
-        const ids_mails = mail.detail.map((send) => send._id);
-        this.outboxService.cancelMails(mail._id.procedure._id, ids_mails).subscribe((resp) => {
-          this.removeDatasourceElement(mail);
-          this.alertService.showSuccesAltert('Envio cancelado', resp.message);
+        this.outboxService.cancelMails(procedure._id, ids).subscribe(() => {
+          const groupId = [account, outboundDate, procedure._id].join('-');
+          this.removeMail(groupId, ids);
         });
       }
     );
   }
-  removeDatasourceElement({ _id }: GroupedCommunication) {
-    const id = `${_id.account}-${_id.outboundDate}-${_id.procedure._id}`;
+
+  private removeMail(groupId: string, ids: string[]) {
     this.datasource.update((values) => {
-      const filteredData = values.filter(
-        (element) => `${element._id.account}-${element._id.outboundDate}-${element._id.procedure._id}` !== id
+      const index = values.findIndex(
+        ({ _id: { account, outboundDate, procedure } }) => [account, outboundDate, procedure._id].join('-') === groupId
       );
-      return [...filteredData];
+      values[index].detail = values[index].detail.filter((mail) => !ids.includes(mail._id));
+      if (values[index].detail.length === 0) {
+        values.splice(index, 1);
+        this.paginatorService.length--;
+      }
+      return [...values];
     });
-    this.paginatorService.length--;
   }
 
   get PageParams() {
@@ -105,6 +122,7 @@ export class OutboxComponent implements OnInit {
     this.paginatorService.cache[this.constructor.name] = {
       communications: this.datasource(),
       text: this.textToSearch,
+      length: this.paginatorService.length,
     };
   }
 
@@ -116,5 +134,6 @@ export class OutboxComponent implements OnInit {
     }
     this.datasource.set(cacheData.communications);
     this.textToSearch = cacheData.text;
+    this.paginatorService.length = cacheData.length;
   }
 }

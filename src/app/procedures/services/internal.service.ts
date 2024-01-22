@@ -50,7 +50,8 @@ export class InternalService {
         })
       );
   }
-  getParticipant(text: string) {
+
+  findParticipant(text: string) {
     return this.http
       .get<officer[]>(`${base_url}/internal/participant/${text}`)
       .pipe(map((resp) => resp.map((el) => Officer.officerFromJson(el))));

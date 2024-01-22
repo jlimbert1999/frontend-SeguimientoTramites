@@ -62,7 +62,6 @@ export class AlertService {
       timer,
       confirmButtonText: 'Aceptar',
       willClose: () => {
-        console.log('cerado');
         clearInterval(timer);
       },
     });
@@ -80,7 +79,7 @@ export class AlertService {
   }
 
   showSuccesToast({ seconds = 5000, title, message }: ToastOptions) {
-    const toast = this.toast.info(message, title, {
+    const toast = this.toast.success(message, title, {
       positionClass: 'toast-bottom-right',
       closeButton: true,
       timeOut: seconds,

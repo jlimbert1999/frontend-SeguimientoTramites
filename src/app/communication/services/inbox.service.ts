@@ -113,7 +113,9 @@ export class InboxService {
       );
   }
 
-  getMailDetails(id_mail: string) {
-    return this.http.get<communicationResponse>(`${this.base_url}/communication/${id_mail}`);
+  getMailDetails(id: string) {
+    return this.http
+      .get<communicationResponse>(`${this.base_url}/communication/${id}`)
+      .pipe(map((resp) => Communication.ResponseToModel(resp)));
   }
 }

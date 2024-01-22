@@ -33,12 +33,9 @@ export class InterceptorService {
     if (error.status === 401) {
       this.router.navigate(['/login']);
       this.dialogRef.closeAll();
+      localStorage.removeItem('token')
     } else if (error.status === 403) {
-      Swal.fire(
-        'Sin autorizacion',
-        'Esta cuenta no tiene los permisos necesarios para realizar esta accion',
-        'warning'
-      );
+      Swal.fire('Sin autorizacion', error.error['message'], 'warning');
     } else if (error.status === 404) {
       Swal.fire({
         title: 'El recurso solicitado no existe',

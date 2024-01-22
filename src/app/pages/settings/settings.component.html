@@ -102,7 +102,7 @@
               <mat-icon>account_circle</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
-          <form [formGroup]="Form_Cuenta" (ngSubmit)="save()" autocomplete="off" action="#">
+          <form [formGroup]="Form_Cuenta" autocomplete="off" action="#">
             <div class="row p-3">
               <div class="col-md-4">
                 <mat-form-field class="example-full-width">
@@ -114,14 +114,8 @@
               <div class="col-md-4">
                 <mat-form-field>
                   <mat-label>Ingrese su nueva contraseña</mat-label>
-                  <input formControlName="password" matInput [type]="hide ? 'password' : 'text'" />
-                  <button
-                    mat-icon-button
-                    matSuffix
-                    (click)="hide = !hide"
-                    [attr.aria-label]="'Hide password'"
-                    [attr.aria-pressed]="hide"
-                  >
+                  <input formControlName="password" [autocomplete]="false" matInput [type]="hide ? 'password' : 'text'" />
+                  <button mat-icon-button matSuffix (click)="hide = !hide">
                     <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
                   </button>
                   <mat-error *ngIf="Form_Cuenta.get('password')?.invalid">{{ getErrorMessage() }}</mat-error>
@@ -129,7 +123,7 @@
               </div>
               <mat-divider></mat-divider>
               <div class="col-md-12 mt-3">
-                <button mat-raised-button color="primary" type="submit" [disabled]="Form_Cuenta.invalid">
+                <button mat-raised-button color="primary" (click)="save()" [disabled]="Form_Cuenta.invalid">
                   ACTUALIZAR
                 </button>
               </div>

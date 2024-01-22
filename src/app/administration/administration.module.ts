@@ -25,7 +25,6 @@ import { OrganizationComponent } from './pages/organization/organization.compone
 import { JobDialogComponent } from './pages/job-dialog/job-dialog.component';
 import { WorkHistoryComponent } from './dialogs/work-history/work-history.component';
 import { TypeProcedureDialogComponent } from './dialogs/type-procedure-dialog/type-procedure-dialog.component';
-import { SettingsComponent } from './pages/settings/settings.component';
 import { AdministrationRoutingModule } from './administration-routing.module';
 import { FilterUsersSocketPipe } from './pipes/filter-users-socket.pipe';
 import { FilterSystemRolesPipe } from './pipes/filter-system-resources.pipe';
@@ -48,7 +47,6 @@ import { FilterSystemRolesPipe } from './pipes/filter-system-resources.pipe';
     OrganizationComponent,
     RolDialogComponent,
     RolesComponent,
-    SettingsComponent,
     TiposTramitesComponent,
     TypeProcedureDialogComponent,
     WorkHistoryComponent,

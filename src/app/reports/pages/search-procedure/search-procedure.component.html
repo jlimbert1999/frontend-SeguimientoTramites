@@ -10,7 +10,7 @@
         <mat-button-toggle value="advanced">Avanzada</mat-button-toggle>
       </mat-button-toggle-group>
       <button mat-icon-button (click)="togglePanel()">
-        <mat-icon>add</mat-icon>
+        <mat-icon>{{ panelIsOpened() ? "remove" : "add" }}</mat-icon>
       </button>
     </div>
     @if(panelIsOpened()){
@@ -103,7 +103,7 @@
       <hr />
       <div class="d-flex justify-content-end button-row">
         <div class="flex-grow-1">
-          <button mat-stroked-button color="accent">Imprimir</button>
+          <!-- <button mat-stroked-button color="accent">Imprimir</button> -->
         </div>
         <button mat-button color="warn" (click)="resetForm()">Limpiar</button>
         <button mat-raised-button color="primary" [disabled]="formProcedure().invalid" (click)="generateReport()">

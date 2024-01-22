@@ -30,19 +30,21 @@ export class PdfGeneratorService {
 
   async generateRouteSheet(procedure: Procedure, workflow: Workflow[]) {
     workflow = workflow
-      .map((communication) => {
-        const { detail, ...values } = communication;
+      .map(({ detail, ...values }) => {
         const filteredItems = detail.filter((send) => send.status !== statusMail.Rejected);
-        return { detail: filteredItems, ...values };
+        return { ...values, detail: filteredItems };
       })
-      .filter((elemet) => elemet.detail.length > 0);
+      .filter((element) => element.detail.length > 0);
+    const index = workflow.findIndex((element) => element.detail.length > 1);
+    const filteredWorkflow = index !== -1 ? workflow.slice(0, index + 1) : workflow;
+
     const docDefinition: TDocumentDefinitions = {
       pageSize: 'LETTER',
       pageMargins: [30, 30, 30, 30],
       content: [
         await RouteMapPdf.CreateHeader(),
         RouteMapPdf.CreateFirstSection(procedure, workflow[0]),
-        RouteMapPdf.CreateSecodSection(workflow),
+        RouteMapPdf.CreateSecodSection(filteredWorkflow),
       ],
       footer: {
         margin: [10, 0, 10, 0],
@@ -215,7 +217,7 @@ export class PdfGeneratorService {
   async createAccountSheet(account: Account, password: string) {
     const docDefinition: TDocumentDefinitions = {
       pageSize: 'LETTER',
-      pageMargins: [30, 110, 40, 30],
+      pageMargins: [40, 40, 40, 40],
       content: [
         await ApprovedSheet.createHeader(
           'ASIGNACION DE USUARIO DE SISTEMA DE SEGUIMIENTO DE TRAMITES INTERNOS Y EXTERNOS'

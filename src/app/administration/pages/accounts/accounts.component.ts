@@ -2,10 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/cor
 import { MatDialog } from '@angular/material/dialog';
 import { CuentaService } from '../../services/cuenta.service';
 import { CreacionAsignacionComponent } from '../../dialogs/creacion-asignacion/creacion-asignacion.component';
-import { OfficerDialogComponent } from '../../dialogs/officer-dialog/officer-dialog.component';
 import { CuentaDialogComponent } from '../../dialogs/cuenta-dialog/cuenta-dialog.component';
 import { EditAccountDialogComponent } from '../../dialogs/edit-account-dialog/edit-account-dialog.component';
-import { account } from '../../interfaces/account.interface';
 import { PaginatorService } from 'src/app/shared/services';
 import { MatSelectSearchData } from 'src/app/shared/interfaces';
 import { Account } from '../../models/account.model';
@@ -77,7 +75,6 @@ export class AccountsComponent implements OnInit {
   add() {
     const dialogRef = this.dialog.open(CuentaDialogComponent, {
       width: '1000px',
-      disableClose: true,
     });
     dialogRef.afterClosed().subscribe((result: Account) => {
       if (!result) return;
@@ -85,58 +82,30 @@ export class AccountsComponent implements OnInit {
       this.paginatorService.length++;
     });
   }
-  addAccountWithAssign() {
-    const dialogRef = this.dialog.open(CreacionAsignacionComponent, {
-      width: '1000px',
-      disableClose: true,
-    });
-    dialogRef.afterClosed().subscribe((result: account) => {
-      if (result) {
-        // if (this.paginatorService.limit === this.accounts.length) {
-        //   this.accounts.pop();
-        // }
-        // this.accounts = [result, ...this.accounts];
-      }
-    });
-  }
-  Edit(cuenta: account) {
+
+  edit(accont: Account) {
     const dialogRef = this.dialog.open(EditAccountDialogComponent, {
       width: '1200px',
-      disableClose: true,
-      data: cuenta,
+      data: accont,
     });
-    dialogRef.afterClosed().subscribe((result: account) => {
-      if (result) {
-        // const indexFound = this.accounts.findIndex((cuenta) => cuenta._id === result._id);
-        // this.accounts[indexFound] = result;
-        // this.accounts = [...this.accounts];
-      }
-    });
-  }
-
-  AddUser() {
-    this.dialog.open(OfficerDialogComponent, {
-      width: '900px',
+    dialogRef.afterClosed().subscribe((result?: Account) => {
+      if (!result) return;
+      this.accounts.update((values) => {
+        const index = values.findIndex((value) => value._id === result._id);
+        values[index] = result;
+        return [...values];
+      });
     });
   }
-  EditUser(account: account) {
-    // const dialogRef = this.dialog.open(UsuarioDialogComponent, {
-    //   data: account.funcionario
-    // });
-    // dialogRef.afterClosed().subscribe((result: Funcionario) => {
-    //   if (result) {
-    //     let indexFound = this.Cuentas.findIndex(account => account._id === result._id)
-    //     this.Cuentas[indexFound] = Object.assign(account, { funcionario: result })
-    //   }
-    // });
-  }
-
-  disable(id_cuenta: string) {
-    // this.accountService.delete(id_cuenta).subscribe(activo => {
-    //   const indexFound = this.Cuentas.findIndex(element => element._id === id_cuenta)
-    //   this.Cuentas[indexFound].activo = activo
-    //   this.Cuentas = [...this.Cuentas]
-    // })
+  assign() {
+    const dialogRef = this.dialog.open(CreacionAsignacionComponent, {
+      width: '1000px',
+    });
+    dialogRef.afterClosed().subscribe((result: Account) => {
+      if (!result) return;
+      this.accounts.update((values) => [result, ...values]);
+      this.paginatorService.length++;
+    });
   }
 
   cancelSearch() {
@@ -150,6 +119,16 @@ export class AccountsComponent implements OnInit {
       this.accounts.update((values) => {
         const index = values.findIndex((item) => item._id === account._id);
         values[index].isVisible = state;
+        return [...values];
+      });
+    });
+  }
+  
+  disable(account: Account) {
+    this.accountService.disable(account._id).subscribe((activo) => {
+      this.accounts.update((values) => {
+        const index = values.findIndex((item) => item._id === account._id);
+        values[index].activo = activo;
         return [...values];
       });
     });

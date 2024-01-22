@@ -16,6 +16,7 @@ import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/sha
 interface CacheStorage {
   text: string;
   data: InternalProcedure[];
+  lengh: number;
 }
 @Component({
   selector: 'app-internal',
@@ -39,6 +40,7 @@ export class InternalComponent implements OnInit {
     inject(DestroyRef).onDestroy(() => {
       this.savePaginationData();
       this.paginatorService.keepAliveData = false;
+      this.paginatorService.length = 0;
     });
   }
   ngOnInit(): void {
@@ -154,6 +156,7 @@ export class InternalComponent implements OnInit {
     this.paginatorService.cache[this.constructor.name] = {
       data: this.datasource(),
       text: this.textForSearch,
+      lengh: this.paginatorService.length,
     };
   }
 
@@ -165,6 +168,7 @@ export class InternalComponent implements OnInit {
     }
     this.datasource.set(cacheData.data);
     this.textForSearch = cacheData.text;
+    this.paginatorService.length = cacheData.lengh;
   }
 
   get PageParams() {

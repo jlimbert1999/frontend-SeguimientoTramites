@@ -28,14 +28,10 @@ export class ExternalService {
   constructor(private http: HttpClient) {}
 
   getSegments() {
-    return this.http.get<{ _id: string }[]>(`${this.base_url}/external/segments`).pipe(
-      map((resp) => {
-        return resp.map((element) => element._id);
-      })
-    );
+    return this.http.get<string[]>(`${this.base_url}/external/segments`);
   }
   getTypesProceduresBySegment(segment: string) {
-    return this.http.get<typeProcedure[]>(`${this.base_url}/external/segments/${segment}`).pipe(map((resp) => resp));
+    return this.http.get<typeProcedure[]>(`${this.base_url}/external/segments/${segment}`);
   }
 
   add({ FormApplicant, FormProcedure, FormRepresentative, Requeriments }: CreateExternalForm) {

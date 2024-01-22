@@ -1,21 +1,27 @@
 <p>
   <mat-toolbar color="primary">
+    <sidenav-button />
     <span>ARCHIVOS</span>
   </mat-toolbar>
 </p>
 
 <div class="container-fluid animate__animated animate__fadeIn">
   <app-input-search-procedures
-    (searchEvent)="getData()"
     placeholder="Alterno / Referencia / Solicitante"
-  ></app-input-search-procedures>
+    [initialValue]="textToSearch"
+    (searchEvent)="applyFilter($event)"
+  />
   <div class="example-container mat-elevation-z8">
     <div class="table-container">
       <table mat-table [dataSource]="dataSource()">
         <ng-container matColumnDef="code">
           <th mat-header-cell *matHeaderCellDef>Tramite</th>
           <td mat-cell *matCellDef="let element">
-            <a class="link-primary" (click)="showDetails(element)">
+            <a
+              class="link-primary"
+              [routerLink]="['/tramites/archivados', element.procedure.group, element.procedure._id]"
+              [queryParams]="PageParams"
+            >
               {{ element.procedure.code }}
             </a>
           </td>

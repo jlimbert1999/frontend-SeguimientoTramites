@@ -303,6 +303,133 @@ function createContainers(workflow: Workflow[]) {
       workflow[index].detail.forEach((element) => {
         receivers.push(`${element.receiver.fullname} (${element.receiver.jobtitle})`);
       });
+      cuadros.push({
+        fontSize: 7,
+        unbreakable: true,
+        table: {
+          dontBreakRows: true,
+          widths: [360, '*'],
+          body: [
+            [
+              {
+                margin: [0, 10, 0, 0],
+                text: `DESTINATARIO ${toOrdinal(index+1)} (NOMBRE Y CARGO): ${receivers.join(' // ')}`.toUpperCase(),
+                colSpan: 2,
+                alignment: 'left',
+                border: [true, false, true, false],
+              },
+              '',
+            ],
+            [
+              {
+                border: [true, false, false, false],
+                table: {
+                  body: [
+                    [
+                      {
+                        table: {
+                          heights: 70,
+                          widths: [70],
+                          body: [
+                            [
+                              {
+                                text: 'SELLO DE RECEPCION',
+                                fontSize: 4,
+                                alignment: 'center',
+                              },
+                            ],
+                          ],
+                        },
+                      },
+                      [{ text: 'INSTRUCCION / PROVEIDO' }, { text: ``, bold: true }],
+                    ],
+                  ],
+                },
+                layout: {
+                  defaultBorder: false,
+                },
+              },
+              {
+                rowSpan: 1,
+                border: [false, false, true, false],
+                table: {
+                  widths: [100, 40],
+                  body: [
+                    [
+                      {
+                        text: 'NRO. REGISTRO INTERNO (Correlativo)',
+                        border: [false, false, false, false],
+                      },
+                      { text: `` },
+                    ],
+                    [
+                      {
+                        text: '\n\n\n\n-----------------------------------------',
+                        colSpan: 2,
+                        border: [false, false, false, false],
+                        alignment: 'right',
+                      },
+                    ],
+                    [
+                      {
+                        text: 'FIRMA Y SELLO',
+                        colSpan: 2,
+                        border: [false, false, false, false],
+                        alignment: 'right',
+                      },
+                    ],
+                  ],
+                },
+              },
+            ],
+            [
+              {
+                colSpan: 2,
+                border: [true, false, true, true],
+                alignment: 'center',
+                fontSize: 5,
+                table: {
+                  widths: [30, 45, 35, '*', 30, 45, 35, '*'],
+                  body: [
+                    [
+                      '',
+                      'FECHA',
+                      'HORA',
+                      'CANTIDAD DE HOJAS / ANEXOS',
+                      '',
+                      'FECHA',
+                      'HORA',
+                      'CANTIDAD DE HOJAS / ANEXOS',
+                    ],
+                    [
+                      {
+                        text: 'INGRESO',
+                        border: [false, false, false, false],
+                        fontSize: 7,
+                      },
+                      { text: ``, fontSize: 8, border: [true, true, true, true] },
+                      { text: ``, fontSize: 8, border: [true, true, true, true] },
+                      { text: ``, fontSize: 6, border: [true, true, true, true] },
+                      {
+                        text: 'SALIDA',
+                        border: [false, false, false, false],
+                        fontSize: 7,
+                      },
+                      { text: ``, border: [true, true, true, true], fontSize: 8 },
+                      { text: ``, border: [true, true, true, true], fontSize: 8 },
+                      { text: ``, border: [true, true, true, true], fontSize: 6 },
+                    ],
+                  ],
+                },
+                layout: {
+                  defaultBorder: false,
+                },
+              },
+            ],
+          ],
+        },
+      });
+     
       break;
     }
     workflow[index].detail.forEach((stage) => {
@@ -486,6 +613,7 @@ function createContainers(workflow: Workflow[]) {
     },
     '',
   ]);
+
   return cuadros;
 }
 

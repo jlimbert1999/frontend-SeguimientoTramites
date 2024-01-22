@@ -1,6 +1,6 @@
 import { procedure } from 'src/app/procedures/interfaces';
 import { Communication } from './communication.model';
-import { groupedCommunicationResponse } from '../interfaces';
+import { groupedCommunicationResponse, statusMail } from '../interfaces';
 
 interface ID {
   account: string;
@@ -15,4 +15,8 @@ export class GroupedCommunication {
     );
   }
   constructor(public _id: ID, public detail: Communication[]) {}
+
+  canBeManaged(): boolean {
+    return this.detail.some((mail) => mail.status !== statusMail.Pending);
+  }
 }

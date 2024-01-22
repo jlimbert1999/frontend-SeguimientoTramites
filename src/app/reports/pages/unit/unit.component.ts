@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal, type OnInit, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, type OnInit, computed, inject, DestroyRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -13,6 +13,8 @@ import { PaginatorService } from 'src/app/shared/services';
 interface SearchParams {
   form: Object;
   accounts: account[];
+  data: ProcedureTableData[];
+  length: number;
 }
 @Component({
   selector: 'app-unit',
@@ -21,7 +23,6 @@ interface SearchParams {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnitComponent implements OnInit {
-  private readonly key = this.constructor.name;
   formSearch: FormGroup = this.fb.group({
     status: [''],
     account: [''],
@@ -43,7 +44,6 @@ export class UnitComponent implements OnInit {
     { columnDef: 'code', header: 'Alterno' },
     { columnDef: 'reference', header: 'Referencia' },
     { columnDef: 'state', header: 'Estado' },
-    { columnDef: 'applicant', header: 'Enviado a' },
     { columnDef: 'date', header: 'Ingreso' },
   ];
 
@@ -60,10 +60,16 @@ export class UnitComponent implements OnInit {
     private router: Router,
     private reportService: ReportService,
     private paginatorService: PaginatorService<SearchParams>
-  ) {}
+  ) {
+    inject(DestroyRef).onDestroy(() => {
+      this.savePaginationData();
+      this.paginatorService.length = 0;
+      this.paginatorService.keepAliveData = false;
+    });
+  }
 
   ngOnInit(): void {
-    this.loadSearchData();
+    this.loadPaginationData();
   }
 
   search() {
@@ -81,7 +87,6 @@ export class UnitComponent implements OnInit {
 
   generateReport() {
     this.paginatorService.offset = 0;
-    this.saveSearchParams();
     this.search();
   }
 
@@ -109,18 +114,29 @@ export class UnitComponent implements OnInit {
     return this.formSearch.get('account')?.value;
   }
 
-  saveSearchParams() {
-    this.paginatorService.cache[this.key] = {
-      form: this.formSearch.value,
+  private savePaginationData(): void {
+    this.paginatorService.cache[this.constructor.name] = {
       accounts: this.accounts(),
+      form: this.formSearch.value,
+      length: this.paginatorService.length,
+      data: this.datasource(),
     };
   }
 
-  loadSearchData() {
-    this.accounts.set(this.paginatorService.cache[this.key].accounts ?? []);
-    if (this.accounts().length === 0) this.getOfficersInMyDependency();
-    if (!this.paginatorService.searchMode) return;
-    this.formSearch.patchValue(this.paginatorService.cache['form'] ?? {});
-    this.search();
+  private loadPaginationData(): void {
+    this.paginatorService.length = 0;
+    const cacheData = this.paginatorService.cache[this.constructor.name];
+    if (!this.paginatorService.keepAliveData || !cacheData) {
+      this.getOfficersInMyDependency();
+      return;
+    }
+    this.accounts.set(cacheData.accounts);
+    this.datasource.set(cacheData.data);
+    this.formSearch.patchValue(cacheData.form);
+    this.paginatorService.length = cacheData.length;
+  }
+
+  get PageParams() {
+    return { path: 'unidad', queryParams: this.paginatorService.PageParams };
   }
 }

@@ -24,6 +24,7 @@
                 [currentOption]="currentSelectedOption"
                 (selectEvent)="selectMatSearchOption($event)"
                 [options]="matSelectOptions()"
+                [required]="false"
               ></simple-mat-select-search>
             </div>
             <div class="col-sm-4">
@@ -55,7 +56,7 @@
         <app-table-procedure
           [tableColumns]="displaycolums"
           [dataSource]="datasource()"
-          (showDetails)="showDetails($event)"
+          [navigationParams]="PageParams"
         ></app-table-procedure>
       </div>
       <app-paginator (changePage)="search()" />

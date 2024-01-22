@@ -9,7 +9,6 @@ import { TiposTramitesComponent } from './pages/tipos-tramites/tipos-tramites.co
 import { RolesComponent } from './pages/roles/roles.component';
 import { JobsComponent } from './pages/jobs/jobs.component';
 import { OrganizationComponent } from './pages/organization/organization.component';
-import { SettingsComponent } from './pages/settings/settings.component';
 
 const routes: Routes = [
   {
@@ -53,7 +52,6 @@ const routes: Routes = [
     data: { resource: 'jobs' },
   },
   { path: 'groupware', component: GroupwareComponent },
-  { path: 'sistema', component: SettingsComponent },
 ];
 
 @NgModule({

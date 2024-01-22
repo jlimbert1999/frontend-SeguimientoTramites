@@ -87,7 +87,7 @@ export class RegisterInternalComponent implements OnInit {
   }
   private _filterOfficers(value: string) {
     if (value === '') return [];
-    return this.internoService.getParticipant(value).pipe((officers) => officers);
+    return this.internoService.findParticipant(value).pipe((officers) => officers);
   }
 
   setJobTitle(officer: Officer, formControlPath: string) {

@@ -42,9 +42,9 @@ export class OutboxService {
       );
   }
 
-  cancelMails(id_procedure: string, ids_mails: string[]) {
+  cancelMails(id_procedure: string, ids: string[]) {
     return this.http.delete<{ message: string }>(`${this.base_url}/communication/outbox/${id_procedure}`, {
-      body: { ids_mails },
+      body: { ids_mails: ids },
     });
   }
 }

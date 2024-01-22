@@ -37,12 +37,10 @@ export class TypeProcedureService {
 
   add(form: Object) {
     const type = TypeProcedureDto.FormToModel(form);
-    console.log(type);
     return this.http.post<typeProcedure>(`${this.base_url}/types-procedures`, type);
   }
 
   edit(id: string, typeProcedure: Partial<TypeProcedureDto>) {
-    console.log(typeProcedure);
     return this.http.put<typeProcedure>(`${this.base_url}/types-procedures/${id}`, typeProcedure);
   }
 

@@ -2,7 +2,7 @@
 <mat-dialog-content>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-5">
         <div class="card bg-transparent">
           <div class="card-header">Detalles funcionario</div>
           <div class="card-body">
@@ -11,12 +11,12 @@
                 <div class="user-avatar">
                   <img src="../../../../assets/img/account.png" />
                 </div>
-                @if(data.funcionario){
+                @if(currentOfficer()){
                 <p class="fw-bold">
-                  {{ data.funcionario.fullname | titlecase }}
+                  {{ currentOfficer()?.fullname | titlecase }} ({{ currentOfficer()?.dni}})
                   <br />
-                  <span *ngIf="data.funcionario.cargo; else noJobTemplate">
-                    {{ data.funcionario.cargo.nombre }}
+                  <span *ngIf="currentOfficer()?.cargo; else noJobTemplate">
+                    {{ currentOfficer()?.cargo?.nombre }}
                   </span>
                   <ng-template #noJobTemplate>
                     <span style="color: orange">--- SIN CARGO ---</span>
@@ -28,26 +28,24 @@
               </div>
             </div>
           </div>
-          <div class="card-footer example-button-row" align="center">
-            <button mat-fab extended color="warn" (click)="unlinkAccount()">
-                <mat-icon>person_off</mat-icon>
-                Desvincular
-              </button>
-            @if(data.funcionario){
-           
-            } @else {
-            <button>desvincular</button>
-            }
-            <ng-template #elseTemplate>
-              <!-- <app-server-mat-select-search placeholder="Buscar funcionarios" [data]="officers"
-                                [pathPropertyOfObjectDisplay]="'fullWorkTitle'" [allowNullValue]="false"
-                                (eventSearch)="searchOfficer($event)"
-                                (eventSelectedOption)="selectOfficer($event)"></app-server-mat-select-search> -->
-            </ng-template>
-          </div>
+        </div>
+        <div class="mt-2 text-center">
+          @if(currentOfficer()){
+          <button mat-fab extended color="warn" (click)="unlinkAccount()">
+            <mat-icon>person_off</mat-icon>
+            Desvincular
+          </button>
+          } @else {
+          <app-server-mat-select-search
+            placeholder="Buscar funcionario"
+            [options]="officers()"
+            (keyupEvent)="searchOfficer($event)"
+            (selectEvent)="selectOfficer($event)"
+          />
+          }
         </div>
       </div>
-      <div class="col-md-8">
+      <div class="col-md-7">
         <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" dynamicHeight>
           <mat-tab label="Cuenta">
             <form [formGroup]="FormAccount">
@@ -72,7 +70,7 @@
                   <mat-form-field appearance="fill">
                     <mat-label>Permisos</mat-label>
                     <mat-select formControlName="rol">
-                      <mat-option *ngFor="let rol of roles" [value]="rol._id">
+                      <mat-option *ngFor="let rol of roles()" [value]="rol._id">
                         {{ rol.name }}
                       </mat-option>
                     </mat-select>
@@ -92,11 +90,18 @@
                   </mat-checkbox>
                 </div>
               </div>
-              <div class="row"></div>
             </form>
           </mat-tab>
-          <mat-tab label="">Content 2</mat-tab>
-          <mat-tab label="Third">Content 3</mat-tab>
+          <mat-tab label="Actividad">
+            <dl class="row">
+              @for (detail of workDetails; track $index) {
+              <dt class="col-sm-3 text-truncate">{{ detail.label }}</dt>
+              <dd class="col-sm-9">{{ detail.value }}</dd>
+              } @empty {
+              <p class="p-4 fw-bold">SIN DETALLES</p>
+              }
+            </dl>
+          </mat-tab>
         </mat-tab-group>
       </div>
     </div>

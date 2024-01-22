@@ -5,3 +5,4 @@ export * from './responses/communication.interface';
 export * from './receiver.interface';
 export * from './transfer-details.interface';
 export * from './status-mail';
+export * from './cache-inbox.interface';

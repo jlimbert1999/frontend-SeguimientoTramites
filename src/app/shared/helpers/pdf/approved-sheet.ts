@@ -34,6 +34,7 @@ async function createHeader(title: string, date: string = 'Aprobacion: 20/06/202
     },
     {
       text: `Fecha: ${new Date().toLocaleString()}`,
+      marginTop: 20,
       style: 'header',
       alignment: 'right',
     },

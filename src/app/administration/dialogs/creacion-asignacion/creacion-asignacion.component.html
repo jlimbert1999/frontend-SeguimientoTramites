@@ -1,35 +1,30 @@
-<h2 mat-dialog-title>ASIGNACION DE CUENTA</h2>
+<h1 mat-dialog-title>ASIGNACION DE CUENTA</h1>
 <mat-dialog-content>
-  <form [formGroup]="Form_Cuenta">
+  <form [formGroup]="FormAccount">
     <ng-template matStepLabel>Datos cuenta</ng-template>
     <div class="row">
-      <div class="col-md-12">
-        <!-- <app-server-mat-select-search
-          placeholder="Buscar funcionarios"
-          [data]="officers"
-          [pathPropertyOfObjectDisplay]="'fullWorkTitle'"
-          [allowNullValue]="false"
-          (eventSearch)="searchOfficer($event)"
-          (eventSelectedOption)="selectOfficer($event)"
-        ></app-server-mat-select-search> -->
+      <div class="col-12">
+        <app-server-mat-select-search
+          placeholder="Buscar institucion"
+          [options]="institutions()"
+          (keyupEvent)="searchInstitutions($event)"
+          (selectEvent)="searchDependencies($event)"
+        ></app-server-mat-select-search>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-4">
-        <!-- <app-simple-mat-select-search
-          [isRequired]="true"
-          placehorder="Institucion"
-          [data]="institutions"
-          (eventSelectedOption)="getDependencies($event)"
-        ></app-simple-mat-select-search> -->
+      <div class="col-12">
+        <simple-mat-select-search
+          placehorder="Buscar dependencia"
+          [options]="dependencies()"
+          (selectEvent)="selectDependency($event)"
+        ></simple-mat-select-search>
       </div>
-      <div class="col-md-8">
-        <!-- <app-simple-mat-select-search
-          [isRequired]="true"
-          placehorder="Dependencia"
-          [data]="dependencias"
-          (eventSelectedOption)="selectDependency($event)"
-        ></app-simple-mat-select-search> -->
+      <div class="col-12">
+        <app-server-mat-select-search
+          placehorder="Buscar funcionario"
+          [options]="officers()"
+          (keyupEvent)="searchOfficers($event)"
+          (selectEvent)="selectOfficer($event)"
+        ></app-server-mat-select-search>
       </div>
     </div>
     <div class="row">
@@ -37,7 +32,6 @@
         <mat-form-field appearance="fill" class="example-full-width">
           <mat-label>Login</mat-label>
           <input formControlName="login" matInput />
-          <mat-error>{{ getErrorMessagesForm(Form_Cuenta.get("login")!) }}</mat-error>
         </mat-form-field>
       </div>
       <div class="col-6">
@@ -53,7 +47,6 @@
           >
             <mat-icon>{{ hidePassword ? "visibility_off" : "visibility" }}</mat-icon>
           </button>
-          <mat-error>{{ getErrorMessagesForm(Form_Cuenta.get("password")!) }}</mat-error>
         </mat-form-field>
       </div>
     </div>
@@ -62,7 +55,7 @@
         <mat-form-field appearance="fill" class="example-full-width">
           <mat-label>Seleccione el rol</mat-label>
           <mat-select formControlName="rol">
-            <mat-option *ngFor="let rol of roles" [value]="rol._id">
+            <mat-option *ngFor="let rol of roles()" [value]="rol._id">
               {{ rol.name }}
             </mat-option>
           </mat-select>
@@ -73,7 +66,7 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-raised-button color="warn" mat-button mat-dialog-close>Cancelar</button>
-  <button mat-raised-button color="primary" mat-button [disabled]="Form_Cuenta.invalid" (click)="save()">
+  <button mat-raised-button color="primary" mat-button [disabled]="FormAccount.invalid" (click)="save()">
     Guardar
   </button>
 </mat-dialog-actions>

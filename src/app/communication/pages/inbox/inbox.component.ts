@@ -10,15 +10,9 @@ import { InboxService } from '../../services/inbox.service';
 
 import { stateProcedure } from 'src/app/procedures/interfaces';
 import { EventProcedureDto } from 'src/app/procedures/dtos';
-import { TransferDetails, communicationResponse, statusMail } from '../../interfaces';
+import { INBOX_CACHE, InboxCache, TransferDetails, communicationResponse, statusMail } from '../../interfaces';
 import { AlertService, PaginatorService, PdfGeneratorService } from 'src/app/shared/services';
 import { Communication } from '../../models';
-
-interface cacheData {
-  communications: Communication[];
-  status?: statusMail;
-  text: string;
-}
 
 @Component({
   selector: 'app-inbox',
@@ -35,7 +29,7 @@ export class InboxComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private paginatorService: PaginatorService<cacheData>,
+    private paginatorService: PaginatorService<InboxCache>,
     private procedureService: ProcedureService,
     private archiveService: ArchiveService,
     private socketService: SocketService,
@@ -45,6 +39,8 @@ export class InboxComponent implements OnInit {
   ) {
     inject(DestroyRef).onDestroy(() => {
       this.savePaginationData();
+      this.paginatorService.length = 0;
+      this.paginatorService.keepAliveData = false;
       this.destroyed$.next();
       this.destroyed$.complete();
     });
@@ -192,15 +188,16 @@ export class InboxComponent implements OnInit {
   }
 
   private savePaginationData(): void {
-    this.paginatorService.cache[this.constructor.name] = {
+    this.paginatorService.cache[INBOX_CACHE] = {
       communications: this.datasource(),
       status: this.status(),
       text: this.textToSearch,
+      length: this.paginatorService.length,
     };
   }
 
   private loadPaginationData(): void {
-    const cacheData = this.paginatorService.cache[this.constructor.name];
+    const cacheData = this.paginatorService.cache[INBOX_CACHE];
     if (!this.paginatorService.keepAliveData || !cacheData) {
       this.getData();
       return;
@@ -208,5 +205,6 @@ export class InboxComponent implements OnInit {
     this.datasource.set(cacheData.communications);
     this.status.set(cacheData.status);
     this.textToSearch = cacheData.text;
+    this.paginatorService.length = cacheData.length;
   }
 }

@@ -6,7 +6,7 @@
     <button (click)="add()" mat-icon-button matTooltip="Crear cuenta">
       <mat-icon>add</mat-icon>
     </button>
-    <button (click)="addAccountWithAssign()" mat-icon-button matTooltip="Asignar cuenta">
+    <button (click)="assign()" mat-icon-button matTooltip="Asignar cuenta">
       <mat-icon>contact_emergency</mat-icon>
     </button>
   </mat-toolbar>
@@ -96,11 +96,11 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button (click)="Edit(element)" mat-menu-item>
+              <button (click)="edit(element)" mat-menu-item>
                 <mat-icon>edit</mat-icon>
                 <span>Editar cuenta</span>
               </button>
-              <button (click)="disable(element._id)" mat-menu-item>
+              <button (click)="disable(element)" mat-menu-item>
                 <mat-icon>delete</mat-icon>
                 <span>{{ element.activo ? "Deshabilitar cuenta" : "Habilitar cuenta" }}</span>
               </button>

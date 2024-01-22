@@ -12,8 +12,9 @@ import {
   TotalMailsUser,
   dependentDetails,
   totalReportParams,
+  workDetails,
 } from '../interfaces';
-import { communicationResponse } from 'src/app/communication/interfaces';
+import { communicationResponse, statusMail } from 'src/app/communication/interfaces';
 
 interface SearchProceduresParamsDto extends PaginationParameters {
   code: string;
@@ -193,5 +194,21 @@ export class ReportService {
           return { accont: resp.account, inbox: resp.inbox };
         })
       );
+  }
+  getWorkDetails(id_account: string) {
+    return this.http.get<workDetails[]>(`${this.base_url}/reports/work/${id_account}`).pipe(
+      map((resp) => {
+        const labels = {
+          [statusMail.Pending]: 'PENDIENTES',
+          [statusMail.Archived]: 'ARCHIVADOS',
+          [statusMail.Received]: 'RECIBIDOS',
+          [statusMail.Completed]: 'ATENDIDOS',
+          [statusMail.Rejected]: 'RECHAZADOSS',
+        };
+        return resp
+          .map((item) => ({ label: labels[item._id], value: item.count }))
+          .sort((a, b) => (a.label > b.label ? 1 : b.label > a.label ? -1 : 0));
+      })
+    );
   }
 }

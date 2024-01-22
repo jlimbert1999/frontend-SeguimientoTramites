@@ -1,7 +1,11 @@
-.example-header-image {
-    background-image: url('../../../../assets/img/account.png');
-    background-size: cover;
+.header-card-image {
+  background-image: url("../../../../assets/img/account.png");
+  background-size: cover;
 }
 .action-row-buttons .mat-mdc-button-base {
-    margin: 0 10px 0 0;
+  margin: 0 10px 0 0;
+}
+
+.status {
+  font-weight: bold;
 }

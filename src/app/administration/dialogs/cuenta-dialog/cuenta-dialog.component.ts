@@ -34,7 +34,7 @@ export class CuentaDialogComponent implements OnInit {
     direccion: ['Sacaba', Validators.required],
   });
   FormAccount: FormGroup = this.fb.group({
-    login: ['', [Validators.required, Validators.pattern(/^\S+$/), Validators.minLength(4), Validators.maxLength(10)]],
+    login: ['', [Validators.required, Validators.pattern(/^\S+$/), Validators.minLength(4)]],
     password: ['', [Validators.required, Validators.pattern(/^\S+$/)]],
     rol: ['', Validators.required],
     dependencia: ['', Validators.required],

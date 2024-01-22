@@ -20,10 +20,12 @@ import { PresentationComponent } from './pages/presentation/presentation.compone
 import { HomeComponent } from './pages/home/home.component';
 import { CommunicationModule } from './communication/communication.module';
 import { ResourcesComponent } from './pages/resources/resources.component';
+import { SettingsComponent } from './pages/settings/settings.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
-  declarations: [AppComponent, PresentationComponent, HomeComponent, ResourcesComponent],
+  declarations: [AppComponent, PresentationComponent, HomeComponent, ResourcesComponent, SettingsComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
@@ -46,6 +48,8 @@ registerLocaleData(localeEs, 'es');
     SharedModule,
     RouterModule,
     ToastrModule.forRoot(),
+    FormsModule,
+    ReactiveFormsModule,
   ],
 })
 export class AppModule {}
