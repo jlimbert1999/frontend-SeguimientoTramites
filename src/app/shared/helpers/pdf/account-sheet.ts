@@ -3,6 +3,7 @@ import { Account } from 'src/app/administration/models';
 function createContent(account: Account, password: string): Content {
   return [
     {
+      marginTop: 50,
       text: [
         'NOMBRE: ',
         {
@@ -25,7 +26,7 @@ function createContent(account: Account, password: string): Content {
       fontSize: 12,
     },
     {
-      marginTop: 20,
+      marginTop: 25,
       text: '\n\nCUENTA\n\n',
       style: 'header',
       alignment: 'center',
@@ -52,6 +53,7 @@ function createContent(account: Account, password: string): Content {
       style: 'header',
       alignment: 'center',
       fontSize: 10,
+      marginBottom: 50,
     },
     {
       qr: `${account.fullnameManager()} Dni: ${account.funcionario?.dni}`,

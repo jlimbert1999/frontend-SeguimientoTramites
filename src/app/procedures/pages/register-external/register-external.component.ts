@@ -111,9 +111,9 @@ export class RegisterExternalComponent implements OnInit {
   }
   private createFormRepresentative(): FormGroup {
     return this.fb.group({
-      nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
-      paterno: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
-      materno: ['', Validators.pattern('^[a-zA-Z ]*$')],
+      nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZñÑ\s]*$/)]],
+      paterno: ['', [Validators.required, Validators.pattern(/^[a-zA-ZñÑ\s]*$/)]],
+      materno: ['', Validators.pattern(/^[a-zA-ZñÑ\s]*$/)],
       documento: ['', Validators.required],
       dni: [
         '',
@@ -127,9 +127,9 @@ export class RegisterExternalComponent implements OnInit {
   }
   private createFormApplicantNatural(): FormGroup {
     return this.fb.group({
-      nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
-      paterno: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
-      materno: ['', Validators.pattern('^[a-zA-Z ]*$')],
+      nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZñÑ\s]*$/)]],
+      paterno: ['', [Validators.required, Validators.pattern(/^[a-zA-ZñÑ\s]*$/)]],
+      materno: ['', Validators.pattern(/^[a-zA-ZñÑ\s]*$/)],
       documento: ['', Validators.required],
       dni: [
         '',

@@ -3,39 +3,6 @@ import { account } from 'src/app/administration/interfaces';
 import { communicationResponse, statusMail } from 'src/app/communication/interfaces';
 import { convertImagenABase64 } from '../imageBase64';
 
-async function CreateHeader(): Promise<Content[]> {
-  const image = await convertImagenABase64('../../../../assets/img/logo_alcaldia.png');
-  return [
-    {
-      alignment: 'center',
-      fontSize: 10,
-      table: {
-        heights: 10,
-        widths: [50, 300, '*'],
-        body: [
-          [
-            { rowSpan: 4, image: image, fit: [50, 50] },
-            {
-              rowSpan: 2,
-              text: 'GOBIERNO ELECTRÓNICO Y SISTEMAS TECNOLÓGICOS',
-            },
-            'SF-000-74-RG31',
-          ],
-          ['', '', 'version 1'],
-          [
-            '',
-            {
-              rowSpan: 2,
-              text: 'SOLICITUD DE BAJA DE USUARIO DE SISTEMA DE SEGUIMIENTO DE TRAMITES',
-            },
-            'Aprobacion: 20/06/2023',
-          ],
-          ['', '', 'pagina 1 de 1'],
-        ],
-      },
-    },
-  ];
-}
 
 function CreateSectionDetails(
   { funcionario, login, dependencia }: account,
@@ -76,7 +43,7 @@ function CreateSectionDetails(
               alignment: 'right',
             },
             {
-              text: `${funcionario?.cargo ?? 'SIN CARGO'}`.toUpperCase(),
+              text: `${funcionario?.cargo?.nombre ?? 'SIN CARGO'}`.toUpperCase(),
             },
           ],
           [
@@ -335,7 +302,6 @@ function CreateSectionList(data: communicationResponse[], date: Date): Content[]
 }
 
 export const UnlinkSheet = {
-  CreateHeader,
   CreateSectionDetails,
   CreateSectionList,
 };

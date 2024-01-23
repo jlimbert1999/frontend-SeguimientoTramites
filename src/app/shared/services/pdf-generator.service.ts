@@ -184,7 +184,11 @@ export class PdfGeneratorService {
     const docDefinition: TDocumentDefinitions = {
       pageSize: 'LETTER',
       content: [
-        await UnlinkSheet.CreateHeader(),
+        await ApprovedSheet.createHeader({
+          code: 'SF-000-74-RG31',
+          title: 'SOLICITUD DE BAJA DE USUARIO DE SISTEMA DE SEGUIMIENTO DE TRAMITES',
+          date: '20/06/2023',
+        }),
         UnlinkSheet.CreateSectionDetails(account, date, data),
         UnlinkSheet.CreateSectionList(data, date),
       ],
@@ -219,9 +223,11 @@ export class PdfGeneratorService {
       pageSize: 'LETTER',
       pageMargins: [40, 40, 40, 40],
       content: [
-        await ApprovedSheet.createHeader(
-          'ASIGNACION DE USUARIO DE SISTEMA DE SEGUIMIENTO DE TRAMITES INTERNOS Y EXTERNOS'
-        ),
+        await ApprovedSheet.createHeader({
+          title: 'ASIGNACION DE USUARIO DE SISTEMA DE SEGUIMIENTO DE TRAMITES INTERNOS Y EXTERNOS',
+          code: 'SF-000-74-RG26',
+          date: '20/02/2020',
+        }),
         AccountSheet.createContent(account, password),
       ],
     };

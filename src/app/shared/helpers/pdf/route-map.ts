@@ -60,7 +60,7 @@ function CreateFirstSection(procedure: Procedure, firstStage?: Workflow) {
     table: {
       widths: ['*'],
       body: [
-        [{ text: 'este PRIMERA PARTE', bold: true }],
+        [{ text: 'PRIMERA PARTE', bold: true }],
         [
           {
             border: [true, false, true, false],

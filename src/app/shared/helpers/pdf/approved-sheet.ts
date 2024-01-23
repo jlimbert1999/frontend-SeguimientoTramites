@@ -1,23 +1,28 @@
 import { Content } from 'pdfmake/interfaces';
 import { convertImagenABase64 } from '../imageBase64';
 
-async function createHeader(title: string, date: string = 'Aprobacion: 20/06/2023'): Promise<Content> {
-  const image = await convertImagenABase64('../../../../assets/img/logo_alcaldia.png');
+interface HeaderProps {
+  title: string;
+  date: string;
+  code: string;
+}
+async function createHeader({ title, date, code }: HeaderProps): Promise<Content> {
+  const image = await convertImagenABase64('../../../../assets/img/logo_nombre.jpeg');
   return [
     {
       alignment: 'center',
       fontSize: 10,
       table: {
         heights: 10,
-        widths: [50, 300, '*'],
+        widths: [70, 300, '*'],
         body: [
           [
-            { rowSpan: 4, image: image, fit: [50, 50] },
+            { rowSpan: 4, image: image, fit: [100, 70] },
             {
               rowSpan: 2,
-              text: 'GOBIERNO ELECTRÓNICO Y SISTEMAS TECNOLÓGICOS',
+              text: 'GOBIERNO ELECTRÓNICO',
             },
-            'SF-000-74-RG31',
+            code,
           ],
           ['', '', 'version 1'],
           [
@@ -26,7 +31,7 @@ async function createHeader(title: string, date: string = 'Aprobacion: 20/06/202
               rowSpan: 2,
               text: title,
             },
-            date,
+            `Aprobacion ${date}`,
           ],
           ['', '', 'pagina 1 de 1'],
         ],
