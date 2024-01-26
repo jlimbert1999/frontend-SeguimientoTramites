@@ -1,0 +1,1313 @@
+[33mcommit a186849a80bc4e3e2ad17f686abc5b5cec0769e5[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/reestructuracion[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mreestructuracion[m[33m)[m
+Author: josel <josel@gmail.com>
+Date:   Tue Jan 23 15:18:53 2024 -0400
+
+    correciones formatos hojas de arigancion
+
+[33mcommit 9a273fa79281ba5ecaf3d432ad012f353bcbb572[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Mon Jan 22 13:28:38 2024 -0400
+
+    cambios para deploy
+
+[33mcommit e2f64f281067ab2011585974aea9ca5f26118ad2[m
+Author: josel <josel@gmail.com>
+Date:   Fri Jan 19 18:27:23 2024 -0400
+
+    cambios para administracion de usuarios
+
+[33mcommit 33cb01091342ba77e959a127d980aeede6b89923[m
+Author: josel <josel@gmail.com>
+Date:   Thu Jan 18 19:02:11 2024 -0400
+
+    cambios para administracion de tipos de tramites, dependencias con modelos
+
+[33mcommit 6d606c2411c3ecbb643ae20a22e5cbc7af5c5936[m
+Author: josel <josel@gmail.com>
+Date:   Wed Jan 17 18:50:36 2024 -0400
+
+    cambios para administracionde roles, cargos, funcionarios
+
+[33mcommit a8e5ea8433a10f0180e18da0677eff4ffa418047[m
+Author: josel <josel@gmail.com>
+Date:   Tue Jan 16 18:35:10 2024 -0400
+
+    dialog para la edicion y asignacion de cargo
+
+[33mcommit 548e00df4d961c192883a5a831c93ce113723d83[m
+Author: josel <josel@gmail.com>
+Date:   Mon Jan 15 18:08:52 2024 -0400
+
+    cambios para administracion de funcionarios
+
+[33mcommit df1b78c33c385f9cfd84ea30f524237404ef32eb[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Mon Jan 15 07:54:26 2024 -0400
+
+    cambios para administracion de reportes
+
+[33mcommit e7592bc6b9944d2ba4431f44068bb8cb20327d41[m
+Author: josel <josel@gmail.com>
+Date:   Fri Jan 12 18:48:03 2024 -0400
+
+    administracion del dialog para administracion de roles
+
+[33mcommit 2b6929a9f75e8f4e31ab2236aba87beb60012c50[m
+Author: josel <josel@gmail.com>
+Date:   Thu Jan 11 18:47:57 2024 -0400
+
+    correcion de roles con error em vista de administracion
+
+[33mcommit 3d1ad7469185b509f9e13f3e28992ea0f90da629[m
+Author: josel <josel@gmail.com>
+Date:   Wed Jan 10 18:18:25 2024 -0400
+
+    cambios para mantener data en navegacion
+
+[33mcommit 4962c70a5b219870d6debcb457f2fba77823f649[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Wed Jan 10 07:47:57 2024 -0400
+
+    mejora de cache durante navegacion
+
+[33mcommit 37fb2637e6d48bc0a34e9e4a38cd292bccaa1a40[m
+Author: josel <josel@gmail.com>
+Date:   Fri Jan 5 18:42:25 2024 -0400
+
+    cambios para reportes
+
+[33mcommit 2dd2e4b7d01988c37803f239451c3237c5638ed7[m
+Author: josel <josel@gmail.com>
+Date:   Thu Jan 4 18:39:15 2024 -0400
+
+    cambios menores en externos con internos
+
+[33mcommit f39eba665ebc541eafc11312f1b63efacda74a16[m
+Author: josel <josel@gmail.com>
+Date:   Wed Jan 3 18:25:32 2024 -0400
+
+    cambios para bandeja de salida
+
+[33mcommit d4beaaa6d4a0e02f97638b4e82bec6d897ca0102[m
+Author: josel <josel@gmail.com>
+Date:   Tue Jan 2 20:05:00 2024 -0400
+
+    cambios hoja de ruta
+
+[33mcommit 7b4c969d2ccbfdcbf7d034ae6f653db7696192cb[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Tue Jan 2 07:34:11 2024 -0400
+
+    cambios para administracion de tramites
+
+[33mcommit 9368318528277ec6ce9b25a2633f9f4816af9a4e[m
+Author: josel <josel@gmail.com>
+Date:   Fri Dec 29 18:45:15 2023 -0400
+
+    cambios para modelo de workflow
+
+[33mcommit ab829fe02f17eb3c8b4fa7e55356fecd6d34ccd2[m
+Author: josel <josel@gmail.com>
+Date:   Wed Dec 27 18:34:07 2023 -0400
+
+    reestructuracion observables para escuchar usuarios y mensajes
+
+[33mcommit ffa187ba5adba21d6c663936b17fd10c6afe7b9e[m
+Author: josel <josel@gmail.com>
+Date:   Tue Dec 26 18:18:04 2023 -0400
+
+    cambios para modelos y paginacion
+
+[33mcommit 368368c56299036d646dd0f5a920852190b6ba80[m
+Author: josel <josel@gmail.com>
+Date:   Fri Dec 22 14:56:58 2023 -0400
+
+    cambios para modelos
+
+[33mcommit ff8ffc7719f1149fb5a1245e018885f41d598988[m
+Author: josel <josel@gmail.com>
+Date:   Thu Dec 21 18:39:57 2023 -0400
+
+    modelos para workflow
+
+[33mcommit 63d67409b4f202c7776d82ada9a73896df668522[m
+Author: josel <josel@gmail.com>
+Date:   Wed Dec 20 18:27:35 2023 -0400
+
+    cambios para modelo de wokflow
+
+[33mcommit 17ee0f52591c091842bd327938e164266f35f3da[m
+Author: josel <josel@gmail.com>
+Date:   Tue Dec 19 18:02:32 2023 -0400
+
+    correcion en formulario de envio para mat-select-search
+
+[33mcommit d17c2abf1e387441195d2fb7e4c31d432c6a3374[m
+Author: josel <josel@gmail.com>
+Date:   Mon Dec 18 18:19:10 2023 -0400
+
+    cambios para registro
+
+[33mcommit ea73160b5f89e91a1f82f3ced4dd044baa03ae93[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Mon Dec 18 07:17:37 2023 -0400
+
+    correccion formulario registro tramites externos
+
+[33mcommit 8a0fa0d99fba90103a0faba8e85e0f38a7539ddb[m
+Author: josel <josel@gmail.com>
+Date:   Fri Dec 15 19:00:17 2023 -0400
+
+    cambios en el formulario
+
+[33mcommit 56471da95c413f73db295b2f68178b2efae6bda3[m
+Author: josel <josel@gmail.com>
+Date:   Thu Dec 14 18:38:15 2023 -0400
+
+    correcciones pequeñas
+
+[33mcommit 7011445add78a816b63278c44916be318bd9698f[m
+Author: josel <josel@gmail.com>
+Date:   Wed Dec 13 18:11:16 2023 -0400
+
+    cambios para reporte global
+
+[33mcommit bfc8688311406e66127cb4d9ccae4e90152d79ec[m
+Author: josel <josel@gmail.com>
+Date:   Tue Dec 12 18:43:45 2023 -0400
+
+    cambios reporte global
+
+[33mcommit fdee8c41c9034f617fe70305eab619830782712b[m
+Author: josel <josel@gmail.com>
+Date:   Mon Dec 11 18:41:31 2023 -0400
+
+    cambios para reporte con grafica
+
+[33mcommit 54397c1da9c4bfd65d1c7ea7f28013e63e17dc5b[m
+Author: josel <josel@gmail.com>
+Date:   Fri Dec 8 18:18:32 2023 -0400
+
+    cambios para el frontend
+
+[33mcommit 56c2ba71e3ca453f4aae7b4e6756f5b6cf6889ed[m
+Author: josel <josel@gmail.com>
+Date:   Thu Dec 7 18:10:07 2023 -0400
+
+    cambios para reportes
+
+[33mcommit bbc9211c5ce8f7686df705ab158af9579da26373[m
+Author: josel <josel@gmail.com>
+Date:   Wed Dec 6 18:30:09 2023 -0400
+
+    implementacion de servicio para la generacion de pdf
+
+[33mcommit eee551ec63ccbed0e6a08ef34c85e6ec8de6d0ea[m
+Author: josel <josel@gmail.com>
+Date:   Tue Dec 5 18:46:13 2023 -0400
+
+    cambios para reportes, impllementacion de adaptador para la generacion de pdf
+
+[33mcommit 9f690e0a169f9737f775699346e805a711e75d78[m
+Author: josel <josel@gmail.com>
+Date:   Mon Dec 4 18:18:13 2023 -0400
+
+    cambios para correccion de reportes
+
+[33mcommit 500d182fe6dfa24b6bc1433d902b5b21b3771542[m
+Author: josel <josel@gmail.com>
+Date:   Fri Dec 1 18:59:03 2023 -0400
+
+    cambios para correcciones de reportes y nuevo reporte
+
+[33mcommit 8ea5016f6a7471d85a66a7c33816e0e17556209b[m
+Author: josel <josel@gmail.com>
+Date:   Thu Nov 30 18:59:07 2023 -0400
+
+    correcion storage en pagination service
+
+[33mcommit 9a918012248d2dfba0a5107f021d2c93633e05da[m
+Author: josel <josel@gmail.com>
+Date:   Wed Nov 29 18:56:44 2023 -0400
+
+    cambios para reporte y pruebas de storage en paginator service
+
+[33mcommit 2950975913598aaa53100f200e47579e75219e00[m
+Author: josel <josel@gmail.com>
+Date:   Tue Nov 28 18:40:39 2023 -0400
+
+    correcciones navegacion de componentes, nuevo tipo de reporte y titulos para reportes
+
+[33mcommit 801e30e6daf10fda4904df16308b66adbd50719c[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Tue Nov 28 07:33:48 2023 -0400
+
+    ordenamiento de archivos y metodos en auth
+
+[33mcommit 52fdce9d97951184e519f57416d6d09fb354c847[m
+Author: josel <josel@gmail.com>
+Date:   Mon Nov 27 18:40:17 2023 -0400
+
+    correciones archivos innecesarios
+
+[33mcommit def5d327bc3c95d0b0af09a705a9102129755c7b[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Mon Nov 27 08:07:14 2023 -0400
+
+    nuevo tipo de reporte por dependientes
+
+[33mcommit 5faf1cf64e205d71aa50c92b6db543f64ffb6702[m
+Author: josel <josel@gmail.com>
+Date:   Thu Nov 23 18:22:58 2023 -0400
+
+    cambios para reportes
+
+[33mcommit f5316223b6f855aa169da7009d0b1fa455caab1c[m
+Author: josel <josel@gmail.com>
+Date:   Wed Nov 22 18:35:05 2023 -0400
+
+    cambios para matener data en reportes
+
+[33mcommit 4c402503420afb01054e24ee6910a0572a0273a6[m
+Author: josel <josel@gmail.com>
+Date:   Tue Nov 21 18:15:25 2023 -0400
+
+    cambios para reportes y correcion del mat-select-search server
+
+[33mcommit d805e0ea90ba427c2efe7e23cc837f3d8b9f9543[m
+Author: josel <josel@gmail.com>
+Date:   Mon Nov 20 15:30:27 2023 -0400
+
+    cambios para subida a server de pruebas
+
+[33mcommit 8fdfea66644ab29b21aa1612e4f6c74a7534f5f7[m
+Author: josel <josel@gmail.com>
+Date:   Mon Nov 20 15:21:01 2023 -0400
+
+    cambios para actualizar
+
+[33mcommit 096b8e6b9cb916d6b7c744b491e9e7fdd1a0c121[m
+Author: josel <josel@gmail.com>
+Date:   Mon Nov 20 15:12:13 2023 -0400
+
+    cambios para reporte por solicitante
+
+[33mcommit 9157c9e87aad977592c3f0364060b7e2f7e4f182[m
+Author: josel <josel@gmail.com>
+Date:   Wed Nov 15 18:33:41 2023 -0400
+
+    cambios para nuevos reportes
+
+[33mcommit 689083ee4bd13dec049095ce9d812567d7fcbea5[m
+Author: josel <josel@gmail.com>
+Date:   Tue Nov 14 18:13:22 2023 -0400
+
+    cambios para reportes
+
+[33mcommit 30c5bc8086a7a8d02674cfde12f52f0ad965fb3c[m
+Author: josel <josel@gmail.com>
+Date:   Mon Nov 13 18:20:56 2023 -0400
+
+    vista de reporte por solicitante
+
+[33mcommit a99ef8b626d7345cd2c4b6ad042f339540edd232[m
+Author: josel <josel@gmail.com>
+Date:   Thu Nov 9 18:23:37 2023 -0400
+
+    estructura incial para reportes
+
+[33mcommit 3983d6601250c7da567937cbbd3e12244ac66b6f[m
+Author: josel <josel@gmail.com>
+Date:   Wed Nov 8 18:34:48 2023 -0400
+
+    metodos para registro y obtencion de observaciones
+
+[33mcommit 4524d69525309e9b26179133478a8f1ef5e98b9e[m
+Author: josel <josel@gmail.com>
+Date:   Tue Nov 7 18:39:49 2023 -0400
+
+    revision de errores e implementacion de busqueda con parametro status en inbox
+
+[33mcommit e3e1000099cd170bde3435aa15a45f9ce998d40a[m
+Author: josel <josel@gmail.com>
+Date:   Mon Nov 6 18:19:40 2023 -0400
+
+    cambios para recibir tramites en bandejas y mail component
+
+[33mcommit c85d519adf0550f1815eff1ef1a24d0978723485[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Mon Nov 6 07:29:50 2023 -0400
+
+    mejora de metodos para hoja de ruta
+
+[33mcommit 554a1de215da27be9e034628f91315d411260609[m
+Author: josel <josel@gmail.com>
+Date:   Fri Nov 3 18:15:53 2023 -0400
+
+    cambios con mappers
+
+[33mcommit 547a9e03b0f8dd9f0cffde0ce33001f1a6522880[m
+Author: josel <josel@gmail.com>
+Date:   Wed Nov 1 12:20:46 2023 -0400
+
+    correcciones tablas y form de registro de tramites
+
+[33mcommit a38b339bf46483d3071cbc841e5e57c97e6ca168[m
+Author: josel <josel@gmail.com>
+Date:   Tue Oct 31 18:43:09 2023 -0400
+
+    correciones con errores en dialogs para registrar tramites
+
+[33mcommit da0e14dbf5f503c09d6b7ff77e018ce84402646f[m
+Author: josel <josel@gmail.com>
+Date:   Mon Oct 30 18:25:50 2023 -0400
+
+    correcciones para mejorar arquitectura
+
+[33mcommit 1f6c92dea17639b7b88403ee5ca01c3850ad2f0f[m
+Author: josel <josel@gmail.com>
+Date:   Fri Oct 27 18:22:24 2023 -0400
+
+    implementacion de paginacion en archivos
+
+[33mcommit d7037f98d03eb01907d5dba44bda48241d78dad7[m
+Author: josel <josel@gmail.com>
+Date:   Thu Oct 26 18:24:11 2023 -0400
+
+    implementacion de buscadores para bandeja de entrada, salida
+
+[33mcommit 88de6cc0c67da1a1c3c8830dfd1ec7c711635021[m
+Author: josel <josel@gmail.com>
+Date:   Wed Oct 25 18:18:38 2023 -0400
+
+    correciones alertas y limpieza de codigo
+
+[33mcommit f0238140340a246c6c701958cb7865c6eb5bca63[m
+Author: josel <josel@gmail.com>
+Date:   Tue Oct 24 18:17:27 2023 -0400
+
+    paginacion con parametros de busqueda implementada
+
+[33mcommit 437c411dcf844c0c9f97d926b461061bf7bb1e76[m
+Author: josel <josel@gmail.com>
+Date:   Mon Oct 23 18:20:05 2023 -0400
+
+    idea inicial para nueva busqueda y paginacion
+
+[33mcommit 11972d7ad6ec27f0b7d9b26b8deee7d23ac0391e[m
+Author: josel <josel@gmail.com>
+Date:   Thu Oct 19 18:37:13 2023 -0400
+
+    cambios para finalizacion
+
+[33mcommit 6532072de941dc62b93fef205650b43001397908[m
+Author: josel <josel@gmail.com>
+Date:   Mon Oct 16 18:33:24 2023 -0400
+
+    cambios para desarchivo
+
+[33mcommit a79e769c7ead82e1993c95ae332261d96552120f[m
+Author: josel <josel@gmail.com>
+Date:   Fri Oct 13 18:15:45 2023 -0400
+
+    cambios para archivado desde administracion
+
+[33mcommit a13a859e9495dde1eb167f94a04527ce2a6275b2[m
+Author: josel <josel@gmail.com>
+Date:   Thu Oct 12 18:58:14 2023 -0400
+
+    cambios para vista de archivados
+
+[33mcommit 953f303e575751db6669d0189e7bf05c92bec56a[m
+Author: josel <josel@gmail.com>
+Date:   Wed Oct 11 18:17:32 2023 -0400
+
+    vistas para archivos y conclusion desde administracion
+
+[33mcommit ff6cb851b761088d6810e8866e4d5844fb26cc86[m
+Author: josel <josel@gmail.com>
+Date:   Mon Oct 2 18:57:26 2023 -0400
+
+    cambios pequeños para archivos
+
+[33mcommit a9f5f7a35706b290870a01a054c2f5fcf429dfa2[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Mon Oct 2 07:20:38 2023 -0400
+
+    cambios para observaciones
+
+[33mcommit 5a9c3222c89ae1bc0529bc2a646e93998cadf960[m
+Author: josel <josel@gmail.com>
+Date:   Tue Sep 26 19:34:35 2023 -0400
+
+    cambios para mostrar informacion de tramite interno o externo dinamicamente
+
+[33mcommit 6a504c496dd953c856ba093768b09b97c801d2b9[m
+Author: josel <josel@gmail.com>
+Date:   Mon Sep 25 17:28:44 2023 -0400
+
+    cambios para prueba de ficha con tipo interno o externo
+
+[33mcommit 922ac30e23730abe7199b66d51c045b979db2b1c[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Mon Sep 25 07:34:32 2023 -0400
+
+    cambios para cancelaion de envios
+
+[33mcommit e93c1a8eb8102dd3390d15ac11fee7659f8b1203[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Mon Sep 18 07:58:17 2023 -0400
+
+    nueva estructura para comunicacion
+
+[33mcommit 0482cc242036aff7ad7c1e753ab46453d9f71099[m
+Author: josel <josel@gmail.com>
+Date:   Wed Sep 13 18:09:35 2023 -0400
+
+    cambios para aceptar y rechazar
+
+[33mcommit f98a7d776903b5fd69a882ee1bf1cfe59dcbf6cd[m
+Author: josel <josel@gmail.com>
+Date:   Tue Sep 12 18:07:20 2023 -0400
+
+    cambios menores en metodos para recibir tramite
+
+[33mcommit 8caa5d9d3fe3c897539a00a1ed328758f977167c[m
+Author: josel <josel@gmail.com>
+Date:   Mon Sep 11 18:21:48 2023 -0400
+
+    cambios para aceptacion y rechazo
+
+[33mcommit b3a655699094f91d0495d700ecb819454e5b524c[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Mon Sep 11 08:37:05 2023 -0400
+
+    cambios para nueva estructura
+
+[33mcommit c7ae8e7b4f883a47afd3bb35ce44ff2b225bb82e[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Thu Aug 17 07:31:38 2023 -0400
+
+    cambioso de dto
+
+[33mcommit 6542ec02154f68be6e01c8076123231e3f1e441e[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Wed Aug 16 12:11:02 2023 -0400
+
+    cambios dto para registro de tramites
+
+[33mcommit 226a606de8dd98623f49e2a49ea118b39626bce9[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Wed Aug 16 06:50:07 2023 -0400
+
+    update
+
+[33mcommit 2c727296d671b98b3254087a4b1dd82a3118128a[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Tue Aug 15 18:16:39 2023 -0400
+
+    cambios para nueva estructura
+
+[33mcommit 11684ec71094ab2272e009a10690e909fd085356[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Mon Aug 14 18:14:19 2023 -0400
+
+    cambios para escuchar envios de tramites
+
+[33mcommit bb276ef0812515a395febc9a55286d270372dc4e[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Mon Aug 14 07:39:08 2023 -0400
+
+    cambios parausuarios coectados
+
+[33mcommit b9bc482fb1c5dae4ddc66e9b59f05c6b69481101[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Fri Aug 11 18:39:10 2023 -0400
+
+    clases para manejo de dto en baneja de entrada
+
+[33mcommit 5f0d53bc1a4d8cbbc55c3afa6e4c12038c489086[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Wed Aug 9 18:36:22 2023 -0400
+
+    cambios para envios
+
+[33mcommit c56da716c76fac59104f67ce7751e5bbd3680abb[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Tue Aug 8 18:10:28 2023 -0400
+
+    servicio para bandeja de entrada
+
+[33mcommit 613918b53baf3269c7fbc26666858a22850a1fe8[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Tue Aug 8 07:25:41 2023 -0400
+
+    funcionamiento de internos
+
+[33mcommit dba65743f46a8b71877c9fb98bddbff30f4b5c41[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Fri Aug 4 18:10:38 2023 -0400
+
+    cambios para funcionamiento de internos
+
+[33mcommit 592ed63ffa6930dc65b151ab998de9b0416f28ad[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Thu Aug 3 18:10:59 2023 -0400
+
+    cambios para estructura de workflow
+
+[33mcommit b3239a290783dfa7726d6f793071308d83954243[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Wed Aug 2 18:33:08 2023 -0400
+
+    correccion destinatarios
+
+[33mcommit 1195b35448e32f9ba95d0b7e5a1670247562fa40[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Wed Aug 2 18:32:43 2023 -0400
+
+    correccion hojas de ruta
+
+[33mcommit fa7f1f2acfe632e23c8a5c7af98044215342c1df[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Mon Jul 31 18:23:06 2023 -0400
+
+    cambios para obtencion de workflow
+
+[33mcommit 5cc1e699acdee410b9a532d9c563851dfc5fcabd[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Fri Jul 28 18:11:07 2023 -0400
+
+    cambios para obtencion de workflow
+
+[33mcommit 098c863db3849c9eac04ff9ec0799001912bb67e[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Thu Jul 27 18:08:21 2023 -0400
+
+    cambios para administracion de workflow
+
+[33mcommit 654a3fd7824d787a1a0c27685adfc4870d192f16[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Wed Jul 26 18:11:55 2023 -0400
+
+    creacion de modelos para el manejo de externos
+
+[33mcommit edc04ada96342c3b741c82b7b61100b47d5b2092[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Tue Jul 25 18:17:14 2023 -0400
+
+    cambios para administracion de tramites
+
+[33mcommit 0d600482cff682c9f93aa9daafbe15e66d8a9fa5[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Mon Jul 24 18:13:36 2023 -0400
+
+    cambios para administrar tramites
+
+[33mcommit dabd9c4a1b1afeb9ba7288cc59f4ab7086568ac1[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Mon Jul 24 07:56:54 2023 -0400
+
+    correciones
+
+[33mcommit a36ab16ec17397f1b1f4cc511fc09aa5464af848[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Wed Jul 19 18:20:08 2023 -0400
+
+    cambios para administracion de tipos
+
+[33mcommit de19cb6a7aa78b84be668df0f8df3a2661644cd5[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Tue Jul 18 18:16:42 2023 -0400
+
+    cambios para nuevas rutas
+
+[33mcommit 93ec717b59a16b962b464d3968ba6af4930b2a0e[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Mon Jul 17 18:19:47 2023 -0400
+
+    cambios para routing completo
+
+[33mcommit 8c64c15856d94d41a0df86f70ade8e6378a0e86f[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Mon Jul 17 07:51:57 2023 -0400
+
+    cambiospara funcionamiento de cuentas
+
+[33mcommit bf169830dacf4249c6a6d83a963738c39eb1e1fe[m
+Author: JoseLimbert <jose@gmail.com>
+Date:   Tue Jul 11 18:21:37 2023 -0400
+
+    cambios antes de irme
+
+[33mcommit 1b33bc8dbf8347f4754161503d92576581bee31a[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Tue Jul 11 07:55:41 2023 -0400
+
+    cambios para administracin de cuentas con modelos
+
+[33mcommit 002cb56628baa98830abd7f1b054b948f66cf49e[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri Jul 7 18:10:15 2023 -0400
+
+    cambios para el filtrado de cuentas
+
+[33mcommit f9e8362cdaec03d0d5dc6229eed9f54980271d78[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu Jul 6 18:08:47 2023 -0400
+
+    cambios para seleccion simple en mat-select-search
+
+[33mcommit 53bf3f2852015679676f003845c26971b0feaa22[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed Jul 5 18:09:31 2023 -0400
+
+    cambios menores para el filtrado de cargos
+
+[33mcommit e9334d1cfd6ec17b2726eecf2b932732db7e6f21[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue Jul 4 18:14:00 2023 -0400
+
+    cambios menores en tipos de tramites
+
+[33mcommit 782ce68bc3043b38221bf53a7e1df09bd8079f4b[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon Jul 3 18:09:54 2023 -0400
+
+    edicion de funcionarios y estructura para edicion de tramites
+
+[33mcommit e217cbb5f2b03e872a7bf762092c91c6d1789a4d[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri Jun 30 15:14:29 2023 -0400
+
+    cambios menores para funcionarios
+
+[33mcommit a14749176bbc426404a20124d3ea8ae366131477[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed Jun 28 15:05:32 2023 -0400
+
+    estructura inicial para busqueda de funcionarios y subida de imagen inicial
+
+[33mcommit 95b366bc3bfa48bf5168148acf9d076bee37dcb7[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue Jun 27 18:10:03 2023 -0400
+
+    dialog para usuarios con imagen
+
+[33mcommit 870cb003afb9c0bf59f6e1577611a5f4ac12f92a[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon Jun 26 18:14:24 2023 -0400
+
+    cambios para mostrar organigrama multiple
+
+[33mcommit 26d5c8e54219b2923bc44bed39ee9c4fa3492d97[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Mon Jun 26 08:03:38 2023 -0400
+
+    implementacion de organigrama en base a estructura de cargos
+
+[33mcommit cd763decb9dd63567497a6a02d72e4c41a66d40e[m
+Author: Jose Limbert <85981548+jlimbert1999@users.noreply.github.com>
+Date:   Sat Jun 24 19:17:54 2023 -0400
+
+    actualizacion angular 16
+
+[33mcommit 1bf3b6bb0383f755864c09cd04656ea3588055bb[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri Jun 23 18:19:27 2023 -0400
+
+    implementacion de grafica organizacional con librerias incompatibles
+
+[33mcommit 9f8029760d89fa0a2737a2d073d53dbe020fd8c8[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu Jun 22 18:43:18 2023 -0400
+
+    estructura para el organigrama
+
+[33mcommit 0e0a1d59b710be72c90d8c976b21122914164a67[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue Jun 20 18:25:30 2023 -0400
+
+    administracion de roles funcional
+
+[33mcommit 7959a0850a86f47a59d2dea326d20c32ea2f8f7e[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon Jun 19 18:05:56 2023 -0400
+
+    nueva estructura inicial de auth y administracion instituciones, dependencias
+
+[33mcommit f84b2c6e4284801acd3a1dcafd020f780a1abaa1[m[33m ([m[1;31morigin/desarrollo[m[33m)[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed May 31 18:57:34 2023 -0400
+
+    cambios de estilo aniversario
+
+[33mcommit 49136201e3d1b50e6e0e264c5f302ddb0d0d24e4[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed May 24 12:13:01 2023 -0400
+
+    ultimos cambios antes de subir al server
+
+[33mcommit 25cdd21d4d06e51e6b267f267a8cd51be6b4d9b5[m
+Author: JoseL <jose@gmail.com>
+Date:   Wed May 24 08:18:18 2023 -0400
+
+    correcciones de metodos de ruta
+
+[33mcommit 1c8b37312f543cf851f423b71b4835c5cdd79648[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue May 23 19:49:42 2023 -0400
+
+    cambios hoja de ruta
+
+[33mcommit bf8846fbf1bc5b0a4c45d3e91bfc64a30b4fd59d[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon May 22 18:33:04 2023 -0400
+
+    cambios para hoja de ruta, nuevo mat-sidenav
+
+[33mcommit 0c641fa13bfdc3851a3858716bd6eb2778b6a0db[m
+Author: JoseL <jose@gmail.com>
+Date:   Mon May 22 07:58:56 2023 -0400
+
+    cambios para correcion de actualizacion
+
+[33mcommit 27d645c127013a454ddee3c6a522b1cc606a50e2[m
+Author: JoseL <jose@gmail.com>
+Date:   Sat May 20 07:35:40 2023 -0400
+
+    cambios iniciales para actualizar
+
+[33mcommit 54b470b47eb7ab6bb5e5cf8a6a189de834dbbdce[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri May 19 18:03:47 2023 -0400
+
+    cambios para busqueda frontend
+
+[33mcommit 0a71bd4c32dfcba3f7858ed31267188f1bc402f5[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu May 18 18:05:13 2023 -0400
+
+    refactorizaciones de codigo
+
+[33mcommit 9bccd4a50e4f3aef7ade24491a40e1543dbbbec8[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue May 16 17:34:04 2023 -0400
+
+    cambios para hoja de ruta completa
+
+[33mcommit 58041475959a57cd3a32a04d71dafc933c930d6f[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon May 15 17:16:16 2023 -0400
+
+    cambios para demostracion
+
+[33mcommit 50731d1e1423a89f1372852488b3e2c5d10d56a2[m
+Author: JoseL <jose@gmail.com>
+Date:   Mon May 15 08:12:50 2023 -0400
+
+    cambios menores para control de funcionario nulo en workflow
+
+[33mcommit 3d255907af6db7b242ec6c6475007b3a44b0db16[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri May 12 18:01:33 2023 -0400
+
+    cambios para eventos tema
+
+[33mcommit 06b54cc4072e7969bed2b50cb106245839a584c1[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu May 11 18:22:43 2023 -0400
+
+    cambios para edicion cuenta y migracion de css a scss
+
+[33mcommit ef3e1aef86a843d8d1c67ea39b3f2345423acde6[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed May 10 18:19:40 2023 -0400
+
+    cambios para rechazo en tramites
+
+[33mcommit d74ab3ea6a82835bb4dd6947e2ff395e9ba9a347[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue May 9 18:10:19 2023 -0400
+
+    cambios para hoja de ruta
+
+[33mcommit 079c13ac6127aa256eb04b81875a11449aa3ea44[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon May 8 18:16:11 2023 -0400
+
+    mejoras de opciones de archivos
+
+[33mcommit 80b274cfff2c3b61ab4455b948e996a2293fb66f[m
+Author: Jose Limbert Flores Suarez <jose@gmail.com>
+Date:   Mon May 8 07:59:45 2023 -0400
+
+    mejora en generacion de token y auth
+
+[33mcommit 3dbdc10b2a62e4dbcdf5c6fb89be2599d9f6bc22[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri May 5 18:17:04 2023 -0400
+
+    cambios con nuevo metodo para generar lista workflow y hoja de ruta con todos los participantes
+
+[33mcommit 527bae3df78f2728d063100aa4cdc723b6b9c30c[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu May 4 18:12:02 2023 -0400
+
+    cambios para reportes
+
+[33mcommit 715007540b7950330512233a3ac0446df8f31f9a[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed May 3 18:09:35 2023 -0400
+
+    cambios para envios con filtro ppr unidad
+
+[33mcommit d44ce34c5309af934872e649fe9085e1585745a7[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue May 2 18:37:56 2023 -0400
+
+    cambios para lista workflow
+
+[33mcommit f3688b978ca1c428404629628a6960e0597dbabf[m
+Author: Jose Limbert Flores Suarez <jose@gmail.com>
+Date:   Tue May 2 07:58:58 2023 -0400
+
+    cambios finales con listworkflow por corregir
+
+[33mcommit d37bc6dab8b1d30c8780a2b9ba8cabe6dd533407[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri Apr 28 18:11:14 2023 -0400
+
+    cambios para agregar observaciones a medias
+
+[33mcommit 1ad06b58cec17d876e42b70fb05a248ab574a5f9[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu Apr 27 18:29:40 2023 -0400
+
+    flujo de trabajo en reporte y lista de workflow con metodo recursivo funcionando
+
+[33mcommit ff6daa9597332c98a44b6946766c0b2cf9943551[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed Apr 26 18:14:01 2023 -0400
+
+    generacion de reportes con pdf funcional
+
+[33mcommit 0b6b34e37b7f545cbf638e9266f252927d5300b6[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue Apr 25 18:37:24 2023 -0400
+
+    cambios para reportes
+
+[33mcommit e523344c6cd7bf139480d52bc070259270ba456f[m
+Author: Jose Limbert Flores Suarez <jose@gmail.com>
+Date:   Tue Apr 25 09:42:16 2023 -0400
+
+    camabios para reportes
+
+[33mcommit c481584ab50e6294b2ce559ee20e97473f0360b3[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon Apr 24 18:05:19 2023 -0400
+
+    cambios para reporte ficha con mas campos
+
+[33mcommit fef5e819cd0cfa23e0d8227b5ff40794d062aaad[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri Apr 21 17:57:02 2023 -0400
+
+    cambios con fallos, revisar concluir
+
+[33mcommit 5cb9f00c2e42adc2b50ee77edbb57998adf7cf56[m
+Author: Jose Limbert Flores Suarez <jose@gmail.com>
+Date:   Fri Apr 21 07:54:47 2023 -0400
+
+    cambios para recuperacion ficha de tramite
+
+[33mcommit a3eb004b1bc43e09eb8a3f71d94740b006aac7e6[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu Apr 20 18:10:22 2023 -0400
+
+    cambios para cancelar envios multiples
+
+[33mcommit a8484afafccd19541c20fbd7b1287dba838f8560[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed Apr 19 18:12:49 2023 -0400
+
+    cambios para funcionamiento
+
+[33mcommit 16b40a96ca2da2b4a9a6f848a3dbbd5afcd66971[m
+Author: Jose Limbert Flores Suarez <jose@gmail.com>
+Date:   Wed Apr 19 07:20:32 2023 -0400
+
+    cambios para interefaz de ficha
+
+[33mcommit e54657f9d182de1ab3eef46f49a0c59b92a7e6d9[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue Apr 18 18:31:11 2023 -0400
+
+    cambios para los reportes
+
+[33mcommit 807f770ceb12443572b2e47d4f7a23c42c0ea74d[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon Apr 17 18:20:19 2023 -0400
+
+    cambios para estructura de reportes
+
+[33mcommit 7d5a29d4188f00ab07feedbc7cf2e8dfeb8d52b5[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri Apr 14 18:40:27 2023 -0400
+
+    cambios para el manejo de reportes
+
+[33mcommit 4d1b876263a340100f0f3c0f182957ca5a7f4f4f[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu Apr 13 18:11:30 2023 -0400
+
+    cambios para generar los reportes con nueva interfaz
+
+[33mcommit 3c02471fdae54577d5536503867f20600fc9fce6[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed Apr 12 18:24:24 2023 -0400
+
+    interfaces para los usuarios en socket
+
+[33mcommit 725df192f1a7684e7b1781f83aa818966c4e663c[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue Apr 11 19:02:16 2023 -0400
+
+    eliminacion de componentes innecesarios
+
+[33mcommit 6f849e8e7c27673176f148ad23024abba43f68ea[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon Apr 10 17:31:11 2023 -0400
+
+    rutas api actualizadas
+
+[33mcommit b22af31a198a75392a4a9fdbe843747c81d52be0[m
+Author: Jose Limbert Flores Suarez <jose@gmail.com>
+Date:   Mon Apr 10 07:59:54 2023 -0400
+
+    cambios para manejo de roles
+
+[33mcommit aa45320b6067297994e5e4645355ac3805dbeb19[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu Apr 6 15:09:36 2023 -0400
+
+    implementacion de modulo de roles
+
+[33mcommit a8374071c6fbfae96beacba92dc4bf7f9b298211[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue Apr 4 18:09:29 2023 -0400
+
+    cambios para edicion y registro de cuenta
+
+[33mcommit abbf408a5b502f07b4857a6f6c69d9d1289d5b11[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon Apr 3 18:36:55 2023 -0400
+
+    organigrama para funcionarios, con obtencion de rutas
+
+[33mcommit bb2da847c2c29d1700a82960039de00ed4d426b7[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri Mar 31 18:40:10 2023 -0400
+
+    cambios para nuevo control de roles
+
+[33mcommit d54b1f378039e8db4ee73d4ba94b649a52c2f030[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu Mar 30 18:24:25 2023 -0400
+
+    cambios para estructura de nuevos roles y cuentas
+
+[33mcommit 84fe4552607b3d3ec4c957016c9f6903b9b28690[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed Mar 29 18:17:27 2023 -0400
+
+    cambios rutas para las configuraciones
+
+[33mcommit 93b6bebf83e07dd69b148ce9089f34f62403d0f8[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue Mar 28 18:32:16 2023 -0400
+
+    paginacion en bandejas
+
+[33mcommit fd482a32319a95f29ade56a6aefb619c7f141ec4[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon Mar 27 18:53:12 2023 -0400
+
+    cambios para reportes solicitante
+
+[33mcommit 9d0a0d6f7f611fd530b6e909e83c63bd05a3153c[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri Mar 24 18:16:14 2023 -0400
+
+    cambios guardados
+
+[33mcommit f17099fb55d85af8fefc3fb0df62670ad80bad81[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu Mar 23 18:44:12 2023 -0400
+
+    reportes implementados
+
+[33mcommit 30bc9d94ef142e23f4b1c9dddb80f2c894c5884f[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed Mar 22 18:35:20 2023 -0400
+
+    hoja de ruta multiple inicial
+
+[33mcommit 37e06e08629257975177f9e87b691681999c62f7[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue Mar 21 18:53:27 2023 -0400
+
+    cambios estructura
+
+[33mcommit c0f360bad083c006497c2763ffff258e67a01a25[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon Mar 20 18:20:14 2023 -0400
+
+    cambios para la busqueda global
+
+[33mcommit 5531bdd95b476c6f671d4bd64f29134d532982c0[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri Mar 17 18:08:31 2023 -0400
+
+    correcciones para paginacion en reporte busqueda
+
+[33mcommit cd17461f8203492ed1b07ea2c165ae77c29583e4[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu Mar 16 18:39:07 2023 -0400
+
+    cambios para reporte por busqueda
+
+[33mcommit 83858a576efb1388f3eca990945ad1162ee8dbe3[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed Mar 15 18:45:22 2023 -0400
+
+    reporte tipo de buqueda global
+
+[33mcommit b6159a9ae2c8902bb2d4a4540c99bbd32a9cc8dd[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue Mar 14 18:17:47 2023 -0400
+
+    Cambios visuales e implementacion de reporte ficha
+
+[33mcommit 8cc6664cb5d63f15f72f8f7c63273c0bb477093c[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon Mar 13 18:29:46 2023 -0400
+
+    Cambios para reportes ficha y generacion de ruta
+
+[33mcommit 79456006d0fe32aaa66622832c284219e8077a78[m
+Author: Jose Limbert Flores Suarez <jose@gmail.com>
+Date:   Mon Mar 13 07:26:22 2023 -0400
+
+    lista de envios de tipo arbol
+
+[33mcommit 62a5d88326bfe2a4d97b40add29866b30acebff1[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu Mar 9 19:14:38 2023 -0400
+
+    cambios hoja de ruta por niveles
+
+[33mcommit ea0941109da48e9d792b65be51000a41d3813238[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue Mar 7 18:19:12 2023 -0400
+
+    cambios para la lista de workflow y aceptacion de tramites
+
+[33mcommit dbd12e90c951f040a3abe69aeefb76eea9133cdf[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon Mar 6 18:14:33 2023 -0400
+
+    administracion de internos y nueva lista de workflow agregada
+
+[33mcommit f4a519bd6f5a60d1428ece4d9a397670da688758[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri Mar 3 18:35:57 2023 -0400
+
+    cambios para la nueva estructura de internos, archivados
+
+[33mcommit 2b32369919ed75cf07ec5727da8f95d49a56c675[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu Mar 2 18:23:13 2023 -0400
+
+    cambios para archivar tramites
+
+[33mcommit f06a46362790cb4b50b63e008694db9a0015d59d[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed Mar 1 18:19:24 2023 -0400
+
+    metodos para el envio a multiples funcionarios funcionando
+
+[33mcommit 4f2bde62195cf44df3e5bc8b69822197c12258cf[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue Feb 28 18:22:38 2023 -0400
+
+    Correcion de estructura y metodos para el backend reestructurado
+
+[33mcommit 2ca2728a53d3dc2ac3f02f7a01a36bc7f38ba21b[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon Feb 27 18:17:40 2023 -0400
+
+    Restructuracion inicial de archivos
+
+[33mcommit 5356a18e23a2986a99d3357322ccab9cc2059f08[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri Feb 24 18:09:45 2023 -0400
+
+    envio multiple sin devoluciones funcionando
+
+[33mcommit abcfb4ffb101fe2b3d25f4d2841b62006a71da68[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri Feb 17 16:14:24 2023 -0400
+
+    navbar mejorado
+
+[33mcommit b2bacec8b00a723a06ddc1a71dffe4f87dbe493c[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Thu Feb 16 18:23:05 2023 -0400
+
+    cambios menores para probar obtencion de externos
+
+[33mcommit 3239d58ed75fc5f3ebbe5fff8712a7bf4206ace3[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Wed Feb 15 18:23:25 2023 -0400
+
+    correciones para el envio a multiples funcionarios funcionando
+
+[33mcommit eb5a9cf2079f67dd84aa59ca141f0393a868ef63[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Tue Feb 14 18:01:18 2023 -0400
+
+    cambios estructura para el dialog remision
+
+[33mcommit da1114a85cf31ea513db94d5fa1199de89eb8545[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Mon Feb 13 18:11:37 2023 -0400
+
+    Cambios en dialog remision para envios multiples
+
+[33mcommit 4f8c72f2dc099561bde9d7d81e0797a2ff3e795a[m
+Author: Jose Limbert <jose@gmail.com>
+Date:   Fri Feb 10 18:59:57 2023 -0400
+
+    cambios iniciales para envio a multiples usuarios
+
+[33mcommit 7d1fe2959062d985a35ed668786d58446fc9f3b2[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Wed Feb 8 17:17:37 2023 -0400
+
+    Actualizacion angular 15 y primeros pasos para el envio multiple
+
+[33mcommit 88281eaf12c8b8c0dceec468000e3c7ac2b56564[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Sun Feb 5 19:14:20 2023 -0400
+
+    Graph eliminado y correciones de angular material
+
+[33mcommit 2dbca14b8aa6b07ceae6eadba3bdd595d2d65582[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Sun Feb 5 18:32:37 2023 -0400
+
+    Correciones librerias ngx-mat-select y ngx-graph
+
+[33mcommit 7b5e0e49e916b251900130ee99d9003c6c83e181[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Sun Feb 5 18:18:38 2023 -0400
+
+    cambios para la version 15
+
+[33mcommit 609852201c921bc6209f6dfc064e2ce4ad08916f[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Sun Feb 5 18:10:36 2023 -0400
+
+    Ventana para concluidos agregada
+
+[33mcommit 90198de95a2795befcead020af8e313af6ae03e5[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Fri Feb 3 10:27:47 2023 -0400
+
+    Prueba para rama modificaciones
+
+[33mcommit 82f2634534d74f9e42b12fbf96f9b8352170589d[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Fri Feb 3 09:47:04 2023 -0400
+
+    Paginacion en bandeja de salida y metodo para conclucion prueba
+
+[33mcommit f3c3df921eb071cf9fb2d591936901de2c183ab1[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Thu Feb 2 09:53:38 2023 -0400
+
+    Correcciones menores para hoja de ruta
+
+[33mcommit 2b9731f5cefe2db4ef53a404e4b8213b787dea01[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Wed Feb 1 08:27:39 2023 -0400
+
+    Dialog para la conclusion arregladas
+
+[33mcommit f01e608bf52a44f8f0d9569384d4eaf10e8e8015[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Tue Jan 24 11:51:26 2023 -0400
+
+    Implementacion de notificaciones
+
+[33mcommit efa35facdb7cc70fac4e07c909e4080a35227b6c[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Tue Jan 24 07:48:48 2023 -0400
+
+    implementacion de buscadores para internos, externos, bandeja entrada
+
+[33mcommit c1aac2bbd471383efd085e96d32a8adbeffccc22[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Tue Jan 17 07:45:32 2023 -0400
+
+    correcciones para conclusion tramite
+
+[33mcommit 7d4270e8d86c114ed4c154a63cf748b24b0129cb[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Tue Jan 10 07:48:11 2023 -0400
+
+    Correcciones de hoja de ruta
+
+[33mcommit 8430431d5c26d0b913fc0871fafa7c9f658a0d0c[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Thu Jan 5 07:07:25 2023 -0400
+
+    cambio imagen hoja de ruta, cantidad de hojas y eliminacion de campo expedido
+
+[33mcommit 4a6610f4e6c80f049b49a65566b7435b343d9099[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Tue Jan 3 07:34:12 2023 -0400
+
+    Correcciones para muestra de ubicacion en tramites externos
+
+[33mcommit ec764b7eeef32f9a7c536bbb6aa9f13c1578c968[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Fri Dec 30 17:05:39 2022 -0400
+
+    Corecciones para carga de datos excel e iconos de las vistas
+
+[33mcommit 8ae06a17d5f980a78e67b96bc5a4953715897f96[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Thu Dec 29 16:24:19 2022 -0400
+
+    Implementacion de contador para duracion de tramites en ficha de tramites externo
+
+[33mcommit 01a02d059fa12fc911bdc2123df1689a52bcb585[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Thu Dec 22 17:14:03 2022 -0400
+
+    Implementacion de reportes para tramites internos, mejora de reportes externos y metodo para la concluir tramites
+
+[33mcommit 23f4a98cc144a2f0290e32d8ec54f4afbeefc2d2[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Thu Dec 15 16:49:14 2022 -0400
+
+    Tramites externos y reportes funcional
+
+[33mcommit 9ddade8abb5506216ef70e72216d2eabbb856b01[m
+Author: Jose Limbert <jos23limbert@gmail.com>
+Date:   Thu Dec 1 17:29:49 2022 -0400
+
+    Funcionamiento de metodos para MongoDB, con metodos antiguos para bandejas
