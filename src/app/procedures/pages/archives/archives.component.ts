@@ -7,7 +7,6 @@ import { AlertService, PaginatorService } from 'src/app/shared/services';
 import { SocketService } from 'src/app/services/socket.service';
 import { ArchiveService } from '../../services/archive.service';
 
-import { EventDialogComponent } from '../../dialogs/event-dialog/event-dialog.component';
 
 import { Communication } from 'src/app/communication/models';
 import { EventProcedureDto } from '../../dtos/event_procedure.dto';
@@ -26,7 +25,7 @@ interface CacheStorage {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArchivesComponent implements OnInit {
-  public displayedColumns: string[] = ['code', 'reference', 'state', 'manager', 'show-detail', 'options'];
+  public displayedColumns: string[] = ['code', 'reference', 'state', 'manager', 'options'];
   public dataSource = signal<Communication[]>([]);
   private destroyed$: Subject<void> = new Subject();
   public textToSearch: string = '';
@@ -98,14 +97,6 @@ export class ArchivesComponent implements OnInit {
     };
     this.router.navigate(['/tramites/archivados/', mail.procedure.group, mail.procedure._id], {
       queryParams: params,
-    });
-  }
-
-  showTimeline(mail: Communication) {
-    this.dialog.open(EventDialogComponent, {
-      width: '1200px',
-      data: mail,
-      disableClose: true,
     });
   }
 

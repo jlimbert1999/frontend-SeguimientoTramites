@@ -104,8 +104,9 @@
                     </span>
                     <small matListItemLine>{{ send.receiver.jobtitle ?? "SIN CARGO" }}</small>
                     @if(send.status === 'rejected'){
-                    <span matListItemLine class="text-rejected"
-                      >Rechazo: {{ send.rejectionReason ?? "Sin detalle" }}</span
+                    <span matListItemLine class="text-rejected">
+                      ({{ send.eventLog.date | date : "short" }}) - {{ send.eventLog.manager | titlecase }} :
+                      {{ send.eventLog.description }}</span
                     >
                     }
                   </mat-list-option>

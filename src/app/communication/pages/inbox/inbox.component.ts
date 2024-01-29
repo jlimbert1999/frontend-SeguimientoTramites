@@ -22,7 +22,7 @@ import { Communication } from '../../models';
 })
 export class InboxComponent implements OnInit {
   private destroyed$: Subject<void> = new Subject();
-  public displayedColumns: string[] = ['code', 'reference', 'state', 'emitter', 'outboundDate', 'options'];
+  public displayedColumns: string[] = ['group', 'code', 'reference', 'state', 'emitter', 'outboundDate', 'options'];
   public datasource = signal<Communication[]>([]);
   public status = signal<statusMail | undefined>(undefined);
   public textToSearch: string = '';

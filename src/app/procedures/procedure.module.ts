@@ -19,7 +19,6 @@ import { ObservationsComponent } from './components/observations/observations.co
 import { ProcedureRoutingModule } from './procedure-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { ArchivesComponent } from './pages/archives/archives.component';
-import { EventDialogComponent } from './dialogs/event-dialog/event-dialog.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +30,6 @@ import { EventDialogComponent } from './dialogs/event-dialog/event-dialog.compon
     InternalDetailComponent,
     ExternalDetailComponent,
     ObservationsComponent,
-    EventDialogComponent,
     ArchivesComponent,
     FilterObservationsPipe,
   ],

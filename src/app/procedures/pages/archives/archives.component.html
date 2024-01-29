@@ -30,7 +30,7 @@
         <ng-container matColumnDef="manager">
           <th mat-header-cell *matHeaderCellDef>Responsable</th>
           <td mat-cell *matCellDef="let element">
-            {{ element.receiver.fullname | titlecase }}
+            {{ element.eventLog.manager | titlecase }}
           </td>
         </ng-container>
 
@@ -47,15 +47,6 @@
             <span class="badge" [ngClass]="element.procedure.state | state">
               {{ element.procedure.state }}
             </span>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="show-detail">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let element">
-            <button mat-icon-button (click)="showTimeline(element)" matTooltip="Ver cronologia">
-              <mat-icon>timer</mat-icon>
-            </button>
           </td>
         </ng-container>
 

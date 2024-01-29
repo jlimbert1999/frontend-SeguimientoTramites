@@ -1,20 +1,27 @@
 import { groupProcedure, stateProcedure } from 'src/app/procedures/interfaces';
 import { communicationResponse, participant, statusMail } from '../interfaces';
 
+interface eventLog {
+  manager: string;
+  description: string;
+  date: string;
+}
+
 interface CommunicationProps {
   _id: string;
   emitter: participant;
   receiver: participant;
-  procedure: ProcedureDetail;
+  procedure: ProcedureProps;
   reference: string;
   attachmentQuantity: string;
   internalNumber: string;
   outboundDate: string;
-  inboundDate?: string;
-  rejectionReason?: string;
   status: statusMail;
+  inboundDate?: string;
+  eventLog?: eventLog;
 }
-interface ProcedureDetail {
+
+interface ProcedureProps {
   _id: string;
   code: string;
   reference: string;
@@ -26,13 +33,13 @@ export class Communication {
   readonly _id: string;
   readonly emitter: participant;
   readonly receiver: participant;
-  readonly procedure: ProcedureDetail;
+  readonly procedure: ProcedureProps;
   readonly reference: string;
   readonly attachmentQuantity: string;
   readonly internalNumber: string;
   readonly outboundDate: string;
   readonly inboundDate?: string;
-  readonly rejectionReason?: string;
+  readonly eventLog?: eventLog;
   status: statusMail;
 
   static ResponseToModel({ emitter, receiver, ...props }: communicationResponse) {
@@ -55,8 +62,8 @@ export class Communication {
     internalNumber,
     outboundDate,
     inboundDate,
-    rejectionReason,
     status,
+    eventLog,
   }: CommunicationProps) {
     this._id = _id;
     this.emitter = emitter;
@@ -66,11 +73,11 @@ export class Communication {
     this.attachmentQuantity = attachmentQuantity;
     this.internalNumber = internalNumber;
     this.outboundDate = outboundDate;
-    this.inboundDate = inboundDate;
-    this.rejectionReason = rejectionReason;
     this.status = status;
+    this.inboundDate = inboundDate;
+    this.eventLog = eventLog;
   }
-  
+
   statusLabel(): { label: string; color: string } {
     const states = {
       [statusMail.Received]: { label: 'RECIBIDO', color: '#55A630' },
@@ -82,4 +89,11 @@ export class Communication {
     return states[this.status];
   }
 
+  groupLabel(): string {
+    const groups = {
+      [groupProcedure.EXTERNAL]: 'EXTERNO',
+      [groupProcedure.INTERNAL]: 'INTERNO',
+    };
+    return groups[this.procedure.group];
+  }
 }

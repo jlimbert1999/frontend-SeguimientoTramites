@@ -1,6 +1,12 @@
 import { TimeControl } from 'src/app/shared/helpers';
 import { statusMail, workflowResponse } from '../interfaces';
 
+interface EventLog {
+  manager: string;
+  description: string;
+  date: string;
+}
+
 export interface WorkflowProps {
   emitter: Participant;
   outboundDate: TimeDetail;
@@ -14,9 +20,9 @@ interface Detail {
   reference: string;
   attachmentQuantity: string;
   internalNumber: string;
-  inboundDate: TimeDetail;
   status: statusMail;
-  rejectionReason?: string;
+  inboundDate?: TimeDetail;
+  eventLog?: EventLog;
 }
 interface TimeDetail {
   date: string;

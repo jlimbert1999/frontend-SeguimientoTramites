@@ -15,7 +15,12 @@ interface Detail {
   internalNumber: string;
   inboundDate?: string;
   status: statusMail;
-  rejectionReason?: string;
+  eventLog: EventLog;
+}
+interface EventLog {
+  manager: string;
+  description: string;
+  date: string;
 }
 
 interface Participant {
